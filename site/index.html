@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Paris selon le temps qu'il faut pour y aller</title>
+    <meta
+      name="description"
+      content="Cartogramme interactif des temps de trajet en métro et RER à Paris. Survolez la carte, épinglez un départ, lisez le temps jusqu'à n'importe quel point."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Cartogramme des temps de trajet</p>
+        <h1>Paris selon le temps qu'il faut pour y aller.</h1>
+        <p class="lede">
+          Cliquez pour poser un départ, recliquez pour l'arrivée.
+          Glissez l'un ou l'autre : la heatmap se recalcule en direct autour du point déplacé.
+        </p>
+      </header>
+
+      <section class="search-card">
+        <form id="searchForm" class="search-form" autocomplete="off">
+          <label class="search-label" for="addressInput">Épingler une adresse</label>
+          <div class="search-row">
+            <input
+              id="addressInput"
+              type="text"
+              placeholder="Chercher une adresse à Paris"
+              aria-label="Chercher une adresse à Paris"
+            />
+            <button id="searchButton" type="submit">Rechercher</button>
+          </div>
+        </form>
+        <p id="searchMeta" class="search-meta">Ou cliquez directement sur la carte.</p>
+        <div id="searchResults" class="search-results" hidden></div>
+      </section>
+
+      <section class="map-card">
+        <div class="map-toolbar">
+          <div>
+            <h2>Temps de trajet</h2>
+            <p id="statusText">Chargement du réseau…</p>
+          </div>
+          <div class="toolbar-actions">
+            <button id="settingsButton" type="button" class="ghost" aria-expanded="false" aria-controls="settingsPanel">Options</button>
+            <button id="locateButton" type="button" class="ghost">Ma position</button>
+            <button id="shareButton" type="button" class="ghost">Partager</button>
+            <button id="fullscreenButton" type="button" class="ghost">Plein écran</button>
+          </div>
+        </div>
+
+        <div id="settingsPanel" class="settings-panel" hidden>
+          <div class="settings-header">
+            <h3>Options</h3>
+            <button id="settingsClose" type="button" class="icon-button" aria-label="Fermer">×</button>
+          </div>
+          <div class="controls">
+            <label class="toggle"><input id="heatmapToggle" type="checkbox" checked /> heatmap</label>
+            <div id="outlineOptions" class="contour-options">
+              <span>contour</span>
+              <label class="toggle"><input type="checkbox" data-outline="15" /> 15 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="30" checked /> 30 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="45" /> 45 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="60" /> 60 min</label>
+            </div>
+            <label class="slider">
+              <span id="maxTimeLabel">Temps max. 40 min</span>
+              <input id="maxTimeInput" type="range" min="20" max="90" step="5" value="40" />
+            </label>
+          </div>
+        </div>
+
+        <div id="sharePanel" class="share-panel" hidden>
+          <p id="shareUrl" class="share-url"></p>
+          <button id="copyLinkButton" type="button">Copier le lien</button>
+        </div>
+
+        <div class="map-stage" id="mapStage">
+          <canvas id="mapCanvas" aria-label="Carte des temps de trajet à Paris"></canvas>
+          <div class="map-float">
+            <button id="helpButton" type="button" class="icon-button" aria-label="Aide">?</button>
+            <div class="zoom-stack">
+              <button id="zoomInButton" type="button" class="icon-button" aria-label="Zoom avant">+</button>
+              <button id="zoomOutButton" type="button" class="icon-button" aria-label="Zoom arrière">−</button>
+            </div>
+          </div>
+          <aside id="helpPanel" class="help-panel" hidden>
+            <p>Survolez pour générer la heatmap.</p>
+            <p>Cliquez pour poser le départ, recliquez pour l'arrivée.</p>
+            <p>Glissez n'importe quelle épingle : la carte se recalcule autour d'elle. Double-clic pour retirer.</p>
+          </aside>
+          <div id="legend" class="legend" hidden>
+            <span>0 min</span>
+            <div class="legend-bar"></div>
+            <span id="legendMax">40 min</span>
+          </div>
+        </div>
+
+        <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau joignable en 30 minutes.</p>
+      </section>
+
+      <footer class="notes">
+        <p>
+          Temps estimés à partir des tracés et stations Île-de-France Mobilités
+          (métro et RER uniquement), plus un accès piéton court jusqu'aux stations.
+          Pas de bus, tram, Transilien ni horaires temps réel. Les correspondances et
+          l'attente en station sont forfaitaires.
+        </p>
+        <p>
+          Sources :
+          <a href="https://data.iledefrance.fr/explore/dataset/gares-et-stations-du-reseau-ferre-dile-de-france-par-ligne/">stations IDFM</a>,
+          <a href="https://data.iledefrance.fr/explore/dataset/traces-du-reseau-de-transport-ferre-dile-de-france/">tracés du réseau ferré</a>,
+          <a href="https://opendata.paris.fr/explore/dataset/arrondissements/">arrondissements de Paris</a>,
+          <a href="https://geo.api.gouv.fr/">contours communaux</a>.
+          Inspiré du <a href="https://castrio.me/nyc/">cartogramme new-yorkais</a> d'Anthony Castrio.
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
