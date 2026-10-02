@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Paris selon le temps qu'il faut pour y aller</title>
+    <title>C'est encore loin ?</title>
     <meta
       name="description"
       content="Cartogramme interactif des temps de trajet en métro et RER à Paris. Survolez la carte, épinglez un départ, lisez le temps jusqu'à n'importe quel point."
@@ -19,30 +19,18 @@
   <body>
     <main class="page">
       <header class="hero">
-        <p class="eyebrow">Cartogramme des temps de trajet</p>
-        <h1>Paris selon le temps qu'il faut pour y aller.</h1>
+        <p class="eyebrow">heatmap des temps de trajets en métro et RER</p>
+        <h1>C'est encore loin ?</h1>
         <p class="lede">
-          Cliquez pour poser un départ, recliquez pour l'arrivée.
-          Glissez l'un ou l'autre : la heatmap se recalcule en direct autour du point déplacé.
+          Le départ est à Charles de Gaulle-Étoile par défaut. Cliquez sur la carte pour poser un point d'arrivée.
+          Déplacez l'un ou l'autre des points pour que la carte se mette à jour en direct.
+        </p>
+        <p class="lede">
+          Idée originale et visualisation : Anthony Castrio et son
+          <a href="https://castrio.me/nyc/" target="_blank" rel="noopener noreferrer">cartogramme new-yorkais</a>.
+          Je n'ai fait que transposer son idée à Paris et rajouter les lignes de 15 et 30 minutes.
         </p>
       </header>
-
-      <section class="search-card">
-        <form id="searchForm" class="search-form" autocomplete="off">
-          <label class="search-label" for="addressInput">Épingler une adresse</label>
-          <div class="search-row">
-            <input
-              id="addressInput"
-              type="text"
-              placeholder="Chercher une adresse à Paris"
-              aria-label="Chercher une adresse à Paris"
-            />
-            <button id="searchButton" type="submit">Rechercher</button>
-          </div>
-        </form>
-        <p id="searchMeta" class="search-meta">Ou cliquez directement sur la carte.</p>
-        <div id="searchResults" class="search-results" hidden></div>
-      </section>
 
       <section class="map-card">
         <div class="map-toolbar">
@@ -64,10 +52,9 @@
             <button id="settingsClose" type="button" class="icon-button" aria-label="Fermer">×</button>
           </div>
           <div class="controls">
-            <label class="toggle"><input id="heatmapToggle" type="checkbox" checked /> heatmap</label>
             <div id="outlineOptions" class="contour-options">
               <span>contour</span>
-              <label class="toggle"><input type="checkbox" data-outline="15" /> 15 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="15" checked /> 15 min</label>
               <label class="toggle"><input type="checkbox" data-outline="30" checked /> 30 min</label>
               <label class="toggle"><input type="checkbox" data-outline="45" /> 45 min</label>
               <label class="toggle"><input type="checkbox" data-outline="60" /> 60 min</label>
@@ -112,8 +99,7 @@
         <p>
           Temps estimés à partir des tracés et stations Île-de-France Mobilités
           (métro et RER uniquement), plus un accès piéton court jusqu'aux stations.
-          Pas de bus, tram, Transilien ni horaires temps réel. Les correspondances et
-          l'attente en station sont forfaitaires.
+          Pas de bus, tram, Transilien ni horaires temps réel.
         </p>
         <p>
           Sources :

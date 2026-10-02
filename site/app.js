@@ -2,6 +2,7 @@ const DATA_URL = new URL("./data/commute_map_data.json", import.meta.url).toStri
 const MIN_VIEWPORT_SCALE = 0.22;
 const MAX_VIEWPORT_SCALE = 3.6;
 const VIEWPORT_ZOOM_STEP = 1.32;
+const DEFAULT_VIEWPORT_SCALE = 0.72 / VIEWPORT_ZOOM_STEP;
 const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 2.05;
 const WEIGHT_BLUR_PASSES = 2;
@@ -11,29 +12,28 @@ const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
 const REACHABILITY_THRESHOLD_MINUTES = 30;
 const OUTLINE_OPTIONS = [15, 30, 45, 60];
-const DEFAULT_OUTLINE_MINUTES = [30];
+const DEFAULT_OUTLINE_MINUTES = [15, 30];
 const OUTLINE_WIDTHS = { 15: 1.1, 30: 1.9, 45: 2.75, 60: 3.6 };
 const OUTLINE_LABEL_DIRS = {
-  15: [1, 0.12],
+  15: [-0.92, -0.78],
   30: [0.72, -0.7],
   45: [-0.12, -1],
   60: [-0.88, -0.42],
 };
 const DEFAULT_MAX_TIME_MINUTES = 40;
 const DEFAULT_ORIGIN = {
-  lat: 48.88599,
-  lon: 2.24603,
-  label: "2–4 rue Paul Lafargue",
+  lat: 48.874729,
+  lon: 2.295510,
+  label: "Charles De Gaulle-Étoile",
 };
 const SHARE_DECIMALS = 5;
 
 const state = {
   data: null,
   ready: false,
-  showHeatmap: true,
   outlineMinutes: [...DEFAULT_OUTLINE_MINUTES],
   maxTransitTime: DEFAULT_MAX_TIME_MINUTES,
-  viewportScale: 1,
+  viewportScale: DEFAULT_VIEWPORT_SCALE,
   viewportCenter: null,
   originPoint: null,
   originLabel: null,
@@ -65,8 +65,6 @@ const shareUrl = document.getElementById("shareUrl");
 const settingsButton = document.getElementById("settingsButton");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsClose = document.getElementById("settingsClose");
-const searchResults = document.getElementById("searchResults");
-const searchMeta = document.getElementById("searchMeta");
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -208,32 +206,6 @@ function minViewportScale(width, height) {
   return clamp(fitAll / fitParis, MIN_VIEWPORT_SCALE, 1);
 }
 
-function boroughLabelPoint(borough) {
-  let sumX = 0;
-  let sumY = 0;
-  let weight = 0;
-  for (const polygon of borough.polygons) {
-    const ring = polygon[0];
-    if (!ring || ring.length < 3) continue;
-    let area = 0;
-    let cx = 0;
-    let cy = 0;
-    for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
-      const cross = ring[j][0] * ring[i][1] - ring[i][0] * ring[j][1];
-      area += cross;
-      cx += (ring[j][0] + ring[i][0]) * cross;
-      cy += (ring[j][1] + ring[i][1]) * cross;
-    }
-    const absArea = Math.abs(area);
-    if (absArea < 1) continue;
-    sumX += (cx / (3 * area)) * absArea;
-    sumY += (cy / (3 * area)) * absArea;
-    weight += absArea;
-  }
-  if (!weight) return borough.label;
-  return [sumX / weight, sumY / weight];
-}
-
 function buildTransform(bounds, width, height, zoom, centerPoint) {
   const [minX, minY, maxX, maxY] = bounds;
   const scale = Math.min((width - PANEL_PADDING * 2) / (maxX - minX), (height - PANEL_PADDING * 2) / (maxY - minY)) * zoom;
@@ -292,11 +264,17 @@ function runDijkstra(origin) {
   return { distances, seeds };
 }
 
-function estimateTravel(origin, distances, destination) {
-  let best = distance(origin, destination) / state.data.meta.walkMetersPerMinute;
-  for (const station of nearestStations(destination, state.data.meta.cellNearestStations)) {
-    for (const routeStateIndex of state.data.stationStates[station.index] || []) {
-      best = Math.min(best, distances[routeStateIndex] + station.walkMinutes);
+function estimateTravel(origin, distances, destination, nearby = null) {
+  const walk = state.data.meta.walkMetersPerMinute;
+  const access = state.data.meta.stationAccessPenalty;
+  let best = distance(origin, destination) / walk;
+  const stations = nearby || nearestStations(destination, state.data.meta.cellNearestStations);
+  for (const station of stations) {
+    const index = station.index ?? station[0];
+    const walkMinutes =
+      station.walkMinutes ?? distance(destination, state.data.stations[index].point) / walk + access;
+    for (const routeStateIndex of state.data.stationStates[index] || []) {
+      best = Math.min(best, distances[routeStateIndex] + walkMinutes);
     }
   }
   return best;
@@ -318,7 +296,7 @@ function summarizeReachability(origin, distances) {
 
 function computeWarp(origin, { fast = false } = {}) {
   const { distances, seeds } = runDijkstra(origin);
-  const { gridCols, gridRows, bounds, walkMetersPerMinute, stationAccessPenalty } = state.data.meta;
+  const { gridCols, gridRows, bounds } = state.data.meta;
   const [minX, minY, maxX, maxY] = bounds;
   const cellW = (maxX - minX) / gridCols;
   const cellH = (maxY - minY) / gridRows;
@@ -328,14 +306,7 @@ function computeWarp(origin, { fast = false } = {}) {
   for (const cellIndex of state.data.mask) {
     if (cellIndex === -1) continue;
     const cell = state.data.cells[cellIndex];
-    let best = distance(origin, cell.point) / walkMetersPerMinute;
-    for (const [stationIndex] of cell.access) {
-      const egress = distance(cell.point, state.data.stations[stationIndex].point) / walkMetersPerMinute + stationAccessPenalty;
-      for (const routeStateIndex of state.data.stationStates[stationIndex] || []) {
-        best = Math.min(best, distances[routeStateIndex] + egress);
-      }
-    }
-    minuteGrid[cell.row][cell.col] = best;
+    minuteGrid[cell.row][cell.col] = estimateTravel(origin, distances, cell.point, cell.access);
     validMask[cell.row][cell.col] = true;
   }
 
@@ -455,27 +426,6 @@ function drawStations(drawCtx, projectPoint) {
     drawCtx.lineWidth = 0.55;
     drawCtx.strokeStyle = "#5a6e84";
     drawCtx.stroke();
-  }
-}
-
-function drawLabels(drawCtx, projectPoint) {
-  drawCtx.font = "700 13px Outfit, sans-serif";
-  drawCtx.textAlign = "center";
-  drawCtx.textBaseline = "middle";
-  drawCtx.fillStyle = "#1c2f42";
-  drawCtx.strokeStyle = "rgba(255,252,247,0.92)";
-  drawCtx.lineWidth = 5;
-  for (const borough of state.data.boroughs) {
-    const center = defaultCenter();
-    const label = boroughLabelPoint(borough);
-    const pulled = [label[0] * 0.82 + center[0] * 0.18, label[1] * 0.82 + center[1] * 0.18];
-    const [x, y] = projectPoint(pulled);
-    const name = {
-      "Seine-Saint-Denis": "St-Denis",
-      "Seine-et-Marne": "S.-et-Marne",
-    }[borough.name] || borough.name;
-    drawCtx.strokeText(name, x, y);
-    drawCtx.fillText(name, x, y);
   }
 }
 
@@ -809,11 +759,10 @@ function drawMap() {
   const projectPoint = (point) => transform.toScreen(point);
 
   drawBasemap(ctx, projectPoint);
-  if (warp && state.showHeatmap) drawHeatmap(ctx, warp, projectPoint);
+  if (warp) drawHeatmap(ctx, warp, projectPoint);
   drawDepartmentLimits(ctx, projectPoint);
   drawStations(ctx, projectPoint);
   if (warp && state.outlineMinutes.length) drawOutline(ctx, warp, projectPoint);
-  drawLabels(ctx, projectPoint);
 
   let travelMinutes = null;
   if (warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
@@ -824,7 +773,7 @@ function drawMap() {
     const probeScreen = projectPoint(state.probePoint);
     drawMarker(ctx, probeScreen, "#1c2f42", probeIsSource || state.dragTarget === "probe" ? 7 : 5);
     const probeLines = probeIsSource
-      ? [state.probePinned ? "Arrivée · glisser" : "Arrivée", nearestStationName(state.probePoint)]
+      ? ["Arrivée", nearestStationName(state.probePoint)]
       : [formatMinutes(travelMinutes), `vers ${nearestStationName(state.probePoint)}`];
     const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42");
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
@@ -835,14 +784,14 @@ function drawMap() {
     drawMarker(ctx, originScreen, "#c44b2b", state.pinned || state.dragTarget === "origin" ? 7 : 6);
     const originName = state.originLabel || nearestStationName(state.originPoint);
     const originLines = originIsSource
-      ? [state.pinned ? "Départ · glisser" : "Départ", originName]
+      ? ["Départ", originName]
       : [formatMinutes(travelMinutes), originName];
     const originLabel = drawLabelBubble(ctx, originScreen, originLines, "#c44b2b");
     state.pinHits.origin = { screen: originScreen, label: originLabel };
   }
 
   state.currentRender = { warp, transform };
-  legend.hidden = !warp || !state.showHeatmap;
+  legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
   syncStatus(warp, travelMinutes);
   state.dirty = false;
@@ -930,7 +879,6 @@ function syncUrl() {
     const { lat, lon } = worldToLonLat(state.probePoint);
     params.set("distance", `${formatCoord(lat)},${formatCoord(lon)}`);
   }
-  if (!state.showHeatmap) params.set("heatmap", "0");
   const outline = [...state.outlineMinutes].sort((a, b) => a - b);
   const defaultOutline = DEFAULT_OUTLINE_MINUTES.join(",");
   if (!outline.length) params.set("outline", "0");
@@ -944,10 +892,6 @@ function restoreUrl() {
   const params = new URLSearchParams(location.search);
   const origin = parsePair(params.get("origin"));
   const probe = parsePair(params.get("distance"));
-  if (params.get("heatmap") === "0") {
-    state.showHeatmap = false;
-    document.getElementById("heatmapToggle").checked = false;
-  }
   const outlineParam = params.get("outline");
   if (outlineParam === "0") {
     state.outlineMinutes = [];
@@ -975,41 +919,6 @@ function restoreUrl() {
     });
   }
   if (probe) setProbe(probe, true);
-}
-
-function renderSearch(results) {
-  searchResults.hidden = results.length === 0;
-  searchResults.innerHTML = "";
-  results.forEach((result) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = result.display_name;
-    button.addEventListener("click", () => {
-      setOrigin(lonLatToWorld(Number(result.lon), Number(result.lat)), { pin: true, label: result.display_name.split(",")[0] });
-      searchResults.hidden = true;
-    });
-    searchResults.appendChild(button);
-  });
-}
-
-async function searchAddress(query) {
-  searchMeta.textContent = "Recherche…";
-  const url = new URL("https://nominatim.openstreetmap.org/search");
-  url.searchParams.set("q", query);
-  url.searchParams.set("format", "json");
-  url.searchParams.set("limit", "5");
-  url.searchParams.set("countrycodes", "fr");
-  url.searchParams.set("viewbox", "2.14,48.98,2.55,48.74");
-  url.searchParams.set("bounded", "1");
-  const response = await fetch(url, { headers: { Accept: "application/json" } });
-  const results = await response.json();
-  if (!results.length) {
-    searchMeta.textContent = "Aucun résultat dans le périmètre.";
-    renderSearch([]);
-    return;
-  }
-  searchMeta.textContent = `${results.length} résultat${results.length > 1 ? "s" : ""}`;
-  renderSearch(results);
 }
 
 mapCanvas.addEventListener("pointermove", (event) => {
@@ -1105,11 +1014,6 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !settingsPanel.hidden) setSettingsOpen(false);
 });
 
-document.getElementById("heatmapToggle").addEventListener("change", (event) => {
-  state.showHeatmap = event.target.checked;
-  requestDraw();
-  syncUrl();
-});
 function syncOutlineToggles() {
   for (const minutes of OUTLINE_OPTIONS) {
     const input = document.querySelector(`[data-outline="${minutes}"]`);
@@ -1160,27 +1064,22 @@ document.getElementById("copyLinkButton").addEventListener("click", async () => 
     document.getElementById("copyLinkButton").textContent = "Copier le lien";
   }, 1400);
 });
-document.getElementById("searchForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  const query = document.getElementById("addressInput").value.trim();
-  if (query) searchAddress(query);
-});
 document.getElementById("locateButton").addEventListener("click", () => {
   if (!navigator.geolocation) {
-    searchMeta.textContent = "Géolocalisation indisponible.";
+    statusText.textContent = "Géolocalisation indisponible.";
     return;
   }
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const world = lonLatToWorld(position.coords.longitude, position.coords.latitude);
       if (!pointInLand(world)) {
-        searchMeta.textContent = "Votre position est hors de la carte.";
+        statusText.textContent = "Votre position est hors de la carte.";
         return;
       }
       setOrigin(world, { pin: true, label: "Ma position" });
     },
     () => {
-      searchMeta.textContent = "Impossible de lire la position.";
+      statusText.textContent = "Impossible de lire la position.";
     },
   );
 });

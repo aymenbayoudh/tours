@@ -1,5 +1,5 @@
 :root {
-  --paper: #f4eee3;
+  --paper: #ffffff;
   --paper-deep: #ebe2d2;
   --ink: #1c2f42;
   --muted: #5d6d7c;
@@ -61,7 +61,6 @@ h1 {
 }
 
 .lede,
-.search-meta,
 .reach,
 .notes,
 #statusText,
@@ -75,7 +74,6 @@ h1 {
   font-size: 1rem;
 }
 
-.search-card,
 .map-card,
 .notes {
   background: var(--card);
@@ -84,34 +82,6 @@ h1 {
   padding: 18px 20px;
 }
 
-.search-card {
-  margin-bottom: 16px;
-}
-
-.search-label {
-  display: block;
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.search-row {
-  display: flex;
-  gap: 8px;
-}
-
-.search-row input {
-  flex: 1;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 12px 16px;
-  font: inherit;
-  background: #fff;
-}
-
-.search-row button,
 .ghost,
 .share-panel button {
   border: 0;
@@ -130,26 +100,9 @@ h1 {
   border: 1px solid var(--line);
 }
 
-.search-meta,
 .reach {
   margin: 10px 0 0;
   font-size: 0.92rem;
-}
-
-.search-results {
-  display: grid;
-  gap: 6px;
-  margin-top: 10px;
-}
-
-.search-results button {
-  text-align: left;
-  border: 1px solid var(--line);
-  background: #fff;
-  border-radius: 14px;
-  padding: 10px 12px;
-  font: inherit;
-  cursor: pointer;
 }
 
 .map-toolbar {
@@ -365,7 +318,6 @@ h1 {
   }
 
   .map-toolbar,
-  .search-row,
   .share-panel,
   .settings-header {
     flex-direction: column;
@@ -375,8 +327,7 @@ h1 {
     height: 68vh;
   }
 
-  .ghost,
-  .search-row button {
+  .ghost {
     width: 100%;
   }
 }
