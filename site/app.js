@@ -5,22 +5,20 @@ const VIEWPORT_ZOOM_STEP = 1.32;
 const DEFAULT_VIEWPORT_SCALE = 1;
 const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 2.05;
-const WEIGHT_BLUR_PASSES = 2;
-const WEIGHT_BLUR_RADIUS = 2;
 const HOVER_DEADBAND = 12;
 const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
 const REACHABILITY_THRESHOLD_MINUTES = 30;
 const OUTLINE_OPTIONS = [15, 30, 45, 60];
-const DEFAULT_OUTLINE_MINUTES = [15, 30];
-const OUTLINE_WIDTHS = { 15: 1.1, 30: 1.9, 45: 2.75, 60: 3.6 };
+const DEFAULT_OUTLINE_MINUTES = [15, 30, 60];
+const OUTLINE_WIDTHS = { 15: 1.4, 30: 2.1, 45: 2, 60: 1.5 };
 const OUTLINE_LABEL_DIRS = {
   15: [-0.92, -0.78],
   30: [0.72, -0.7],
   45: [-0.12, -1],
   60: [-0.88, -0.42],
 };
-const DEFAULT_MAX_TIME_MINUTES = 40;
+const DEFAULT_MAX_TIME_MINUTES = 90;
 const DEFAULT_ORIGIN = {
   lat: 47.38915,
   lon: 0.69416,
@@ -204,7 +202,6 @@ function fitScaleFor(bounds, width, height) {
 }
 
 function minViewportScale(width, height) {
-  if (!state.handMode) return 1;
   const fitFocus = fitScaleFor(viewBounds(), width, height);
   const fitAll = fitScaleFor(state.data.meta.exploreBounds || viewBounds(), width, height);
   return clamp(fitAll / fitFocus, MIN_VIEWPORT_SCALE, 1);
@@ -314,33 +311,11 @@ function computeWarp(origin, { fast = false } = {}) {
     validMask[cell.row][cell.col] = true;
   }
 
-  let smoothed = minuteGrid.map((row) => row.slice());
-  const blurPasses = fast ? 1 : WEIGHT_BLUR_PASSES;
-  for (let pass = 0; pass < blurPasses; pass += 1) {
-    const next = Array.from({ length: gridRows }, () => new Array(gridCols).fill(Infinity));
-    for (let row = 0; row < gridRows; row += 1) {
-      for (let col = 0; col < gridCols; col += 1) {
-        if (!validMask[row][col]) continue;
-        let total = 0;
-        let count = 0;
-        for (let y = Math.max(0, row - WEIGHT_BLUR_RADIUS); y <= Math.min(gridRows - 1, row + WEIGHT_BLUR_RADIUS); y += 1) {
-          for (let x = Math.max(0, col - WEIGHT_BLUR_RADIUS); x <= Math.min(gridCols - 1, col + WEIGHT_BLUR_RADIUS); x += 1) {
-            if (!validMask[y][x]) continue;
-            total += smoothed[y][x];
-            count += 1;
-          }
-        }
-        next[row][col] = count ? total / count : smoothed[row][col];
-      }
-    }
-    smoothed = next;
-  }
-
   return {
     distances,
     seeds,
     reachability: fast ? null : summarizeReachability(origin, distances),
-    minutes: smoothed,
+    minutes: minuteGrid,
     validMask,
     cellW,
     cellH,
@@ -783,7 +758,7 @@ function drawMap() {
   const warp = source ? (state.dragTarget === "pan" && state.currentRender?.warp ? state.currentRender.warp : computeWarp(source, { fast: Boolean(state.dragTarget) })) : null;
   const focusBounds = viewBounds();
   const scaleMul = clamp(state.viewportScale, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
-  const focus = state.handMode ? (state.viewportCenter || defaultCenter()) : scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter();
+  const focus = state.viewportCenter || (scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter());
   const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
 
@@ -915,8 +890,8 @@ function syncUrl() {
   if (!outline.length) params.set("outline", "0");
   else if (outline.join(",") !== defaultOutline) params.set("outline", outline.join(","));
   if (state.maxTransitTime !== DEFAULT_MAX_TIME_MINUTES) params.set("max", String(state.maxTransitTime));
-  if (state.handMode) {
-    params.set("hand", "1");
+  if (state.handMode) params.set("hand", "1");
+  if (state.viewportCenter) {
     const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
     params.set("view", `${formatCoord(lat)},${formatCoord(lon)}`);
     params.set("zoom", state.viewportScale.toFixed(2));
@@ -948,23 +923,25 @@ function restoreUrl() {
     maxTimeLabel.textContent = `Temps max. ${max} min`;
   }
   if (origin) {
-    setOrigin(origin, { pin: true });
+    setOrigin(origin, { pin: true, silent: true });
   } else {
     setOrigin(lonLatToWorld(DEFAULT_ORIGIN.lon, DEFAULT_ORIGIN.lat), {
       pin: true,
       label: DEFAULT_ORIGIN.label,
+      silent: true,
     });
   }
-  if (probe) setProbe(probe, true);
-  if (params.get("hand") === "1") {
-    state.handMode = true;
+  if (probe) setProbe(probe, true, { silent: true });
+  if (params.get("view") || params.get("hand") === "1") {
+    state.handMode = params.get("hand") === "1";
     state.viewportCenter = parsePair(params.get("view")) || defaultCenter();
     const zoom = Number(params.get("zoom"));
     if (Number.isFinite(zoom) && zoom > 0) state.viewportScale = clamp(zoom, MIN_VIEWPORT_SCALE, MAX_VIEWPORT_SCALE);
-    handButton.setAttribute("aria-pressed", "true");
-    handButton.title = "Revenir à la sélection";
+    handButton.setAttribute("aria-pressed", state.handMode ? "true" : "false");
+    handButton.title = state.handMode ? "Revenir à la sélection" : "Déplacer librement la carte";
     syncCursor();
   }
+  syncUrl();
 }
 
 mapCanvas.addEventListener("pointermove", (event) => {
@@ -1119,7 +1096,6 @@ document.getElementById("zoomOutButton").addEventListener("click", () => {
 handButton.addEventListener("click", () => {
   state.handMode = !state.handMode;
   if (state.handMode) state.viewportCenter = state.currentRender?.focus || defaultCenter();
-  else state.viewportCenter = null;
   handButton.setAttribute("aria-pressed", state.handMode ? "true" : "false");
   handButton.title = state.handMode ? "Revenir à la sélection" : "Déplacer librement la carte";
   state.viewportScale = Math.max(state.viewportScale, minViewportScale(mapCanvas.clientWidth, mapCanvas.clientHeight));

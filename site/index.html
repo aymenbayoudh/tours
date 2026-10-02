@@ -28,7 +28,7 @@
         <p class="lede">
           Idée originale et visualisation : Anthony Castrio et son
           <a href="https://castrio.me/nyc/" target="_blank" rel="noopener noreferrer">cartogramme new-yorkais</a>.
-          Cette version l'applique à la Touraine, avec des courbes de 15 et 30 minutes.
+          Cette version l'applique à la Touraine, avec des courbes de 15, 30 et 60 minutes.
         </p>
       </header>
 
@@ -57,11 +57,11 @@
               <label class="toggle"><input type="checkbox" data-outline="15" checked /> 15 min</label>
               <label class="toggle"><input type="checkbox" data-outline="30" checked /> 30 min</label>
               <label class="toggle"><input type="checkbox" data-outline="45" /> 45 min</label>
-              <label class="toggle"><input type="checkbox" data-outline="60" /> 60 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="60" checked /> 60 min</label>
             </div>
             <label class="slider">
-              <span id="maxTimeLabel">Temps max. 40 min</span>
-              <input id="maxTimeInput" type="range" min="20" max="90" step="5" value="40" />
+              <span id="maxTimeLabel">Temps max. 90 min</span>
+              <input id="maxTimeInput" type="range" min="20" max="90" step="5" value="90" />
             </label>
           </div>
         </div>
@@ -90,7 +90,7 @@
           <div id="legend" class="legend" hidden>
             <span>0 min</span>
             <div class="legend-bar"></div>
-            <span id="legendMax">40 min</span>
+            <span id="legendMax">90 min</span>
           </div>
         </div>
 

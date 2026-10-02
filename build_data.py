@@ -20,7 +20,7 @@ REMI_KML = ROOT / "archive" / "kml-reference" / "Tours_REMI_trains_directs_septe
 OUTPUT = ROOT / "site" / "data" / "commute_map_data.json"
 LAT0 = 47.4
 COS_LAT = math.cos(math.radians(LAT0))
-GRID_COLS = GRID_ROWS = 128
+GRID_COLS = GRID_ROWS = 256
 WALK_METRES_PER_MINUTE = 80.0
 TER_METRES_PER_MINUTE = 1050.0
 TRAM_METRES_PER_MINUTE = 420.0
