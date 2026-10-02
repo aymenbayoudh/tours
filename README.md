@@ -12,6 +12,7 @@ Ouvrir <http://localhost:8000>. Les données prêtes à afficher sont dans `site
 
 ```bash
 python3 build_data.py
+python3 scripts/sync_root_page.py
 ```
 
 ## Données
@@ -21,6 +22,8 @@ python3 build_data.py
 - **Tram A et arrêts** : [GTFS Fil Bleu / Syndicat des Mobilités de Touraine](https://data.tours-metropole.fr/explore/dataset/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/), export du 30 septembre 2026. Les tracés, 29 arrêts et séquences viennent des fichiers `shapes.txt`, `stops.txt`, `trips.txt` et `stop_times.txt`.
 
 Les extraits normalisés sont dans `data/tours/`. Le script `scripts/prepare_official_data.py` permet de les régénérer à partir des exports officiels et du KML Rémi.
+
+`site/` est l'artifact publié par GitHub Actions. L'entrée `index.html` à la racine permet aussi la publication Pages depuis la branche `main` ; elle est régénérée par `scripts/sync_root_page.py`.
 
 Les temps sont des **estimations** : distance sur les tracés, vitesse moyenne, marche d'accès, attente et correspondances simplifiées. Ils ne tiennent pas compte des horaires, des jours de circulation, des retards ou des arrêts effectivement desservis par chaque train. En particulier, le passage d'une ligne devant une gare dans le KML sert d'approximation de desserte. La heatmap couvre les 14 EPCI ; les rails et gares hors périmètre restent visibles en mode main.
 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C'est encore loin ?</title>
+    <meta
+      name="description"
+      content="Cartogramme interactif des temps de trajet en TER et tram autour de Tours et du SERM de Touraine."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./site/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">TER et tram • Tours et SERM de Touraine</p>
+        <h1>C'est encore loin ?</h1>
+        <p class="lede">
+          Le départ est à la gare de Tours par défaut. Cliquez sur la carte pour poser un point d'arrivée.
+          Déplacez l'un ou l'autre des points pour que la carte se mette à jour en direct.
+        </p>
+        <p class="lede">
+          Idée originale et visualisation : Anthony Castrio et son
+          <a href="https://castrio.me/nyc/" target="_blank" rel="noopener noreferrer">cartogramme new-yorkais</a>.
+          Cette version l'applique à la Touraine, avec des courbes de 15 et 30 minutes.
+        </p>
+      </header>
+
+      <section class="map-card">
+        <div class="map-toolbar">
+          <div>
+            <h2>Temps de trajet</h2>
+            <p id="statusText">Chargement du réseau…</p>
+          </div>
+          <div class="toolbar-actions">
+            <button id="settingsButton" type="button" class="ghost" aria-expanded="false" aria-controls="settingsPanel">Options</button>
+            <button id="locateButton" type="button" class="ghost">Ma position</button>
+            <button id="shareButton" type="button" class="ghost">Partager</button>
+            <button id="fullscreenButton" type="button" class="ghost">Plein écran</button>
+          </div>
+        </div>
+
+        <div id="settingsPanel" class="settings-panel" hidden>
+          <div class="settings-header">
+            <h3>Options</h3>
+            <button id="settingsClose" type="button" class="icon-button" aria-label="Fermer">×</button>
+          </div>
+          <div class="controls">
+            <div id="outlineOptions" class="contour-options">
+              <span>contour</span>
+              <label class="toggle"><input type="checkbox" data-outline="15" checked /> 15 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="30" checked /> 30 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="45" /> 45 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="60" /> 60 min</label>
+            </div>
+            <label class="slider">
+              <span id="maxTimeLabel">Temps max. 40 min</span>
+              <input id="maxTimeInput" type="range" min="20" max="90" step="5" value="40" />
+            </label>
+          </div>
+        </div>
+
+        <div id="sharePanel" class="share-panel" hidden>
+          <p id="shareUrl" class="share-url"></p>
+          <button id="copyLinkButton" type="button">Copier le lien</button>
+        </div>
+
+        <div class="map-stage" id="mapStage">
+          <canvas id="mapCanvas" aria-label="Carte des temps de trajet autour de Tours"></canvas>
+          <div class="map-float">
+            <button id="helpButton" type="button" class="icon-button" aria-label="Aide">?</button>
+            <div class="zoom-stack">
+              <button id="zoomInButton" type="button" class="icon-button" aria-label="Zoom avant">+</button>
+              <button id="zoomOutButton" type="button" class="icon-button" aria-label="Zoom arrière">−</button>
+              <button id="handButton" type="button" class="icon-button" aria-label="Déplacer librement la carte" aria-pressed="false" title="Déplacer librement la carte">✋</button>
+            </div>
+          </div>
+          <aside id="helpPanel" class="help-panel" hidden>
+            <p>Survolez pour générer la heatmap.</p>
+            <p>Cliquez pour poser le départ, recliquez pour l'arrivée.</p>
+            <p>Glissez n'importe quelle épingle : la carte se recalcule autour d'elle. Double-clic pour retirer.</p>
+            <p>Activez la main sous le zoom pour déplacer librement la carte et voir les lignes TER vers les autres villes.</p>
+          </aside>
+          <div id="legend" class="legend" hidden>
+            <span>0 min</span>
+            <div class="legend-bar"></div>
+            <span id="legendMax">40 min</span>
+          </div>
+        </div>
+
+        <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau joignable en 30 minutes.</p>
+      </section>
+
+      <footer class="notes">
+        <p>
+          Temps indicatifs calculés à partir des lignes et gares SNCF, du tram A Fil Bleu et d'un accès à pied.
+          Les lignes TER directes proviennent du périmètre de référence fourni ; les temps ne reflètent pas les horaires ni les correspondances réelles. Les bus seront ajoutés plus tard.
+        </p>
+        <p>
+          Sources :
+          <a href="https://geoservices.ign.fr/adminexpress">Admin Express COG 2026 © IGN</a>,
+          <a href="https://data.sncf.com/explore/dataset/formes-des-lignes-du-rfn/">lignes SNCF Réseau</a>,
+          <a href="https://data.sncf.com/explore/dataset/liste-des-gares/">gares SNCF Réseau</a>,
+          <a href="https://data.tours-metropole.fr/explore/dataset/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/">GTFS Fil Bleu / SMT</a>.
+          Inspiré du <a href="https://castrio.me/nyc/">cartogramme new-yorkais</a> d'Anthony Castrio.
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="./site/app.js"></script>
+  </body>
+</html>
