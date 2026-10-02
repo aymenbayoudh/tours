@@ -1,8 +1,8 @@
 const DATA_URL = new URL("./data/commute_map_data.json", import.meta.url).toString();
-const MIN_VIEWPORT_SCALE = 0.12;
-const MAX_VIEWPORT_SCALE = 12;
+const MIN_VIEWPORT_SCALE = 0.22;
+const MAX_VIEWPORT_SCALE = 3.6;
 const VIEWPORT_ZOOM_STEP = 1.32;
-const DEFAULT_VIEWPORT_SCALE = 1;
+const DEFAULT_VIEWPORT_SCALE = 0.72 / VIEWPORT_ZOOM_STEP;
 const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 2.05;
 const WEIGHT_BLUR_PASSES = 2;
@@ -22,9 +22,9 @@ const OUTLINE_LABEL_DIRS = {
 };
 const DEFAULT_MAX_TIME_MINUTES = 40;
 const DEFAULT_ORIGIN = {
-  lat: 47.38915,
-  lon: 0.69416,
-  label: "Gare de Tours",
+  lat: 48.874729,
+  lon: 2.295510,
+  label: "Charles De Gaulle-Étoile",
 };
 const SHARE_DECIMALS = 5;
 
@@ -35,8 +35,6 @@ const state = {
   maxTransitTime: DEFAULT_MAX_TIME_MINUTES,
   viewportScale: DEFAULT_VIEWPORT_SCALE,
   viewportCenter: null,
-  handMode: false,
-  panStartCenter: null,
   originPoint: null,
   originLabel: null,
   pinned: false,
@@ -67,7 +65,6 @@ const shareUrl = document.getElementById("shareUrl");
 const settingsButton = document.getElementById("settingsButton");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsClose = document.getElementById("settingsClose");
-const handButton = document.getElementById("handButton");
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -191,7 +188,7 @@ function boundsCenter(bounds) {
 }
 
 function viewBounds() {
-  return state.data.meta.bounds;
+  return state.data.meta.parisBounds || state.data.meta.bounds;
 }
 
 function defaultCenter() {
@@ -204,10 +201,9 @@ function fitScaleFor(bounds, width, height) {
 }
 
 function minViewportScale(width, height) {
-  if (!state.handMode) return 1;
-  const fitFocus = fitScaleFor(viewBounds(), width, height);
-  const fitAll = fitScaleFor(state.data.meta.exploreBounds || viewBounds(), width, height);
-  return clamp(fitAll / fitFocus, MIN_VIEWPORT_SCALE, 1);
+  const fitParis = fitScaleFor(viewBounds(), width, height);
+  const fitAll = fitScaleFor(state.data.meta.bounds, width, height);
+  return clamp(fitAll / fitParis, MIN_VIEWPORT_SCALE, 1);
 }
 
 function buildTransform(bounds, width, height, zoom, centerPoint) {
@@ -393,12 +389,9 @@ function drawBasemap(drawCtx, projectPoint) {
     drawCtx.stroke();
   }
 
-}
-
-function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
     drawCtx.strokeStyle = route.color;
-    drawCtx.lineWidth = route.mode === "TRAM" ? ROUTE_LINE_WIDTH + 1.2 : ROUTE_LINE_WIDTH;
+    drawCtx.lineWidth = ROUTE_LINE_WIDTH;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
     drawPolyline(drawCtx, route.points, projectPoint);
@@ -406,17 +399,11 @@ function drawRoutes(drawCtx, projectPoint) {
 }
 
 function drawDepartmentLimits(drawCtx, projectPoint) {
-  drawCtx.strokeStyle = "rgba(77,101,128,0.22)";
-  drawCtx.lineWidth = 0.55;
-  for (const ring of state.data.communes || []) {
-    if (ring.length < 2) continue;
-    drawPolyline(drawCtx, ring, projectPoint);
-  }
+  drawCtx.strokeStyle = "#d8d8d8";
+  drawCtx.lineWidth = 1.05;
   drawCtx.lineJoin = "round";
   drawCtx.lineCap = "round";
   for (const borough of state.data.boroughs) {
-    drawCtx.strokeStyle = borough.code === "243700754" ? "#294f6f" : "rgba(57,80,102,0.7)";
-    drawCtx.lineWidth = borough.code === "243700754" ? 2.2 : 1.25;
     const rings = borough.outline?.length ? borough.outline : [];
     for (const ring of rings) {
       if (ring.length < 2) continue;
@@ -430,26 +417,15 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
 }
 
 function drawStations(drawCtx, projectPoint) {
-  const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
   for (const station of state.data.stations) {
     const [x, y] = projectPoint(station.point);
-    if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     drawCtx.beginPath();
-    drawCtx.arc(x, y, station.mode === "TRAM" ? 2.1 : 1.7, 0, Math.PI * 2);
+    drawCtx.arc(x, y, 1.4, 0, Math.PI * 2);
     drawCtx.fillStyle = "#fff";
     drawCtx.fill();
     drawCtx.lineWidth = 0.55;
-    drawCtx.strokeStyle = station.mode === "TRAM" ? "#bd074e" : "#345c77";
+    drawCtx.strokeStyle = "#5a6e84";
     drawCtx.stroke();
-    if (station.mode === "TER" && major.test(station.name) && state.viewportScale >= 0.55) {
-      drawCtx.font = "600 11px Outfit, sans-serif";
-      drawCtx.textAlign = "left";
-      drawCtx.lineWidth = 3;
-      drawCtx.strokeStyle = "#fff";
-      drawCtx.strokeText(station.name, x + 5, y - 5);
-      drawCtx.fillStyle = "#29445f";
-      drawCtx.fillText(station.name, x + 5, y - 5);
-    }
   }
 }
 
@@ -672,8 +648,7 @@ function drawLabelBubble(drawCtx, screen, lines, color) {
   const height = padY * 2 + lines.length * lineHeight;
   const canvasWidth = mapCanvas.getBoundingClientRect().width;
   const canvasHeight = mapCanvas.getBoundingClientRect().height;
-  const desiredX = screen[0] > canvasWidth * 0.55 ? screen[0] - width - 14 : screen[0] + 14;
-  const x = clamp(desiredX, 8, canvasWidth - width - 8);
+  const x = clamp(screen[0] + 14, 8, canvasWidth - width - 8);
   const y = clamp(screen[1] - height - 10, 8, canvasHeight - height - 8);
   drawCtx.fillStyle = "rgba(255,252,247,0.94)";
   drawCtx.strokeStyle = color;
@@ -696,7 +671,7 @@ function drawLabelBubble(drawCtx, screen, lines, color) {
 }
 
 function nearestStationName(point) {
-  return nearestStations(point, 1)[0]?.name || "Tours";
+  return nearestStations(point, 1)[0]?.name || "Paris";
 }
 
 function heatmapSourcePoint() {
@@ -729,7 +704,7 @@ function syncStatus(warp, travelMinutes) {
   if (warp?.reachability) {
     const { reachable, total } = warp.reachability;
     const percent = Math.round((reachable / total) * 100);
-    reachText.textContent = `${percent} % des gares et arrêts TER/tram sont joignables en ${REACHABILITY_THRESHOLD_MINUTES} minutes depuis ce point (estimation).`;
+    reachText.textContent = `${percent} % des stations métro/RER sont joignables en ${REACHABILITY_THRESHOLD_MINUTES} minutes depuis ce point.`;
   }
 }
 
@@ -756,10 +731,6 @@ function screenHitsPin(screen, hit) {
 }
 
 function syncCursor(screen = null) {
-  if (state.handMode) {
-    mapCanvas.style.cursor = state.dragTarget === "pan" ? "grabbing" : "grab";
-    return;
-  }
   if (state.dragTarget) {
     mapCanvas.style.cursor = "grabbing";
     return;
@@ -780,17 +751,16 @@ function drawMap() {
 
   const source = heatmapSourcePoint();
   const other = heatmapOtherPoint();
-  const warp = source ? (state.dragTarget === "pan" && state.currentRender?.warp ? state.currentRender.warp : computeWarp(source, { fast: Boolean(state.dragTarget) })) : null;
-  const focusBounds = viewBounds();
+  const warp = source ? computeWarp(source, { fast: Boolean(state.dragTarget) }) : null;
+  const parisBounds = viewBounds();
   const scaleMul = clamp(state.viewportScale, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
-  const focus = state.handMode ? (state.viewportCenter || defaultCenter()) : scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter();
-  const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
+  const focus = scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter();
+  const transform = buildTransform(parisBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
 
   drawBasemap(ctx, projectPoint);
   if (warp) drawHeatmap(ctx, warp, projectPoint);
   drawDepartmentLimits(ctx, projectPoint);
-  drawRoutes(ctx, projectPoint);
   drawStations(ctx, projectPoint);
   if (warp && state.outlineMinutes.length) drawOutline(ctx, warp, projectPoint);
 
@@ -820,7 +790,7 @@ function drawMap() {
     state.pinHits.origin = { screen: originScreen, label: originLabel };
   }
 
-  state.currentRender = { warp, transform, focus };
+  state.currentRender = { warp, transform };
   legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
   syncStatus(warp, travelMinutes);
@@ -879,7 +849,6 @@ function endDrag(event) {
   state.dragPointerId = null;
   state.dragMoved = false;
   state.dragStartScreen = null;
-  state.panStartCenter = null;
   try {
     if (event && mapCanvas.hasPointerCapture(event.pointerId)) mapCanvas.releasePointerCapture(event.pointerId);
   } catch {
@@ -915,12 +884,6 @@ function syncUrl() {
   if (!outline.length) params.set("outline", "0");
   else if (outline.join(",") !== defaultOutline) params.set("outline", outline.join(","));
   if (state.maxTransitTime !== DEFAULT_MAX_TIME_MINUTES) params.set("max", String(state.maxTransitTime));
-  if (state.handMode) {
-    params.set("hand", "1");
-    const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
-    params.set("view", `${formatCoord(lat)},${formatCoord(lon)}`);
-    params.set("zoom", state.viewportScale.toFixed(2));
-  }
   const query = params.toString();
   history.replaceState(null, "", query ? `?${query}` : location.pathname);
 }
@@ -956,29 +919,12 @@ function restoreUrl() {
     });
   }
   if (probe) setProbe(probe, true);
-  if (params.get("hand") === "1") {
-    state.handMode = true;
-    state.viewportCenter = parsePair(params.get("view")) || defaultCenter();
-    const zoom = Number(params.get("zoom"));
-    if (Number.isFinite(zoom) && zoom > 0) state.viewportScale = clamp(zoom, MIN_VIEWPORT_SCALE, MAX_VIEWPORT_SCALE);
-    handButton.setAttribute("aria-pressed", "true");
-    handButton.title = "Revenir à la sélection";
-    syncCursor();
-  }
 }
 
 mapCanvas.addEventListener("pointermove", (event) => {
   const { screen, world } = pointerToWorld(event);
   if (!world) return;
   if (state.dragTarget && state.dragPointerId === event.pointerId) {
-    if (state.dragTarget === "pan") {
-      const dx = screen[0] - state.dragStartScreen[0];
-      const dy = screen[1] - state.dragStartScreen[1];
-      const scale = state.currentRender.transform.scale;
-      state.viewportCenter = [state.panStartCenter[0] - dx / scale, state.panStartCenter[1] + dy / scale];
-      requestDraw();
-      return;
-    }
     if (state.dragStartScreen && distance(screen, state.dragStartScreen) > PIN_TAP_SLOP) {
       state.dragMoved = true;
     }
@@ -991,7 +937,6 @@ mapCanvas.addEventListener("pointermove", (event) => {
     return;
   }
   syncCursor(screen);
-  if (state.handMode) return;
   if (!state.pinned) {
     if (state.originPoint && distance(state.originPoint, world) < HOVER_DEADBAND) return;
     setOrigin(world, { silent: true });
@@ -1006,16 +951,6 @@ mapCanvas.addEventListener("pointermove", (event) => {
 mapCanvas.addEventListener("pointerdown", (event) => {
   const { screen, world } = pointerToWorld(event);
   if (!world) return;
-  if (state.handMode) {
-    event.preventDefault();
-    state.dragTarget = "pan";
-    state.dragPointerId = event.pointerId;
-    state.dragStartScreen = screen;
-    state.panStartCenter = [...(state.viewportCenter || defaultCenter())];
-    mapCanvas.setPointerCapture(event.pointerId);
-    syncCursor(screen);
-    return;
-  }
   const hit = hitPin(screen);
   const target = hit || (state.pinned ? "probe" : "origin");
   event.preventDefault();
@@ -1039,7 +974,6 @@ mapCanvas.addEventListener("pointerup", endDrag);
 mapCanvas.addEventListener("pointercancel", endDrag);
 
 mapCanvas.addEventListener("dblclick", (event) => {
-  if (state.handMode) return;
   const { screen } = pointerToWorld(event);
   const hit = hitPin(screen);
   if (hit === "probe") {
@@ -1108,24 +1042,11 @@ document.getElementById("zoomInButton").addEventListener("click", () => {
   const { width, height } = mapCanvas.getBoundingClientRect();
   state.viewportScale = clamp(state.viewportScale * VIEWPORT_ZOOM_STEP, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
   requestDraw();
-  syncUrl();
 });
 document.getElementById("zoomOutButton").addEventListener("click", () => {
   const { width, height } = mapCanvas.getBoundingClientRect();
   state.viewportScale = clamp(state.viewportScale / VIEWPORT_ZOOM_STEP, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
   requestDraw();
-  syncUrl();
-});
-handButton.addEventListener("click", () => {
-  state.handMode = !state.handMode;
-  if (state.handMode) state.viewportCenter = state.currentRender?.focus || defaultCenter();
-  else state.viewportCenter = null;
-  handButton.setAttribute("aria-pressed", state.handMode ? "true" : "false");
-  handButton.title = state.handMode ? "Revenir à la sélection" : "Déplacer librement la carte";
-  state.viewportScale = Math.max(state.viewportScale, minViewportScale(mapCanvas.clientWidth, mapCanvas.clientHeight));
-  syncCursor();
-  requestDraw();
-  syncUrl();
 });
 document.getElementById("fullscreenButton").addEventListener("click", () => {
   if (document.fullscreenElement) document.exitFullscreen();

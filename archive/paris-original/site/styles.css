@@ -256,11 +256,6 @@ h1 {
   cursor: pointer;
 }
 
-.icon-button[aria-pressed="true"] {
-  color: #fff;
-  background: var(--ink);
-}
-
 .help-panel {
   position: absolute;
   top: 58px;
