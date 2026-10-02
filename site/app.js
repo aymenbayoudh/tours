@@ -1,4 +1,4 @@
-const DATA_URL = new URL("./data/commute_map_data.json", import.meta.url).toString();
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-02b", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 12;
 const VIEWPORT_ZOOM_STEP = 1.32;
