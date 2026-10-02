@@ -4,7 +4,7 @@ const MAX_VIEWPORT_SCALE = 12;
 const VIEWPORT_ZOOM_STEP = 1.32;
 const DEFAULT_VIEWPORT_SCALE = 1;
 const PANEL_PADDING = 22;
-const ROUTE_LINE_WIDTH = 2.05;
+const ROUTE_LINE_WIDTH = 3.6;
 const HOVER_DEADBAND = 12;
 const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
@@ -19,6 +19,7 @@ const OUTLINE_LABEL_DIRS = {
   60: [-0.88, -0.42],
 };
 const DEFAULT_MAX_TIME_MINUTES = 90;
+const DEFAULT_INCLUDE_PROJECTS = true;
 const DEFAULT_ORIGIN = {
   lat: 47.38915,
   lon: 0.69416,
@@ -31,6 +32,7 @@ const state = {
   ready: false,
   outlineMinutes: [...DEFAULT_OUTLINE_MINUTES],
   maxTransitTime: DEFAULT_MAX_TIME_MINUTES,
+  includeProjects: DEFAULT_INCLUDE_PROJECTS,
   viewportScale: DEFAULT_VIEWPORT_SCALE,
   viewportCenter: null,
   handMode: false,
@@ -66,6 +68,7 @@ const settingsButton = document.getElementById("settingsButton");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsClose = document.getElementById("settingsClose");
 const handButton = document.getElementById("handButton");
+const projectsToggle = document.getElementById("projectsToggle");
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -77,6 +80,14 @@ function lerp(a, b, t) {
 
 function distance(a, b) {
   return Math.hypot(a[0] - b[0], a[1] - b[1]);
+}
+
+function closestOnSegment(point, a, b) {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const lengthSquared = dx * dx + dy * dy;
+  const t = lengthSquared ? clamp(((point[0] - a[0]) * dx + (point[1] - a[1]) * dy) / lengthSquared, 0, 1) : 0;
+  return [a[0] + t * dx, a[1] + t * dy];
 }
 
 function smoothstep(edge0, edge1, value) {
@@ -222,22 +233,28 @@ function buildTransform(bounds, width, height, zoom, centerPoint) {
   };
 }
 
-function nearestStations(point, count) {
-  return state.data.stations
-    .map((station, index) => ({
+function nearestStations(point, count, includePlanned = true) {
+  const nearest = [];
+  state.data.stations.forEach((station, index) => {
+    if (!includePlanned && station.planned) return;
+    const item = {
       index,
       name: station.name,
       walkMinutes: distance(point, station.point) / state.data.meta.walkMetersPerMinute + state.data.meta.stationAccessPenalty,
-    }))
-    .sort((a, b) => a.walkMinutes - b.walkMinutes)
-    .slice(0, count);
+    };
+    if (nearest.length === count && item.walkMinutes >= nearest[nearest.length - 1].walkMinutes) return;
+    nearest.push(item);
+    nearest.sort((a, b) => a.walkMinutes - b.walkMinutes);
+    if (nearest.length > count) nearest.pop();
+  });
+  return nearest;
 }
 
 function runDijkstra(origin) {
   const { routeStates, stationStates, adjacency, routeWaits, meta } = state.data;
   const distances = new Array(routeStates.length).fill(Infinity);
   const visited = new Array(routeStates.length).fill(false);
-  const seeds = nearestStations(origin, meta.originStationCount);
+  const seeds = nearestStations(origin, meta.originStationCount, state.includeProjects);
 
   for (const seed of seeds) {
     for (const routeStateIndex of stationStates[seed.index] || []) {
@@ -258,6 +275,7 @@ function runDijkstra(origin) {
     if (current === -1) break;
     visited[current] = true;
     for (const [toIndex, weight] of adjacency[current]) {
+      if (!state.includeProjects && state.data.routeInfo?.[routeStates[toIndex].routeId]?.planned) continue;
       const candidate = distances[current] + weight;
       if (candidate < distances[toIndex]) distances[toIndex] = candidate;
     }
@@ -269,7 +287,7 @@ function estimateTravel(origin, distances, destination, nearby = null) {
   const walk = state.data.meta.walkMetersPerMinute;
   const access = state.data.meta.stationAccessPenalty;
   let best = distance(origin, destination) / walk;
-  const stations = nearby || nearestStations(destination, state.data.meta.cellNearestStations);
+  const stations = nearby && state.includeProjects ? nearby : nearestStations(destination, state.data.meta.cellNearestStations, state.includeProjects);
   for (const station of stations) {
     const index = station.index ?? station[0];
     const walkMinutes =
@@ -286,13 +304,14 @@ function summarizeReachability(origin, distances) {
   const walk = state.data.meta.walkMetersPerMinute;
   let reachable = 0;
   for (let index = 0; index < state.data.stations.length; index += 1) {
+    if (!state.includeProjects && state.data.stations[index].planned) continue;
     let best = distance(origin, state.data.stations[index].point) / walk + access;
     for (const routeStateIndex of state.data.stationStates[index] || []) {
       best = Math.min(best, distances[routeStateIndex] + access);
     }
     if (best <= REACHABILITY_THRESHOLD_MINUTES) reachable += 1;
   }
-  return { reachable, total: state.data.stations.length };
+  return { reachable, total: state.data.stations.filter((station) => state.includeProjects || !station.planned).length };
 }
 
 function computeWarp(origin, { fast = false } = {}) {
@@ -321,6 +340,36 @@ function computeWarp(origin, { fast = false } = {}) {
     cellH,
     bounds,
   };
+}
+
+function pointInStaticGrid(point) {
+  const { bounds, gridCols, gridRows } = state.data.meta;
+  const col = Math.floor(((point[0] - bounds[0]) / (bounds[2] - bounds[0])) * gridCols);
+  const row = Math.floor(((point[1] - bounds[1]) / (bounds[3] - bounds[1])) * gridRows);
+  return col >= 0 && row >= 0 && col < gridCols && row < gridRows && state.data.mask[row * gridCols + col] !== -1;
+}
+
+function computeOutsideWarp(origin, distances, transform, width, height) {
+  const topLeft = transform.toWorld(0, 0);
+  const bottomRight = transform.toWorld(width, height);
+  const bounds = [topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]];
+  const gridCols = 160;
+  const gridRows = Math.max(80, Math.round((gridCols * height) / width));
+  const cellW = (bounds[2] - bounds[0]) / gridCols;
+  const cellH = (bounds[3] - bounds[1]) / gridRows;
+  const minutes = Array.from({ length: gridRows }, () => new Array(gridCols).fill(Infinity));
+  const validMask = Array.from({ length: gridRows }, () => new Array(gridCols).fill(false));
+  for (let row = 0; row < gridRows; row += 1) {
+    for (let col = 0; col < gridCols; col += 1) {
+      const point = [bounds[0] + (col + 0.5) * cellW, bounds[1] + (row + 0.5) * cellH];
+      if (pointInStaticGrid(point)) continue;
+      const travel = estimateTravel(origin, distances, point);
+      if (travel > state.maxTransitTime + 15) continue;
+      minutes[row][col] = travel;
+      validMask[row][col] = true;
+    }
+  }
+  return { minutes, validMask, bounds, cellW, cellH, reachability: null };
 }
 
 function createCanvasBacking(canvas) {
@@ -373,11 +422,13 @@ function drawBasemap(drawCtx, projectPoint) {
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
     drawCtx.strokeStyle = route.color;
-    drawCtx.lineWidth = route.mode === "TRAM" ? ROUTE_LINE_WIDTH + 1.2 : ROUTE_LINE_WIDTH;
+    drawCtx.lineWidth = route.mode === "RFN" ? 1.1 : route.mode === "TRAM" ? 4.2 : route.mode === "BHNS" ? 3.4 : ROUTE_LINE_WIDTH;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
+    drawCtx.setLineDash(route.mode === "BHNS" ? [7, 5] : []);
     drawPolyline(drawCtx, route.points, projectPoint);
   }
+  drawCtx.setLineDash([]);
 }
 
 function drawDepartmentLimits(drawCtx, projectPoint) {
@@ -410,11 +461,11 @@ function drawStations(drawCtx, projectPoint) {
     const [x, y] = projectPoint(station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     drawCtx.beginPath();
-    drawCtx.arc(x, y, station.mode === "TRAM" ? 2.1 : 1.7, 0, Math.PI * 2);
+    drawCtx.arc(x, y, station.mode === "TRAM" ? 2.6 : station.mode === "BHNS" ? 2.3 : 2, 0, Math.PI * 2);
     drawCtx.fillStyle = "#fff";
     drawCtx.fill();
     drawCtx.lineWidth = 0.55;
-    drawCtx.strokeStyle = station.mode === "TRAM" ? "#bd074e" : "#345c77";
+    drawCtx.strokeStyle = station.mode === "TRAM" ? (station.planned ? "#1d91b6" : "#bd074e") : station.mode === "BHNS" ? "#e18529" : "#345c77";
     drawCtx.stroke();
     if (station.mode === "TER" && major.test(station.name) && state.viewportScale >= 0.55) {
       drawCtx.font = "600 11px Outfit, sans-serif";
@@ -636,20 +687,29 @@ function drawMarker(drawCtx, screen, color, radius = 6) {
   drawCtx.stroke();
 }
 
-function drawLabelBubble(drawCtx, screen, lines, color) {
+function drawLabelBubble(drawCtx, screen, lines, color, below = false) {
   const padX = 12;
   const padY = 8;
-  const lineHeight = 16;
-  drawCtx.font = "600 13px Outfit, sans-serif";
+  const items = lines.map((line) => typeof line === "string" ? { text: line, small: false } : line);
   drawCtx.textAlign = "center";
   drawCtx.textBaseline = "middle";
-  const width = Math.ceil(Math.max(...lines.map((line) => drawCtx.measureText(line).width))) + padX * 2;
-  const height = padY * 2 + lines.length * lineHeight;
   const canvasWidth = mapCanvas.getBoundingClientRect().width;
   const canvasHeight = mapCanvas.getBoundingClientRect().height;
+  const maxTextWidth = Math.min(360, canvasWidth - padX * 2 - 16);
+  for (const item of items) {
+    drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
+    while (item.text.length > 8 && drawCtx.measureText(item.text).width > maxTextWidth) {
+      item.text = `${item.text.slice(0, -2)}…`;
+    }
+  }
+  const width = Math.ceil(Math.max(...items.map((item) => {
+    drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
+    return drawCtx.measureText(item.text).width;
+  }))) + padX * 2;
+  const height = padY * 2 + items.reduce((sum, item) => sum + (item.small ? 14 : 16), 0);
   const desiredX = screen[0] > canvasWidth * 0.55 ? screen[0] - width - 14 : screen[0] + 14;
   const x = clamp(desiredX, 8, canvasWidth - width - 8);
-  const y = clamp(screen[1] - height - 10, 8, canvasHeight - height - 8);
+  const y = clamp(below ? screen[1] + 12 : screen[1] - height - 10, 8, canvasHeight - height - 8);
   drawCtx.fillStyle = "rgba(255,252,247,0.94)";
   drawCtx.strokeStyle = color;
   drawCtx.lineWidth = 1.2;
@@ -662,9 +722,14 @@ function drawLabelBubble(drawCtx, screen, lines, color) {
   drawCtx.fill();
   drawCtx.stroke();
   drawCtx.fillStyle = "#1c2f42";
-  lines.forEach((line, i) => {
-    drawCtx.fillText(line, x + width / 2, y + padY + lineHeight * i + lineHeight / 2);
-  });
+  let lineY = y + padY;
+  for (const item of items) {
+    const lineHeight = item.small ? 14 : 16;
+    drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
+    drawCtx.fillStyle = item.small ? "#52687a" : "#1c2f42";
+    drawCtx.fillText(item.text, x + width / 2, lineY + lineHeight / 2);
+    lineY += lineHeight;
+  }
   drawCtx.textAlign = "left";
   drawCtx.textBaseline = "alphabetic";
   return { x, y, width, height };
@@ -672,6 +737,37 @@ function drawLabelBubble(drawCtx, screen, lines, color) {
 
 function nearestStationName(point) {
   return nearestStations(point, 1)[0]?.name || "Tours";
+}
+
+function stationModeLines(point) {
+  const nearby = nearestStations(point, 8);
+  if (!nearby.length || distance(point, state.data.stations[nearby[0].index].point) > 600) return [];
+  const routeIds = new Set();
+  for (const item of nearby) {
+    const station = state.data.stations[item.index];
+    if (distance(point, station.point) > 180) continue;
+    for (const routeId of station.routes) routeIds.add(routeId);
+  }
+  const ordered = [...routeIds].sort();
+  const descriptions = ordered.map((routeId) => {
+    if (routeId === "TRAM A") return "Tramway A";
+    if (routeId === "TRAM B") return "Tramway B · projet 2028";
+    if (routeId === "BHNS C") return "BHNS C · projet 2028";
+    if (routeId === "NAVETTE") return "Navette Tours ↔ Saint-Pierre-des-Corps";
+    const title = state.data.routeInfo?.[routeId]?.title || "";
+    return `${routeId} · ${title.split(" - ", 2)[1] || title}`;
+  });
+  if (descriptions.length <= 2) return descriptions.map((text) => ({ text, small: true }));
+  const modes = [];
+  if (ordered.some((id) => id.startsWith("TER "))) modes.push("TER");
+  if (ordered.includes("NAVETTE")) modes.push("Navette");
+  if (ordered.includes("TRAM A")) modes.push("Tramway A");
+  if (ordered.includes("TRAM B")) modes.push("Tramway B (2028)");
+  if (ordered.includes("BHNS C")) modes.push("BHNS C (2028)");
+  const mainRoute = ordered.find((id) => id.startsWith("TER ")) || ordered[0];
+  const lines = [{ text: modes.join(" · "), small: true }, { text: descriptions[ordered.indexOf(mainRoute)], small: true }];
+  lines.push({ text: `+ ${descriptions.length - 1} autres lignes`, small: true });
+  return lines;
 }
 
 function heatmapSourcePoint() {
@@ -704,7 +800,8 @@ function syncStatus(warp, travelMinutes) {
   if (warp?.reachability) {
     const { reachable, total } = warp.reachability;
     const percent = Math.round((reachable / total) * 100);
-    reachText.textContent = `${percent} % des gares et arrêts TER/tram sont joignables en ${REACHABILITY_THRESHOLD_MINUTES} minutes depuis ce point (estimation).`;
+    const percentText = reachable > 0 && percent === 0 ? "Moins de 1 %" : `${percent} %`;
+    reachText.textContent = `${percentText} des gares et arrêts du réseau sélectionné sont joignables en ${REACHABILITY_THRESHOLD_MINUTES} minutes depuis ce point (estimation).`;
   }
 }
 
@@ -713,14 +810,23 @@ function nearestLandPoint(point) {
   if (pointInLand(point)) return point;
   let best = null;
   let bestDistance = Infinity;
-  for (const cell of state.data.cells) {
-    const next = distance(point, cell.point);
-    if (next < bestDistance) {
-      bestDistance = next;
-      best = cell.point;
+  const tolerance = Math.min(8000, Math.max(1500, 8 / (state.currentRender?.transform.scale || 0.004)));
+  for (const route of state.data.routes) {
+    if (route.mode === "RFN") continue;
+    for (let i = 1; i < route.points.length; i += 1) {
+      const a = route.points[i - 1];
+      const b = route.points[i];
+      if (point[0] < Math.min(a[0], b[0]) - tolerance || point[0] > Math.max(a[0], b[0]) + tolerance) continue;
+      if (point[1] < Math.min(a[1], b[1]) - tolerance || point[1] > Math.max(a[1], b[1]) + tolerance) continue;
+      const candidate = closestOnSegment(point, a, b);
+      const gap = distance(point, candidate);
+      if (gap < bestDistance) {
+        bestDistance = gap;
+        best = candidate;
+      }
     }
   }
-  return best;
+  return bestDistance <= tolerance ? best : null;
 }
 
 function screenHitsPin(screen, hit) {
@@ -755,19 +861,24 @@ function drawMap() {
 
   const source = heatmapSourcePoint();
   const other = heatmapOtherPoint();
-  const warp = source ? (state.dragTarget === "pan" && state.currentRender?.warp ? state.currentRender.warp : computeWarp(source, { fast: Boolean(state.dragTarget) })) : null;
   const focusBounds = viewBounds();
   const scaleMul = clamp(state.viewportScale, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
   const focus = state.viewportCenter || (scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter());
   const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
+  const panning = state.dragTarget === "pan" && state.currentRender;
+  const warp = source ? (panning && state.currentRender.warp ? state.currentRender.warp : computeWarp(source, { fast: Boolean(state.dragTarget) })) : null;
+  const showOutsideWarp = source && (!pointInLand(source) || !pointInLand(focus));
+  const outsideWarp = showOutsideWarp ? (panning && state.currentRender.outsideWarp ? state.currentRender.outsideWarp : computeOutsideWarp(source, warp.distances, transform, width, height)) : null;
 
   drawBasemap(ctx, projectPoint);
   if (warp) drawHeatmap(ctx, warp, projectPoint);
+  if (outsideWarp) drawHeatmap(ctx, outsideWarp, projectPoint);
   drawDepartmentLimits(ctx, projectPoint);
   drawRoutes(ctx, projectPoint);
   drawStations(ctx, projectPoint);
   if (warp && state.outlineMinutes.length) drawOutline(ctx, warp, projectPoint);
+  if (outsideWarp && state.outlineMinutes.length) drawOutline(ctx, outsideWarp, projectPoint);
 
   let travelMinutes = null;
   if (warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
@@ -780,6 +891,7 @@ function drawMap() {
     const probeLines = probeIsSource
       ? ["Arrivée", nearestStationName(state.probePoint)]
       : [formatMinutes(travelMinutes), `vers ${nearestStationName(state.probePoint)}`];
+    probeLines.push(...stationModeLines(state.probePoint));
     const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42");
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
   }
@@ -791,11 +903,14 @@ function drawMap() {
     const originLines = originIsSource
       ? ["Départ", originName]
       : [formatMinutes(travelMinutes), originName];
-    const originLabel = drawLabelBubble(ctx, originScreen, originLines, "#c44b2b");
+    originLines.push(...stationModeLines(state.originPoint));
+    const probeScreen = state.probePoint ? projectPoint(state.probePoint) : null;
+    const nearProbe = probeScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 90;
+    const originLabel = drawLabelBubble(ctx, originScreen, originLines, "#c44b2b", nearProbe);
     state.pinHits.origin = { screen: originScreen, label: originLabel };
   }
 
-  state.currentRender = { warp, transform, focus };
+  state.currentRender = { warp, outsideWarp, transform, focus };
   legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
   syncStatus(warp, travelMinutes);
@@ -890,6 +1005,7 @@ function syncUrl() {
   if (!outline.length) params.set("outline", "0");
   else if (outline.join(",") !== defaultOutline) params.set("outline", outline.join(","));
   if (state.maxTransitTime !== DEFAULT_MAX_TIME_MINUTES) params.set("max", String(state.maxTransitTime));
+  if (state.includeProjects !== DEFAULT_INCLUDE_PROJECTS) params.set("projects", state.includeProjects ? "1" : "0");
   if (state.handMode) params.set("hand", "1");
   if (state.viewportCenter) {
     const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
@@ -922,6 +1038,8 @@ function restoreUrl() {
     maxTimeInput.value = String(max);
     maxTimeLabel.textContent = `Temps max. ${max} min`;
   }
+  state.includeProjects = params.get("projects") === "1" ? true : params.get("projects") === "0" ? false : DEFAULT_INCLUDE_PROJECTS;
+  projectsToggle.checked = state.includeProjects;
   if (origin) {
     setOrigin(origin, { pin: true, silent: true });
   } else {
@@ -1072,6 +1190,11 @@ document.getElementById("outlineOptions").addEventListener("change", () => {
   requestDraw();
   syncUrl();
 });
+projectsToggle.addEventListener("change", () => {
+  state.includeProjects = projectsToggle.checked;
+  requestDraw();
+  syncUrl();
+});
 maxTimeInput.addEventListener("input", (event) => {
   state.maxTransitTime = Number(event.target.value);
   maxTimeLabel.textContent = `Temps max. ${state.maxTransitTime} min`;
@@ -1127,8 +1250,8 @@ document.getElementById("locateButton").addEventListener("click", () => {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const world = lonLatToWorld(position.coords.longitude, position.coords.latitude);
-      if (!pointInLand(world)) {
-        statusText.textContent = "Votre position est hors de la carte.";
+      if (!nearestLandPoint(world)) {
+        statusText.textContent = "Votre position est hors du périmètre et des lignes affichées.";
         return;
       }
       setOrigin(world, { pin: true, label: "Ma position" });

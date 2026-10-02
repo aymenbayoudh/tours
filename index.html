@@ -19,7 +19,7 @@
   <body>
     <main class="page">
       <header class="hero">
-        <p class="eyebrow">TER et tram • Tours et SERM de Touraine</p>
+        <p class="eyebrow">TER, tram et BHNS • Tours et SERM de Touraine</p>
         <h1>C'est encore loin ?</h1>
         <p class="lede">
           Le départ est à la gare de Tours par défaut. Cliquez sur la carte pour poser un point d'arrivée.
@@ -28,7 +28,7 @@
         <p class="lede">
           Idée originale et visualisation : Anthony Castrio et son
           <a href="https://castrio.me/nyc/" target="_blank" rel="noopener noreferrer">cartogramme new-yorkais</a>.
-          Cette version l'applique à la Touraine, avec des courbes de 15, 30 et 60 minutes.
+          Cette version l'applique à la Touraine et aux lignes TER voisines, avec des courbes de 15, 30 et 60 minutes.
         </p>
       </header>
 
@@ -63,6 +63,7 @@
               <span id="maxTimeLabel">Temps max. 90 min</span>
               <input id="maxTimeInput" type="range" min="20" max="90" step="5" value="90" />
             </label>
+            <label class="toggle"><input id="projectsToggle" type="checkbox" checked /> Inclure tram B et BHNS C (projets 2028) dans les temps estimés</label>
           </div>
         </div>
 
@@ -85,7 +86,7 @@
             <p>Survolez pour générer la heatmap.</p>
             <p>Cliquez pour poser le départ, recliquez pour l'arrivée.</p>
             <p>Glissez n'importe quelle épingle : la carte se recalcule autour d'elle. Double-clic pour retirer.</p>
-            <p>Activez la main sous le zoom pour déplacer librement la carte et voir les lignes TER vers les autres villes.</p>
+            <p>Activez la main sous le zoom pour déplacer la carte. Désactivez-la pour choisir un départ ou une arrivée sur les lignes, même hors du SERM.</p>
           </aside>
           <div id="legend" class="legend" hidden>
             <span>0 min</span>
@@ -94,13 +95,14 @@
           </div>
         </div>
 
-        <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau joignable en 30 minutes.</p>
+        <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau sélectionné joignable en 30 minutes.</p>
       </section>
 
       <footer class="notes">
         <p>
           Temps indicatifs calculés à partir des lignes et gares SNCF, du tram A Fil Bleu et d'un accès à pied.
-          Les lignes TER directes proviennent du périmètre de référence fourni ; les temps ne reflètent pas les horaires ni les correspondances réelles. Les bus seront ajoutés plus tard.
+          Le tram B et le BHNS C sont des projets pour 2028 : leurs tracés sont visibles et ils sont inclus par défaut dans les estimations. Décochez-les dans Options pour voir les temps sans ces projets.
+          Les lignes TER proviennent de la carte de référence ; les temps ne reflètent pas les horaires ni les correspondances réelles. Les autres bus seront ajoutés plus tard.
         </p>
         <p>
           Sources :

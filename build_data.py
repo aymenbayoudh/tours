@@ -10,21 +10,30 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DATA = ROOT / "data" / "tours"
-REMI_KML = ROOT / "archive" / "kml-reference" / "Tours_REMI_trains_directs_septembre_2026.kml"
+NETWORK_KML = ROOT / "archive" / "kml-reference" / "Tours - Secteur 2 (export Google My Maps).kml"
 OUTPUT = ROOT / "site" / "data" / "commute_map_data.json"
 LAT0 = 47.4
 COS_LAT = math.cos(math.radians(LAT0))
 GRID_COLS = GRID_ROWS = 256
 WALK_METRES_PER_MINUTE = 80.0
-TER_METRES_PER_MINUTE = 1050.0
 TRAM_METRES_PER_MINUTE = 420.0
-COLOURS = ["#386b8d", "#467c73", "#76649a", "#9a6848", "#587396", "#7b7752", "#735f88", "#527a89", "#9a705c", "#5b7980", "#795f70", "#637c55", "#8a6e78", "#557299"]
+PROJECT_SPEED_KMH = {"TRAM B": 18.4, "BHNS C": 18.0}
+# Representative direct TER timetables from SNCF Connect, listed in README.md.
+# Adjacent routes on the same corridor share a calibrated commercial speed.
+TER_SPEED_KMH = {
+    "K1": 82, "K16": 82, "K39": 78, "K6+": 95,
+    "P1": 90, "P6": 82, "P7": 78, "P11": 70,
+    "P17": 78, "P21": 50, "P30": 78, "P31": 52,
+    "P33": 55, "P65": 90, "P166": 82,
+}
+COLOURS = ["#c13f34", "#2275a5", "#7a49a5", "#13816f", "#a96616", "#c34485", "#4759ba", "#698400", "#a14f31", "#007f96", "#935a9d", "#367245", "#bb6b00", "#5645a2", "#a93c5f", "#2d7f85", "#8b6b22", "#6a6bb0"]
 
 
 def xy(lon: float, lat: float) -> tuple[float, float]:
@@ -108,22 +117,47 @@ def station_on_path(point, path):
 
 
 def read_remi_routes():
-    root = ET.parse(REMI_KML).getroot()
+    root = ET.parse(NETWORK_KML).getroot()
     ns = {"k": "http://www.opengis.net/kml/2.2"}
-    routes = []
+    routes = {}
     for placemark in root.findall(".//k:Placemark", ns):
         lines = placemark.findall(".//k:LineString/k:coordinates", ns)
         if not lines:
             continue
         title = placemark.findtext("k:name", default="TER", namespaces=ns)
-        route_id = "TER " + title.split(" - ", 1)[0]
+        match = re.match(r"^([KP]\d+\+?) - ", title)
+        if not match and not title.startswith("Navette Tours"):
+            continue
+        route_id = "TER " + match.group(1) if match else "NAVETTE"
         paths = []
         for line in lines:
             if line.text:
                 points = [xy(*[float(n) for n in token.split(",")[:2]]) for token in line.text.split()]
                 paths.append(simplify(points, 170))
-        routes.append({"id": route_id, "title": title, "paths": paths})
-    return routes
+        if route_id not in routes:
+            routes[route_id] = {"id": route_id, "title": title.split(" — via ", 1)[0], "paths": []}
+        routes[route_id]["paths"].extend(paths)
+    return list(routes.values())
+
+
+def read_project_routes():
+    root = ET.parse(NETWORK_KML).getroot()
+    ns = {"k": "http://www.opengis.net/kml/2.2"}
+    projects = {"TRAM B": {"stops": []}, "BHNS C": {"stops": []}}
+    for placemark in root.findall(".//k:Placemark", ns):
+        title = placemark.findtext("k:name", default="", namespaces=ns)
+        route_id = "TRAM B" if title.startswith("Tram B (2028)") else "BHNS C" if title.startswith("BHNS (2028)") else None
+        if not route_id:
+            continue
+        line = placemark.find(".//k:LineString/k:coordinates", ns)
+        point = placemark.find(".//k:Point/k:coordinates", ns)
+        if line is not None and line.text:
+            projects[route_id]["title"] = title
+            projects[route_id]["path"] = simplify([xy(*[float(n) for n in token.split(",")[:2]]) for token in line.text.split()], 35)
+        elif point is not None and point.text:
+            lon, lat = [float(n) for n in point.text.strip().split(",")[:2]]
+            projects[route_id]["stops"].append((title.split(" - ", 1)[-1], xy(lon, lat)))
+    return projects
 
 
 def build_administration():
@@ -148,20 +182,24 @@ def build_administration():
 def build_stations_and_routes():
     stations = []
     for item in read_json("sncf_stations.json"):
-        stations.append({"id": "SNCF:" + item["uic"], "name": item["name"], "point": xy(*item["point"]), "mode": "TER", "routes": set()})
+        stations.append({"id": "SNCF:" + item["uic"], "name": item["name"], "point": xy(*item["point"]), "mode": "TER", "routes": set(), "planned": False})
     tram = read_json("filbleu_tram.json")
     tram_index = {}
     for stop_id, item in tram["stops"].items():
         tram_index[stop_id] = len(stations)
-        stations.append({"id": "FILBLEU:" + stop_id, "name": item["name"], "point": xy(*item["point"]), "mode": "TRAM", "routes": {"TRAM A"}})
-    route_waits = {"TRAM A": 4.0}
+        stations.append({"id": "FILBLEU:" + stop_id, "name": item["name"], "point": xy(*item["point"]), "mode": "TRAM", "routes": {"TRAM A"}, "planned": False})
+    route_waits = {"TRAM A": 4.0, "TRAM B": 4.0, "BHNS C": 3.25}
+    route_info = {"TRAM A": {"title": "Tramway A — Vaucanson ↔ Lycée Jean Monnet", "mode": "TRAM", "color": tram["route"]["color"], "planned": False}}
     edges = {}
     routes = []
     for i, item in enumerate(read_remi_routes()):
         route_id = item["id"]
-        route_waits[route_id] = 15.0
+        code = route_id.removeprefix("TER ")
+        route_waits[route_id] = 5.0 if route_id == "NAVETTE" else 15.0
         colour = COLOURS[i % len(COLOURS)]
+        route_info[route_id] = {"title": item["title"], "mode": "NAVETTE" if route_id == "NAVETTE" else "TER", "color": colour, "planned": False}
         for path in item["paths"]:
+            routes.append({"id": route_id, "title": item["title"], "color": colour, "mode": "TER", "points": [rounded(p) for p in path]})
             matches = []
             for index, station in enumerate(stations):
                 if station["mode"] != "TER":
@@ -172,20 +210,21 @@ def build_stations_and_routes():
                     station["routes"].add(route_id)
             matches.sort()
             for (pa, a), (pb, b) in zip(matches, matches[1:]):
-                if a == b or pb - pa > 65_000:
+                if a == b or pb - pa > 150_000:
                     continue
                 key = (min(a, b), max(a, b), route_id)
-                minutes = max(1.2, (pb - pa) / TER_METRES_PER_MINUTE + 0.8)
+                commercial_kmh = 60 if route_id == "NAVETTE" else TER_SPEED_KMH[code]
+                minutes = max(1.0, (pb - pa) / (commercial_kmh * 1000 / 60))
                 edges[key] = min(edges.get(key, float("inf")), minutes)
-        # The corridor names come from the supplied KML. The visible rail lines
-        # themselves are taken from SNCF Réseau below.
+    rail_base = []
     for feature in read_json("sncf_lines.json"):
         geometry = feature["geometry"]
         parts = geometry["coordinates"] if geometry["type"] == "MultiLineString" else [geometry["coordinates"]]
         for part in parts:
             points = simplify([xy(*p[:2]) for p in part], 170)
             if len(points) >= 2:
-                routes.append({"id": "RFN " + feature["code"], "color": "#526f84", "mode": "TER", "points": [rounded(p) for p in points]})
+                rail_base.append({"id": "RFN " + feature["code"], "color": "#9cabb7", "mode": "RFN", "points": [rounded(p) for p in points]})
+    routes = rail_base + routes
     for shape in tram["shapes"]:
         points = simplify([xy(*p) for p in shape["points"]], 35)
         routes.append({"id": "TRAM A", "color": tram["route"]["color"], "mode": "TRAM", "points": [rounded(p) for p in points]})
@@ -198,7 +237,24 @@ def build_stations_and_routes():
             key = (min(a, b), max(a, b), "TRAM A")
             minutes = max(0.65, math.dist(stations[a]["point"], stations[b]["point"]) / TRAM_METRES_PER_MINUTE + 0.25)
             edges[key] = min(edges.get(key, float("inf")), minutes)
-    return stations, routes, edges, route_waits
+    for route_id, project in read_project_routes().items():
+        mode = "TRAM" if route_id == "TRAM B" else "BHNS"
+        colour = "#1d91b6" if route_id == "TRAM B" else "#e18529"
+        route_info[route_id] = {"title": project["title"], "mode": mode, "color": colour, "planned": True}
+        path = project["path"]
+        routes.append({"id": route_id, "title": project["title"], "color": colour, "mode": mode, "planned": True, "points": [rounded(p) for p in path]})
+        matches = []
+        for number, (name, point) in enumerate(project["stops"]):
+            index = len(stations)
+            stations.append({"id": f"PROJECT:{route_id}:{number}", "name": name, "point": point, "mode": mode, "routes": {route_id}, "planned": True})
+            _, progress = station_on_path(point, path)
+            matches.append((progress, index))
+        matches.sort()
+        speed = PROJECT_SPEED_KMH[route_id] * 1000 / 60
+        for (pa, a), (pb, b) in zip(matches, matches[1:]):
+            key = (min(a, b), max(a, b), route_id)
+            edges[key] = max(0.5, (pb - pa) / speed)
+    return stations, routes, edges, route_waits, route_info
 
 
 def build_graph(stations, edges, route_waits):
@@ -251,7 +307,7 @@ def build_grid(epci, stations, bounds):
 
 def main():
     epci, bounds, boroughs, communes = build_administration()
-    stations, routes, edges, route_waits = build_stations_and_routes()
+    stations, routes, edges, route_waits, route_info = build_stations_and_routes()
     route_states, station_states, adjacency = build_graph(stations, edges, route_waits)
     cells, mask = build_grid(epci, stations, bounds)
     visible_points = [p for route in routes for p in route["points"]] + [rounded(s["point"]) for s in stations]
@@ -259,7 +315,8 @@ def main():
     output = {
         "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "originStationCount": 5, "cellNearestStations": 4, "defaultBoardWait": 15.0},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
-        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "routes": sorted(s["routes"]), "mode": s["mode"]} for s in stations],
+        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"]} for s in stations],
+        "routeInfo": route_info,
         "routeStates": route_states, "stationStates": station_states, "routeWaits": route_waits, "adjacency": adjacency, "cells": cells, "mask": mask,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
