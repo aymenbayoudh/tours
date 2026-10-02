@@ -2,6 +2,8 @@
 
 Carte interactive des trajets estimés en TER, tram et BHNS. Elle s'ouvre sur les 14 EPCI du SERM de Touraine. Le bouton **main**, sous le zoom, permet de déplacer librement la carte et de placer le départ sur les lignes jusqu'à Paris, Caen et les autres destinations affichées. Les isochrones se calculent aussi hors du périmètre SERM lorsque le départ ou la vue s'y trouve.
 
+Les courbes restent centrées sur le **départ** quand une arrivée est ajoutée. Les épingles montrent la commune en titre et la gare ou l'arrêt le plus proche avec sa ligne en petit. Les limites des 425 communes IGN du SERM sont visibles ; leurs noms apparaissent au zoom rapproché. Les gares des lignes TER au-delà du SERM sont étiquetées, avec un nom plus grand pour les terminus. Pour un point hors des communes IGN chargées, le nom du lieu est déduit de la gare la plus proche.
+
 Le **tram B et le BHNS C**, prévus pour 2028, sont inclus par défaut dans les temps estimés. L'option « Inclure tram B et BHNS C » permet de les exclure et recalcule les trajets. Les autres bus seront ajoutés ultérieurement.
 
 ## Lancer le site
@@ -20,7 +22,7 @@ python3 scripts/sync_root_page.py
 ## Données
 
 - **Limites administratives** : [IGN Admin Express COG CARTO PE, édition 2026](https://geoservices.ign.fr/adminexpress), couches `commune` et `epci` du WFS `ADMINEXPRESS-COG-CARTO-PE.2026`. Les 14 EPCI du KML de référence représentent 425 communes dans cette édition.
-- **Tracés TER, gares et correspondances** : les formes de base et les points de gares viennent de [SNCF Réseau](https://data.sncf.com/explore/dataset/formes-des-lignes-du-rfn/) et de sa [liste des gares](https://data.sncf.com/explore/dataset/liste-des-gares/). Les 15 lignes TER colorées, leurs branches et la navette Tours–Saint-Pierre-des-Corps suivent l'[export KML de la carte Google My Maps fournie](https://www.google.com/maps/d/viewer?mid=1ws2mYKFUnvG7nW2U_bYkL8RS0R7bEps). Les tracés colorés reprennent donc cette carte de référence ; le réseau ferré SNCF apparaît en fond gris.
+- **Tracés TER, gares et correspondances** : les formes de base et les points de gares viennent de [SNCF Réseau](https://data.sncf.com/explore/dataset/formes-des-lignes-du-rfn/) et de sa [liste des gares](https://data.sncf.com/explore/dataset/liste-des-gares/). Les 15 lignes TER colorées, leurs branches et la navette Tours–Saint-Pierre-des-Corps suivent l'[export KML de la carte Google My Maps fournie](https://www.google.com/maps/d/viewer?mid=1ws2mYKFUnvG7nW2U_bYkL8RS0R7bEps). Une halte présente dans ce KML, Fondettes–Saint-Cyr-sur-Loire, est ajoutée séparément car absente de l'extrait SNCF utilisé. Les tracés colorés reprennent la carte de référence ; le réseau ferré SNCF apparaît en fond gris.
 - **Tram A et arrêts** : [GTFS Fil Bleu / Syndicat des Mobilités de Touraine](https://data.tours-metropole.fr/explore/dataset/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/), export du 30 septembre 2026, avec `shapes.txt`, `stops.txt`, `trips.txt` et `stop_times.txt`.
 - **Tram B et BHNS C** : tracés et arrêts de l'export KML de la carte fournie. Leurs vitesses commerciales retenues sont [18,4 km/h pour le tram B](https://lignes2tram.fr/les-nouvelles-lignes/) et [18 km/h pour le BHNS C](https://lignes2tram.fr/wp-content/uploads/2025/06/L2T_Depliant-BHNS_WEB.pdf), d'après les documents du projet Lignes2tram.
 

@@ -83,9 +83,10 @@
             </div>
           </div>
           <aside id="helpPanel" class="help-panel" hidden>
-            <p>Survolez pour générer la heatmap.</p>
+            <p>Survolez la carte pour voir un temps de trajet ; les couleurs montrent les temps depuis le départ.</p>
             <p>Cliquez pour poser le départ, recliquez pour l'arrivée.</p>
-            <p>Glissez n'importe quelle épingle : la carte se recalcule autour d'elle. Double-clic pour retirer.</p>
+            <p>Glissez les épingles : le trajet se recalcule, et les courbes restent centrées sur le départ. Double-clic pour retirer.</p>
+            <p>La commune figure en titre et la gare ou l'arrêt le plus proche en petit. Les noms des communes du SERM apparaissent en zoomant.</p>
             <p>Activez la main sous le zoom pour déplacer la carte. Désactivez-la pour choisir un départ ou une arrivée sur les lignes, même hors du SERM.</p>
           </aside>
           <div id="legend" class="legend" hidden>
@@ -102,7 +103,7 @@
         <p>
           Temps indicatifs calculés à partir des lignes et gares SNCF, du tram A Fil Bleu et d'un accès à pied.
           Le tram B et le BHNS C sont des projets pour 2028 : leurs tracés sont visibles et ils sont inclus par défaut dans les estimations. Décochez-les dans Options pour voir les temps sans ces projets.
-          Les lignes TER proviennent de la carte de référence ; les temps ne reflètent pas les horaires ni les correspondances réelles. Les autres bus seront ajoutés plus tard.
+          Les lignes TER proviennent de la carte de référence ; les temps ne reflètent pas les horaires ni les correspondances réelles. Hors des communes IGN chargées pour le SERM, le nom du lieu est déduit de la gare la plus proche. Les autres bus seront ajoutés plus tard.
         </p>
         <p>
           Sources :
@@ -114,6 +115,6 @@
         </p>
       </footer>
     </main>
-    <script type="module" src="./app.js?v=2026-10-02b"></script>
+    <script type="module" src="./app.js?v=2026-10-02c"></script>
   </body>
 </html>

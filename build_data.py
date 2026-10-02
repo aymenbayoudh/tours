@@ -91,6 +91,22 @@ def bounds_for(features, pad: float = 1500.0):
     return [min(p[0] for p in points) - pad, min(p[1] for p in points) - pad, max(p[0] for p in points) + pad, max(p[1] for p in points) + pad]
 
 
+def label_point(polygon):
+    """Find a point inside a commune for its name, including concave shapes."""
+    outer = polygon[0]
+    min_x, max_x = min(p[0] for p in outer), max(p[0] for p in outer)
+    min_y, max_y = min(p[1] for p in outer), max(p[1] for p in outer)
+    center = ((min_x + max_x) / 2, (min_y + max_y) / 2)
+    if point_in_ring(center, outer) and not any(point_in_ring(center, hole) for hole in polygon[1:]):
+        return center
+    for divisions in (5, 11, 21):
+        choices = [((min_x + (col + 0.5) * (max_x - min_x) / divisions), (min_y + (row + 0.5) * (max_y - min_y) / divisions)) for row in range(divisions) for col in range(divisions)]
+        valid = [p for p in choices if point_in_ring(p, outer) and not any(point_in_ring(p, hole) for hole in polygon[1:])]
+        if valid:
+            return min(valid, key=lambda p: math.dist(p, center))
+    return outer[0]
+
+
 def segment_distance(point, a, b):
     dx, dy = b[0] - a[0], b[1] - a[1]
     size = dx * dx + dy * dy
@@ -160,6 +176,21 @@ def read_project_routes():
     return projects
 
 
+def read_kml_rail_stops():
+    root = ET.parse(NETWORK_KML).getroot()
+    ns = {"k": "http://www.opengis.net/kml/2.2"}
+    stops = []
+    for placemark in root.findall(".//k:Placemark", ns):
+        point = placemark.find(".//k:Point/k:coordinates", ns)
+        description = placemark.findtext("k:description", default="", namespaces=ns)
+        if point is None or not point.text or not re.search(r"\b[KP]\d+\+?\s*-", description):
+            continue
+        title = placemark.findtext("k:name", default="", namespaces=ns)
+        lon, lat = [float(n) for n in point.text.strip().split(",")[:2]]
+        stops.append((title, xy(lon, lat)))
+    return stops
+
+
 def build_administration():
     features = read_json("admin_2026.geojson")["features"]
     epci, communes = [], []
@@ -175,14 +206,27 @@ def build_administration():
         clean = [[simplify(ring, 120, closed=True) for ring in polygon] for polygon in item["raw"]]
         largest = max((polygon[0] for polygon in clean), key=lambda ring: abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(ring, ring[1:]))))
         boroughs.append({"name": item["name"], "code": item["code"], "polygons": [[[rounded(p) for p in ring] for ring in polygon] for polygon in clean], "outline": [[rounded(p) for p in polygon[0]] for polygon in clean], "label": rounded((sum(p[0] for p in largest) / len(largest), sum(p[1] for p in largest) / len(largest)))})
-    commune_outlines = [[rounded(p) for p in simplify(polygon[0], 95, closed=True)] for item in communes for polygon in item["raw"]]
-    return epci, bounds, boroughs, commune_outlines
+    commune_features = []
+    for item in communes:
+        largest = max(item["raw"], key=lambda polygon: abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(polygon[0], polygon[0][1:]))))
+        points = [p for polygon in item["raw"] for p in polygon[0]]
+        commune_features.append({
+            "name": item["name"], "code": item["code"],
+            "bbox": rounded((min(p[0] for p in points), min(p[1] for p in points))) + rounded((max(p[0] for p in points), max(p[1] for p in points))),
+            "label": rounded(label_point(largest)),
+            "polygons": [[[rounded(p) for p in simplify(ring, 75, closed=True)] for ring in polygon] for polygon in item["raw"]],
+        })
+    return epci, bounds, boroughs, commune_features
 
 
 def build_stations_and_routes():
     stations = []
     for item in read_json("sncf_stations.json"):
-        stations.append({"id": "SNCF:" + item["uic"], "name": item["name"], "point": xy(*item["point"]), "mode": "TER", "routes": set(), "planned": False})
+        stations.append({"id": "SNCF:" + item["uic"], "name": item["name"], "point": xy(*item["point"]), "mode": "TER", "routes": set(), "planned": False, "terminal": False})
+    for name, point in read_kml_rail_stops():
+        if any(math.dist(point, station["point"]) <= 300 for station in stations):
+            continue
+        stations.append({"id": "KML:" + name, "name": name, "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     tram = read_json("filbleu_tram.json")
     tram_index = {}
     for stop_id, item in tram["stops"].items():
@@ -209,6 +253,9 @@ def build_stations_and_routes():
                     matches.append((progress, index))
                     station["routes"].add(route_id)
             matches.sort()
+            if matches:
+                stations[matches[0][1]]["terminal"] = True
+                stations[matches[-1][1]]["terminal"] = True
             for (pa, a), (pb, b) in zip(matches, matches[1:]):
                 if a == b or pb - pa > 150_000:
                     continue
@@ -315,7 +362,7 @@ def main():
     output = {
         "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "originStationCount": 5, "cellNearestStations": 4, "defaultBoardWait": 15.0},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
-        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"]} for s in stations],
+        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "inSerm": point_in_polygons(s["point"], epci)} for s in stations],
         "routeInfo": route_info,
         "routeStates": route_states, "stationStates": station_states, "routeWaits": route_waits, "adjacency": adjacency, "cells": cells, "mask": mask,
     }

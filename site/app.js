@@ -1,4 +1,4 @@
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-02b", import.meta.url).toString();
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-02c", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 12;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -42,7 +42,6 @@ const state = {
   pinned: false,
   probePoint: null,
   probePinned: false,
-  heatmapFrom: "origin",
   currentRender: null,
   dragTarget: null,
   dragPointerId: null,
@@ -145,6 +144,16 @@ function pointInPolygon(point, polygon) {
 
 function pointInLand(point) {
   return state.data.boroughs.some((borough) => borough.polygons.some((polygon) => pointInPolygon(point, polygon)));
+}
+
+function communeAt(point) {
+  if (!point) return null;
+  for (const commune of state.data.communes || []) {
+    const [minX, minY, maxX, maxY] = commune.bbox;
+    if (point[0] < minX || point[0] > maxX || point[1] < minY || point[1] > maxY) continue;
+    if (commune.polygons.some((polygon) => pointInPolygon(point, polygon))) return commune.name;
+  }
+  return null;
 }
 
 function worldToLonLat(point) {
@@ -432,11 +441,15 @@ function drawRoutes(drawCtx, projectPoint) {
 }
 
 function drawDepartmentLimits(drawCtx, projectPoint) {
-  drawCtx.strokeStyle = "rgba(77,101,128,0.22)";
-  drawCtx.lineWidth = 0.55;
-  for (const ring of state.data.communes || []) {
-    if (ring.length < 2) continue;
-    drawPolyline(drawCtx, ring, projectPoint);
+  drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(62,84,108,0.48)" : "rgba(77,101,128,0.26)";
+  drawCtx.lineWidth = state.viewportScale >= 2 ? 0.9 : 0.55;
+  for (const commune of state.data.communes || []) {
+    for (const polygon of commune.polygons) {
+      for (const ring of polygon) {
+        if (ring.length < 2) continue;
+        drawPolyline(drawCtx, ring, projectPoint);
+      }
+    }
   }
   drawCtx.lineJoin = "round";
   drawCtx.lineCap = "round";
@@ -455,8 +468,37 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
   }
 }
 
+function drawCommuneLabels(drawCtx, projectPoint) {
+  if (state.viewportScale < 2.4) return;
+  const occupied = [];
+  const width = mapCanvas.clientWidth;
+  const height = mapCanvas.clientHeight;
+  for (const commune of state.data.communes || []) {
+    if (state.data.stations.some((station) => station.mode === "TER" && station.name === commune.name && station.terminal && distance(station.point, commune.label) < 3500)) continue;
+    const [minX, minY, maxX, maxY] = commune.bbox;
+    const [left, bottom] = projectPoint([minX, minY]);
+    const [right, top] = projectPoint([maxX, maxY]);
+    if (right - left < 75 || bottom - top < 25) continue;
+    const [x, y] = projectPoint(commune.label);
+    if (x < 20 || y < 14 || x > width - 20 || y > height - 14) continue;
+    drawCtx.font = "600 11px Outfit, sans-serif";
+    const textWidth = drawCtx.measureText(commune.name).width;
+    const box = [x - textWidth / 2 - 5, y - 10, x + textWidth / 2 + 5, y + 5];
+    if (occupied.some(([a, b, c, d]) => box[0] < c && box[2] > a && box[1] < d && box[3] > b)) continue;
+    occupied.push(box);
+    drawCtx.textAlign = "center";
+    drawCtx.lineWidth = 3;
+    drawCtx.strokeStyle = "rgba(255,252,247,0.92)";
+    drawCtx.strokeText(commune.name, x, y);
+    drawCtx.fillStyle = "#445e73";
+    drawCtx.fillText(commune.name, x, y);
+  }
+  drawCtx.textAlign = "left";
+}
+
 function drawStations(drawCtx, projectPoint) {
   const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
+  const labels = [];
   for (const station of state.data.stations) {
     const [x, y] = projectPoint(station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
@@ -467,15 +509,31 @@ function drawStations(drawCtx, projectPoint) {
     drawCtx.lineWidth = 0.55;
     drawCtx.strokeStyle = station.mode === "TRAM" ? (station.planned ? "#1d91b6" : "#bd074e") : station.mode === "BHNS" ? "#e18529" : "#345c77";
     drawCtx.stroke();
-    if (station.mode === "TER" && major.test(station.name) && state.viewportScale >= 0.55) {
-      drawCtx.font = "600 11px Outfit, sans-serif";
-      drawCtx.textAlign = "left";
-      drawCtx.lineWidth = 3;
-      drawCtx.strokeStyle = "#fff";
-      drawCtx.strokeText(station.name, x + 5, y - 5);
-      drawCtx.fillStyle = "#29445f";
-      drawCtx.fillText(station.name, x + 5, y - 5);
-    }
+    if (station.mode !== "TER") continue;
+    const terminal = station.terminal || major.test(station.name);
+    const show = terminal ? state.viewportScale >= 0.55 : !station.inSerm && state.viewportScale >= 0.8;
+    if (show) labels.push({ station, x, y, terminal });
+  }
+  const occupied = [];
+  labels.sort((a, b) => Number(b.terminal) - Number(a.terminal) || a.station.name.localeCompare(b.station.name, "fr"));
+  for (const { station, x, y, terminal } of labels) {
+    const fontSize = terminal ? 12 : 10;
+    drawCtx.font = `${terminal ? 700 : 500} ${fontSize}px Outfit, sans-serif`;
+    const textWidth = drawCtx.measureText(station.name).width;
+    const candidates = [[x + 6, y - 5], [x - textWidth - 6, y - 5], [x + 6, y + 13], [x - textWidth - 6, y + 13]];
+    const place = candidates.find(([tx, ty]) => {
+      const box = [tx - 3, ty - fontSize - 3, tx + textWidth + 3, ty + 3];
+      return box[0] >= 3 && box[2] <= mapCanvas.clientWidth - 3 && box[1] >= 3 && box[3] <= mapCanvas.clientHeight - 3 && !occupied.some(([a, b, c, d]) => box[0] < c && box[2] > a && box[1] < d && box[3] > b);
+    });
+    if (!place) continue;
+    const [tx, ty] = place;
+    occupied.push([tx - 3, ty - fontSize - 3, tx + textWidth + 3, ty + 3]);
+    drawCtx.textAlign = "left";
+    drawCtx.lineWidth = terminal ? 3.8 : 3;
+    drawCtx.strokeStyle = "rgba(255,255,255,0.96)";
+    drawCtx.strokeText(station.name, tx, ty);
+    drawCtx.fillStyle = terminal ? "#1d3951" : "#36536a";
+    drawCtx.fillText(station.name, tx, ty);
   }
 }
 
@@ -735,51 +793,43 @@ function drawLabelBubble(drawCtx, screen, lines, color, below = false) {
   return { x, y, width, height };
 }
 
-function nearestStationName(point) {
-  return nearestStations(point, 1)[0]?.name || "Tours";
+function placeName(point) {
+  const commune = communeAt(point);
+  if (commune) return commune;
+  const station = nearestStations(point, 1)[0];
+  if (!station) return "Lieu inconnu";
+  const outsideNames = { "Paris-Austerlitz": "Paris", "Blois-Chambord": "Blois", "Les Aubrais-Orléans": "Fleury-les-Aubrais" };
+  return outsideNames[station.name] || station.name;
 }
 
 function stationModeLines(point) {
-  const nearby = nearestStations(point, 8);
-  if (!nearby.length || distance(point, state.data.stations[nearby[0].index].point) > 600) return [];
-  const routeIds = new Set();
-  for (const item of nearby) {
-    const station = state.data.stations[item.index];
-    if (distance(point, station.point) > 180) continue;
-    for (const routeId of station.routes) routeIds.add(routeId);
-  }
-  const ordered = [...routeIds].sort();
-  const descriptions = ordered.map((routeId) => {
-    if (routeId === "TRAM A") return "Tramway A";
-    if (routeId === "TRAM B") return "Tramway B · projet 2028";
-    if (routeId === "BHNS C") return "BHNS C · projet 2028";
-    if (routeId === "NAVETTE") return "Navette Tours ↔ Saint-Pierre-des-Corps";
+  const nearest = nearestStations(point, 1)[0];
+  if (!nearest) return [];
+  const station = state.data.stations[nearest.index];
+  const kind = station.id.startsWith("KML:") ? "Halte" : station.mode === "TER" ? "Gare" : "Arrêt";
+  const lines = [{ text: `${kind} ${station.name}`, small: true }];
+  const ordered = [...station.routes].sort((a, b) => Number(b.startsWith("TER ")) - Number(a.startsWith("TER ")) || a.localeCompare(b, "fr"));
+  if (!ordered.length) return lines;
+  const routeId = ordered[0];
+  if (routeId === "TRAM A") lines.push({ text: "Tramway A", small: true });
+  else if (routeId === "TRAM B") lines.push({ text: "Tramway B · projet 2028", small: true });
+  else if (routeId === "BHNS C") lines.push({ text: "BHNS C · projet 2028", small: true });
+  else if (routeId === "NAVETTE") lines.push({ text: "Navette Tours ↔ Saint-Pierre-des-Corps", small: true });
+  else {
     const title = state.data.routeInfo?.[routeId]?.title || "";
-    return `${routeId} · ${title.split(" - ", 2)[1] || title}`;
-  });
-  if (descriptions.length <= 2) return descriptions.map((text) => ({ text, small: true }));
-  const modes = [];
-  if (ordered.some((id) => id.startsWith("TER "))) modes.push("TER");
-  if (ordered.includes("NAVETTE")) modes.push("Navette");
-  if (ordered.includes("TRAM A")) modes.push("Tramway A");
-  if (ordered.includes("TRAM B")) modes.push("Tramway B (2028)");
-  if (ordered.includes("BHNS C")) modes.push("BHNS C (2028)");
-  const mainRoute = ordered.find((id) => id.startsWith("TER ")) || ordered[0];
-  const lines = [{ text: modes.join(" · "), small: true }, { text: descriptions[ordered.indexOf(mainRoute)], small: true }];
-  lines.push({ text: `+ ${descriptions.length - 1} autres lignes`, small: true });
+    const endpoints = title.includes(" - ") ? title.slice(title.indexOf(" - ") + 3) : title;
+    lines.push({ text: `${routeId} · ${endpoints}`, small: true });
+  }
+  if (ordered.length > 1) lines.push({ text: `+ ${ordered.length - 1} autre${ordered.length > 2 ? "s" : ""} ligne${ordered.length > 2 ? "s" : ""}`, small: true });
   return lines;
 }
 
 function heatmapSourcePoint() {
-  if (state.heatmapFrom === "probe" && state.probePoint) return state.probePoint;
   return state.originPoint;
 }
 
 function heatmapOtherPoint() {
-  const source = heatmapSourcePoint();
-  if (!source) return null;
-  if (source === state.probePoint) return state.originPoint;
-  return state.probePoint;
+  return state.originPoint ? state.probePoint : null;
 }
 
 function syncStatus(warp, travelMinutes) {
@@ -789,10 +839,10 @@ function syncStatus(warp, travelMinutes) {
     reachText.textContent = "Choisissez un point pour voir la part du réseau joignable en 30 minutes.";
     return;
   }
-  const sourceName = state.heatmapFrom === "origin" && state.originLabel ? state.originLabel : nearestStationName(source);
+  const sourceName = placeName(source);
   const other = heatmapOtherPoint();
   if (Number.isFinite(travelMinutes) && other) {
-    statusText.textContent = `${formatMinutes(travelMinutes)} entre ${sourceName} et ${nearestStationName(other)}`;
+    statusText.textContent = `${formatMinutes(travelMinutes)} entre ${sourceName} et ${placeName(other)}`;
   } else {
     const prefix = state.pinned ? "Carte depuis" : "Près de";
     statusText.textContent = `${prefix} ${sourceName}`;
@@ -876,6 +926,7 @@ function drawMap() {
   if (outsideWarp) drawHeatmap(ctx, outsideWarp, projectPoint);
   drawDepartmentLimits(ctx, projectPoint);
   drawRoutes(ctx, projectPoint);
+  drawCommuneLabels(ctx, projectPoint);
   drawStations(ctx, projectPoint);
   if (warp && state.outlineMinutes.length) drawOutline(ctx, warp, projectPoint);
   if (outsideWarp && state.outlineMinutes.length) drawOutline(ctx, outsideWarp, projectPoint);
@@ -885,28 +936,25 @@ function drawMap() {
   state.pinHits = { origin: null, probe: null };
 
   if (state.probePoint) {
-    const probeIsSource = state.heatmapFrom === "probe";
     const probeScreen = projectPoint(state.probePoint);
-    drawMarker(ctx, probeScreen, "#1c2f42", probeIsSource || state.dragTarget === "probe" ? 7 : 5);
-    const probeLines = probeIsSource
-      ? ["Arrivée", nearestStationName(state.probePoint)]
-      : [formatMinutes(travelMinutes), `vers ${nearestStationName(state.probePoint)}`];
+    const originScreen = state.originPoint ? projectPoint(state.originPoint) : null;
+    const nearOrigin = originScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 130;
+    drawMarker(ctx, probeScreen, "#1c2f42", state.dragTarget === "probe" ? 7 : 5);
+    const probeLines = ["Arrivée", placeName(state.probePoint)];
+    if (Number.isFinite(travelMinutes)) probeLines.unshift(formatMinutes(travelMinutes));
     probeLines.push(...stationModeLines(state.probePoint));
-    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42");
+    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1]);
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
   }
   if (state.originPoint) {
-    const originIsSource = state.heatmapFrom !== "probe" || !state.probePoint;
     const originScreen = projectPoint(state.originPoint);
     drawMarker(ctx, originScreen, "#c44b2b", state.pinned || state.dragTarget === "origin" ? 7 : 6);
-    const originName = state.originLabel || nearestStationName(state.originPoint);
-    const originLines = originIsSource
-      ? ["Départ", originName]
-      : [formatMinutes(travelMinutes), originName];
+    const originName = placeName(state.originPoint);
+    const originLines = ["Départ", originName];
     originLines.push(...stationModeLines(state.originPoint));
     const probeScreen = state.probePoint ? projectPoint(state.probePoint) : null;
-    const nearProbe = probeScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 90;
-    const originLabel = drawLabelBubble(ctx, originScreen, originLines, "#c44b2b", nearProbe);
+    const nearProbe = probeScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 130;
+    const originLabel = drawLabelBubble(ctx, originScreen, originLines, "#c44b2b", nearProbe && originScreen[1] >= probeScreen[1]);
     state.pinHits.origin = { screen: originScreen, label: originLabel };
   }
 
@@ -1118,7 +1166,6 @@ mapCanvas.addEventListener("pointerdown", (event) => {
   state.dragPointerId = event.pointerId;
   state.dragMoved = false;
   state.dragStartScreen = screen;
-  state.heatmapFrom = target;
   mapCanvas.setPointerCapture(event.pointerId);
   if (hit) {
     requestDraw();
@@ -1140,7 +1187,6 @@ mapCanvas.addEventListener("dblclick", (event) => {
   if (hit === "probe") {
     state.probePoint = null;
     state.probePinned = false;
-    state.heatmapFrom = "origin";
     requestDraw();
     syncUrl();
   } else if (hit === "origin") {
@@ -1149,7 +1195,6 @@ mapCanvas.addEventListener("dblclick", (event) => {
     state.pinned = false;
     state.probePoint = null;
     state.probePinned = false;
-    state.heatmapFrom = "origin";
     requestDraw();
     syncUrl();
   }
