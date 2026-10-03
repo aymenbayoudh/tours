@@ -363,10 +363,6 @@ def build_stations_and_routes():
         for (pa, a), (pb, b) in zip(matches, matches[1:]):
             key = (min(a, b), max(a, b), route_id)
             edges[key] = max(0.5, (pb - pa) / speed)
-    for route_id, estimate in read_json("timetables.json").get("waitEstimates", {}).items():
-        if route_id in route_info:
-            route_info[route_id].update(estimate)
-            route_waits[route_id] = estimate["waitMinutes"]
     return stations, routes, edges, route_waits, route_info
 
 

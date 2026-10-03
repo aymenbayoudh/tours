@@ -1,5 +1,5 @@
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-03g";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03g", import.meta.url).toString();
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03f";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03f", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -17,7 +17,6 @@ const DEFAULT_ISOCHRONE_STOPS = Object.freeze([
   { t: 1, color: "#ffe2a1", alpha: 0 },
 ]);
 const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
-  showBusLabels: true,
   terWidth: ROUTE_LINE_WIDTH,
   tramWidth: 4.2,
   bhnsWidth: 3.4,
@@ -33,9 +32,6 @@ const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   backgroundColor: "#efe6d6",
 });
 const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
-  navetteWaitFactor: 1,
-  terWaitFactor: 1,
-  tramWaitFactor: 1,
   terWait: 15,
   tramWait: 4,
   bhnsWait: 3.25,
@@ -61,11 +57,8 @@ const DEFAULT_ORIGIN = {
   label: "Gare de Tours",
 };
 const SHARE_DECIMALS = 5;
-const SHARE_CALC_VERSION = "2";
+const SHARE_CALC_VERSION = "1";
 const TRAVEL_QUERY_PARAMS = Object.freeze({
-  navetteWaitFactor: "navfactor",
-  terWaitFactor: "terfactor",
-  tramWaitFactor: "tramfactor",
   terWait: "terw",
   tramWait: "tramw",
   bhnsWait: "bhnsw",
@@ -115,7 +108,6 @@ function normalizeDisplaySettings(value) {
     };
   });
   return {
-    showBusLabels: source.showBusLabels !== false,
     terWidth: numeric("terWidth", 0.5, 10),
     tramWidth: numeric("tramWidth", 0.5, 10),
     bhnsWidth: numeric("bhnsWidth", 0.5, 10),
@@ -152,20 +144,11 @@ function normalizeTravelSettings(value) {
     const number = Number(source[key]);
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_TRAVEL_SETTINGS[key];
   };
-  const factor = (key, legacy, base) => {
-    if (source[key] === undefined && Number.isFinite(Number(source[legacy]))) {
-      return Math.max(0, Math.min(3, Number(source[legacy]) / base));
-    }
-    return numeric(key, 0, 3);
-  };
   return {
-    navetteWaitFactor: factor("navetteWaitFactor", "navetteWait", 5),
-    terWaitFactor: factor("terWaitFactor", "terWait", 15),
-    tramWaitFactor: factor("tramWaitFactor", "tramWait", 4),
-    terWait: 15,
-    tramWait: 4,
+    terWait: numeric("terWait", 0, 60),
+    tramWait: numeric("tramWait", 0, 30),
     bhnsWait: numeric("bhnsWait", 0, 30),
-    navetteWait: 5,
+    navetteWait: numeric("navetteWait", 0, 30),
     busWaitFactor: numeric("busWaitFactor", 0, 3),
     stationEntryPenalty: numeric("stationEntryPenalty", 0, 20),
     stationExitPenalty: numeric("stationExitPenalty", 0, 20),
@@ -321,7 +304,6 @@ function setColorControl(key, value) {
 }
 
 function syncDisplaySettingsControls() {
-  displaySettingsPanel.querySelectorAll("[data-display-toggle]").forEach(input => { input.checked = displaySettings[input.dataset.displayToggle]; });
   displaySettingsPanel.querySelectorAll("[data-display-number]").forEach((input) => {
     const key = input.dataset.displayNumber;
     input.value = String(displaySettings[key]);
@@ -715,12 +697,6 @@ function applyTravelNumber(input) {
 
 displaySettingsPanel.addEventListener("input", (event) => {
   const target = event.target;
-  if (target.matches("[data-display-toggle]")) {
-    displaySettings[target.dataset.displayToggle] = target.checked;
-    saveDisplaySettings();
-    invalidateVisualSettings();
-    return;
-  }
   if (target.matches("[data-display-number]")) {
     applyDisplayNumber(target);
     return;
@@ -1372,7 +1348,7 @@ function drawStations(drawCtx, projectPoint, warp) {
     drawCtx.strokeStyle = station.mode === "TRAM" ? (station.planned ? "#1d91b6" : "#bd074e") : station.mode === "BHNS" ? "#e18529" : station.mode === "BUS" ? "#4b677d" : "#345c77";
     drawCtx.stroke();
     if (station.mode === "BUS") {
-      if (displaySettings.showBusLabels && state.viewportScale >= 6) labels.push({ station, x, y, terminal: false });
+      if (state.viewportScale >= 6) labels.push({ station, x, y, terminal: false });
       continue;
     }
     if (station.mode !== "TER") continue;
@@ -1610,21 +1586,17 @@ function stationModeLines(point) {
     const wait = Number(info.waitMinutes) * travelSettings.busWaitFactor;
     lines.push({ text: info.title || routeId, small: true });
     if (info.calculationAvailable === false) lines.push({ text: "Sur réservation · hors calcul", small: true });
-    else if (Number.isFinite(wait) && wait > 0) lines.push({ text: `Attente de cette ligne : ${wait % 1 ? wait.toFixed(1) : wait} min`, small: true });
+    else if (Number.isFinite(wait)) lines.push({ text: `Attente de cette ligne : ${wait % 1 ? wait.toFixed(1) : wait} min`, small: true });
   } else {
     const title = state.data.routeInfo?.[routeId]?.title || "";
     const endpoints = title.includes(" - ") ? title.slice(title.indexOf(" - ") + 3) : title;
     lines.push({ text: `${routeId} · ${endpoints}`, small: true });
   }
-  if (!routeId.startsWith("BUS ")) {
-    const wait = routeWaitingMinutes(state.data, routeId, travelSettings);
-    if (wait > 0) lines.push({ text: `Attente de cette ligne : ${Number(wait.toFixed(1))} min`, small: true });
-  }
   if (ordered.length > 1) {
     const others = ordered.slice(1, 3).map(id => {
       const info = state.data.routeInfo?.[id];
       if (info?.calculationAvailable === false) return `${id} · réservation, hors calcul`;
-      if (info?.mode === "BUS" && travelSettings.busWaitFactor > 0) return `${id} · attente ${(info.waitMinutes * travelSettings.busWaitFactor).toFixed(1)} min`;
+      if (info?.mode === "BUS") return `${id} · attente ${(info.waitMinutes * travelSettings.busWaitFactor).toFixed(1)} min`;
       return id;
     });
     lines.push({ text: others.join(" ; "), small: true });
@@ -1938,9 +1910,6 @@ function restoreUrl() {
     const restored = { ...DEFAULT_TRAVEL_SETTINGS };
     for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) {
       if (params.has(param)) restored[key] = Number(params.get(param));
-    }
-    for (const [stem, base, param] of [["ter",15,"terw"],["tram",4,"tramw"],["navette",5,"navw"]]) {
-      if (!params.has(TRAVEL_QUERY_PARAMS[stem + "WaitFactor"]) && params.has(param)) restored[stem + "WaitFactor"] = Number(params.get(param)) / base;
     }
     Object.assign(travelSettings, normalizeTravelSettings(restored));
     syncDisplaySettingsControls();

@@ -139,9 +139,7 @@ const src=station('Tours').point;
 const refWalk=d.meta.walkMetersPerMinute||80;
 const refEntry=d.meta.stationAccessPenalty??1.8;
 const refRouteMode=(routeId)=>d.routeInfo?.[routeId]?.mode||(routeId==='NAVETTE'?'NAVETTE':routeId?.startsWith('TRAM')?'TRAM':routeId?.startsWith('BHNS')?'BHNS':'TER');
-const refWait=(routeId)=>refRouteMode(routeId)==='BUS'
-  ? (d.routeInfo?.[routeId]?.waitMinutes??d.routeWaits?.[routeId]??10)
-  : (({NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15);
+const refWait=(routeId)=>d.routeInfo?.[routeId]?.waitMinutes ?? (({BUS:10,NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15);
 const refAllowed=d.routeStates.map(s=>d.routeInfo?.[s.routeId]?.serviceStatus?.status!=='suspended');
 const refEdgeCost=(fromNode,toNode,storedCost,walkingMetres)=>{
   const a=d.routeStates[fromNode],b=d.routeStates[toNode];
@@ -178,3 +176,14 @@ reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distance
 for(const [n,state] of d.routeStates.entries())if(state.routeId==='TER P21')check(!Number.isFinite(model.distances[n]),'Suspended P21 must not be routable');
 const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
+
+// Multipliers apply to each boarding, while observed in-vehicle times stay intact.
+const { routeWaitingMinutes } = await import('../site/routing.mjs');
+for (const [id, info] of Object.entries(d.routeInfo)) {
+  const key = {TER:'terWaitFactor',TRAM:'tramWaitFactor',BUS:'busWaitFactor',NAVETTE:'navetteWaitFactor'}[info.mode];
+  if (!key) continue;
+  const base = routeWaitingMinutes(d,id);
+  check(routeWaitingMinutes(d,id,{[key]:0})===0, `Zero wait ${id}`);
+  check(Math.abs(routeWaitingMinutes(d,id,{[key]:2})-2*base)<1e-9, `Double wait ${id}`);
+  if (info.waitMinutes !== undefined) check(Math.abs(base-info.waitMinutes)<1e-9, `GTFS wait ${id}`);
+}

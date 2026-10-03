@@ -120,3 +120,11 @@ Résultats, contrôles et limites historiques : [AUDIT.md](AUDIT.md). L'état co
 - Les dossiers `archive/tours-before-*-2026-10-03/` conservent les fichiers touchés avant les lots de correction, déploiement, optimisation des correspondances et préparation BD TOPO.
 
 Inspiré du [NYC Transit Time Cartogram](https://castrio.me/nyc/) et du [cartogramme de Paris](https://julesgrandin.github.io/paris-temps-transport/).
+
+### Attentes issues des horaires (mise à jour du 3 octobre 2026)
+
+Le tram A, les TER et la navette utilisent désormais les départs de leurs GTFS officiels (SNCF et Fil Bleu), sur la semaine du 5 au 11 octobre 2026. Comme pour les bus, les intervalles sont séparés par date, sens et origine de service ; la moitié de leur médiane fournit une attente par ligne, bornée entre 2 et 30 minutes. Les groupes avec deux ou trois départs utilisent un intervalle de repli de 60 minutes ; sans intervalle disponible, le repli est de 30 minutes d’attente. Le plafond peut sous-estimer les services rares : ce modèle reste une comparaison d’accessibilité, sans choix d’heure de départ.
+
+Dans **Paramètres → Attentes**, les multiplicateurs TER, tram, bus et navette sont indépendants. ×0 supprime l’attente à chaque embarquement et sa mention dans les bulles ; les durées de parcours et les malus restent appliqués. Le tram B, sans horaires, conserve sa base de 4 minutes et utilise le multiplicateur tram. Le BHNS C conserve son attente forfaitaire modifiable. Les anciens réglages d’attente en minutes sont convertis en multiplicateurs par rapport aux anciennes bases (TER 15, tram 4, navette 5 minutes).
+
+**Paramètres → Réseau → Étiquettes des arrêts de bus** masque les noms uniquement ; le réseau et son calcul restent actifs. Ce choix d’affichage est mémorisé localement.

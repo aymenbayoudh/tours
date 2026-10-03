@@ -45,9 +45,6 @@ function numeric(value, fallback, min = 0) {
 function normalizeSettings(data, value = {}) {
   return {
     walkMetersPerMinute: data.meta.walkMetersPerMinute || 80,
-    navetteWaitFactor: numeric(value.navetteWaitFactor, 1, 0),
-    terWaitFactor: numeric(value.terWaitFactor, 1, 0),
-    tramWaitFactor: numeric(value.tramWaitFactor, 1, 0),
     terWait: numeric(value.terWait, 15, 0),
     navetteWait: numeric(value.navetteWait, 5, 0),
     tramWait: numeric(value.tramWait, 4, 0),
@@ -71,11 +68,11 @@ function routeMode(data, routeId) {
 
 function waitForRoute(data, routeId, settings) {
   const mode = routeMode(data, routeId);
-  if (mode === "NAVETTE") return settings.navetteWaitFactor * (settings.navetteWait !== 5 ? settings.navetteWait : numeric(data.routeInfo?.[routeId]?.waitMinutes, settings.navetteWait));
-  if (mode === "TRAM") return settings.tramWaitFactor * (settings.tramWait !== 4 ? settings.tramWait : numeric(data.routeInfo?.[routeId]?.waitMinutes, settings.tramWait));
+  if (mode === "NAVETTE") return settings.navetteWait;
+  if (mode === "TRAM") return settings.tramWait;
   if (mode === "BHNS") return settings.bhnsWait;
   if (mode === "BUS") return settings.busWaitFactor * numeric(data.routeInfo?.[routeId]?.waitMinutes, data.routeWaits?.[routeId] ?? 10, 0);
-  return settings.terWaitFactor * (settings.terWait !== 15 ? settings.terWait : numeric(data.routeInfo?.[routeId]?.waitMinutes, settings.terWait));
+  return settings.terWait;
 }
 
 function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingMetres = null) {
@@ -354,8 +351,4 @@ export function describeJourney(data, model, destination) {
     walking,
     waiting: Math.max(0, result.minutes - walking - legs.reduce((sum, l) => sum + l.minutes, 0)),
   };
-}
-
-export function routeWaitingMinutes(data, routeId, settings = {}) {
-  return waitForRoute(data, routeId, normalizeSettings(data, settings));
 }

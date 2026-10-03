@@ -38,20 +38,6 @@ def active_service_dates(z):
 def active_services(z):
     return set(active_service_dates(z))
 
-def wait_estimates(departures):
-    """Same bounded headway proxy as bus; never mix days or directions."""
-    result={}
-    for route, buckets in departures.items():
-        intervals=[]
-        for values in buckets.values():
-            values=sorted(set(values))
-            gaps=[(b-a)/60 for a,b in zip(values,values[1:]) if b>a]
-            if len(values)>=4: intervals.extend(gaps)
-            elif gaps: intervals.append(60)
-        result[route]={'waitMinutes':max(2,min(30,statistics.median(intervals)/2)) if intervals else 30,
-                       'waitMethod':'half-median-headway-per-day-direction-origin-bounded-2-30'}
-    return result
-
 def representative(groups):
     result=[]
     for (route, sequence, permissions), trips in sorted(groups.items()):
@@ -65,7 +51,7 @@ def rail(path):
     allowed={s['id'].split(':',1)[1] for s in current['stations'] if s['id'].startswith('SNCF:')}
     codes={r.removeprefix('TER ') for r in current['routeInfo'] if r.startswith('TER ')}
     with zipfile.ZipFile(path) as z:
-        dates=active_service_dates(z); active=set(dates); route_map={}
+        active=active_services(z); route_map={}
         all_stops={r['stop_id']:r for r in rows(z,'stops.txt')}
         for r in rows(z,'routes.txt'):
             code=r['route_short_name']; name=r['route_long_name']
@@ -85,22 +71,20 @@ def rail(path):
             st=all_stops[r['stop_id']]
             station_meta[uic]={'uic':uic,'name':st['stop_name'],'point':[float(st['stop_lon']),float(st['stop_lat'])]}
             by_trip[r['trip_id']].append((int(r['stop_sequence']),uic,seconds(r['arrival_time']),seconds(r['departure_time']),r.get('pickup_type','0')!='1',r.get('drop_off_type','0')!='1'))
-        groups=defaultdict(list); departures=defaultdict(lambda:defaultdict(list))
+        groups=defaultdict(list)
         for tid,stops in by_trip.items():
             stops.sort()
             if tid in bus_trips or sum(s[1] in allowed for s in stops)<2:continue
             if any(b[2]<a[3] for a,b in zip(stops,stops[1:])):continue
             r=trips[tid];zero=stops[0][3]
-            for day in dates[r['service_id']]:
-                departures[route_map[r['route_id']]][(day,r.get('direction_id') or stops[-1][1],stops[0][1])].append(zero)
             groups[(route_map[r['route_id']],tuple('SNCF:'+s[1] for s in stops),tuple((s[4],s[5]) for s in stops))].append({'arrivals':[(s[2]-zero)/60 for s in stops],'departures':[(s[3]-zero)/60 for s in stops],'tripId':tid,'train':r['trip_headsign']})
         patterns=representative(groups)
         feed=list(rows(z,'feed_info.txt'))[0]
-    return {'source':'https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip','feedVersion':feed['feed_version'],'referenceWeek':[d.isoformat() for d in (DAYS[0],DAYS[-1])],'stations':[station_meta[uic] for uic in sorted({sid.split(':')[1] for p in patterns for sid in p['stops']})],'waitEstimates':wait_estimates(departures),'excludedCarTrips':len(bus_trips),'patterns':patterns}
+    return {'source':'https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip','feedVersion':feed['feed_version'],'referenceWeek':[d.isoformat() for d in (DAYS[0],DAYS[-1])],'stations':[station_meta[uic] for uic in sorted({sid.split(':')[1] for p in patterns for sid in p['stops']})],'excludedCarTrips':len(bus_trips),'patterns':patterns}
 
 def tram(path):
     with zipfile.ZipFile(path) as z:
-        dates=active_service_dates(z); active=set(dates)
+        active=active_services(z)
         route=next(r for r in rows(z,'routes.txt') if r['route_short_name']=='A' and r['route_type']=='0')
         trips={r['trip_id']:r for r in rows(z,'trips.txt') if r['route_id']==route['route_id'] and r['service_id'] in active}
         all_stops={r['stop_id']:r for r in rows(z,'stops.txt')}
@@ -109,14 +93,11 @@ def tram(path):
             if r['trip_id'] not in trips:continue
             child=all_stops[r['stop_id']];parent=child['parent_station'] or child['stop_id'];used_children.add(r['stop_id'])
             by_trip[r['trip_id']].append((int(r['stop_sequence']),parent,seconds(r['arrival_time']),seconds(r['departure_time']),r.get('pickup_type','0')!='1',r.get('drop_off_type','0')!='1'))
-        groups=defaultdict(list);departures=defaultdict(lambda:defaultdict(list));shape_ids=set();shape_stops={}
+        groups=defaultdict(list);shape_ids=set();shape_stops={}
         for tid,stops in by_trip.items():
             stops.sort()
             if len(stops)<2 or any(b[2]<a[3] for a,b in zip(stops,stops[1:])):continue
-            zero=stops[0][3];t=trips[tid]
-            for day in dates[t['service_id']]:
-                departures['TRAM A'][(day,t.get('direction_id') or stops[-1][1],stops[0][1])].append(zero)
-            shape_ids.add(t['shape_id']);shape_stops[t['shape_id']]=[s[1] for s in stops]
+            zero=stops[0][3];t=trips[tid];shape_ids.add(t['shape_id']);shape_stops[t['shape_id']]=[s[1] for s in stops]
             groups[('TRAM A',tuple('FILBLEU:'+s[1] for s in stops),tuple((s[4],s[5]) for s in stops))].append({'arrivals':[(s[2]-zero)/60 for s in stops],'departures':[(s[3]-zero)/60 for s in stops],'tripId':tid,'train':'Tram A'})
         shapes=defaultdict(list)
         for r in rows(z,'shapes.txt'):
@@ -125,12 +106,12 @@ def tram(path):
         for sid in used_children:
             s=all_stops[sid];children[s['parent_station'] or sid].append([float(s['stop_lon']),float(s['stop_lat'])])
         stops={pid:{'name':all_stops[pid]['stop_name'],'point':[statistics.mean(p[i] for p in pp) for i in (0,1)],'platforms':pp} for pid,pp in children.items()}
-        data={'route':{'id':'TRAM A','name':route['route_long_name'],'color':'#'+route['route_color'],**wait_estimates(departures)['TRAM A']},'stops':stops,'shapes':[{'id':sid,'points':[p for _,p in sorted(points)],'stops':shape_stops[sid]} for sid,points in shapes.items()],'source':route['route_url'],'referenceWeek':[DAYS[0].isoformat(),DAYS[-1].isoformat()]}
+        data={'route':{'id':'TRAM A','name':route['route_long_name'],'color':'#'+route['route_color']},'stops':stops,'shapes':[{'id':sid,'points':[p for _,p in sorted(points)],'stops':shape_stops[sid]} for sid,points in shapes.items()],'source':route['route_url'],'referenceWeek':[DAYS[0].isoformat(),DAYS[-1].isoformat()]}
     return data, representative(groups)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--sncf',type=Path,required=True);p.add_argument('--filbleu',type=Path,required=True);args=p.parse_args()
-    schedules=rail(args.sncf);t,patterns=tram(args.filbleu);schedules['patterns']+=patterns;schedules['waitEstimates']['TRAM A']={k:t['route'][k] for k in ('waitMinutes','waitMethod')}
+    schedules=rail(args.sncf);t,patterns=tram(args.filbleu);schedules['patterns']+=patterns
     (DATA/'timetables.json').write_text(json.dumps(schedules,ensure_ascii=False,separators=(',',':')))
     (DATA/'filbleu_tram.json').write_text(json.dumps(t,ensure_ascii=False,separators=(',',':')))
     print('Patterns:',len(schedules['patterns']),'Tram shapes:',len(t['shapes']),'Stops:',len(t['stops']))
