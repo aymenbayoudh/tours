@@ -101,7 +101,7 @@ def main() -> None:
                 continue
             arrivals = [x["arrival"] / 60 for x in collapsed]
             departures = [x["departure"] / 60 for x in collapsed]
-            if any(b < a for a, b in zip(departures, arrivals)) or any(arrivals[i + 1] < departures[i] for i in range(len(arrivals) - 1)):
+            if any(departure < arrival for arrival, departure in zip(arrivals, departures)) or any(arrivals[i + 1] < departures[i] for i in range(len(arrivals) - 1)):
                 continue
             sequence = tuple("FILBLEU:" + x["parent"] for x in collapsed)
             permissions = tuple((x["pickup"], x["dropoff"]) for x in collapsed)
