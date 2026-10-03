@@ -22,6 +22,7 @@ MAX_SNAP_METRES = 150.0
 ROAD_BUCKET_METRES = 100.0
 STOP_BUCKET_METRES = MAX_TRANSFER_METRES
 WALK_METRES_PER_MINUTE = 80.0
+COLOCATED_STOP_METRES = 5.0
 
 
 def nearest_road_node(point, nodes, buckets):
@@ -85,12 +86,60 @@ def main():
         road_buckets[(math.floor(node[0] / ROAD_BUCKET_METRES), math.floor(node[1] / ROAD_BUCKET_METRES))].append(index)
 
     stops = [station for station in transit["stations"] if station.get("inSerm")]
-    snaps = []
-    for station in stops:
-        node, gap = nearest_road_node(station["point"], nodes, road_buckets)
-        if node is None or gap > MAX_SNAP_METRES:
-            raise RuntimeError(f"No plausible BD TOPO snap for {station['id']} {station['name']}: {gap:.1f} m")
-        snaps.append((node, gap))
+
+    # Stops representing the same named place can differ by centimetres or a
+    # metre between GTFS/project sources. Snapping those independently may land
+    # on different nearby road nodes and invent a 50–100 m "transfer". Cluster
+    # only same-name points within 5 m; opposite platforms farther apart remain
+    # distinct and therefore keep their own access.
+    by_name = defaultdict(list)
+    for index, station in enumerate(stops):
+        by_name[str(station.get("name") or "").strip().casefold()].append(index)
+
+    parent = list(range(len(stops)))
+    def root(i):
+        while parent[i] != i:
+            parent[i] = parent[parent[i]]
+            i = parent[i]
+        return i
+    def union(a, b):
+        ra, rb = root(a), root(b)
+        if ra != rb:
+            parent[rb] = ra
+
+    for indices in by_name.values():
+        for pos, i in enumerate(indices):
+            pi = stops[i]["point"]
+            for j in indices[pos + 1:]:
+                pj = stops[j]["point"]
+                if math.hypot(pi[0] - pj[0], pi[1] - pj[1]) <= COLOCATED_STOP_METRES:
+                    union(i, j)
+
+    clusters = defaultdict(list)
+    for index in range(len(stops)):
+        clusters[root(index)].append(index)
+
+    snaps = [None] * len(stops)
+    colocated_groups = 0
+    colocated_stops = 0
+    for members in clusters.values():
+        if len(members) > 1:
+            colocated_groups += 1
+            colocated_stops += len(members)
+        point = [
+            sum(stops[i]["point"][0] for i in members) / len(members),
+            sum(stops[i]["point"][1] for i in members) / len(members),
+        ]
+        node, centroid_gap = nearest_road_node(point, nodes, road_buckets)
+        if node is None:
+            names = ", ".join(stops[i]["id"] for i in members[:4])
+            raise RuntimeError(f"No plausible BD TOPO snap for colocated stop group {names}")
+        road_point = nodes[node]
+        for i in members:
+            gap = math.hypot(stops[i]["point"][0] - road_point[0], stops[i]["point"][1] - road_point[1])
+            if gap > MAX_SNAP_METRES:
+                raise RuntimeError(f"No plausible BD TOPO snap for {stops[i]['id']} {stops[i]['name']}: {gap:.1f} m")
+            snaps[i] = (node, gap)
 
     adjacency = [[] for _ in nodes]
     for edge in edges:
@@ -182,6 +231,9 @@ def main():
             "roadWalkablePairs": len(pairs),
             "snapMedianMetres": round(sorted(snap_gaps)[len(snap_gaps) // 2], 1),
             "snapMaxMetres": round(max(snap_gaps), 1),
+            "colocatedStopThresholdMetres": COLOCATED_STOP_METRES,
+            "colocatedStopGroups": colocated_groups,
+            "colocatedStops": colocated_stops,
             "roadComponents": len(component_sizes),
             "largestRoadComponentNodes": max(component_sizes),
             "stopComponents": len(stop_component_counts),
