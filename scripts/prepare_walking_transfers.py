@@ -23,6 +23,14 @@ ROAD_BUCKET_METRES = 100.0
 STOP_BUCKET_METRES = MAX_TRANSFER_METRES
 WALK_METRES_PER_MINUTE = 80.0
 COLOCATED_STOP_METRES = 5.0
+MANUAL_STATION_ACCESS = [
+    (
+        "SNCF:87571240",
+        "FILBLEU:TTR:SPGAB-1A",
+        "St-Pierre-des-Corps: point SNCF situé dans le complexe ferroviaire ; accès au parvis via l'arrêt officiel St Pierre Gare",
+    ),
+]
+MANUAL_STATION_ACCESS_MAX_METRES = 300.0
 
 
 def nearest_road_node(point, nodes, buckets):
@@ -209,6 +217,24 @@ def main():
             if total <= MAX_TRANSFER_METRES + 1e-7:
                 pairs.append([stops[i]["id"], stops[j]["id"], round(total, 1)])
 
+    # Explicit station-interior access overrides. These are not road-graph
+    # paths: they bridge an official rail point located inside a station complex
+    # to a documented official forecourt stop when BD TOPO does not model the
+    # internal pedestrian access. Keep the list deliberately small and auditable.
+    stop_by_id = {station["id"]: station for station in stops}
+    manual_pairs = []
+    for first_id, second_id, reason in MANUAL_STATION_ACCESS:
+        first = stop_by_id.get(first_id)
+        second = stop_by_id.get(second_id)
+        if first is None or second is None:
+            raise RuntimeError(f"Manual station access endpoint missing: {first_id} / {second_id}")
+        direct = math.dist(first["point"], second["point"])
+        if direct > MANUAL_STATION_ACCESS_MAX_METRES:
+            raise RuntimeError(
+                f"Manual station access became implausibly long: {first_id} / {second_id} = {direct:.1f} m"
+            )
+        manual_pairs.append([first_id, second_id, round(direct, 1), reason])
+
     snap_gaps = [gap for _, gap in snaps]
     output = {
         "generated": True,
@@ -225,10 +251,12 @@ def main():
         "walkMetresPerMinute": WALK_METRES_PER_MINUTE,
         "coveredStopIds": [station["id"] for station in stops],
         "pairs": sorted(pairs),
+        "manualPairs": sorted(manual_pairs),
         "stats": {
             "coveredStops": len(stops),
             "candidateEuclideanPairs": candidate_count,
             "roadWalkablePairs": len(pairs),
+            "manualAccessPairs": len(manual_pairs),
             "snapMedianMetres": round(sorted(snap_gaps)[len(snap_gaps) // 2], 1),
             "snapMaxMetres": round(max(snap_gaps), 1),
             "colocatedStopThresholdMetres": COLOCATED_STOP_METRES,
