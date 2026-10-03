@@ -48,6 +48,11 @@ jobs:
           assert d["stats"]["coveredStops"] > 1000
           assert d["stats"]["roadWalkablePairs"] > 1000
           assert d["stats"]["snapMaxMetres"] <= d["maxSnapMetres"]
+          # Measured baseline before the endpoint-topology fix: 23 stop
+          # components, largest containing only 634/1577 SERM stops.
+          # Do not publish a rebuilt table unless connectivity materially improves.
+          assert d["stats"]["stopComponents"] < 23
+          assert d["stats"]["largestStopComponentStops"] > 634
           assert p.stat().st_size < 1_000_000
           print(json.dumps({"bytes": p.stat().st_size, **d["stats"]}, indent=2))
           PY
