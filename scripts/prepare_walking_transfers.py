@@ -164,7 +164,10 @@ def main():
     output = {
         "generated": True,
         "source": {
-            "road": road.get("source", {}),
+            "road": {
+                **road.get("source", {}),
+                "license": road.get("source", {}).get("license", "Licence Ouverte Etalab 2.0"),
+            },
             "transit": transit.get("meta", {}).get("filBleuBusSource", {}),
         },
         "coverage": "SERM de Touraine only",
