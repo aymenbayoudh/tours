@@ -1,0 +1,41 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build current Fil Bleu bus layer
+        run: |
+          python3 - <<'PY'
+          import urllib.request
+          url = "https://data.tours-metropole.fr/api/v2/catalog/datasets/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/alternative_exports/filbleu_gtfszip"
+          urllib.request.urlretrieve(url, "/tmp/filbleu_gtfs.zip")
+          PY
+          python3 scripts/prepare_filbleu_bus.py --gtfs /tmp/filbleu_gtfs.zip
+          python3 scripts/prepare_road_graph.py
+          python3 build_data.py
+          node tests/routing.test.mjs
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
