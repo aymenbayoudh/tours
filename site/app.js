@@ -1,4 +1,4 @@
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03a";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03b";
 const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03a", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
@@ -6,7 +6,8 @@ const VIEWPORT_ZOOM_STEP = 1.32;
 const DEFAULT_VIEWPORT_SCALE = 1;
 const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 3.6;
-const DISPLAY_SETTINGS_STORAGE_KEY = "tours-display-settings-v1";
+const DISPLAY_SETTINGS_STORAGE_KEY = "tours-display-settings-v2";
+const TRAVEL_SETTINGS_STORAGE_KEY = "tours-travel-settings-v1";
 const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   terWidth: ROUTE_LINE_WIDTH,
   tramWidth: 4.2,
@@ -14,8 +15,26 @@ const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   stationRadius: 2.5,
   railStationRadius: 2,
   labelScale: 1,
+  communeBorderWidth: 0.7,
+  epciBorderWidth: 1.3,
+  isochroneOpacity: 0.58,
   communeColor: "#c5d0db",
   backgroundColor: "#efe6d6",
+});
+const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
+  walkSpeedKmh: 4.8,
+  terSpeedKmh: 80,
+  tramSpeedKmh: 22,
+  bhnsSpeedKmh: 18,
+  navetteSpeedKmh: 60,
+  terWait: 15,
+  tramWait: 4,
+  bhnsWait: 3.25,
+  navetteWait: 5,
+  stationEntryPenalty: 1.8,
+  stationExitPenalty: 1.8,
+  transferPenalty: 3.5,
+  walkingTransferPenalty: 2,
 });
 const HOVER_DEADBAND = 12;
 const PIN_HIT_RADIUS = 32;
@@ -34,7 +53,7 @@ const DEFAULT_ORIGIN = {
 const SHARE_DECIMALS = 5;
 
 function freshDisplaySettings() {
-  return { ...DEFAULT_DISPLAY_SETTINGS, routeColors: {} };
+  return { ...DEFAULT_DISPLAY_SETTINGS, routeColors: {}, epciColors: {} };
 }
 
 function validHexColor(value) {
@@ -47,12 +66,15 @@ function normalizeDisplaySettings(value) {
     const number = Number(source[key]);
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_DISPLAY_SETTINGS[key];
   };
-  const routeColors = {};
-  if (source.routeColors && typeof source.routeColors === "object") {
-    for (const [routeId, color] of Object.entries(source.routeColors)) {
-      if (validHexColor(color)) routeColors[routeId] = color.toLowerCase();
+  const colorMap = (value) => {
+    const result = {};
+    if (value && typeof value === "object") {
+      for (const [key, color] of Object.entries(value)) {
+        if (validHexColor(color)) result[key] = color.toLowerCase();
+      }
     }
-  }
+    return result;
+  };
   return {
     terWidth: numeric("terWidth", 0.5, 10),
     tramWidth: numeric("tramWidth", 0.5, 10),
@@ -60,21 +82,60 @@ function normalizeDisplaySettings(value) {
     stationRadius: numeric("stationRadius", 1, 10),
     railStationRadius: numeric("railStationRadius", 1, 10),
     labelScale: numeric("labelScale", 0.6, 1.8),
+    communeBorderWidth: numeric("communeBorderWidth", 0.1, 6),
+    epciBorderWidth: numeric("epciBorderWidth", 0.2, 8),
+    isochroneOpacity: numeric("isochroneOpacity", 0, 0.95),
     communeColor: validHexColor(source.communeColor) ? source.communeColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.communeColor,
     backgroundColor: validHexColor(source.backgroundColor) ? source.backgroundColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.backgroundColor,
-    routeColors,
+    routeColors: colorMap(source.routeColors),
+    epciColors: colorMap(source.epciColors),
   };
 }
 
 function loadDisplaySettings() {
   try {
-    return normalizeDisplaySettings(JSON.parse(localStorage.getItem(DISPLAY_SETTINGS_STORAGE_KEY) || "null"));
+    const stored = JSON.parse(localStorage.getItem(DISPLAY_SETTINGS_STORAGE_KEY) || "null");
+    if (stored) return normalizeDisplaySettings(stored);
+    // Migrate the first display-settings version automatically.
+    return normalizeDisplaySettings(JSON.parse(localStorage.getItem("tours-display-settings-v1") || "null"));
   } catch {
     return freshDisplaySettings();
   }
 }
 
+function normalizeTravelSettings(value) {
+  const source = value && typeof value === "object" ? value : {};
+  const numeric = (key, min, max) => {
+    const number = Number(source[key]);
+    return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_TRAVEL_SETTINGS[key];
+  };
+  return {
+    walkSpeedKmh: numeric("walkSpeedKmh", 1, 12),
+    terSpeedKmh: numeric("terSpeedKmh", 20, 200),
+    tramSpeedKmh: numeric("tramSpeedKmh", 5, 60),
+    bhnsSpeedKmh: numeric("bhnsSpeedKmh", 5, 60),
+    navetteSpeedKmh: numeric("navetteSpeedKmh", 10, 120),
+    terWait: numeric("terWait", 0, 60),
+    tramWait: numeric("tramWait", 0, 30),
+    bhnsWait: numeric("bhnsWait", 0, 30),
+    navetteWait: numeric("navetteWait", 0, 30),
+    stationEntryPenalty: numeric("stationEntryPenalty", 0, 20),
+    stationExitPenalty: numeric("stationExitPenalty", 0, 20),
+    transferPenalty: numeric("transferPenalty", 0, 30),
+    walkingTransferPenalty: numeric("walkingTransferPenalty", 0, 30),
+  };
+}
+
+function loadTravelSettings() {
+  try {
+    return normalizeTravelSettings(JSON.parse(localStorage.getItem(TRAVEL_SETTINGS_STORAGE_KEY) || "null"));
+  } catch {
+    return { ...DEFAULT_TRAVEL_SETTINGS };
+  }
+}
+
 const displaySettings = loadDisplaySettings();
+const travelSettings = loadTravelSettings();
 
 const state = {
   data: null,
@@ -122,6 +183,7 @@ const displaySettingsClose = document.getElementById("displaySettingsClose");
 const displaySettingsDone = document.getElementById("displaySettingsDone");
 const displayResetAll = document.getElementById("displayResetAll");
 const displayRouteColors = document.getElementById("displayRouteColors");
+const displayEpciColors = document.getElementById("displayEpciColors");
 const handButton = document.getElementById("handButton");
 const projectsToggle = document.getElementById("projectsToggle");
 const probePinButton = document.getElementById("probePinButton");
@@ -139,8 +201,26 @@ function saveDisplaySettings() {
   }
 }
 
+function saveTravelSettings() {
+  try {
+    localStorage.setItem(TRAVEL_SETTINGS_STORAGE_KEY, JSON.stringify(travelSettings));
+  } catch {
+    // The map remains usable when storage is disabled.
+  }
+}
+
 function invalidateVisualSettings() {
   backdropKey = "";
+  requestDraw();
+}
+
+function invalidateTravelSettings() {
+  cachedModel = null;
+  cachedModelKey = "";
+  cachedWarp = null;
+  cachedWarpKey = "";
+  backdropKey = "";
+  lastJourneyKey = "";
   requestDraw();
 }
 
@@ -153,6 +233,10 @@ function defaultRouteColor(routeId) {
 
 function routeDisplayColor(route) {
   return displaySettings.routeColors[route.id] || route.color;
+}
+
+function epciDisplayColor(borough) {
+  return displaySettings.epciColors[borough.code] || displaySettings.communeColor;
 }
 
 function setDisplaySettingsOpen(open) {
@@ -179,8 +263,13 @@ function syncDisplaySettingsControls() {
     const key = input.dataset.displayNumber;
     input.value = String(displaySettings[key]);
   });
+  displaySettingsPanel.querySelectorAll("[data-travel-number]").forEach((input) => {
+    const key = input.dataset.travelNumber;
+    input.value = String(travelSettings[key]);
+  });
   setColorControl("communeColor", displaySettings.communeColor);
   setColorControl("backgroundColor", displaySettings.backgroundColor);
+
   displayRouteColors.querySelectorAll(".route-color-row").forEach((row) => {
     const routeId = row.dataset.routeId;
     const color = (displaySettings.routeColors[routeId] || defaultRouteColor(routeId)).toLowerCase();
@@ -189,6 +278,78 @@ function syncDisplaySettingsControls() {
     if (picker) picker.value = color;
     if (code) code.value = color.toUpperCase();
   });
+
+  displayEpciColors?.querySelectorAll(".epci-color-row").forEach((row) => {
+    const epciCode = row.dataset.epciCode;
+    const color = (displaySettings.epciColors[epciCode] || displaySettings.communeColor).toLowerCase();
+    const picker = row.querySelector("[data-epci-color]");
+    const code = row.querySelector("[data-epci-color-code]");
+    if (picker) picker.value = color;
+    if (code) code.value = color.toUpperCase();
+  });
+}
+
+function routeGroupFor(route) {
+  const haystack = `${route.id} ${route.title}`.toLowerCase();
+  if (route.mode !== "TER" || route.id === "NAVETTE") return "Tours Métropole · tram, BHNS et navette";
+  if (/saumur|angers|nantes|chinon/.test(haystack)) return "Ouest · Chinon / Saumur / Angers / Nantes";
+  if (/le mans|château-du-loir|chateau-du-loir|caen/.test(haystack)) return "Nord · Le Mans / Caen";
+  if (/vendôme|vendome|paris|châteaudun|chateaudun/.test(haystack)) return "Nord-Est · Vendôme / Paris";
+  if (/blois|orléans|orleans|vierzon|bourges/.test(haystack)) return "Est · Blois / Orléans / Vierzon";
+  if (/poitiers|châtellerault|chatellerault|loches|châteauroux|chateauroux/.test(haystack)) return "Sud · Loches / Poitiers / Châteauroux";
+  return "Autres liaisons TER";
+}
+
+const ROUTE_GROUP_ORDER = [
+  "Tours Métropole · tram, BHNS et navette",
+  "Ouest · Chinon / Saumur / Angers / Nantes",
+  "Nord · Le Mans / Caen",
+  "Nord-Est · Vendôme / Paris",
+  "Est · Blois / Orléans / Vierzon",
+  "Sud · Loches / Poitiers / Châteauroux",
+  "Autres liaisons TER",
+];
+
+function hslToHex(h, s, l) {
+  const saturation = s / 100;
+  const lightness = l / 100;
+  const c = (1 - Math.abs(2 * lightness - 1)) * saturation;
+  const hp = (((h % 360) + 360) % 360) / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let rgb = [0, 0, 0];
+  if (hp < 1) rgb = [c, x, 0];
+  else if (hp < 2) rgb = [x, c, 0];
+  else if (hp < 3) rgb = [0, c, x];
+  else if (hp < 4) rgb = [0, x, c];
+  else if (hp < 5) rgb = [x, 0, c];
+  else rgb = [c, 0, x];
+  const m = lightness - c / 2;
+  return "#" + rgb.map((v) => Math.round((v + m) * 255).toString(16).padStart(2, "0")).join("");
+}
+
+function stringHash(value) {
+  let hash = 0;
+  for (const char of value) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+  return hash;
+}
+
+let paletteSequence = 0;
+function applyPaletteToGroup(group) {
+  const section = displayRouteColors.querySelector('[data-route-group="' + CSS.escape(group) + '"]');
+  if (!section) return;
+  const rows = [...section.querySelectorAll(".route-color-row")];
+  const seed = (stringHash(group) + (++paletteSequence * 47)) % 360;
+  const hueOffsets = [0, 28, -28, 118, -118, 176, 62, -62, 146, -146];
+  rows.forEach((row, index) => {
+    const routeId = row.dataset.routeId;
+    const hue = (seed + hueOffsets[index % hueOffsets.length] + Math.floor(index / hueOffsets.length) * 17 + 360) % 360;
+    const saturation = 56 + ((index * 9 + paletteSequence * 3) % 23);
+    const lightness = 40 + ((index * 7 + paletteSequence * 5) % 20);
+    displaySettings.routeColors[routeId] = hslToHex(hue, saturation, lightness);
+  });
+  syncDisplaySettingsControls();
+  saveDisplaySettings();
+  invalidateVisualSettings();
 }
 
 function buildRouteColorSettings() {
@@ -198,43 +359,126 @@ function buildRouteColorSettings() {
   for (const route of state.data.routes) {
     if (route.mode === "RFN" || unique.has(route.id)) continue;
     const info = state.data.routeInfo?.[route.id] || {};
-    unique.set(route.id, { id: route.id, mode: info.mode || route.mode, title: info.title || route.title || route.id });
+    unique.set(route.id, {
+      id: route.id,
+      mode: info.mode || route.mode,
+      title: info.title || route.title || route.id,
+    });
   }
-  const routes = [...unique.values()].sort((a, b) => (modes[a.mode] ?? 9) - (modes[b.mode] ?? 9) || a.id.localeCompare(b.id, "fr"));
-  displayRouteColors.replaceChildren();
+
+  const routes = [...unique.values()].sort((a, b) =>
+    (modes[a.mode] ?? 9) - (modes[b.mode] ?? 9) || a.id.localeCompare(b.id, "fr")
+  );
+  const groups = new Map();
   for (const route of routes) {
+    const group = routeGroupFor(route);
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group).push(route);
+  }
+
+  displayRouteColors.replaceChildren();
+  for (const group of ROUTE_GROUP_ORDER) {
+    const items = groups.get(group);
+    if (!items?.length) continue;
+
+    const section = document.createElement("section");
+    section.className = "route-color-group";
+    section.dataset.routeGroup = group;
+
+    const header = document.createElement("div");
+    header.className = "route-color-group-header";
+    const title = document.createElement("strong");
+    title.textContent = group;
+    const palette = document.createElement("button");
+    palette.type = "button";
+    palette.className = "display-palette-button";
+    palette.dataset.paletteGroup = group;
+    palette.textContent = "🎨";
+    palette.title = "Générer une palette cohérente pour ce groupe";
+    palette.setAttribute("aria-label", "Générer une palette pour " + group);
+    header.append(title, palette);
+    section.append(header);
+
+    for (const route of items) {
+      const row = document.createElement("div");
+      row.className = "route-color-row";
+      row.dataset.routeId = route.id;
+
+      const label = document.createElement("div");
+      label.className = "route-color-label";
+      const strong = document.createElement("strong");
+      strong.textContent = route.id;
+      const small = document.createElement("small");
+      small.textContent = route.title;
+      label.append(strong, small);
+
+      const control = document.createElement("div");
+      control.className = "display-color-control";
+      const picker = document.createElement("input");
+      picker.type = "color";
+      picker.dataset.routeColor = route.id;
+      picker.setAttribute("aria-label", "Couleur de " + route.id);
+      const code = document.createElement("input");
+      code.type = "text";
+      code.maxLength = 7;
+      code.dataset.routeColorCode = route.id;
+      code.setAttribute("aria-label", "Code couleur de " + route.id);
+      const reset = document.createElement("button");
+      reset.type = "button";
+      reset.className = "display-row-reset";
+      reset.dataset.resetRoute = route.id;
+      reset.setAttribute("aria-label", "Rétablir la couleur de " + route.id);
+      reset.textContent = "↺";
+      control.append(picker, code, reset);
+      row.append(label, control);
+      section.append(row);
+    }
+    displayRouteColors.append(section);
+  }
+  syncDisplaySettingsControls();
+}
+
+function buildEpciColorSettings() {
+  if (!state.data || !displayEpciColors) return;
+  displayEpciColors.replaceChildren();
+  const boroughs = [...state.data.boroughs].sort((a, b) => {
+    if (a.code === "243700754") return -1;
+    if (b.code === "243700754") return 1;
+    return a.name.localeCompare(b.name, "fr");
+  });
+  for (const borough of boroughs) {
     const row = document.createElement("div");
-    row.className = "route-color-row";
-    row.dataset.routeId = route.id;
+    row.className = "route-color-row epci-color-row";
+    row.dataset.epciCode = borough.code;
 
     const label = document.createElement("div");
     label.className = "route-color-label";
     const strong = document.createElement("strong");
-    strong.textContent = route.id;
+    strong.textContent = borough.name;
     const small = document.createElement("small");
-    small.textContent = route.title;
+    small.textContent = borough.code === "243700754" ? "Tours Métropole" : "EPCI";
     label.append(strong, small);
 
     const control = document.createElement("div");
     control.className = "display-color-control";
     const picker = document.createElement("input");
     picker.type = "color";
-    picker.dataset.routeColor = route.id;
-    picker.setAttribute("aria-label", "Couleur de " + route.id);
+    picker.dataset.epciColor = borough.code;
+    picker.setAttribute("aria-label", "Couleur de " + borough.name);
     const code = document.createElement("input");
     code.type = "text";
     code.maxLength = 7;
-    code.dataset.routeColorCode = route.id;
-    code.setAttribute("aria-label", "Code couleur de " + route.id);
+    code.dataset.epciColorCode = borough.code;
+    code.setAttribute("aria-label", "Code couleur de " + borough.name);
     const reset = document.createElement("button");
     reset.type = "button";
     reset.className = "display-row-reset";
-    reset.dataset.resetRoute = route.id;
-    reset.setAttribute("aria-label", "Rétablir la couleur de " + route.id);
+    reset.dataset.resetEpci = borough.code;
+    reset.setAttribute("aria-label", "Rétablir la couleur de " + borough.name);
     reset.textContent = "↺";
     control.append(picker, code, reset);
     row.append(label, control);
-    displayRouteColors.append(row);
+    displayEpciColors.append(row);
   }
   syncDisplaySettingsControls();
 }
@@ -253,10 +497,28 @@ function applyDisplayNumber(input) {
   invalidateVisualSettings();
 }
 
+function applyTravelNumber(input) {
+  const key = input.dataset.travelNumber;
+  const fallback = DEFAULT_TRAVEL_SETTINGS[key];
+  const min = Number(input.min);
+  const max = Number(input.max);
+  let value = Number(input.value);
+  if (!Number.isFinite(value)) value = fallback;
+  value = Math.max(min, Math.min(max, value));
+  travelSettings[key] = value;
+  input.value = String(value);
+  saveTravelSettings();
+  invalidateTravelSettings();
+}
+
 displaySettingsPanel.addEventListener("input", (event) => {
   const target = event.target;
   if (target.matches("[data-display-number]")) {
     applyDisplayNumber(target);
+    return;
+  }
+  if (target.matches("[data-travel-number]")) {
+    applyTravelNumber(target);
     return;
   }
   if (target.matches("[data-display-color]")) {
@@ -265,6 +527,7 @@ displaySettingsPanel.addEventListener("input", (event) => {
     displaySettings[key] = target.value.toLowerCase();
     setColorControl(key, target.value);
     saveDisplaySettings();
+    syncDisplaySettingsControls();
     invalidateVisualSettings();
     return;
   }
@@ -274,6 +537,7 @@ displaySettingsPanel.addEventListener("input", (event) => {
     displaySettings[key] = target.value.trim().toLowerCase();
     setColorControl(key, displaySettings[key]);
     saveDisplaySettings();
+    syncDisplaySettingsControls();
     invalidateVisualSettings();
     return;
   }
@@ -297,6 +561,28 @@ displaySettingsPanel.addEventListener("input", (event) => {
     target.value = color.toUpperCase();
     saveDisplaySettings();
     invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-epci-color]")) {
+    const epciCode = target.dataset.epciColor;
+    if (!validHexColor(target.value)) return;
+    displaySettings.epciColors[epciCode] = target.value.toLowerCase();
+    const code = target.closest(".epci-color-row")?.querySelector("[data-epci-color-code]");
+    if (code) code.value = target.value.toUpperCase();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-epci-color-code]")) {
+    const epciCode = target.dataset.epciColorCode;
+    const color = target.value.trim();
+    if (!validHexColor(color)) return;
+    displaySettings.epciColors[epciCode] = color.toLowerCase();
+    const picker = target.closest(".epci-color-row")?.querySelector("[data-epci-color]");
+    if (picker) picker.value = color;
+    target.value = color.toUpperCase();
+    saveDisplaySettings();
+    invalidateVisualSettings();
   }
 });
 
@@ -304,9 +590,11 @@ displaySettingsPanel.addEventListener("blur", (event) => {
   const target = event.target;
   if (target.matches("[data-display-number]")) {
     applyDisplayNumber(target);
+  } else if (target.matches("[data-travel-number]")) {
+    applyTravelNumber(target);
   } else if (target.matches("[data-display-color-code]")) {
     setColorControl(target.dataset.displayColorCode, displaySettings[target.dataset.displayColorCode]);
-  } else if (target.matches("[data-route-color-code]")) {
+  } else if (target.matches("[data-route-color-code], [data-epci-color-code]")) {
     syncDisplaySettingsControls();
   }
 }, true);
@@ -321,6 +609,17 @@ displaySettingsPanel.addEventListener("click", (event) => {
     applyDisplayNumber(input);
     return;
   }
+
+  const travelAdjust = event.target.closest("[data-travel-adjust]");
+  if (travelAdjust) {
+    const key = travelAdjust.dataset.travelAdjust;
+    const input = displaySettingsPanel.querySelector('[data-travel-number="' + key + '"]');
+    if (!input) return;
+    input.value = String(Number(input.value || DEFAULT_TRAVEL_SETTINGS[key]) + Number(travelAdjust.dataset.delta || input.step || 1));
+    applyTravelNumber(input);
+    return;
+  }
+
   const reset = event.target.closest("[data-reset-display]");
   if (reset) {
     const key = reset.dataset.resetDisplay;
@@ -330,13 +629,37 @@ displaySettingsPanel.addEventListener("click", (event) => {
     invalidateVisualSettings();
     return;
   }
+
+  const travelReset = event.target.closest("[data-reset-travel]");
+  if (travelReset) {
+    const key = travelReset.dataset.resetTravel;
+    travelSettings[key] = DEFAULT_TRAVEL_SETTINGS[key];
+    syncDisplaySettingsControls();
+    saveTravelSettings();
+    invalidateTravelSettings();
+    return;
+  }
+
   const routeReset = event.target.closest("[data-reset-route]");
   if (routeReset) {
     delete displaySettings.routeColors[routeReset.dataset.resetRoute];
     syncDisplaySettingsControls();
     saveDisplaySettings();
     invalidateVisualSettings();
+    return;
   }
+
+  const epciReset = event.target.closest("[data-reset-epci]");
+  if (epciReset) {
+    delete displaySettings.epciColors[epciReset.dataset.resetEpci];
+    syncDisplaySettingsControls();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+
+  const palette = event.target.closest("[data-palette-group]");
+  if (palette) applyPaletteToGroup(palette.dataset.paletteGroup);
 });
 
 function clamp(value, min, max) {
@@ -450,7 +773,7 @@ function formatCoord(value) {
   return Number(value).toFixed(SHARE_DECIMALS);
 }
 
-function heatmapColor(minutes, alpha = 0.58) {
+function heatmapColor(minutes, alpha = displaySettings.isochroneOpacity) {
   const t = clamp(minutes / state.maxTransitTime, 0, 1);
   const stops = [
     { t: 0, color: [220, 69, 37] },
@@ -519,7 +842,7 @@ function nearestStations(point, count, includePlanned = true) {
     const item = {
       index,
       name: station.name,
-      walkMinutes: distance(point, station.point) / state.data.meta.walkMetersPerMinute + state.data.meta.stationAccessPenalty,
+      walkMinutes: distance(point, station.point) / (travelSettings.walkSpeedKmh * 1000 / 60) + travelSettings.stationEntryPenalty,
     };
     if (nearest.length === count && item.walkMinutes >= nearest[nearest.length - 1].walkMinutes) return;
     nearest.push(item);
@@ -537,9 +860,10 @@ function activeThreshold() {
   return state.outlineMinutes.length ? Math.max(...state.outlineMinutes) : state.maxTransitTime;
 }
 function getTravelModel(origin) {
-  const key = `${origin[0]},${origin[1]},${state.includeProjects}`;
+  const settingsKey = Object.entries(travelSettings).map(([key, value]) => key + ":" + value).join("|");
+  const key = `${origin[0]},${origin[1]},${state.includeProjects}:${settingsKey}`;
   if (key !== cachedModelKey) {
-    cachedModel = buildTravelModel(state.data, origin, state.includeProjects);
+    cachedModel = buildTravelModel(state.data, origin, state.includeProjects, travelSettings);
     cachedModelKey = key;
   }
   return cachedModel;
@@ -646,8 +970,8 @@ function drawPolyline(drawCtx, points, projectPoint) {
 }
 
 function drawBasemap(drawCtx, projectPoint) {
-  drawCtx.fillStyle = displaySettings.communeColor;
   for (const borough of state.data.boroughs) {
+    drawCtx.fillStyle = epciDisplayColor(borough);
     for (const polygon of borough.polygons) {
       drawCtx.beginPath();
       tracePolygon(drawCtx, polygon, projectPoint);
@@ -681,7 +1005,7 @@ function drawRoutes(drawCtx, projectPoint) {
 
 function drawDepartmentLimits(drawCtx, projectPoint) {
   drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(62,84,108,0.48)" : "rgba(77,101,128,0.26)";
-  drawCtx.lineWidth = state.viewportScale >= 2 ? 0.9 : 0.55;
+  drawCtx.lineWidth = displaySettings.communeBorderWidth * (state.viewportScale >= 2 ? 1.3 : 0.8);
   for (const commune of state.data.communes || []) {
     for (const polygon of commune.polygons) {
       for (const ring of polygon) {
@@ -694,7 +1018,7 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
   drawCtx.lineCap = "round";
   for (const borough of state.data.boroughs) {
     drawCtx.strokeStyle = borough.code === "243700754" ? "#294f6f" : "rgba(57,80,102,0.7)";
-    drawCtx.lineWidth = borough.code === "243700754" ? 2.2 : 1.25;
+    drawCtx.lineWidth = displaySettings.epciBorderWidth * (borough.code === "243700754" ? 1.7 : 1);
     const rings = borough.outline?.length ? borough.outline : [];
     for (const ring of rings) {
       if (ring.length < 2) continue;
@@ -1009,6 +1333,21 @@ function stationModeLines(point) {
   return lines;
 }
 
+function arrivalDescriptor(point) {
+  const model = state.originPoint ? getTravelModel(state.originPoint) : null;
+  const details = model ? routeEstimate(state.data, model, point, true) : null;
+  const nearest = nearestStations(point, 1)[0];
+  const stationIndex = details?.station >= 0 ? details.station : nearest?.index;
+  const station = Number.isInteger(stationIndex) ? state.data.stations[stationIndex] : null;
+  const commune = communeAt(point) || (station ? communeAt(station.point) : null) || placeName(point);
+  if (!station) return commune;
+  if (station.mode === "TER") {
+    const stationName = /^gare\s+de\b/i.test(station.name) ? station.name : `Gare de ${station.name}`;
+    return `${commune} - ${stationName}`;
+  }
+  return `${commune} - ${station.name}`;
+}
+
 function heatmapSourcePoint() {
   return state.originPoint;
 }
@@ -1091,7 +1430,7 @@ function drawMap() {
   if (!state.ready) return;
   const { width, height } = createCanvasBacking(mapCanvas);
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = "#efe6d6";
+  ctx.fillStyle = displaySettings.backgroundColor;
   ctx.fillRect(0, 0, width, height);
 
   const source = heatmapSourcePoint();
@@ -1137,14 +1476,13 @@ function drawMap() {
     const probeScreen = projectPoint(state.probePoint);
     const originScreen = state.originPoint ? projectPoint(state.originPoint) : null;
     const nearOrigin = originScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 130;
-    drawMarker(ctx, probeScreen, "#1c2f42", state.dragTarget === "probe" ? 7 : 5);
-    const probeLines = ["Arrivée", placeName(state.probePoint)];
-    if (Number.isFinite(travelMinutes)) probeLines.unshift(formatMinutes(travelMinutes));
-    probeLines.push(...stationModeLines(state.probePoint));
-    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 24, true);
+    drawMarker(ctx, probeScreen, "#1c2f42", state.dragTarget === "probe" ? 5 : 4);
+    const probeLines = [{ text: `Arrivée : ${arrivalDescriptor(state.probePoint)}`, small: false }];
+    probeLines.push({ text: Number.isFinite(travelMinutes) ? formatMinutes(travelMinutes) : "—", small: true });
+    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 18, true);
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
-    probePinButton.style.left = `${probeLabel.x + probeLabel.width - 24}px`;
-    probePinButton.style.top = `${probeLabel.y + 3}px`;
+    probePinButton.style.left = `${probeLabel.x + probeLabel.width - 18}px`;
+    probePinButton.style.top = `${probeLabel.y + 2}px`;
     probePinButton.setAttribute("aria-pressed", String(state.probePinned));
     probePinButton.setAttribute("aria-label", state.probePinned ? "Déverrouiller l’arrivée" : "Épingler l’arrivée");
     probePinButton.title = state.probePinned ? "Déverrouiller l’arrivée" : "Épingler l’arrivée";
@@ -1427,9 +1765,11 @@ displaySettingsDone.addEventListener("click", () => setDisplaySettingsOpen(false
 displaySettingsScrim.addEventListener("click", () => setDisplaySettingsOpen(false));
 displayResetAll.addEventListener("click", () => {
   Object.assign(displaySettings, freshDisplaySettings());
+  Object.assign(travelSettings, DEFAULT_TRAVEL_SETTINGS);
   syncDisplaySettingsControls();
   saveDisplaySettings();
-  invalidateVisualSettings();
+  saveTravelSettings();
+  invalidateTravelSettings();
 });
 
 settingsButton.addEventListener("click", (event) => {
@@ -1609,6 +1949,7 @@ async function init() {
   if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
   state.ready = true;
+  buildEpciColorSettings();
   buildRouteColorSettings();
   syncDisplaySettingsControls();
   restoreUrl();
