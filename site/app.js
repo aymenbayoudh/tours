@@ -289,26 +289,14 @@ function syncDisplaySettingsControls() {
   });
 }
 
-function routeGroupFor(route) {
-  const haystack = `${route.id} ${route.title}`.toLowerCase();
-  if (route.mode !== "TER" || route.id === "NAVETTE") return "Tours Métropole · tram, BHNS et navette";
-  if (/saumur|angers|nantes|chinon/.test(haystack)) return "Ouest · Chinon / Saumur / Angers / Nantes";
-  if (/le mans|château-du-loir|chateau-du-loir|caen/.test(haystack)) return "Nord · Le Mans / Caen";
-  if (/vendôme|vendome|paris|châteaudun|chateaudun/.test(haystack)) return "Nord-Est · Vendôme / Paris";
-  if (/blois|orléans|orleans|vierzon|bourges/.test(haystack)) return "Est · Blois / Orléans / Vierzon";
-  if (/poitiers|châtellerault|chatellerault|loches|châteauroux|chateauroux/.test(haystack)) return "Sud · Loches / Poitiers / Châteauroux";
-  return "Autres liaisons TER";
-}
-
-const ROUTE_GROUP_ORDER = [
-  "Tours Métropole · tram, BHNS et navette",
-  "Ouest · Chinon / Saumur / Angers / Nantes",
-  "Nord · Le Mans / Caen",
-  "Nord-Est · Vendôme / Paris",
-  "Est · Blois / Orléans / Vierzon",
-  "Sud · Loches / Poitiers / Châteauroux",
-  "Autres liaisons TER",
-];
+const MY_MAPS_ROUTE_GROUPS = Object.freeze({
+  Tours: ["TRAM A", "TRAM B", "BHNS C", "NAVETTE"],
+  Nord: ["TER K39", "TER P30", "TER P33"],
+  Ouest: ["TER K1", "TER P1", "TER P65"],
+  Est: ["TER K1", "TER K16", "TER K6+", "TER P6", "TER P7", "TER P17", "TER P166"],
+  Sud: ["TER P11", "TER P31", "TER P21"],
+});
+const ROUTE_GROUP_ORDER = ["Tours", "Nord", "Ouest", "Est", "Sud"];
 
 function hslToHex(h, s, l) {
   const saturation = s / 100;
@@ -335,16 +323,19 @@ function stringHash(value) {
 
 let paletteSequence = 0;
 function applyPaletteToGroup(group) {
-  const section = displayRouteColors.querySelector('[data-route-group="' + CSS.escape(group) + '"]');
+  const section = [...displayRouteColors.querySelectorAll("[data-route-group]")]
+    .find((item) => item.dataset.routeGroup === group);
   if (!section) return;
   const rows = [...section.querySelectorAll(".route-color-row")];
-  const seed = (stringHash(group) + (++paletteSequence * 47)) % 360;
-  const hueOffsets = [0, 28, -28, 118, -118, 176, 62, -62, 146, -146];
+  const baseHue = (stringHash(group) + (++paletteSequence * 71)) % 360;
+  const hueOffsets = [-12, -7, -3, 0, 4, 8, 12, -9, 6, 2];
+  const saturations = [82, 62, 74, 48, 88, 56, 70, 42, 78, 66];
+  const lightnesses = [34, 48, 61, 72, 42, 56, 29, 66, 51, 39];
   rows.forEach((row, index) => {
     const routeId = row.dataset.routeId;
-    const hue = (seed + hueOffsets[index % hueOffsets.length] + Math.floor(index / hueOffsets.length) * 17 + 360) % 360;
-    const saturation = 56 + ((index * 9 + paletteSequence * 3) % 23);
-    const lightness = 40 + ((index * 7 + paletteSequence * 5) % 20);
+    const hue = (baseHue + hueOffsets[index % hueOffsets.length] + 360) % 360;
+    const saturation = saturations[(index + paletteSequence) % saturations.length];
+    const lightness = lightnesses[(index * 3 + paletteSequence) % lightnesses.length];
     displaySettings.routeColors[routeId] = hslToHex(hue, saturation, lightness);
   });
   syncDisplaySettingsControls();
@@ -354,7 +345,7 @@ function applyPaletteToGroup(group) {
 
 function buildRouteColorSettings() {
   if (!state.data) return;
-  const modes = { TER: 0, NAVETTE: 1, TRAM: 2, BHNS: 3 };
+
   const unique = new Map();
   for (const route of state.data.routes) {
     if (route.mode === "RFN" || unique.has(route.id)) continue;
@@ -366,39 +357,40 @@ function buildRouteColorSettings() {
     });
   }
 
-  const routes = [...unique.values()].sort((a, b) =>
-    (modes[a.mode] ?? 9) - (modes[b.mode] ?? 9) || a.id.localeCompare(b.id, "fr")
-  );
-  const groups = new Map();
-  for (const route of routes) {
-    const group = routeGroupFor(route);
-    if (!groups.has(group)) groups.set(group, []);
-    groups.get(group).push(route);
-  }
-
   displayRouteColors.replaceChildren();
-  for (const group of ROUTE_GROUP_ORDER) {
-    const items = groups.get(group);
-    if (!items?.length) continue;
+  const groupedIds = new Set();
 
-    const section = document.createElement("section");
-    section.className = "route-color-group";
+  for (const group of ROUTE_GROUP_ORDER) {
+    const ids = MY_MAPS_ROUTE_GROUPS[group];
+    const items = ids.map((id) => unique.get(id)).filter(Boolean);
+    if (!items.length) continue;
+    items.forEach((route) => groupedIds.add(route.id));
+
+    const section = document.createElement("details");
+    section.className = "route-color-group settings-collapse";
     section.dataset.routeGroup = group;
 
-    const header = document.createElement("div");
-    header.className = "route-color-group-header";
+    const summary = document.createElement("summary");
+    summary.className = "route-color-group-header";
     const title = document.createElement("strong");
     title.textContent = group;
+    const tools = document.createElement("span");
+    tools.className = "route-group-tools";
+    const count = document.createElement("small");
+    count.textContent = items.length + (items.length > 1 ? " lignes" : " ligne");
     const palette = document.createElement("button");
     palette.type = "button";
     palette.className = "display-palette-button";
     palette.dataset.paletteGroup = group;
     palette.textContent = "🎨";
-    palette.title = "Générer une palette cohérente pour ce groupe";
-    palette.setAttribute("aria-label", "Générer une palette pour " + group);
-    header.append(title, palette);
-    section.append(header);
+    palette.title = "Nouvelle palette dans une même famille de couleur";
+    palette.setAttribute("aria-label", "Générer une palette monochrome pour " + group);
+    tools.append(count, palette);
+    summary.append(title, tools);
+    section.append(summary);
 
+    const body = document.createElement("div");
+    body.className = "route-color-group-body";
     for (const route of items) {
       const row = document.createElement("div");
       row.className = "route-color-row";
@@ -431,10 +423,49 @@ function buildRouteColorSettings() {
       reset.textContent = "↺";
       control.append(picker, code, reset);
       row.append(label, control);
-      section.append(row);
+      body.append(row);
     }
+    section.append(body);
     displayRouteColors.append(section);
   }
+
+  // The current My Maps reference accounts for every configured route.
+  // If a new route is added later, keep it visible under Tours rather than
+  // silently dropping it, until the reference folders are updated.
+  const ungrouped = [...unique.values()].filter((route) => !groupedIds.has(route.id));
+  if (ungrouped.length) {
+    const tours = displayRouteColors.querySelector('[data-route-group="Tours"] .route-color-group-body');
+    for (const route of ungrouped) {
+      const row = document.createElement("div");
+      row.className = "route-color-row";
+      row.dataset.routeId = route.id;
+      const label = document.createElement("div");
+      label.className = "route-color-label";
+      const strong = document.createElement("strong");
+      strong.textContent = route.id;
+      const small = document.createElement("small");
+      small.textContent = route.title;
+      label.append(strong, small);
+      const control = document.createElement("div");
+      control.className = "display-color-control";
+      const picker = document.createElement("input");
+      picker.type = "color";
+      picker.dataset.routeColor = route.id;
+      const code = document.createElement("input");
+      code.type = "text";
+      code.maxLength = 7;
+      code.dataset.routeColorCode = route.id;
+      const reset = document.createElement("button");
+      reset.type = "button";
+      reset.className = "display-row-reset";
+      reset.dataset.resetRoute = route.id;
+      reset.textContent = "↺";
+      control.append(picker, code, reset);
+      row.append(label, control);
+      tours?.append(row);
+    }
+  }
+
   syncDisplaySettingsControls();
 }
 
@@ -659,7 +690,11 @@ displaySettingsPanel.addEventListener("click", (event) => {
   }
 
   const palette = event.target.closest("[data-palette-group]");
-  if (palette) applyPaletteToGroup(palette.dataset.paletteGroup);
+  if (palette) {
+    event.preventDefault();
+    event.stopPropagation();
+    applyPaletteToGroup(palette.dataset.paletteGroup);
+  }
 });
 
 function clamp(value, min, max) {
@@ -781,7 +816,7 @@ function heatmapColor(minutes, alpha = displaySettings.isochroneOpacity) {
     { t: 0.4, color: [255, 196, 79] },
     { t: 0.62, color: [248, 232, 156] },
     { t: 0.8, color: [149, 188, 211] },
-    { t: 1, color: [74, 103, 141] },
+    { t: 1, color: [255, 255, 255] },
   ];
   let left = stops[0];
   let right = stops[stops.length - 1];
@@ -1004,12 +1039,16 @@ function drawRoutes(drawCtx, projectPoint) {
 }
 
 function drawDepartmentLimits(drawCtx, projectPoint) {
-  drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(62,84,108,0.48)" : "rgba(77,101,128,0.26)";
-  drawCtx.lineWidth = displaySettings.communeBorderWidth * (state.viewportScale >= 2 ? 1.3 : 0.8);
+  const communeWidth = displaySettings.communeBorderWidth * (state.viewportScale >= 2 ? 1.3 : 0.8);
   for (const commune of state.data.communes || []) {
     for (const polygon of commune.polygons) {
       for (const ring of polygon) {
         if (ring.length < 2) continue;
+        drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(255,255,255,0.58)" : "rgba(255,255,255,0.46)";
+        drawCtx.lineWidth = communeWidth + 1.15;
+        drawPolyline(drawCtx, ring, projectPoint);
+        drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(42,61,78,0.70)" : "rgba(47,67,84,0.58)";
+        drawCtx.lineWidth = communeWidth;
         drawPolyline(drawCtx, ring, projectPoint);
       }
     }
