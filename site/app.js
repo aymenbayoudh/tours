@@ -106,7 +106,7 @@ function normalizeDisplaySettings(value) {
     labelScale: numeric("labelScale", 0.6, 1.8),
     communeBorderWidth: numeric("communeBorderWidth", 0.1, 6),
     epciBorderWidth: numeric("epciBorderWidth", 0.2, 8),
-    isochroneOpacity: numeric("isochroneOpacity", 0, 0.95),
+    isochroneOpacity: numeric("isochroneOpacity", 0, 1),
     communeColor: validHexColor(source.communeColor) ? source.communeColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.communeColor,
     backgroundColor: validHexColor(source.backgroundColor) ? source.backgroundColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.backgroundColor,
     routeColors: colorMap(source.routeColors),
@@ -208,6 +208,7 @@ const displayResetAll = document.getElementById("displayResetAll");
 const displayRouteColors = document.getElementById("displayRouteColors");
 const displayEpciColors = document.getElementById("displayEpciColors");
 const isochroneGradientControls = document.getElementById("isochroneGradientControls");
+const isochroneGradientPreview = document.getElementById("isochroneGradientPreview");
 const handButton = document.getElementById("handButton");
 const projectsToggle = document.getElementById("projectsToggle");
 const probePinButton = document.getElementById("probePinButton");
@@ -343,6 +344,7 @@ function syncDisplaySettingsControls() {
     }
   });
   legend?.querySelector(".legend-bar")?.style.setProperty("background", gradientCss());
+  isochroneGradientPreview?.style.setProperty("background", gradientCss());
 }
 
 const MY_MAPS_ROUTE_GROUPS = Object.freeze({
