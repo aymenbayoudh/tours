@@ -1,5 +1,5 @@
 import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03d";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03c", import.meta.url).toString();
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03d", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
