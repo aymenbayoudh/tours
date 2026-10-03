@@ -481,12 +481,12 @@ function drawStations(drawCtx, projectPoint) {
       // Repeat the actual isochrone colour locally so a reachable station stays
       // visible without adding a separate yellow accessibility marker.
       const minutes = routeEstimate(state.data, model, station.point);
-      const colour = heatmapColor(minutes);
+      const colour = (alpha) => heatmapColor(minutes, alpha);
       const radius = state.viewportScale < 2 ? 11 : 7;
       const gradient = drawCtx.createRadialGradient(x, y, 1, x, y, radius);
-      gradient.addColorStop(0, `${colour}cc`);
-      gradient.addColorStop(0.72, `${colour}55`);
-      gradient.addColorStop(1, `${colour}00`);
+      gradient.addColorStop(0, colour(0.8));
+      gradient.addColorStop(0.72, colour(0.32));
+      gradient.addColorStop(1, colour(0));
       drawCtx.beginPath();
       drawCtx.arc(x, y, radius, 0, Math.PI * 2);
       drawCtx.fillStyle = gradient;
