@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import json
 import math
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -110,8 +112,27 @@ def request_page(bbox, start):
     }
     url = WFS + "?" + urllib.parse.urlencode(params)
     req = urllib.request.Request(url, headers={"User-Agent": "tours-accessibility-map/2026"})
-    with urllib.request.urlopen(req, timeout=90) as response:
-        return json.load(response)
+    last_error = None
+    for attempt in range(5):
+        try:
+            with urllib.request.urlopen(req, timeout=90) as response:
+                body = response.read()
+            if not body.lstrip().startswith((b"{", b"[")):
+                sample = body[:120].decode("utf-8", errors="replace")
+                raise RuntimeError(f"WFS returned non-JSON content: {sample!r}")
+            return json.loads(body)
+        except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, RuntimeError) as exc:
+            last_error = exc
+            if attempt == 4:
+                raise
+            delay = 2 ** attempt
+            print(
+                f"BD TOPO: transient WFS error at startIndex={start}; "
+                f"retry {attempt + 2}/5 in {delay}s: {exc}",
+                flush=True,
+            )
+            time.sleep(delay)
+    raise last_error
 
 
 def feature_lines(geometry):
