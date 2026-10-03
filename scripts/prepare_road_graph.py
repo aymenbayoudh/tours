@@ -131,6 +131,8 @@ def bicycle_directions(properties):
 
     if state and state != "En service":
         return set()
+    if private or restriction == "Entrée avec gardien":
+        return set()
     if nature in {"Type autoroutier", "Bretelle", "Escalier", "Bac ou liaison maritime"}:
         return set()
 
@@ -158,11 +160,7 @@ def bicycle_directions(properties):
         or cycle_friendly_restriction
     )
 
-    base_allowed = (
-        not private
-        and access not in {"Physiquement impossible", "Restreint aux ayants droit"}
-        and restriction != "Entrée avec gardien"
-    )
+    base_allowed = access not in {"Physiquement impossible", "Restreint aux ayants droit"}
     directions = _direction_values(traffic) if base_allowed else set()
 
     cycle_directions = _direction_values(cycle_sense_left) | _direction_values(cycle_sense_right)
