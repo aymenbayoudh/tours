@@ -8,6 +8,14 @@ const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 3.6;
 const DISPLAY_SETTINGS_STORAGE_KEY = "tours-display-settings-v2";
 const TRAVEL_SETTINGS_STORAGE_KEY = "tours-travel-settings-v1";
+const DEFAULT_ISOCHRONE_STOPS = Object.freeze([
+  { t: 0, color: "#dc4525", alpha: 1 },
+  { t: 0.2, color: "#f47f2e", alpha: 0.96 },
+  { t: 0.4, color: "#ffc44f", alpha: 0.9 },
+  { t: 0.62, color: "#f8e89c", alpha: 0.76 },
+  { t: 0.82, color: "#ffe2a1", alpha: 0.42 },
+  { t: 1, color: "#ffe2a1", alpha: 0 },
+]);
 const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   terWidth: ROUTE_LINE_WIDTH,
   tramWidth: 4.2,
@@ -53,7 +61,12 @@ const DEFAULT_ORIGIN = {
 const SHARE_DECIMALS = 5;
 
 function freshDisplaySettings() {
-  return { ...DEFAULT_DISPLAY_SETTINGS, routeColors: {}, epciColors: {} };
+  return {
+    ...DEFAULT_DISPLAY_SETTINGS,
+    routeColors: {},
+    epciColors: {},
+    isochroneStops: DEFAULT_ISOCHRONE_STOPS.map((stop) => ({ ...stop })),
+  };
 }
 
 function validHexColor(value) {
@@ -75,6 +88,15 @@ function normalizeDisplaySettings(value) {
     }
     return result;
   };
+  const isochroneStops = DEFAULT_ISOCHRONE_STOPS.map((fallback, index) => {
+    const stop = Array.isArray(source.isochroneStops) ? source.isochroneStops[index] : null;
+    const alpha = Number(stop?.alpha);
+    return {
+      t: fallback.t,
+      color: validHexColor(stop?.color) ? stop.color.toLowerCase() : fallback.color,
+      alpha: Number.isFinite(alpha) ? Math.max(0, Math.min(1, alpha)) : fallback.alpha,
+    };
+  });
   return {
     terWidth: numeric("terWidth", 0.5, 10),
     tramWidth: numeric("tramWidth", 0.5, 10),
@@ -89,6 +111,7 @@ function normalizeDisplaySettings(value) {
     backgroundColor: validHexColor(source.backgroundColor) ? source.backgroundColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.backgroundColor,
     routeColors: colorMap(source.routeColors),
     epciColors: colorMap(source.epciColors),
+    isochroneStops,
   };
 }
 
@@ -184,6 +207,7 @@ const displaySettingsDone = document.getElementById("displaySettingsDone");
 const displayResetAll = document.getElementById("displayResetAll");
 const displayRouteColors = document.getElementById("displayRouteColors");
 const displayEpciColors = document.getElementById("displayEpciColors");
+const isochroneGradientControls = document.getElementById("isochroneGradientControls");
 const handButton = document.getElementById("handButton");
 const projectsToggle = document.getElementById("projectsToggle");
 const probePinButton = document.getElementById("probePinButton");
@@ -233,6 +257,20 @@ function defaultRouteColor(routeId) {
 
 function routeDisplayColor(route) {
   return displaySettings.routeColors[route.id] || route.color;
+}
+
+function hexToRgb(hex) {
+  const value = String(hex || "").replace("#", "");
+  if (!/^[0-9a-f]{6}$/i.test(value)) return [255, 196, 79];
+  return [0, 2, 4].map((index) => parseInt(value.slice(index, index + 2), 16));
+}
+
+function gradientCss() {
+  return `linear-gradient(90deg, ${displaySettings.isochroneStops.map((stop) => {
+    const [r, g, b] = hexToRgb(stop.color);
+    const alpha = clamp(stop.alpha * displaySettings.isochroneOpacity, 0, 1);
+    return `rgba(${r}, ${g}, ${b}, ${alpha}) ${Math.round(stop.t * 100)}%`;
+  }).join(", ")})`;
 }
 
 function epciDisplayColor(borough) {
@@ -287,6 +325,24 @@ function syncDisplaySettingsControls() {
     if (picker) picker.value = color;
     if (code) code.value = color.toUpperCase();
   });
+
+  isochroneGradientControls?.querySelectorAll("[data-isochrone-stop]").forEach((row) => {
+    const index = Number(row.dataset.isochroneStop);
+    const stop = displaySettings.isochroneStops[index];
+    if (!stop) return;
+    const picker = row.querySelector("[data-isochrone-color]");
+    const alpha = row.querySelector("[data-isochrone-alpha]");
+    const alphaValue = row.querySelector("[data-isochrone-alpha-value]");
+    const track = row.querySelector(".isochrone-alpha-track");
+    if (picker) picker.value = stop.color;
+    if (alpha) alpha.value = String(Math.round(stop.alpha * 100));
+    if (alphaValue) alphaValue.textContent = Math.round(stop.alpha * 100) + "%";
+    if (track) {
+      const [r, g, b] = hexToRgb(stop.color);
+      track.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0), rgba(${r},${g},${b},1))`;
+    }
+  });
+  legend?.querySelector(".legend-bar")?.style.setProperty("background", gradientCss());
 }
 
 const MY_MAPS_ROUTE_GROUPS = Object.freeze({
@@ -508,6 +564,52 @@ function applyPaletteToEpcis() {
   invalidateVisualSettings();
 }
 
+function buildIsochroneGradientControls() {
+  if (!isochroneGradientControls) return;
+  isochroneGradientControls.replaceChildren();
+  displaySettings.isochroneStops.forEach((stop, index) => {
+    const row = document.createElement("div");
+    row.className = "isochrone-stop-row";
+    row.dataset.isochroneStop = String(index);
+
+    const label = document.createElement("div");
+    label.className = "isochrone-stop-label";
+    const strong = document.createElement("strong");
+    strong.textContent = Math.round(stop.t * 100) + "%";
+    const small = document.createElement("small");
+    small.textContent = index === 0 ? "départ" : index === displaySettings.isochroneStops.length - 1 ? "temps maximal" : "étape";
+    label.append(strong, small);
+
+    const control = document.createElement("div");
+    control.className = "isochrone-stop-picker";
+
+    const picker = document.createElement("input");
+    picker.type = "color";
+    picker.dataset.isochroneColor = String(index);
+    picker.setAttribute("aria-label", "Couleur du dégradé à " + Math.round(stop.t * 100) + "%");
+
+    const alphaTrack = document.createElement("div");
+    alphaTrack.className = "isochrone-alpha-track";
+    const alpha = document.createElement("input");
+    alpha.type = "range";
+    alpha.min = "0";
+    alpha.max = "100";
+    alpha.step = "1";
+    alpha.dataset.isochroneAlpha = String(index);
+    alpha.setAttribute("aria-label", "Transparence du dégradé à " + Math.round(stop.t * 100) + "%");
+    alphaTrack.append(alpha);
+
+    const alphaValue = document.createElement("span");
+    alphaValue.className = "isochrone-alpha-value";
+    alphaValue.dataset.isochroneAlphaValue = String(index);
+
+    control.append(picker, alphaTrack, alphaValue);
+    row.append(label, control);
+    isochroneGradientControls.append(row);
+  });
+  syncDisplaySettingsControls();
+}
+
 function buildEpciColorSettings() {
   if (!state.data || !displayEpciColors) return;
   displayEpciColors.replaceChildren();
@@ -653,6 +755,24 @@ displaySettingsPanel.addEventListener("input", (event) => {
     target.value = color.toUpperCase();
     saveDisplaySettings();
     invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-isochrone-color]")) {
+    const index = Number(target.dataset.isochroneColor);
+    if (!displaySettings.isochroneStops[index] || !validHexColor(target.value)) return;
+    displaySettings.isochroneStops[index].color = target.value.toLowerCase();
+    saveDisplaySettings();
+    syncDisplaySettingsControls();
+    invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-isochrone-alpha]")) {
+    const index = Number(target.dataset.isochroneAlpha);
+    if (!displaySettings.isochroneStops[index]) return;
+    displaySettings.isochroneStops[index].alpha = clamp(Number(target.value) / 100, 0, 1);
+    saveDisplaySettings();
+    syncDisplaySettingsControls();
+    invalidateVisualSettings();
   }
 });
 
@@ -722,6 +842,15 @@ displaySettingsPanel.addEventListener("click", (event) => {
   const epciReset = event.target.closest("[data-reset-epci]");
   if (epciReset) {
     delete displaySettings.epciColors[epciReset.dataset.resetEpci];
+    syncDisplaySettingsControls();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+
+  const resetGradient = event.target.closest("[data-reset-isochrone-gradient]");
+  if (resetGradient) {
+    displaySettings.isochroneStops = DEFAULT_ISOCHRONE_STOPS.map((stop) => ({ ...stop }));
     syncDisplaySettingsControls();
     saveDisplaySettings();
     invalidateVisualSettings();
@@ -855,16 +984,9 @@ function formatCoord(value) {
   return Number(value).toFixed(SHARE_DECIMALS);
 }
 
-function heatmapColor(minutes, alpha = displaySettings.isochroneOpacity) {
+function heatmapColor(minutes, alphaMultiplier = 1) {
   const t = clamp(minutes / state.maxTransitTime, 0, 1);
-  const stops = [
-    { t: 0, color: [220, 69, 37] },
-    { t: 0.2, color: [244, 127, 46] },
-    { t: 0.4, color: [255, 196, 79] },
-    { t: 0.62, color: [248, 232, 156] },
-    { t: 0.8, color: [149, 188, 211] },
-    { t: 1, color: [255, 255, 255] },
-  ];
+  const stops = displaySettings.isochroneStops;
   let left = stops[0];
   let right = stops[stops.length - 1];
   for (let i = 0; i < stops.length - 1; i += 1) {
@@ -875,7 +997,11 @@ function heatmapColor(minutes, alpha = displaySettings.isochroneOpacity) {
     }
   }
   const mix = (t - left.t) / (right.t - left.t || 1);
-  const rgb = left.color.map((value, i) => Math.round(value + (right.color[i] - value) * mix));
+  const leftRgb = hexToRgb(left.color);
+  const rightRgb = hexToRgb(right.color);
+  const rgb = leftRgb.map((value, i) => Math.round(value + (rightRgb[i] - value) * mix));
+  const stopAlpha = left.alpha + (right.alpha - left.alpha) * mix;
+  const alpha = clamp(stopAlpha * displaySettings.isochroneOpacity * alphaMultiplier, 0, 1);
   return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
 }
 
@@ -1091,7 +1217,7 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
     for (const polygon of commune.polygons) {
       for (const ring of polygon) {
         if (ring.length < 2) continue;
-        drawCtx.strokeStyle = "rgba(0,0,0,0.72)";
+        drawCtx.strokeStyle = "#000000";
         drawCtx.lineWidth = communeWidth;
         drawPolyline(drawCtx, ring, projectPoint);
       }
@@ -1100,7 +1226,7 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
   drawCtx.lineJoin = "round";
   drawCtx.lineCap = "round";
   for (const borough of state.data.boroughs) {
-    drawCtx.strokeStyle = "rgba(0,0,0,0.94)";
+    drawCtx.strokeStyle = "#000000";
     drawCtx.lineWidth = displaySettings.epciBorderWidth * (borough.code === "243700754" ? 1.7 : 1);
     const rings = borough.outline?.length ? borough.outline : [];
     for (const ring of rings) {
@@ -2032,6 +2158,7 @@ async function init() {
   if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
   state.ready = true;
+  buildIsochroneGradientControls();
   buildEpciColorSettings();
   buildRouteColorSettings();
   syncDisplaySettingsControls();
