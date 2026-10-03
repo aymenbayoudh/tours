@@ -20,26 +20,33 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Build compact IGN BD TOPO pedestrian graph
+      - name: Build compact IGN BD TOPO walking and cycling graphs
         run: |
           python3 scripts/prepare_road_graph.py
           python3 - <<'PY'
           import gzip, json
           from pathlib import Path
-          p=Path("data/tours/road_graph.json")
-          d=json.loads(p.read_text())
-          raw=p.stat().st_size
-          gz=len(gzip.compress(p.read_bytes(), compresslevel=9))
-          print(json.dumps({
-              "nodes": len(d.get("nodes", [])),
-              "edges": len(d.get("edges", [])),
-              "stats": d.get("stats", {}),
-              "rawBytes": raw,
-              "gzipBytes": gz,
-          }, indent=2))
+          for name in ("road_graph.json", "bike_graph.json"):
+              p=Path("data/tours")/name
+              if not p.exists():
+                  print(json.dumps({"file": name, "missing": True}, indent=2))
+                  continue
+              d=json.loads(p.read_text())
+              raw=p.stat().st_size
+              gz=len(gzip.compress(p.read_bytes(), compresslevel=9))
+              print(json.dumps({
+                  "file": name,
+                  "nodes": len(d.get("nodes", [])),
+                  "edges": len(d.get("edges", [])),
+                  "stats": d.get("stats", {}),
+                  "rawBytes": raw,
+                  "gzipBytes": gz,
+              }, indent=2))
           PY
       - uses: actions/upload-artifact@v4
         with:
           name: road-graph
-          path: data/tours/road_graph.json
+          path: |
+            data/tours/road_graph.json
+            data/tours/bike_graph.json
           retention-days: 1
