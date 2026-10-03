@@ -26,7 +26,7 @@ python3 scripts/sync_root_page.py
 - **Tram A et bus Fil Bleu** : [GTFS Fil Bleu / Syndicat des Mobilités de Touraine](https://transport.data.gouv.fr/datasets/fil-bleu-syndicat-des-mobilites-gtfs-gtfs-rt), ressource officielle courante (validité observée 30 septembre 2026 → 1er janvier 2027), avec `routes.txt`, `shapes.txt`, `stops.txt`, `trips.txt`, `stop_times.txt` et calendriers. Les arrêts physiques restent distincts des stations commerciales.
 - **Tram B et BHNS C** : tracés et arrêts de l'export KML de la carte fournie. Leurs vitesses commerciales retenues sont [18,4 km/h pour le tram B](https://lignes2tram.fr/les-nouvelles-lignes/) et [18 km/h pour le BHNS C](https://lignes2tram.fr/wp-content/uploads/2025/06/L2T_Depliant-BHNS_WEB.pdf), d'après les documents du projet Lignes2tram.
 
-Les extraits normalisés sont dans `data/tours/`. Le script `scripts/prepare_official_data.py` permet de régénérer les couches historiques à partir des exports officiels et des KML de référence. `scripts/prepare_filbleu_bus.py` réduit le GTFS Fil Bleu courant ; `scripts/prepare_road_graph.py` prépare séparément un graphe piéton compact depuis IGN BD TOPO. L'[inventaire des autres réseaux du SERM](data/tours/TRANSPORT-SOURCES.md) suit les sources encore à intégrer.
+Les extraits normalisés sont dans `data/tours/`. Le script `scripts/prepare_official_data.py` permet de régénérer les couches historiques à partir des exports officiels et des KML de référence. `scripts/prepare_filbleu_bus.py` réduit le GTFS Fil Bleu courant ; `scripts/prepare_road_graph.py` construit hors ligne le graphe piéton IGN BD TOPO et `scripts/prepare_walking_transfers.py` en extrait la petite table `walking_transfers.json` utilisée par le site. Le graphe routier brut (~500 000 nœuds) n'est pas envoyé au navigateur. L'[inventaire des autres réseaux du SERM](data/tours/TRANSPORT-SOURCES.md) suit les sources encore à intégrer.
 
 ### Calcul des temps (révision du 3 octobre 2026)
 
@@ -34,13 +34,13 @@ Les TER, le tram A et les bus Fil Bleu utilisent les **horaires officiels**, et 
 
 Le moteur compare la marche directe aux trajets en transport :
 
-1. **État transitoire** : marche à 4,8 km/h, encore en ligne droite, vers les arrêts ; 1,8 minute d'accès. Le remplacement par la voirie BD TOPO est en cours de préparation hors ligne.
+1. **Accès au réseau et marche directe** : marche à 4,8 km/h encore estimée en ligne droite depuis le départ vers les arrêts, puis de l'arrêt final vers la destination ; 1,8 minute d'accès et 1,8 minute de sortie par défaut. Cette partie n'utilise pas encore la voirie réelle.
 2. Attente estimée : TER 15 min, navette 5 min, trams 4 min, BHNS C 3,25 min. Pour chaque ligne de bus Fil Bleu, l'attente est dérivée de la moitié de l'intervalle médian observé sur les services retenus, bornée pour éviter des valeurs aberrantes.
 3. Temps à bord issus du trajet horaire représentatif ; rester dans le même véhicule n'ajoute pas une nouvelle attente.
-4. Changement dans la même gare/arrêt : 3,5 min + attente. Entre arrêts distants de 650 m au plus : marche + 2 min + attente. Le graphe utilise des hubs de correspondance compacts pour éviter un produit cartésien entre tous les états de lignes sans changer les temps calculés.
+4. Changement dans la même gare/arrêt : 3,5 min + attente. Entre deux arrêts distincts du SERM, une correspondance n'est créée que si le chemin piéton préparé sur **IGN BD TOPO** reste dans la limite de 650 m ; sa longueur de voirie + 2 min de marge + l'attente sont utilisées. Le niveau des tronçons fait partie de la topologie afin de ne pas relier automatiquement un pont et la voie située dessous. Hors de cette couverture préparée, le modèle conserve explicitement le repli antérieur à vol d'oiseau jusqu'à 650 m. Les hubs de correspondance gardent ce graphe compact.
 5. À l'arrivée : 1,8 minute de sortie, puis marche vers le point choisi. Dijkstra retient le minimum parmi les possibilités.
 
-Cela reproduit les intervalles B–C du **trajet de référence**, pas ceux de tous les trains. Il n'y a pas de choix de date/heure : un enchaînement peut combiner des services circulant à des heures ou des jours différents. Les correspondances ne sont pas synchronisées à une heure de départ précise : le modèle représente une offre et des attentes estimées, pas un calculateur horaire. Retards, cheminements piétons réels et obstacles ne sont pas encore garantis.
+Cela reproduit les intervalles B–C du **trajet de référence**, pas ceux de tous les trains. Il n'y a pas de choix de date/heure : un enchaînement peut combiner des services circulant à des heures ou des jours différents. Les correspondances ne sont pas synchronisées à une heure de départ précise : le modèle représente une offre et des attentes estimées, pas un calculateur horaire. La voirie réelle est actuellement utilisée pour les **correspondances arrêt-à-arrêt dans le SERM**, pas encore pour l'accès depuis un point arbitraire ni pour la marche finale/directe. Les accès de bâtiments, quais, escaliers et autres obstacles fins ne sont donc pas tous garantis.
 
 **Exceptions** : tram B à 18,4 km/h et BHNS C à 18 km/h restent des projets estimés. Pour la semaine de référence du 5 au 11 octobre 2026, la circulation ferroviaire Tours–Chinon (P21) est suspendue pour travaux ; le moteur n'invente donc plus de desserte ferroviaire de remplacement. Les autocars de substitution doivent être intégrés comme bus avec leurs propres horaires. Le bouton des projets retire B/C et leurs correspondances. Les gares TER sans desserte retenue dans le calcul sont masquées plutôt que présentées comme accessibles.
 
@@ -52,10 +52,17 @@ Pour actualiser les horaires depuis les archives officielles téléchargées :
 
 ```bash
 python3 scripts/prepare_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/filbleu.zip
+python3 scripts/prepare_filbleu_bus.py --gtfs /chemin/filbleu.zip
 python3 build_data.py
 python3 scripts/sync_root_page.py
 node tests/routing.test.mjs
 python3 scripts/audit_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/filbleu.zip
+
+# Pour régénérer les correspondances piétonnes BD TOPO :
+python3 scripts/prepare_road_graph.py
+python3 scripts/prepare_walking_transfers.py
+python3 build_data.py
+node tests/routing.test.mjs
 ```
 
 Sources horaires : [SNCF sur transport.data.gouv.fr](https://transport.data.gouv.fr/datasets/horaires-sncf), [archive SNCF officielle](https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip), [fiche tram A rentrée 2026](https://www.filbleu.fr/fileadmin/productions/05_Hiver26-27/01_sept26/ficheslignes/Filbleu_A_Rentree26.pdf). L'extraction Fil Bleu est à relancer avec celle des horaires avant reconstruction.
