@@ -378,7 +378,8 @@ def build_graph(stations, edges, route_waits):
         index = len(route_states)
         route_states.append({"stationIndex": station, "routeId": route, "role": role, "pattern": pattern})
         adjacency.append([])
-        stations[station]["routes"].add(route)
+        if route is not None:
+            stations[station]["routes"].add(route)
         return index
     def add(a, b, minutes):
         if minutes < 0:
@@ -414,17 +415,27 @@ def build_graph(stations, edges, route_waits):
                 fallback_nodes[(station, route)] = (arr, dep)
         aa, ad = fallback_nodes[(a, route)]; ba, bd = fallback_nodes[(b, route)]
         add(ad, ba, minutes); add(bd, aa, minutes)
-    # A transfer is possible only at an actual stopping point. Staying aboard
-    # follows the pattern edges and pays neither a new wait nor transfer time.
+    # Compress transfers through two hubs per physical stop. Every arrival
+    # reaches one alighting hub; every boarding state is reached from one
+    # boarding hub. This preserves the same transfer/wait semantics without
+    # materialising the Cartesian product of all arrival/departure states.
+    alight_hubs = [None] * len(stations)
+    board_hubs = [None] * len(stations)
     for i in range(len(stations)):
-        for src in station_states[i]:
+        if station_states[i]:
+            alight_hubs[i] = node(i, None, "alight")
+            for src in station_states[i]:
+                add(src, alight_hubs[i], 0)
+        if boarding_states[i]:
+            board_hubs[i] = node(i, None, "board")
             for dst in boarding_states[i]:
-                if route_states[src]["pattern"] is not None and route_states[src]["pattern"] == route_states[dst]["pattern"]: continue
-                add(src, dst, 3.5 + route_waits[route_states[dst]["routeId"]])
+                add(board_hubs[i], dst, route_waits[route_states[dst]["routeId"]])
+        if alight_hubs[i] is not None and board_hubs[i] is not None:
+            add(alight_hubs[i], board_hubs[i], 3.5)
 
-    # Nearby-stop transfers use a 650 m spatial bucket index rather than an
-    # O(n²) all-pairs scan. The Euclidean walk remains a temporary approximation
-    # until the road graph replaces it.
+    # Nearby-stop transfers keep the existing 650 m rule but connect hubs
+    # instead of every route-state pair. The Euclidean walk remains temporary
+    # until the prepared road graph replaces it.
     transfer_radius = 650.0
     buckets = {}
     for index, station in enumerate(stations):
@@ -440,12 +451,10 @@ def build_graph(stations, edges, route_waits):
                     walk_distance = math.dist(station["point"], stations[j]["point"])
                     if walk_distance > transfer_radius:
                         continue
-                    for src in station_states[i]:
-                        for dst in boarding_states[j]:
-                            add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
-                    for src in station_states[j]:
-                        for dst in boarding_states[i]:
-                            add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
+                    if alight_hubs[i] is not None and board_hubs[j] is not None:
+                        add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2)
+                    if alight_hubs[j] is not None and board_hubs[i] is not None:
+                        add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2)
     return route_states, station_states, boarding_states, adjacency, audit_patterns
 
 
