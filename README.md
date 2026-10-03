@@ -55,6 +55,7 @@ python3 scripts/prepare_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/
 python3 scripts/prepare_filbleu_bus.py --gtfs /chemin/filbleu.zip
 python3 build_data.py
 python3 scripts/sync_root_page.py
+python3 tests/walking_graph.test.py
 node tests/routing.test.mjs
 python3 scripts/audit_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/filbleu.zip
 
@@ -62,6 +63,7 @@ python3 scripts/audit_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/fi
 python3 scripts/prepare_road_graph.py
 python3 scripts/prepare_walking_transfers.py
 python3 build_data.py
+python3 tests/walking_graph.test.py
 node tests/routing.test.mjs
 ```
 
