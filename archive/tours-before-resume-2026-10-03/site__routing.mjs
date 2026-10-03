@@ -123,82 +123,6 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingM
   return storedCost;
 }
 
-// Geometry is immutable for the lifetime of a loaded dataset. Reuse its spatial
-// partition across origins; only minimum arrival times depend on the model.
-const spatialTrees = new WeakMap();
-function stationTree(data) {
-  if (spatialTrees.has(data)) return spatialTrees.get(data);
-  let count = 0;
-  function split(indices) {
-    if (!indices.length) return null;
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    for (const i of indices) {
-      const [x, y] = data.stations[i].point;
-      minX = Math.min(minX, x); minY = Math.min(minY, y);
-      maxX = Math.max(maxX, x); maxY = Math.max(maxY, y);
-    }
-    const node = { id: count++, minX, minY, maxX, maxY };
-    if (indices.length <= 8) node.indices = indices;
-    else {
-      const axis = maxX - minX >= maxY - minY ? 0 : 1;
-      indices.sort((a, b) => data.stations[a].point[axis] - data.stations[b].point[axis]);
-      const middle = Math.floor(indices.length / 2);
-      node.left = split(indices.slice(0, middle));
-      node.right = split(indices.slice(middle));
-    }
-    return node;
-  }
-  const root = split(data.stations.map((_, i) => i));
-  const tree = { root, count };
-  spatialTrees.set(data, tree);
-  return tree;
-}
-
-function arrivalIndex(data, arrivals) {
-  const tree = stationTree(data);
-  const minimum = new Float64Array(tree.count).fill(Infinity);
-  function visit(node) {
-    if (!node) return Infinity;
-    let best = Infinity;
-    if (node.indices) {
-      for (const i of node.indices) best = Math.min(best, arrivals[i].minutes);
-    } else best = Math.min(visit(node.left), visit(node.right));
-    minimum[node.id] = best;
-    return best;
-  }
-  visit(tree.root);
-  return { root: tree.root, minimum };
-}
-
-function indexedEstimate(data, model, destination, walk, exitPenalty, best) {
-  const { root, minimum } = model.arrivalIndex;
-  const [x, y] = destination;
-  // Minimum arrival in a box + distance to that box is a lower bound on
-  // every stop in it. No fixed nearest-stop limit, and no approximate pruning.
-  function bound(node) {
-    if (!node) return Infinity;
-    const dx = Math.max(node.minX - x, 0, x - node.maxX);
-    const dy = Math.max(node.minY - y, 0, y - node.maxY);
-    return minimum[node.id] + exitPenalty + Math.hypot(dx, dy) / walk;
-  }
-  function visit(node, lower) {
-    if (!node || lower > best + 1e-10) return;
-    if (node.indices) {
-      for (const i of node.indices) {
-        const arrival = model.stationArrivals[i].minutes + exitPenalty;
-        if (arrival >= best) continue;
-        best = Math.min(best, arrival + distance(data.stations[i].point, destination) / walk);
-      }
-    } else {
-      const left = bound(node.left), right = bound(node.right);
-      if (left <= right) { visit(node.left, left); visit(node.right, right); }
-      else { visit(node.right, right); visit(node.left, left); }
-    }
-  }
-  visit(root, bound(root));
-  return best;
-}
-
 export function buildTravelModel(data, origin, includeProjects = true, customSettings = {}) {
   const settings = normalizeSettings(data, customSettings);
   const distances = new Float64Array(data.routeStates.length).fill(Infinity);
@@ -255,16 +179,13 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     .filter(([minutes]) => Number.isFinite(minutes))
     .sort((a, b) => a[0] - b[0])
     .map(([, index]) => index);
-  return { origin, includeProjects, distances, previous, stationArrivals, activeStations, stationOrder, settings,
-    arrivalIndex: arrivalIndex(data, stationArrivals) };
+  return { origin, includeProjects, distances, previous, stationArrivals, activeStations, stationOrder, settings };
 }
 
 export function estimateTravel(data, model, destination, details = false) {
   const walk = model.settings?.walkMetersPerMinute || data.meta.walkMetersPerMinute;
   const exitPenalty = model.settings?.stationExitPenalty ?? data.meta.stationAccessPenalty;
   let best = distance(model.origin, destination) / walk;
-  // Keep the stable, time-sorted scan for journey details and tie selection.
-  if (!details && model.arrivalIndex) return indexedEstimate(data, model, destination, walk, exitPenalty, best);
   let bestStation = -1;
   const candidates = model.stationOrder || data.stations.map((_, index) => index);
   for (const i of candidates) {

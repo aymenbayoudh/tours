@@ -19,40 +19,6 @@ python3 build_data.py
 python3 scripts/sync_root_page.py
 ```
 
-Les données bus normalisées et le fichier de données du site sont désormais
-versionnés avec leurs correspondances piétonnes validées. Le déploiement reconstruit
-et teste cet ensemble sans télécharger un GTFS mutable. Actualiser Fil Bleu est
-une opération explicite : télécharger le GTFS officiel, exécuter son extraction
-ci-dessous, reconstruire et vérifier la couverture de la table piétonne avant de
-publier les fichiers obtenus ensemble. Une modification des arrêts peut nécessiter
-de régénérer cette table ; ne pas contourner son contrôle de couverture.
-
-### Reprise et performance — 3 octobre 2026
-
-La reprise de `c225f22` confirme que les bus SMT et les correspondances BD TOPO
-sont déjà déployés. La reconstruction locale de référence produit exactement le
-même fichier que le site public (SHA-256
-`e91edbf770cc3fec787f7353b6757515daf67e5386ae9e413ed013248a2baf8c`).
-Elle contient 48 lignes de bus Fil Bleu, 1 674 points de transport au total et
-334 motifs horaires. Les 338 959 assertions de routage et le test topologique
-passent, y compris le franchissement Porte de Loire–Place Choiseul.
-
-Le calcul numérique de la grille utilise maintenant un index spatial des arrêts.
-La borne « meilleur temps d'arrivée du groupe + distance minimale au groupe »
-permet d'écarter les groupes incapables d'améliorer le résultat, sans limiter
-arbitrairement la recherche aux arrêts les plus proches. Les détails d'itinéraire
-conservent le parcours précédent pour préserver le choix entre ex æquo.
-
-`node tests/spatial_estimate.test.mjs` vérifie 38 149 destinations/configurations
-contre un calcul exhaustif : aucun écart dans le jeu courant. Dans trois passages
-sur la même machine, les 29 084 cellules passent de 1 366–1 798 ms à 70–88 ms.
-Ces mesures concernent le calcul Node, pas le dessin ni une garantie mobile.
-
-**Reste à faire dans la passation :** accès depuis un départ arbitraire, marche
-directe et marche finale sur voirie ; vélo seul et vélo jusqu'à une gare ; réseaux
-bus hors SMT. Ces fonctions ne sont pas rendues complètes par la validation des
-seules correspondances piétonnes. Le graphe routier complet reste hors navigateur.
-
 ## Données
 
 - **Limites administratives** : [IGN Admin Express COG CARTO PE, édition 2026](https://geoservices.ign.fr/adminexpress), couches `commune` et `epci` du WFS `ADMINEXPRESS-COG-CARTO-PE.2026`. Les 14 EPCI du KML de référence représentent 425 communes dans cette édition.
