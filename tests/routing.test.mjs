@@ -97,6 +97,21 @@ if(roadWalking){
   const loireDirect=Math.hypot(d.stations[island].point[0]-d.stations[loire].point[0],d.stations[island].point[1]-d.stations[loire].point[1]);
   check(loireDirect<300,'Loire barrier fixture is no longer geometrically close');
   check(!d.adjacency[alightHub[island]].some(([next])=>next===boardHub[loire]),'Short straight-line Loire crossing incorrectly became a walking transfer');
+
+  const porteLoire=byId('FILBLEU:TTR:PODLB-1'),choiseul=byId('FILBLEU:TTR:CHONB-2A');
+  check(porteLoire>=0&&choiseul>=0,'Missing allowed Loire bridge fixtures');
+  const bridgeEdge=d.adjacency[alightHub[porteLoire]].find(([next])=>next===boardHub[choiseul]);
+  check(Boolean(bridgeEdge)&&Number.isFinite(bridgeEdge[2])&&bridgeEdge[2]>550&&bridgeEdge[2]<=650,'Allowed Loire bridge walking transfer was lost');
+
+  const toursRail=byId('SNCF:87571000'),toursForecourt=byId('FILBLEU:TTR:AC-GATO');
+  check(toursRail>=0&&toursForecourt>=0,'Missing Tours station access fixtures');
+  const toursAccess=d.adjacency[alightHub[toursRail]].find(([next])=>next===boardHub[toursForecourt]);
+  check(Boolean(toursAccess)&&Number.isFinite(toursAccess[2])&&toursAccess[2]<120,'Tours station road access is missing or implausible');
+
+  const stPierreRail=byId('SNCF:87571240'),stPierreForecourt=byId('FILBLEU:TTR:SPGAB-1A');
+  check(stPierreRail>=0&&stPierreForecourt>=0,'Missing St-Pierre-des-Corps station access fixtures');
+  const stPierreAccess=d.adjacency[alightHub[stPierreRail]].find(([next])=>next===boardHub[stPierreForecourt]);
+  check(Boolean(stPierreAccess)&&Number.isFinite(stPierreAccess[2])&&stPierreAccess[2]>150&&stPierreAccess[2]<250,'Documented St-Pierre-des-Corps station access is missing or implausible');
 }
 const station=(name,route)=>{const s=d.stations.find(s=>s.name===name&&(!route||s.routes.includes(route)));assert.ok(s,`Missing station ${name}`);return s;};
 const names=['Tours','Blois-Chambord','Orléans','Paris-Austerlitz','Le Mans','Saumur','Rotière','Jean Jaurès'];
