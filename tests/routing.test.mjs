@@ -18,6 +18,20 @@ for(const p of d.timetablePatterns){
   }
 }
 for(const edges of d.adjacency)for(const [n,cost] of edges)check(n>=0&&n<d.routeStates.length&&Number.isFinite(cost)&&cost>=0,'Invalid edge');
+const busPatterns=d.timetablePatterns.filter(p=>d.routeInfo?.[p.routeId]?.mode==='BUS');
+check(busPatterns.length>=1,'No Fil Bleu bus pattern');
+const busRoutes=Object.entries(d.routeInfo).filter(([,info])=>info.mode==='BUS');
+check(busRoutes.length>=1,'No Fil Bleu bus route');
+for(const [routeId,info] of busRoutes){
+  check(Number.isFinite(info.waitMinutes)&&info.waitMinutes>=2&&info.waitMinutes<=30,`Invalid bus wait ${routeId}`);
+}
+const parentGroups=new Map();
+d.stations.forEach((station,index)=>{
+  if(station.mode!=='BUS'||!station.parentStop)return;
+  const group=parentGroups.get(station.parentStop)||[];
+  group.push(index); parentGroups.set(station.parentStop,group);
+});
+check([...parentGroups.values()].some(group=>group.length>=2),'Opposite/related physical bus stops were unexpectedly merged');
 let sameCodeChanges=0,crossMode=0;
 for(let i=0;i<d.stations.length;i++)for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
   const x=d.routeStates[a],y=d.routeStates[b];
