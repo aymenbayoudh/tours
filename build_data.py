@@ -33,6 +33,18 @@ TER_SPEED_KMH = {
     "P17": 78, "P21": 50, "P30": 78, "P31": 52,
     "P33": 55, "P65": 90, "P166": 82,
 }
+# The reference week is 5–11 October 2026. Tours–Chinon is fully closed to
+# trains from 14 September 2026 to 26 February 2027 for regeneration works;
+# replacement coaches must be represented as bus service, never recreated by
+# the geometric rail fallback.
+SUSPENDED_RAIL_ROUTES = {
+    "TER P21": {
+        "status": "suspended",
+        "from": "2026-09-14",
+        "to": "2027-02-26",
+        "reason": "Travaux Tours–Chinon ; substitution par autocars",
+    }
+}
 COLOURS = ["#c13f34", "#2275a5", "#7a49a5", "#13816f", "#a96616", "#c34485", "#4759ba", "#698400", "#a14f31", "#007f96", "#935a9d", "#367245", "#bb6b00", "#5645a2", "#a93c5f", "#2d7f85", "#8b6b22", "#6a6bb0"]
 
 
@@ -265,6 +277,8 @@ def build_stations_and_routes():
         route_waits[route_id] = 5.0 if route_id == "NAVETTE" else 15.0
         colour = COLOURS[i % len(COLOURS)]
         route_info[route_id] = {"title": item["title"], "mode": "NAVETTE" if route_id == "NAVETTE" else "TER", "color": colour, "planned": False}
+        if route_id in SUSPENDED_RAIL_ROUTES:
+            route_info[route_id]["serviceStatus"] = SUSPENDED_RAIL_ROUTES[route_id]
         for path in item["paths"]:
             routes.append({"id": route_id, "title": item["title"], "color": colour, "mode": "TER", "points": [rounded(p) for p in path]})
             matches = []
@@ -362,10 +376,12 @@ def build_graph(stations, edges, route_waits):
             add(departures[pos], arrivals[pos+1], pattern["arrivals"][pos+1]-pattern["departures"][pos])
         audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": [by_id[s] for s in pattern["stops"]], "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
     # Only routes without an observed schedule retain a geometric estimate.
+    # A rail route known to be suspended during the reference week is never
+    # synthesized: its replacement coaches belong to the bus layer.
     # KML-only rail halts have no boarding link unless present in a timetable.
     fallback_nodes = {}
     for (a, b, route), minutes in edges.items():
-        if route in scheduled_routes: continue
+        if route in scheduled_routes or route in SUSPENDED_RAIL_ROUTES: continue
         for station in (a, b):
             if (station, route) not in fallback_nodes:
                 arr = node(station, route, "arrival")
