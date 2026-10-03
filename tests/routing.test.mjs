@@ -82,7 +82,22 @@ for(let i=0;i<d.stations.length;i++)for(let j=i+1;j<d.stations.length;j++){
   }
   if(d.stations[i].mode!==d.stations[j].mode)crossMode++;
 }
-if(roadWalking)check(roadTransferEdges>0,'No BD TOPO walking transfers found in SERM');
+if(roadWalking){
+  check(roadTransferEdges>0,'No BD TOPO walking transfers found in SERM');
+  const byId=(id)=>d.stations.findIndex(s=>s.id===id);
+  const j1=byId('FILBLEU:TTR:JUMEB-1'),j2=byId('FILBLEU:TTR:JUMEB-2');
+  check(j1>=0&&j2>=0,'Missing Jumeaux physical stop fixtures');
+  const jumeauxDirect=Math.hypot(d.stations[j1].point[0]-d.stations[j2].point[0],d.stations[j1].point[1]-d.stations[j2].point[1]);
+  const jumeauxEdge=d.adjacency[alightHub[j1]].find(([next])=>next===boardHub[j2]);
+  check(jumeauxDirect<50,'Jumeaux fixture is no longer geometrically close');
+  check(Boolean(jumeauxEdge)&&Number.isFinite(jumeauxEdge[2])&&jumeauxEdge[2]>500,'BD TOPO detour between Jumeaux stops was lost');
+
+  const island=byId('FILBLEU:TTR:ILAUB-1'),loire=byId('FILBLEU:TTR:LOIRB-1');
+  check(island>=0&&loire>=0,'Missing Loire barrier fixtures');
+  const loireDirect=Math.hypot(d.stations[island].point[0]-d.stations[loire].point[0],d.stations[island].point[1]-d.stations[loire].point[1]);
+  check(loireDirect<300,'Loire barrier fixture is no longer geometrically close');
+  check(!d.adjacency[alightHub[island]].some(([next])=>next===boardHub[loire]),'Short straight-line Loire crossing incorrectly became a walking transfer');
+}
 const station=(name,route)=>{const s=d.stations.find(s=>s.name===name&&(!route||s.routes.includes(route)));assert.ok(s,`Missing station ${name}`);return s;};
 const names=['Tours','Blois-Chambord','Orléans','Paris-Austerlitz','Le Mans','Saumur','Rotière','Jean Jaurès'];
 const examples=[];const start=performance.now();let maxModel=0;
