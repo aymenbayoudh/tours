@@ -204,21 +204,18 @@
 
         <div class="map-stage" id="mapStage">
           <canvas id="mapCanvas" aria-label="Carte des temps de trajet autour de Tours"></canvas>
-          <button id="probePinButton" type="button" class="probe-pin" aria-label="Épingler l’arrivée" aria-pressed="false" title="Épingler l’arrivée" hidden>📌</button>
           <div class="map-float">
             <button id="helpButton" type="button" class="icon-button" aria-label="Aide">?</button>
             <div class="zoom-stack">
               <button id="zoomInButton" type="button" class="icon-button" aria-label="Zoom avant">+</button>
               <button id="zoomOutButton" type="button" class="icon-button" aria-label="Zoom arrière">−</button>
-              <button id="handButton" type="button" class="icon-button" aria-label="Déplacer librement la carte" aria-pressed="false" title="Déplacer librement la carte">✋</button>
             </div>
           </div>
           <aside id="helpPanel" class="help-panel" hidden>
-            <p>Survolez la carte pour voir un temps de trajet ; les couleurs montrent les temps depuis le départ.</p>
-            <p>Touchez ou cliquez la carte pour choisir une arrivée. Utilisez son épingle pour la verrouiller, puis désactivez l’épingle pour la déplacer.</p>
-            <p>Glissez les épingles : le trajet se recalcule, et les courbes restent centrées sur le départ. Double-clic pour retirer.</p>
-            <p>La bulle d’arrivée affiche la commune, la gare ou l’arrêt retenu pour le calcul, puis le temps sur une seconde ligne. Les noms des communes du SERM apparaissent en zoomant.</p>
-            <p>Activez la main sous le zoom pour déplacer la carte. Désactivez-la pour choisir un départ ou une arrivée sur les lignes, même hors du SERM.</p>
+            <p>Le déplacement libre est toujours actif : cliquez-glissez sur le fond pour déplacer la carte.</p>
+            <p>Départ et Arrivée ne bougent que si vous les saisissez directement puis les faites glisser.</p>
+            <p>Un clic simple sur le fond pose uniquement le point manquant. Double-cliquez directement sur un point pour le retirer.</p>
+            <p>Hors du SERM, les portions de lignes accessibles sont illuminées jusqu’au temps maximal choisi.</p>
           </aside>
           <div id="legend" class="legend" hidden>
             <span>0 min</span>
@@ -228,7 +225,7 @@
         </div>
 
         <details class="journey" id="journeyPanel" hidden><summary>Voir le trajet retenu</summary><div id="journeyContent"></div></details>
-        <p class="map-hint">Les gares entourées d’un halo coloré sont atteignables au seuil choisi, même si leur petite zone disparaît au dézoom. Avec plusieurs courbes, le pourcentage utilise la plus longue durée.</p>
+        <p class="map-hint">Hors du SERM, les gares et portions de lignes illuminées sont atteignables au temps maximal choisi. Avec plusieurs courbes, le pourcentage utilise la plus longue durée.</p>
         <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau sélectionné joignable au seuil choisi.</p>
       </section>
 
@@ -256,6 +253,6 @@
         </details>
       </footer>
     </main>
-    <script type="module" src="./site/app.js?v=2026-10-03j"></script>
+    <script type="module" src="./site/app.js?v=2026-10-03m"></script>
   </body>
 </html>
