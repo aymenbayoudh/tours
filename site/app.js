@@ -56,6 +56,17 @@ const DEFAULT_ORIGIN = {
   label: "Gare de Tours",
 };
 const SHARE_DECIMALS = 5;
+const SHARE_CALC_VERSION = "1";
+const TRAVEL_QUERY_PARAMS = Object.freeze({
+  terWait: "terw",
+  tramWait: "tramw",
+  bhnsWait: "bhnsw",
+  navetteWait: "navw",
+  stationEntryPenalty: "entry",
+  stationExitPenalty: "exit",
+  transferPenalty: "transfer",
+  walkingTransferPenalty: "walktransfer",
+});
 
 function freshDisplaySettings() {
   return {
@@ -678,6 +689,7 @@ function applyTravelNumber(input) {
   input.value = String(value);
   saveTravelSettings();
   invalidateTravelSettings();
+  syncUrl();
 }
 
 displaySettingsPanel.addEventListener("input", (event) => {
@@ -824,6 +836,7 @@ displaySettingsPanel.addEventListener("click", (event) => {
     syncDisplaySettingsControls();
     saveTravelSettings();
     invalidateTravelSettings();
+    syncUrl();
     return;
   }
 
@@ -1123,12 +1136,13 @@ function pointInStaticGrid(point) {
 
 function computeViewportWarp(origin, transform, width, height) {
   const model = getTravelModel(origin);
-  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${state.maxTransitTime}:${activeThreshold()}:${Boolean(state.dragTarget)}`;
+  const panPreview = state.dragTarget === "pan";
+  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${state.maxTransitTime}:${activeThreshold()}:${panPreview}`;
   if (cachedWarpKey === key) return cachedWarp;
   const topLeft = transform.toWorld(0, 0);
   const bottomRight = transform.toWorld(width, height);
   const bounds = [topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]];
-  const gridCols = state.dragTarget ? 90 : width < 600 ? 100 : 180;
+  const gridCols = panPreview ? 90 : width < 600 ? 100 : 180;
   const gridRows = Math.max(80, Math.round((gridCols * height) / width));
   const cellW = (bounds[2] - bounds[0]) / gridCols;
   const cellH = (bounds[3] - bounds[1]) / gridRows;
@@ -1582,7 +1596,7 @@ function heatmapOtherPoint() {
 function syncStatus(warp, travelMinutes) {
   const source = heatmapSourcePoint();
   if (!source) {
-    statusText.textContent = "Survolez la carte pour choisir un départ.";
+    statusText.textContent = "Cliquez ou touchez la carte pour choisir un départ.";
     reachText.textContent = "Choisissez un point pour voir la part du réseau joignable en 30 minutes.";
     return;
   }
@@ -1658,14 +1672,17 @@ function drawMap() {
 
   const source = heatmapSourcePoint();
   const other = heatmapOtherPoint();
+  const previewingOriginDrag = state.dragTarget === "origin" && state.dragMoved && Boolean(state.currentRender?.warp);
   const focusBounds = viewBounds();
   const scaleMul = clamp(state.viewportScale, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
   const focus = state.viewportCenter || (scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter());
   const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
-  const warp = source ? (scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
-    ? computeViewportWarp(source, transform, width, height)
-    : computeWarp(source)) : null;
+  const warp = source ? (previewingOriginDrag
+    ? state.currentRender.warp
+    : (scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
+      ? computeViewportWarp(source, transform, width, height)
+      : computeWarp(source))) : null;
 
   const nextBackdropKey = `${cachedModelKey}:${cachedWarpKey}:${width}:${height}:${scaleMul}:${focus}:${state.maxTransitTime}:${state.outlineMinutes}`;
   if (nextBackdropKey !== backdropKey) {
@@ -1691,7 +1708,7 @@ function drawMap() {
   ctx.drawImage(mapBackdrop, 0, 0, width, height);
 
   let travelMinutes = null;
-  if (warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
+  if (!previewingOriginDrag && warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
   state.pinHits = { origin: null, probe: null };
 
   if (state.probePoint) {
@@ -1699,8 +1716,9 @@ function drawMap() {
     const originScreen = state.originPoint ? projectPoint(state.originPoint) : null;
     const nearOrigin = originScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 130;
     drawMarker(ctx, probeScreen, "#1c2f42", state.dragTarget === "probe" ? 5 : 4);
-    const probeLines = [{ text: `Arrivée : ${arrivalDescriptor(state.probePoint)}`, small: false }];
-    probeLines.push({ text: Number.isFinite(travelMinutes) ? formatMinutes(travelMinutes) : "—", small: true });
+    const probeDescriptor = previewingOriginDrag ? placeName(state.probePoint) : arrivalDescriptor(state.probePoint);
+    const probeLines = [{ text: `Arrivée : ${probeDescriptor}`, small: false }];
+    probeLines.push({ text: previewingOriginDrag ? "mise à jour au relâchement" : (Number.isFinite(travelMinutes) ? formatMinutes(travelMinutes) : "—"), small: true });
     const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 18, true);
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
   }
@@ -1719,8 +1737,8 @@ function drawMap() {
   state.currentRender = { warp, transform, focus };
   legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
-  syncStatus(warp, travelMinutes);
-  updateJourney();
+  if (!previewingOriginDrag) syncStatus(warp, travelMinutes);
+  if (!state.dragTarget) updateJourney();
   state.dirty = false;
 }
 
@@ -1817,6 +1835,8 @@ function syncUrl() {
   else if (outline.join(",") !== defaultOutline) params.set("outline", outline.join(","));
   if (state.maxTransitTime !== DEFAULT_MAX_TIME_MINUTES) params.set("max", String(state.maxTransitTime));
   if (state.includeProjects !== DEFAULT_INCLUDE_PROJECTS) params.set("projects", state.includeProjects ? "1" : "0");
+  params.set("calc", SHARE_CALC_VERSION);
+  for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) params.set(param, String(travelSettings[key]));
   if (state.viewportCenter) {
     const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
     params.set("view", `${formatCoord(lat)},${formatCoord(lon)}`);
@@ -1850,6 +1870,15 @@ function restoreUrl() {
   }
   state.includeProjects = params.get("projects") === "1" ? true : params.get("projects") === "0" ? false : DEFAULT_INCLUDE_PROJECTS;
   projectsToggle.checked = state.includeProjects;
+  const hasTravelParams = Object.values(TRAVEL_QUERY_PARAMS).some((param) => params.has(param));
+  if (params.get("calc") === SHARE_CALC_VERSION || hasTravelParams) {
+    const restored = { ...DEFAULT_TRAVEL_SETTINGS };
+    for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) {
+      if (params.has(param)) restored[key] = Number(params.get(param));
+    }
+    Object.assign(travelSettings, normalizeTravelSettings(restored));
+    syncDisplaySettingsControls();
+  }
   if (origin) {
     setOrigin(origin, { pin: true, silent: true });
   } else {
@@ -1991,6 +2020,7 @@ displayResetAll.addEventListener("click", () => {
   saveDisplaySettings();
   saveTravelSettings();
   invalidateTravelSettings();
+  syncUrl();
 });
 
 settingsButton.addEventListener("click", (event) => {
