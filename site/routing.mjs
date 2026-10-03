@@ -37,22 +37,14 @@ class MinHeap {
 }
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
-const BASE_SPEED_KMH = Object.freeze({ TER: 80, NAVETTE: 60, TRAM: 22, BHNS: 18 });
-
 function numeric(value, fallback, min = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? Math.max(min, number) : fallback;
 }
 
 function normalizeSettings(data, value = {}) {
-  const walkKmh = numeric(value.walkSpeedKmh, (data.meta.walkMetersPerMinute || 80) * 0.06, 0.5);
   return {
-    walkSpeedKmh: walkKmh,
-    walkMetersPerMinute: walkKmh * 1000 / 60,
-    terSpeedKmh: numeric(value.terSpeedKmh, BASE_SPEED_KMH.TER, 5),
-    navetteSpeedKmh: numeric(value.navetteSpeedKmh, BASE_SPEED_KMH.NAVETTE, 5),
-    tramSpeedKmh: numeric(value.tramSpeedKmh, BASE_SPEED_KMH.TRAM, 5),
-    bhnsSpeedKmh: numeric(value.bhnsSpeedKmh, BASE_SPEED_KMH.BHNS, 5),
+    walkMetersPerMinute: data.meta.walkMetersPerMinute || 80,
     terWait: numeric(value.terWait, 15, 0),
     navetteWait: numeric(value.navetteWait, 5, 0),
     tramWait: numeric(value.tramWait, 4, 0),
@@ -81,32 +73,21 @@ function waitForRoute(data, routeId, settings) {
   return settings.terWait;
 }
 
-function inVehicleScale(data, routeId, settings) {
-  const mode = routeMode(data, routeId);
-  const base = BASE_SPEED_KMH[mode] || BASE_SPEED_KMH.TER;
-  const current =
-    mode === "NAVETTE" ? settings.navetteSpeedKmh :
-    mode === "TRAM" ? settings.tramSpeedKmh :
-    mode === "BHNS" ? settings.bhnsSpeedKmh :
-    settings.terSpeedKmh;
-  return base / Math.max(1, current);
-}
-
 function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings) {
   const a = data.routeStates[fromNode];
   const b = data.routeStates[toNode];
   if (!a || !b) return storedCost;
 
-  // Travelling on board. For GTFS-backed routes, the stored duration is an
-  // observed representative duration; the speed setting scales it rather than
-  // replacing the timetable geometry.
+  // In-vehicle durations are already encoded in the graph: representative
+  // GTFS durations when available, otherwise the fixed geometric fallback
+  // produced at build time for unscheduled/project routes.
   if (
     a.role === "departure" &&
     b.role === "arrival" &&
     a.routeId === b.routeId &&
     a.stationIndex !== b.stationIndex
   ) {
-    return storedCost * inVehicleScale(data, a.routeId, settings);
+    return storedCost;
   }
 
   if (a.role === "arrival" && b.role === "departure") {
