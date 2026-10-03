@@ -215,7 +215,7 @@
             <p>Le déplacement libre est toujours actif : cliquez-glissez sur le fond pour déplacer la carte.</p>
             <p>Départ et Arrivée ne bougent que si vous les saisissez directement puis les faites glisser.</p>
             <p>Un clic simple sur le fond pose uniquement le point manquant. Double-cliquez directement sur un point pour le retirer.</p>
-            <p>Hors du SERM, les portions de lignes accessibles sont illuminées jusqu’au temps maximal choisi.</p>
+            <p>Hors du SERM, les gares desservies restent visibles ; les lignes grises d’infrastructure et les gares sans desserte ne sont pas affichées.</p>
           </aside>
           <div id="legend" class="legend" hidden>
             <span>0 min</span>
@@ -225,7 +225,7 @@
         </div>
 
         <details class="journey" id="journeyPanel" hidden><summary>Voir le trajet retenu</summary><div id="journeyContent"></div></details>
-        <p class="map-hint">Hors du SERM, les gares et portions de lignes illuminées sont atteignables au temps maximal choisi. Avec plusieurs courbes, le pourcentage utilise la plus longue durée.</p>
+        <p class="map-hint">Hors du SERM, seules les lignes effectivement desservies et les gares retenues dans le calcul sont affichées. Avec plusieurs courbes, le pourcentage utilise la plus longue durée.</p>
         <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau sélectionné joignable au seuil choisi.</p>
       </section>
 
@@ -253,6 +253,6 @@
         </details>
       </footer>
     </main>
-    <script type="module" src="./app.js?v=2026-10-03n"></script>
+    <script type="module" src="./app.js?v=2026-10-03o"></script>
   </body>
 </html>
