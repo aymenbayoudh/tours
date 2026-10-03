@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./site/styles.css?v=2026-10-03e" />
+    <link rel="stylesheet" href="./site/styles.css?v=2026-10-03g" />
   </head>
   <body>
     <main class="page">
@@ -158,14 +158,12 @@
                               <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="-0.1" aria-label="Réduire les traits communaux">−</button><input data-display-number="communeBorderWidth" type="number" min="0.1" max="6" step="0.1" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="0.1" aria-label="Augmenter les traits communaux">+</button><button type="button" class="display-row-reset" data-reset-display="communeBorderWidth" aria-label="Rétablir les traits communaux">↺</button></label>
                 <span>Traits des EPCI</span>
                               <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="-0.1" aria-label="Réduire les traits EPCI">−</button><input data-display-number="epciBorderWidth" type="number" min="0.2" max="8" step="0.1" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="0.1" aria-label="Augmenter les traits EPCI">+</button><button type="button" class="display-row-reset" data-reset-display="epciBorderWidth" aria-label="Rétablir les traits EPCI">↺</button></label>
-                <span>Opacité des isochrones</span>
-                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="-0.05" aria-label="Réduire l’opacité des isochrones">−</button><input data-display-number="isochroneOpacity" type="number" min="0" max="0.95" step="0.05" inputmode="decimal"><small>α</small><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="0.05" aria-label="Augmenter l’opacité des isochrones">+</button><button type="button" class="display-row-reset" data-reset-display="isochroneOpacity" aria-label="Rétablir l’opacité des isochrones">↺</button></label>
               </div>
               </div>
             </details>
 
             <details class="settings-collapse settings-section-collapse">
-              <summary><strong>Fond de carte</strong><small>couleur générale et isochrones</small></summary>
+              <summary><strong>Fond de carte</strong><small>communes · arrière-plan</small></summary>
               <div class="settings-collapse-body">
                 <div class="display-settings-grid">
                   <span>Couleur par défaut des communes</span>
@@ -173,13 +171,33 @@
                   <span>Fond hors périmètre</span>
               <div class="display-color-control"><input type="color" data-display-color="backgroundColor" aria-label="Couleur du fond"><input type="text" maxlength="7" data-display-color-code="backgroundColor" aria-label="Code couleur du fond"><button type="button" class="display-row-reset" data-reset-display="backgroundColor" aria-label="Rétablir la couleur du fond">↺</button></div>
                 </div>
-                <p class="display-settings-note">L’échelle des temps conserve le dégradé rouge → orange → jaune → bleu clair, puis finit désormais en blanc au temps maximal.</p>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Dégradé des isochrones</strong><small>couleurs · transparence</small></summary>
+              <div class="settings-collapse-body">
+                <p class="display-settings-note">Par défaut : rouge → orange → jaune → jaune pâle, puis disparition progressive. Chaque étape combine une couleur et sa transparence.</p>
+                <div class="display-settings-grid isochrone-opacity-row">
+                  <span>Opacité générale</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="-0.05" aria-label="Réduire l’opacité des isochrones">−</button><input data-display-number="isochroneOpacity" type="number" min="0" max="1" step="0.05" inputmode="decimal"><small>α</small><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="0.05" aria-label="Augmenter l’opacité des isochrones">+</button><button type="button" class="display-row-reset" data-reset-display="isochroneOpacity" aria-label="Rétablir l’opacité des isochrones">↺</button></label>
+                </div>
+                <div id="isochroneGradientPreview" class="isochrone-gradient-preview" aria-label="Aperçu du dégradé des isochrones"></div>
+                <div id="isochroneGradientControls" class="isochrone-gradient-controls"></div>
+                <div class="isochrone-gradient-actions">
+                  <button type="button" class="gradient-reset-button" data-reset-isochrone-gradient>↺ Réinitialiser le dégradé</button>
+                </div>
               </div>
             </details>
 
             <details class="settings-collapse settings-section-collapse">
               <summary><strong>Couleurs des communes par EPCI</strong><small>une couleur par intercommunalité</small></summary>
               <div class="settings-collapse-body">
+                <div class="epci-palette-toolbar">
+                  <span>Palette multi-teintes</span>
+                  <button type="button" class="display-palette-button" data-palette-epci title="Générer une nouvelle palette EPCI" aria-label="Générer une palette de couleurs pour les EPCI">🎨</button>
+                </div>
+                <p class="display-settings-note">Génère des familles de rouge, rose, orange, bleu, bleu-vert et vert, avec plusieurs niveaux de saturation et de luminosité.</p>
                 <div id="displayEpciColors" class="route-color-settings"></div>
               </div>
             </details>
@@ -252,6 +270,6 @@
         </details>
       </footer>
     </main>
-    <script type="module" src="./site/app.js?v=2026-10-03f"></script>
+    <script type="module" src="./site/app.js?v=2026-10-03i"></script>
   </body>
 </html>
