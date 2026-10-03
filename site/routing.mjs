@@ -74,7 +74,7 @@ function waitForRoute(data, routeId, settings) {
   return settings.terWait;
 }
 
-function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings) {
+function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingMetres = null) {
   const a = data.routeStates[fromNode];
   const b = data.routeStates[toNode];
   if (!a || !b) return storedCost;
@@ -87,7 +87,9 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings) {
   }
   if (a.role === "alight" && b.role === "board") {
     if (a.stationIndex === b.stationIndex) return settings.transferPenalty;
-    const walkDistance = distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point);
+    const walkDistance = Number.isFinite(walkingMetres)
+      ? walkingMetres
+      : distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point);
     return walkDistance / settings.walkMetersPerMinute + settings.walkingTransferPenalty;
   }
 
@@ -148,9 +150,9 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   while (queue.length) {
     const [value, node] = queue.pop();
     if (value !== distances[node]) continue;
-    for (const [next, storedCost] of data.adjacency[node]) {
+    for (const [next, storedCost, walkingMetres] of data.adjacency[node]) {
       if (!allowed[next]) continue;
-      const cost = adjustedEdgeCost(data, node, next, storedCost, settings);
+      const cost = adjustedEdgeCost(data, node, next, storedCost, settings, walkingMetres);
       const candidate = value + cost;
       if (candidate < distances[next]) {
         distances[next] = candidate;
@@ -256,7 +258,11 @@ export function describeJourney(data, model, destination) {
       ((a.role === "arrival" && b.role === "departure") || (a.role === "alight" && b.role === "board")) &&
       a.stationIndex !== b.stationIndex
     ) {
-      walking += distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point) / walkSpeed;
+      const edge = data.adjacency[nodes[i - 1]]?.find(([next]) => next === nodes[i]);
+      const walkMetres = Number.isFinite(edge?.[2])
+        ? edge[2]
+        : distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point);
+      walking += walkMetres / walkSpeed;
     }
   }
   return {
