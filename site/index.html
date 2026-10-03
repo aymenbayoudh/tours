@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=2026-10-03e" />
+    <link rel="stylesheet" href="./styles.css?v=2026-10-03f" />
   </head>
   <body>
     <main class="page">
@@ -180,6 +180,11 @@
             <details class="settings-collapse settings-section-collapse">
               <summary><strong>Couleurs des communes par EPCI</strong><small>une couleur par intercommunalité</small></summary>
               <div class="settings-collapse-body">
+                <div class="epci-palette-toolbar">
+                  <span>Palette multi-teintes</span>
+                  <button type="button" class="display-palette-button" data-palette-epci title="Générer une nouvelle palette EPCI" aria-label="Générer une palette de couleurs pour les EPCI">🎨</button>
+                </div>
+                <p class="display-settings-note">Génère des familles de rouge, rose, orange, bleu, bleu-vert et vert, avec plusieurs niveaux de saturation et de luminosité.</p>
                 <div id="displayEpciColors" class="route-color-settings"></div>
               </div>
             </details>
@@ -252,6 +257,6 @@
         </details>
       </footer>
     </main>
-    <script type="module" src="./app.js?v=2026-10-03f"></script>
+    <script type="module" src="./app.js?v=2026-10-03g"></script>
   </body>
 </html>
