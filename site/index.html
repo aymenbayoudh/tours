@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=2026-10-03a" />
+    <link rel="stylesheet" href="./styles.css?v=2026-10-03b" />
   </head>
   <body>
     <main class="page">
@@ -40,6 +40,7 @@
           </div>
           <div class="toolbar-actions">
             <button id="settingsButton" type="button" class="ghost" aria-expanded="false" aria-controls="settingsPanel">Options</button>
+            <button id="displaySettingsButton" type="button" class="ghost" aria-expanded="false" aria-controls="displaySettingsPanel">Paramètres</button>
             <button id="locateButton" type="button" class="ghost">Ma position</button>
             <button id="shareButton" type="button" class="ghost">Partager</button>
             <button id="fullscreenButton" type="button" class="ghost">Plein écran</button>
@@ -74,6 +75,49 @@
           <button id="copyLinkButton" type="button">Copier le lien</button>
         </div>
 
+        <div id="displaySettingsScrim" class="display-settings-scrim" hidden></div>
+        <section id="displaySettingsPanel" class="display-settings-panel" hidden aria-label="Paramètres d’affichage">
+          <div class="display-settings-header">
+            <div>
+              <h3>Paramètres d’affichage</h3>
+              <p>Réglages enregistrés sur cet appareil.</p>
+            </div>
+            <button id="displaySettingsClose" type="button" class="icon-button" aria-label="Fermer les paramètres">×</button>
+          </div>
+          <div class="display-settings-scroll">
+            <h4>Réseau</h4>
+            <div class="display-settings-grid">
+              <span>Épaisseur TER</span>
+              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur TER">−</button><input id="displayTerWidth" data-display-number="terWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur TER">+</button><button type="button" class="display-row-reset" data-reset-display="terWidth" aria-label="Rétablir l’épaisseur TER">↺</button></label>
+              <span>Épaisseur tram</span>
+              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur tram">−</button><input id="displayTramWidth" data-display-number="tramWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur tram">+</button><button type="button" class="display-row-reset" data-reset-display="tramWidth" aria-label="Rétablir l’épaisseur tram">↺</button></label>
+              <span>Épaisseur BHNS</span>
+              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur BHNS">−</button><input id="displayBhnsWidth" data-display-number="bhnsWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur BHNS">+</button><button type="button" class="display-row-reset" data-reset-display="bhnsWidth" aria-label="Rétablir l’épaisseur BHNS">↺</button></label>
+              <span>Ronds des stations</span>
+              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="-0.2" aria-label="Réduire les stations">−</button><input id="displayStationRadius" data-display-number="stationRadius" type="number" min="1" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="0.2" aria-label="Agrandir les stations">+</button><button type="button" class="display-row-reset" data-reset-display="stationRadius" aria-label="Rétablir les stations">↺</button></label>
+              <span>Ronds des gares</span>
+              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="-0.2" aria-label="Réduire les gares">−</button><input id="displayRailStationRadius" data-display-number="railStationRadius" type="number" min="1" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="0.2" aria-label="Agrandir les gares">+</button><button type="button" class="display-row-reset" data-reset-display="railStationRadius" aria-label="Rétablir les gares">↺</button></label>
+              <span>Taille des étiquettes</span>
+              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="-0.05" aria-label="Réduire les étiquettes">−</button><input id="displayLabelScale" data-display-number="labelScale" type="number" min="0.6" max="1.8" step="0.05" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="0.05" aria-label="Agrandir les étiquettes">+</button><button type="button" class="display-row-reset" data-reset-display="labelScale" aria-label="Rétablir les étiquettes">↺</button></label>
+            </div>
+
+            <h4>Fond de carte</h4>
+            <div class="display-settings-grid">
+              <span>Communes</span>
+              <div class="display-color-control"><input id="displayCommuneColor" type="color" data-display-color="communeColor" aria-label="Couleur des communes"><input id="displayCommuneColorCode" type="text" maxlength="7" data-display-color-code="communeColor" aria-label="Code couleur des communes"><button type="button" class="display-row-reset" data-reset-display="communeColor" aria-label="Rétablir la couleur des communes">↺</button></div>
+              <span>Fond</span>
+              <div class="display-color-control"><input id="displayBackgroundColor" type="color" data-display-color="backgroundColor" aria-label="Couleur du fond"><input id="displayBackgroundColorCode" type="text" maxlength="7" data-display-color-code="backgroundColor" aria-label="Code couleur du fond"><button type="button" class="display-row-reset" data-reset-display="backgroundColor" aria-label="Rétablir la couleur du fond">↺</button></div>
+            </div>
+
+            <h4>Couleurs des lignes</h4>
+            <div id="displayRouteColors" class="route-color-settings"></div>
+          </div>
+          <div class="display-settings-actions">
+            <button id="displayResetAll" type="button">Tout réinitialiser</button>
+            <button id="displaySettingsDone" type="button" class="primary">Fermer</button>
+          </div>
+        </section>
+
         <div class="map-stage" id="mapStage">
           <canvas id="mapCanvas" aria-label="Carte des temps de trajet autour de Tours"></canvas>
           <button id="probePinButton" type="button" class="probe-pin" aria-label="Épingler l’arrivée" aria-pressed="false" title="Épingler l’arrivée" hidden>📌</button>
@@ -100,7 +144,7 @@
         </div>
 
         <details class="journey" id="journeyPanel" hidden><summary>Voir le trajet retenu</summary><div id="journeyContent"></div></details>
-        <p class="map-hint">Les gares entourées d’or sont atteignables au seuil choisi, même si leur petite zone disparaît au dézoom. Avec plusieurs courbes, le pourcentage utilise la plus longue durée.</p>
+        <p class="map-hint">Les gares entourées d’un halo coloré sont atteignables au seuil choisi, même si leur petite zone disparaît au dézoom. Avec plusieurs courbes, le pourcentage utilise la plus longue durée.</p>
         <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau sélectionné joignable au seuil choisi.</p>
       </section>
 
@@ -123,11 +167,11 @@
             <li><strong>Correspondances :</strong> changer de train dans une même gare ajoute 3 min 30, puis l’attente de la nouvelle ligne. Entre arrêts distincts à moins de 650 m, on ajoute la marche, 2 minutes de marge et l’attente. Rester dans le même véhicule conserve seulement le temps d’arrêt de l’horaire. Les passages piétons, entrées de gare et obstacles ne sont pas modélisés.</li>
             <li><strong>Projets et exceptions :</strong> le tram B utilise 18,4 km/h et le BHNS C 18 km/h, le long du tracé. Les décocher retire leurs trajets et leurs correspondances. La ligne P21 vers Chinon reste une estimation à 50 km/h : l’extrait SNCF retenu propose des cars, pas de trains sur cette ligne. Les points sans desserte retenue (notamment Vendôme TGV) sont visibles mais n’autorisent pas d’embarquement fictif.</li>
             <li><strong>Résultat :</strong> le moteur recherche le trajet le plus court parmi ces possibilités. « Voir le trajet retenu » donne ses étapes. Les correspondances ne sont pas garanties à une date et une heure précises : les services peuvent circuler à des moments ou jours différents.</li>
-            <li><strong>Isochrones :</strong> la couleur et les contours viennent d’une grille affinée quand on zoome. Une poche accessible peut être plus petite qu’une maille au dézoom ; le halo doré vérifie alors le temps directement à la gare. Le pourcentage utilise la plus grande durée cochée (ou le curseur si aucune courbe n’est cochée), parmi les arrêts desservis par le réseau sélectionné.</li>
+            <li><strong>Isochrones :</strong> la couleur et les contours viennent d’une grille affinée quand on zoome. Une poche accessible peut être plus petite qu’une maille au dézoom ; le halo coloré vérifie alors le temps directement à la gare. Le pourcentage utilise la plus grande durée cochée (ou le curseur si aucune courbe n’est cochée), parmi les arrêts desservis par le réseau sélectionné.</li>
           </ol>
         </details>
       </footer>
     </main>
-    <script type="module" src="./app.js?v=2026-10-03c"></script>
+    <script type="module" src="./app.js?v=2026-10-03d"></script>
   </body>
 </html>
