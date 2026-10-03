@@ -316,23 +316,41 @@ h1 {
   margin-bottom: 0;
 }
 
+
+.probe-pin { position: absolute; width: 44px; height: 44px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-size: 19px; touch-action: manipulation; }
+.probe-pin[aria-pressed="true"] { background: #1c2f42; }
+button:focus-visible, summary:focus-visible, input:focus-visible { outline: 3px solid #d77824; outline-offset: 3px; }
+.map-hint { font-size: .8rem; color: var(--muted); line-height: 1.4; margin: 10px 0; }
+.journey, .method { padding: 12px 0; line-height: 1.5; border-top: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; min-height: 32px; }
+.journey p { margin: 6px 0; font-size: .9rem; }
+.method li { margin-bottom: 8px; }
+.map-expanded { overflow: hidden; }
+.map-card.is-expanded, .map-card:fullscreen { position: fixed; inset: 0; z-index: 1000; width: 100%; height: 100dvh; border-radius: 0; background: #fffaf3; padding: 12px max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); display: flex; flex-direction: column; overflow: auto; }
+.map-card.is-expanded .map-stage, .map-card:fullscreen .map-stage { flex: 1 0 40dvh; height: auto; min-height: 200px; }
+.map-card.is-expanded .map-hint, .map-card:fullscreen .map-hint { display: none; }
 @media (max-width: 720px) {
-  .page {
-    width: calc(100vw - 20px);
-    padding-top: 18px;
-  }
-
-  .map-toolbar,
-  .share-panel,
-  .settings-header {
-    flex-direction: column;
-  }
-
-  .map-stage {
-    height: 68vh;
-  }
-
-  .ghost {
-    width: 100%;
-  }
+  .page { width: calc(100% - 16px); padding-top: 16px; }
+  .hero { padding: 0 6px; margin-bottom: 16px; }
+  .lede { font-size: .92rem; }
+  .map-card, .notes { border-radius: 18px; padding: 12px; }
+  .map-toolbar { flex-direction: column; gap: 10px; }
+  .toolbar-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; gap: 5px; }
+  .toolbar-actions .ghost { padding: 9px 4px; min-height: 44px; font-size: .8rem; line-height: 1.15; border-radius: 12px; }
+  #statusText { font-size: .9rem; }
+  .map-stage { height: 66dvh; min-height: 390px; border-radius: 14px; }
+  .icon-button { width: 44px; height: 44px; }
+  .map-float { right: 8px; top: 8px; gap: 6px; }
+  .settings-panel { padding: 10px; }
+  .settings-header { flex-direction: row; }
+  .controls { gap: 14px; }
+  .toggle { min-height: 36px; }
+  .toggle input { width: 20px; height: 20px; flex-shrink: 0; }
+  .slider { flex-direction: column; align-items: stretch; min-width: 0; width: 100%; flex-basis: 100%; }
+  .slider input { height: 30px; }
+  .legend { bottom: 9px; left: 9px; font-size: .72rem; }
+  .share-panel { flex-wrap: wrap; }
+  .share-url { min-width: 100%; }
+  .reach { line-height: 1.4; }
+  .method ol { padding-left: 20px; }
 }

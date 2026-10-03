@@ -79,43 +79,8 @@ def gtfs_rows(archive: zipfile.ZipFile, name: str):
 
 
 def extract_tram(path: Path) -> dict:
-    with zipfile.ZipFile(path) as archive:
-        route = next(row for row in gtfs_rows(archive, "routes.txt") if row["route_short_name"].upper() == "A" and row["route_type"] == "0")
-        counts = Counter(row["shape_id"] for row in gtfs_rows(archive, "trips.txt") if row["route_id"] == route["route_id"])
-        chosen = {shape for shape, _ in counts.most_common(4)}
-        trip_by_shape = {}
-        for row in gtfs_rows(archive, "trips.txt"):
-            if row["route_id"] == route["route_id"] and row["shape_id"] in chosen:
-                trip_by_shape.setdefault(row["shape_id"], row["trip_id"])
-        stop_ids = {row["stop_id"] for row in gtfs_rows(archive, "stop_times.txt") if row["trip_id"] in trip_by_shape.values()}
-        stops = {row["stop_id"]: row for row in gtfs_rows(archive, "stops.txt") if row["stop_id"] in stop_ids or row["location_type"] == "1"}
-        by_trip = defaultdict(list)
-        for row in gtfs_rows(archive, "stop_times.txt"):
-            if row["trip_id"] in trip_by_shape.values():
-                by_trip[row["trip_id"]].append((int(row["stop_sequence"]), row["stop_id"]))
-        shapes = defaultdict(list)
-        for row in gtfs_rows(archive, "shapes.txt"):
-            if row["shape_id"] in chosen:
-                shapes[row["shape_id"]].append((int(row["shape_pt_sequence"]), [float(row["shape_pt_lon"]), float(row["shape_pt_lat"])]))
-        result_shapes = []
-        for shape_id, trip_id in trip_by_shape.items():
-            ordered_ids = [stop_id for _, stop_id in sorted(by_trip[trip_id])]
-            parents = []
-            for stop_id in ordered_ids:
-                child = stops[stop_id]
-                parent_id = child["parent_station"] or stop_id
-                if parents and parents[-1] == parent_id:
-                    continue
-                parents.append(parent_id)
-            result_shapes.append({"id": shape_id, "points": [p for _, p in sorted(shapes[shape_id])], "stops": parents})
-        used_parents = {s for shape in result_shapes for s in shape["stops"]}
-        result_stops = {}
-        for parent_id in used_parents:
-            row = stops.get(parent_id)
-            if not row:
-                continue
-            result_stops[parent_id] = {"name": row["stop_name"], "point": [float(row["stop_lon"]), float(row["stop_lat"])]}
-        return {"route": {"id": "TRAM A", "name": route["route_long_name"], "color": "#" + route["route_color"]}, "stops": result_stops, "shapes": result_shapes}
+    from prepare_timetables import tram
+    return tram(path)[0]
 
 
 def main() -> None:

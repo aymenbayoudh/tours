@@ -132,6 +132,15 @@ def station_on_path(point, path):
     return best
 
 
+def project_on_paths(point, paths):
+    candidates = []
+    for path in paths:
+        for a, b in zip(path, path[1:]):
+            dist, fraction = segment_distance(point, a, b)
+            candidates.append((dist, (a[0] + fraction * (b[0]-a[0]), a[1] + fraction * (b[1]-a[1]))))
+    return min(candidates, key=lambda item: item[0])
+
+
 def read_remi_routes():
     root = ET.parse(NETWORK_KML).getroot()
     ns = {"k": "http://www.opengis.net/kml/2.2"}
@@ -223,15 +232,29 @@ def build_stations_and_routes():
     stations = []
     for item in read_json("sncf_stations.json"):
         stations.append({"id": "SNCF:" + item["uic"], "name": item["name"], "point": xy(*item["point"]), "mode": "TER", "routes": set(), "planned": False, "terminal": False})
+    # Match the timetable catalogue before KML halts: RFN and GTFS sometimes
+    # use different UICs for the same station (e.g. Trélazé).
+    for item in read_json("timetables.json").get("stations", []):
+        sid = "SNCF:" + item["uic"]
+        if any(s["id"] == sid for s in stations): continue
+        point = xy(*item["point"])
+        match = next((s for s in stations if s["name"] == item["name"] and math.dist(s["point"], point) < 1500), None)
+        if match:
+            match["id"] = sid
+        else:
+            stations.append({"id": sid, "name": item["name"], "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     for name, point in read_kml_rail_stops():
         if any(math.dist(point, station["point"]) <= 300 for station in stations):
             continue
         stations.append({"id": "KML:" + name, "name": name, "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     tram = read_json("filbleu_tram.json")
+    tram_paths = [[xy(*p) for p in shape["points"]] for shape in tram["shapes"]]
     tram_index = {}
     for stop_id, item in tram["stops"].items():
         tram_index[stop_id] = len(stations)
-        stations.append({"id": "FILBLEU:" + stop_id, "name": item["name"], "point": xy(*item["point"]), "mode": "TRAM", "routes": {"TRAM A"}, "planned": False})
+        point = xy(*item["point"])
+        offset, draw_point = project_on_paths(point, tram_paths)
+        stations.append({"id": "FILBLEU:" + stop_id, "name": item["name"], "point": point, "drawPoint": draw_point, "displayOffset": offset, "mode": "TRAM", "routes": {"TRAM A"}, "planned": False})
     route_waits = {"TRAM A": 4.0, "TRAM B": 4.0, "BHNS C": 3.25}
     route_info = {"TRAM A": {"title": "Tramway A — Vaucanson ↔ Lycée Jean Monnet", "mode": "TRAM", "color": tram["route"]["color"], "planned": False}}
     edges = {}
@@ -273,7 +296,7 @@ def build_stations_and_routes():
                 rail_base.append({"id": "RFN " + feature["code"], "color": "#9cabb7", "mode": "RFN", "points": [rounded(p) for p in points]})
     routes = rail_base + routes
     for shape in tram["shapes"]:
-        points = simplify([xy(*p) for p in shape["points"]], 35)
+        points = [xy(*p) for p in shape["points"]]
         routes.append({"id": "TRAM A", "color": tram["route"]["color"], "mode": "TRAM", "points": [rounded(p) for p in points]})
         for sa, sb in zip(shape["stops"], shape["stops"][1:]):
             if sa not in tram_index or sb not in tram_index:
@@ -305,35 +328,70 @@ def build_stations_and_routes():
 
 
 def build_graph(stations, edges, route_waits):
-    route_states, station_states = [], [[] for _ in stations]
-    lookup = {}
-    for i, station in enumerate(stations):
-        for route_id in sorted(station["routes"]):
-            lookup[(i, route_id)] = len(route_states)
-            station_states[i].append(len(route_states))
-            route_states.append({"stationIndex": i, "routeId": route_id})
-    adjacency = [[] for _ in route_states]
+    schedules = read_json("timetables.json")
+    patterns = schedules["patterns"]
+    scheduled_routes = {p["routeId"] for p in patterns}
+    by_id = {s["id"]: i for i, s in enumerate(stations)}
+    route_states, adjacency = [], []
+    station_states = [[] for _ in stations]
+    boarding_states = [[] for _ in stations]
+    for station in stations:
+        station["routes"] = set()
+    def node(station, route, role, pattern=None):
+        index = len(route_states)
+        route_states.append({"stationIndex": station, "routeId": route, "role": role, "pattern": pattern})
+        adjacency.append([])
+        stations[station]["routes"].add(route)
+        return index
     def add(a, b, minutes):
-        adjacency[a].append([b, round(minutes, 3)])
-    for (a, b, route_id), minutes in edges.items():
-        if (a, route_id) in lookup and (b, route_id) in lookup:
-            add(lookup[(a, route_id)], lookup[(b, route_id)], minutes)
-            add(lookup[(b, route_id)], lookup[(a, route_id)], minutes)
-    for states in station_states:
-        for src in states:
-            for dst in states:
-                if src != dst:
-                    add(src, dst, 3.5 + route_waits[route_states[dst]["routeId"]])
-    for i, a in enumerate(stations):
-        for j in range(i + 1, len(stations)):
-            distance = math.dist(a["point"], stations[j]["point"])
-            if distance > 650:
-                continue
+        if minutes < 0:
+            raise ValueError("Negative graph edge")
+        adjacency[a].append([b, round(minutes, 4)])
+    audit_patterns = []
+    for number, pattern in enumerate(patterns):
+        arrivals, departures = [], []
+        for pos, sid in enumerate(pattern["stops"]):
+            station = by_id[sid]
+            arr = node(station, pattern["routeId"], "arrival", number)
+            dep = node(station, pattern["routeId"], "departure", number)
+            arrivals.append(arr); departures.append(dep)
+            add(arr, dep, pattern["departures"][pos] - pattern["arrivals"][pos])
+            if pattern["dropoff"][pos]: station_states[station].append(arr)
+            if pattern["pickup"][pos]: boarding_states[station].append(dep)
+        for pos in range(len(arrivals)-1):
+            add(departures[pos], arrivals[pos+1], pattern["arrivals"][pos+1]-pattern["departures"][pos])
+        audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": [by_id[s] for s in pattern["stops"]], "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
+    # Only routes without an observed schedule retain a geometric estimate.
+    # KML-only rail halts have no boarding link unless present in a timetable.
+    fallback_nodes = {}
+    for (a, b, route), minutes in edges.items():
+        if route in scheduled_routes: continue
+        for station in (a, b):
+            if (station, route) not in fallback_nodes:
+                arr = node(station, route, "arrival")
+                dep = node(station, route, "departure")
+                add(arr, dep, 0)
+                station_states[station].append(arr); boarding_states[station].append(dep)
+                fallback_nodes[(station, route)] = (arr, dep)
+        aa, ad = fallback_nodes[(a, route)]; ba, bd = fallback_nodes[(b, route)]
+        add(ad, ba, minutes); add(bd, aa, minutes)
+    # A transfer is possible only at an actual stopping point. Staying aboard
+    # follows the pattern edges and pays neither a new wait nor transfer time.
+    for i, station in enumerate(stations):
+        for src in station_states[i]:
+            for dst in boarding_states[i]:
+                if route_states[src]["pattern"] is not None and route_states[src]["pattern"] == route_states[dst]["pattern"]: continue
+                add(src, dst, 3.5 + route_waits[route_states[dst]["routeId"]])
+        for j in range(i+1, len(stations)):
+            walk_distance = math.dist(station["point"], stations[j]["point"])
+            if walk_distance > 650: continue
             for src in station_states[i]:
-                for dst in station_states[j]:
-                    add(src, dst, distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
-                    add(dst, src, distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[src]["routeId"]])
-    return route_states, station_states, adjacency
+                for dst in boarding_states[j]:
+                    add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
+            for src in station_states[j]:
+                for dst in boarding_states[i]:
+                    add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
+    return route_states, station_states, boarding_states, adjacency, audit_patterns
 
 
 def build_grid(epci, stations, bounds):
@@ -346,25 +404,24 @@ def build_grid(epci, stations, bounds):
             point = (min_x + (col + 0.5) * width, min_y + (row + 0.5) * height)
             if not point_in_polygons(point, epci):
                 continue
-            near = sorted(((i, math.dist(point, s["point"])) for i, s in enumerate(stations)), key=lambda item: item[1])[:4]
             mask[row * GRID_COLS + col] = len(cells)
-            cells.append({"row": row, "col": col, "point": rounded(point), "access": [[i, round(d, 1)] for i, d in near]})
+            cells.append({"row": row, "col": col, "point": rounded(point)})
     return cells, mask
 
 
 def main():
     epci, bounds, boroughs, communes = build_administration()
     stations, routes, edges, route_waits, route_info = build_stations_and_routes()
-    route_states, station_states, adjacency = build_graph(stations, edges, route_waits)
+    route_states, station_states, boarding_states, adjacency, audit_patterns = build_graph(stations, edges, route_waits)
     cells, mask = build_grid(epci, stations, bounds)
     visible_points = [p for route in routes for p in route["points"]] + [rounded(s["point"]) for s in stations]
     explore_bounds = [min(p[0] for p in visible_points) - 20_000, min(p[1] for p in visible_points) - 20_000, max(p[0] for p in visible_points) + 20_000, max(p[1] for p in visible_points) + 20_000]
     output = {
-        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "originStationCount": 5, "cellNearestStations": 4, "defaultBoardWait": 15.0},
+        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
-        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "inSerm": point_in_polygons(s["point"], epci)} for s in stations],
+        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "drawPoint": rounded(s.get("drawPoint", s["point"])), "displayOffset": round(s.get("displayOffset", 0), 2), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "inSerm": point_in_polygons(s["point"], epci)} for s in stations],
         "routeInfo": route_info,
-        "routeStates": route_states, "stationStates": station_states, "routeWaits": route_waits, "adjacency": adjacency, "cells": cells, "mask": mask,
+        "routeStates": route_states, "stationStates": station_states, "boardingStates": boarding_states, "timetablePatterns": audit_patterns, "routeWaits": route_waits, "adjacency": adjacency, "cells": cells, "mask": mask,
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")

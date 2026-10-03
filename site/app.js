@@ -1,6 +1,7 @@
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-02c", import.meta.url).toString();
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03a";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03a", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
-const MAX_VIEWPORT_SCALE = 12;
+const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
 const DEFAULT_VIEWPORT_SCALE = 1;
 const PANEL_PADDING = 22;
@@ -8,8 +9,8 @@ const ROUTE_LINE_WIDTH = 3.6;
 const HOVER_DEADBAND = 12;
 const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
-const REACHABILITY_THRESHOLD_MINUTES = 30;
-const OUTLINE_OPTIONS = [15, 30, 45, 60];
+const MAX_TIME_MINUTES = 180;
+const OUTLINE_OPTIONS = [15, 30, 45, 60, 90, 120];
 const DEFAULT_OUTLINE_MINUTES = [15, 30, 60];
 const OUTLINE_WIDTHS = { 15: 1.4, 30: 2.1, 45: 2, 60: 1.5 };
 const OUTLINE_LABEL_DIRS = {
@@ -17,6 +18,8 @@ const OUTLINE_LABEL_DIRS = {
   30: [0.72, -0.7],
   45: [-0.12, -1],
   60: [-0.88, -0.42],
+  90: [-0.5, 0.9],
+  120: [0.9, 0.7],
 };
 const DEFAULT_MAX_TIME_MINUTES = 90;
 const DEFAULT_INCLUDE_PROJECTS = true;
@@ -68,6 +71,12 @@ const settingsPanel = document.getElementById("settingsPanel");
 const settingsClose = document.getElementById("settingsClose");
 const handButton = document.getElementById("handButton");
 const projectsToggle = document.getElementById("projectsToggle");
+const probePinButton = document.getElementById("probePinButton");
+const mapCard = document.querySelector(".map-card");
+const journeyPanel = document.getElementById("journeyPanel");
+const journeyContent = document.getElementById("journeyContent");
+const mapBackdrop = document.createElement("canvas");
+let backdropKey = "";
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -259,72 +268,34 @@ function nearestStations(point, count, includePlanned = true) {
   return nearest;
 }
 
-function runDijkstra(origin) {
-  const { routeStates, stationStates, adjacency, routeWaits, meta } = state.data;
-  const distances = new Array(routeStates.length).fill(Infinity);
-  const visited = new Array(routeStates.length).fill(false);
-  const seeds = nearestStations(origin, meta.originStationCount, state.includeProjects);
-
-  for (const seed of seeds) {
-    for (const routeStateIndex of stationStates[seed.index] || []) {
-      const wait = routeWaits[routeStates[routeStateIndex].routeId] ?? meta.defaultBoardWait;
-      distances[routeStateIndex] = Math.min(distances[routeStateIndex], seed.walkMinutes + wait);
-    }
-  }
-
-  for (let step = 0; step < routeStates.length; step += 1) {
-    let current = -1;
-    let best = Infinity;
-    for (let i = 0; i < distances.length; i += 1) {
-      if (!visited[i] && distances[i] < best) {
-        best = distances[i];
-        current = i;
-      }
-    }
-    if (current === -1) break;
-    visited[current] = true;
-    for (const [toIndex, weight] of adjacency[current]) {
-      if (!state.includeProjects && state.data.routeInfo?.[routeStates[toIndex].routeId]?.planned) continue;
-      const candidate = distances[current] + weight;
-      if (candidate < distances[toIndex]) distances[toIndex] = candidate;
-    }
-  }
-  return { distances, seeds };
+let cachedModel = null;
+let cachedModelKey = "";
+let cachedWarp = null;
+let cachedWarpKey = "";
+function activeThreshold() {
+  return state.outlineMinutes.length ? Math.max(...state.outlineMinutes) : state.maxTransitTime;
 }
-
-function estimateTravel(origin, distances, destination, nearby = null) {
-  const walk = state.data.meta.walkMetersPerMinute;
-  const access = state.data.meta.stationAccessPenalty;
-  let best = distance(origin, destination) / walk;
-  const stations = nearby && state.includeProjects ? nearby : nearestStations(destination, state.data.meta.cellNearestStations, state.includeProjects);
-  for (const station of stations) {
-    const index = station.index ?? station[0];
-    const walkMinutes =
-      station.walkMinutes ?? distance(destination, state.data.stations[index].point) / walk + access;
-    for (const routeStateIndex of state.data.stationStates[index] || []) {
-      best = Math.min(best, distances[routeStateIndex] + walkMinutes);
-    }
+function getTravelModel(origin) {
+  const key = `${origin[0]},${origin[1]},${state.includeProjects}`;
+  if (key !== cachedModelKey) {
+    cachedModel = buildTravelModel(state.data, origin, state.includeProjects);
+    cachedModelKey = key;
   }
-  return best;
+  return cachedModel;
 }
-
-function summarizeReachability(origin, distances) {
-  const access = state.data.meta.stationAccessPenalty;
-  const walk = state.data.meta.walkMetersPerMinute;
-  let reachable = 0;
-  for (let index = 0; index < state.data.stations.length; index += 1) {
-    if (!state.includeProjects && state.data.stations[index].planned) continue;
-    let best = distance(origin, state.data.stations[index].point) / walk + access;
-    for (const routeStateIndex of state.data.stationStates[index] || []) {
-      best = Math.min(best, distances[routeStateIndex] + access);
-    }
-    if (best <= REACHABILITY_THRESHOLD_MINUTES) reachable += 1;
-  }
-  return { reachable, total: state.data.stations.filter((station) => state.includeProjects || !station.planned).length };
+function estimateTravel(origin, distances, destination) {
+  return routeEstimate(state.data, getTravelModel(origin), destination);
+}
+function summarizeReachability(origin) {
+  return reachability(state.data, getTravelModel(origin), activeThreshold());
 }
 
 function computeWarp(origin, { fast = false } = {}) {
-  const { distances, seeds } = runDijkstra(origin);
+  const model = getTravelModel(origin);
+  const key = cachedModelKey + ":static";
+  if (cachedWarpKey === key) return cachedWarp;
+  const { distances } = model;
+  const seeds = [];
   const { gridCols, gridRows, bounds } = state.data.meta;
   const [minX, minY, maxX, maxY] = bounds;
   const cellW = (maxX - minX) / gridCols;
@@ -335,20 +306,22 @@ function computeWarp(origin, { fast = false } = {}) {
   for (const cellIndex of state.data.mask) {
     if (cellIndex === -1) continue;
     const cell = state.data.cells[cellIndex];
-    minuteGrid[cell.row][cell.col] = estimateTravel(origin, distances, cell.point, cell.access);
+    minuteGrid[cell.row][cell.col] = routeEstimate(state.data, model, cell.point);
     validMask[cell.row][cell.col] = true;
   }
 
-  return {
+  cachedWarpKey = key;
+  cachedWarp = {
     distances,
     seeds,
-    reachability: fast ? null : summarizeReachability(origin, distances),
+    reachability: null,
     minutes: minuteGrid,
     validMask,
     cellW,
     cellH,
     bounds,
   };
+  return cachedWarp;
 }
 
 function pointInStaticGrid(point) {
@@ -358,11 +331,14 @@ function pointInStaticGrid(point) {
   return col >= 0 && row >= 0 && col < gridCols && row < gridRows && state.data.mask[row * gridCols + col] !== -1;
 }
 
-function computeOutsideWarp(origin, distances, transform, width, height) {
+function computeViewportWarp(origin, transform, width, height) {
+  const model = getTravelModel(origin);
+  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${state.maxTransitTime}:${activeThreshold()}:${Boolean(state.dragTarget)}`;
+  if (cachedWarpKey === key) return cachedWarp;
   const topLeft = transform.toWorld(0, 0);
   const bottomRight = transform.toWorld(width, height);
   const bounds = [topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]];
-  const gridCols = 160;
+  const gridCols = state.dragTarget ? 90 : width < 600 ? 100 : 180;
   const gridRows = Math.max(80, Math.round((gridCols * height) / width));
   const cellW = (bounds[2] - bounds[0]) / gridCols;
   const cellH = (bounds[3] - bounds[1]) / gridRows;
@@ -371,21 +347,24 @@ function computeOutsideWarp(origin, distances, transform, width, height) {
   for (let row = 0; row < gridRows; row += 1) {
     for (let col = 0; col < gridCols; col += 1) {
       const point = [bounds[0] + (col + 0.5) * cellW, bounds[1] + (row + 0.5) * cellH];
-      if (pointInStaticGrid(point)) continue;
-      const travel = estimateTravel(origin, distances, point);
-      if (travel > state.maxTransitTime + 15) continue;
+      const travel = routeEstimate(state.data, model, point);
+      if (!pointInStaticGrid(point) && travel > Math.max(state.maxTransitTime, activeThreshold()) + 15) continue;
       minutes[row][col] = travel;
       validMask[row][col] = true;
     }
   }
-  return { minutes, validMask, bounds, cellW, cellH, reachability: null };
+  cachedWarpKey = key;
+  cachedWarp = { minutes, validMask, bounds, cellW, cellH, distances: model.distances };
+  return cachedWarp;
 }
 
 function createCanvasBacking(canvas) {
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
-  canvas.width = Math.max(1, Math.round(rect.width * dpr));
-  canvas.height = Math.max(1, Math.round(rect.height * dpr));
+  const width = Math.max(1, Math.round(rect.width * dpr));
+  const height = Math.max(1, Math.round(rect.height * dpr));
+  if (canvas.width !== width) canvas.width = width;
+  if (canvas.height !== height) canvas.height = height;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return { width: rect.width, height: rect.height };
 }
@@ -497,11 +476,24 @@ function drawCommuneLabels(drawCtx, projectPoint) {
 }
 
 function drawStations(drawCtx, projectPoint) {
+  const source = heatmapSourcePoint();
+  const model = source ? getTravelModel(source) : null;
+  const threshold = activeThreshold();
   const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
   const labels = [];
   for (const station of state.data.stations) {
-    const [x, y] = projectPoint(station.point);
+    const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
+    const index = state.data.stations.indexOf(station);
+    if (model && model.activeStations[index] && routeEstimate(state.data, model, station.point) <= threshold) {
+      drawCtx.beginPath();
+      drawCtx.arc(x, y, state.viewportScale < 2 ? 5.5 : 4, 0, Math.PI * 2);
+      drawCtx.fillStyle = "rgba(255,201,85,0.8)";
+      drawCtx.fill();
+      drawCtx.lineWidth = 1;
+      drawCtx.strokeStyle = "#9b5700";
+      drawCtx.stroke();
+    }
     drawCtx.beginPath();
     drawCtx.arc(x, y, station.mode === "TRAM" ? 2.6 : station.mode === "BHNS" ? 2.3 : 2, 0, Math.PI * 2);
     drawCtx.fillStyle = "#fff";
@@ -745,7 +737,7 @@ function drawMarker(drawCtx, screen, color, radius = 6) {
   drawCtx.stroke();
 }
 
-function drawLabelBubble(drawCtx, screen, lines, color, below = false) {
+function drawLabelBubble(drawCtx, screen, lines, color, below = false, actionSpace = 0) {
   const padX = 12;
   const padY = 8;
   const items = lines.map((line) => typeof line === "string" ? { text: line, small: false } : line);
@@ -753,7 +745,7 @@ function drawLabelBubble(drawCtx, screen, lines, color, below = false) {
   drawCtx.textBaseline = "middle";
   const canvasWidth = mapCanvas.getBoundingClientRect().width;
   const canvasHeight = mapCanvas.getBoundingClientRect().height;
-  const maxTextWidth = Math.min(360, canvasWidth - padX * 2 - 16);
+  const maxTextWidth = Math.min(360, canvasWidth - padX * 2 - 16 - actionSpace);
   for (const item of items) {
     drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
     while (item.text.length > 8 && drawCtx.measureText(item.text).width > maxTextWidth) {
@@ -763,7 +755,7 @@ function drawLabelBubble(drawCtx, screen, lines, color, below = false) {
   const width = Math.ceil(Math.max(...items.map((item) => {
     drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
     return drawCtx.measureText(item.text).width;
-  }))) + padX * 2;
+  }))) + padX * 2 + actionSpace;
   const height = padY * 2 + items.reduce((sum, item) => sum + (item.small ? 14 : 16), 0);
   const desiredX = screen[0] > canvasWidth * 0.55 ? screen[0] - width - 14 : screen[0] + 14;
   const x = clamp(desiredX, 8, canvasWidth - width - 8);
@@ -785,7 +777,7 @@ function drawLabelBubble(drawCtx, screen, lines, color, below = false) {
     const lineHeight = item.small ? 14 : 16;
     drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
     drawCtx.fillStyle = item.small ? "#52687a" : "#1c2f42";
-    drawCtx.fillText(item.text, x + width / 2, lineY + lineHeight / 2);
+    drawCtx.fillText(item.text, x + (width - actionSpace) / 2, lineY + lineHeight / 2);
     lineY += lineHeight;
   }
   drawCtx.textAlign = "left";
@@ -809,7 +801,7 @@ function stationModeLines(point) {
   const kind = station.id.startsWith("KML:") ? "Halte" : station.mode === "TER" ? "Gare" : "Arrêt";
   const lines = [{ text: `${kind} ${station.name}`, small: true }];
   const ordered = [...station.routes].sort((a, b) => Number(b.startsWith("TER ")) - Number(a.startsWith("TER ")) || a.localeCompare(b, "fr"));
-  if (!ordered.length) return lines;
+  if (!ordered.length) { lines.push({text: "Sans desserte retenue dans le calcul", small: true}); return lines; }
   const routeId = ordered[0];
   if (routeId === "TRAM A") lines.push({ text: "Tramway A", small: true });
   else if (routeId === "TRAM B") lines.push({ text: "Tramway B · projet 2028", small: true });
@@ -847,11 +839,11 @@ function syncStatus(warp, travelMinutes) {
     const prefix = state.pinned ? "Carte depuis" : "Près de";
     statusText.textContent = `${prefix} ${sourceName}`;
   }
-  if (warp?.reachability) {
-    const { reachable, total } = warp.reachability;
+  if (warp) {
+    const { reachable, total } = summarizeReachability(source);
     const percent = Math.round((reachable / total) * 100);
     const percentText = reachable > 0 && percent === 0 ? "Moins de 1 %" : `${percent} %`;
-    reachText.textContent = `${percentText} des gares et arrêts du réseau sélectionné sont joignables en ${REACHABILITY_THRESHOLD_MINUTES} minutes depuis ce point (estimation).`;
+    reachText.textContent = `${percentText} des gares et arrêts du réseau sélectionné sont joignables en ${activeThreshold()} minutes depuis ce point (estimation).`;
   }
 }
 
@@ -916,24 +908,32 @@ function drawMap() {
   const focus = state.viewportCenter || (scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter());
   const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
-  const panning = state.dragTarget === "pan" && state.currentRender;
-  const warp = source ? (panning && state.currentRender.warp ? state.currentRender.warp : computeWarp(source, { fast: Boolean(state.dragTarget) })) : null;
-  const showOutsideWarp = source && (!pointInLand(source) || !pointInLand(focus));
-  const outsideWarp = showOutsideWarp ? (panning && state.currentRender.outsideWarp ? state.currentRender.outsideWarp : computeOutsideWarp(source, warp.distances, transform, width, height)) : null;
+  const warp = source ? (scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
+    ? computeViewportWarp(source, transform, width, height)
+    : computeWarp(source)) : null;
 
-  drawBasemap(ctx, projectPoint);
-  if (warp) drawHeatmap(ctx, warp, projectPoint);
-  if (outsideWarp) drawHeatmap(ctx, outsideWarp, projectPoint);
-  drawDepartmentLimits(ctx, projectPoint);
-  drawRoutes(ctx, projectPoint);
-  drawCommuneLabels(ctx, projectPoint);
-  drawStations(ctx, projectPoint);
-  if (warp && state.outlineMinutes.length) drawOutline(ctx, warp, projectPoint);
-  if (outsideWarp && state.outlineMinutes.length) drawOutline(ctx, outsideWarp, projectPoint);
+  const nextBackdropKey = `${cachedModelKey}:${cachedWarpKey}:${width}:${height}:${scaleMul}:${focus}:${state.maxTransitTime}:${state.outlineMinutes}`;
+  if (nextBackdropKey !== backdropKey) {
+    mapBackdrop.width = mapCanvas.width; mapBackdrop.height = mapCanvas.height;
+    const baseCtx = mapBackdrop.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    baseCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    baseCtx.fillStyle = "#efe6d6"; baseCtx.fillRect(0,0,width,height);
+    drawBasemap(baseCtx, projectPoint);
+    if (warp) drawHeatmap(baseCtx, warp, projectPoint);
+    drawDepartmentLimits(baseCtx, projectPoint);
+    drawRoutes(baseCtx, projectPoint);
+    drawCommuneLabels(baseCtx, projectPoint);
+    drawStations(baseCtx, projectPoint);
+    if (warp && state.outlineMinutes.length) drawOutline(baseCtx, warp, projectPoint);
+    backdropKey = nextBackdropKey;
+  }
+  ctx.drawImage(mapBackdrop, 0, 0, width, height);
 
   let travelMinutes = null;
   if (warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
   state.pinHits = { origin: null, probe: null };
+  probePinButton.hidden = !state.probePoint;
 
   if (state.probePoint) {
     const probeScreen = projectPoint(state.probePoint);
@@ -943,8 +943,13 @@ function drawMap() {
     const probeLines = ["Arrivée", placeName(state.probePoint)];
     if (Number.isFinite(travelMinutes)) probeLines.unshift(formatMinutes(travelMinutes));
     probeLines.push(...stationModeLines(state.probePoint));
-    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1]);
+    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 46);
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
+    probePinButton.style.left = `${probeLabel.x + probeLabel.width - 46}px`;
+    probePinButton.style.top = `${probeLabel.y + 3}px`;
+    probePinButton.setAttribute("aria-pressed", String(state.probePinned));
+    probePinButton.setAttribute("aria-label", state.probePinned ? "Déverrouiller l’arrivée" : "Épingler l’arrivée");
+    probePinButton.title = state.probePinned ? "Déverrouiller l’arrivée" : "Épingler l’arrivée";
   }
   if (state.originPoint) {
     const originScreen = projectPoint(state.originPoint);
@@ -958,10 +963,11 @@ function drawMap() {
     state.pinHits.origin = { screen: originScreen, label: originLabel };
   }
 
-  state.currentRender = { warp, outsideWarp, transform, focus };
+  state.currentRender = { warp, transform, focus };
   legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
   syncStatus(warp, travelMinutes);
+  updateJourney();
   state.dirty = false;
 }
 
@@ -1044,6 +1050,7 @@ function syncUrl() {
     const { lat, lon } = worldToLonLat(state.originPoint);
     params.set("origin", `${formatCoord(lat)},${formatCoord(lon)}`);
   }
+  if (state.probePinned) params.set("lock", "1");
   if (state.probePoint) {
     const { lat, lon } = worldToLonLat(state.probePoint);
     params.set("distance", `${formatCoord(lat)},${formatCoord(lon)}`);
@@ -1081,7 +1088,7 @@ function restoreUrl() {
   }
   syncOutlineToggles();
   const max = Number(params.get("max"));
-  if (Number.isFinite(max) && max >= 20 && max <= 90) {
+  if (Number.isFinite(max) && max >= 20 && max <= MAX_TIME_MINUTES) {
     state.maxTransitTime = max;
     maxTimeInput.value = String(max);
     maxTimeLabel.textContent = `Temps max. ${max} min`;
@@ -1097,7 +1104,7 @@ function restoreUrl() {
       silent: true,
     });
   }
-  if (probe) setProbe(probe, true, { silent: true });
+  if (probe) setProbe(probe, params.get("lock") === "1", { silent: true });
   if (params.get("view") || params.get("hand") === "1") {
     state.handMode = params.get("hand") === "1";
     state.viewportCenter = parsePair(params.get("view")) || defaultCenter();
@@ -1111,6 +1118,7 @@ function restoreUrl() {
 }
 
 mapCanvas.addEventListener("pointermove", (event) => {
+  if (pinch && event.pointerType === "touch") return;
   const { screen, world } = pointerToWorld(event);
   if (!world) return;
   if (state.dragTarget && state.dragPointerId === event.pointerId) {
@@ -1128,7 +1136,7 @@ mapCanvas.addEventListener("pointermove", (event) => {
     if (state.dragTarget === "origin") {
       setOrigin(world, { pin: true, label: null, silent: true });
     } else {
-      setProbe(world, true, { silent: true });
+      setProbe(world, false, { silent: true });
     }
     syncCursor(screen);
     return;
@@ -1141,12 +1149,14 @@ mapCanvas.addEventListener("pointermove", (event) => {
     return;
   }
   if (!state.probePinned && !hitPin(screen)) {
+    if (event.pointerType === "touch") return;
     if (state.probePoint && distance(state.probePoint, world) < HOVER_DEADBAND) return;
     setProbe(world, false, { silent: true });
   }
 });
 
 mapCanvas.addEventListener("pointerdown", (event) => {
+  if (pinch && event.pointerType === "touch") return;
   const { screen, world } = pointerToWorld(event);
   if (!world) return;
   if (state.handMode) {
@@ -1161,6 +1171,7 @@ mapCanvas.addEventListener("pointerdown", (event) => {
   }
   const hit = hitPin(screen);
   const target = hit || (state.pinned ? "probe" : "origin");
+  if (target === "probe" && state.probePinned) return;
   event.preventDefault();
   state.dragTarget = target;
   state.dragPointerId = event.pointerId;
@@ -1172,7 +1183,7 @@ mapCanvas.addEventListener("pointerdown", (event) => {
   } else if (target === "origin") {
     setOrigin(world, { pin: true, label: null, silent: true });
   } else {
-    setProbe(world, true, { silent: true });
+    setProbe(world, false, { silent: true });
   }
   syncCursor(screen);
 });
@@ -1232,6 +1243,9 @@ document.getElementById("outlineOptions").addEventListener("change", () => {
     const input = document.querySelector(`[data-outline="${minutes}"]`);
     return Boolean(input?.checked);
   });
+  state.maxTransitTime = Math.max(state.maxTransitTime, activeThreshold());
+  maxTimeInput.value = state.maxTransitTime;
+  maxTimeLabel.textContent = `Temps max. ${state.maxTransitTime} min`;
   requestDraw();
   syncUrl();
 });
@@ -1250,16 +1264,10 @@ document.getElementById("helpButton").addEventListener("click", () => {
   helpPanel.hidden = !helpPanel.hidden;
 });
 document.getElementById("zoomInButton").addEventListener("click", () => {
-  const { width, height } = mapCanvas.getBoundingClientRect();
-  state.viewportScale = clamp(state.viewportScale * VIEWPORT_ZOOM_STEP, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
-  requestDraw();
-  syncUrl();
+  zoomAt(VIEWPORT_ZOOM_STEP, [mapCanvas.clientWidth / 2, mapCanvas.clientHeight / 2]);
 });
 document.getElementById("zoomOutButton").addEventListener("click", () => {
-  const { width, height } = mapCanvas.getBoundingClientRect();
-  state.viewportScale = clamp(state.viewportScale / VIEWPORT_ZOOM_STEP, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
-  requestDraw();
-  syncUrl();
+  zoomAt(1 / VIEWPORT_ZOOM_STEP, [mapCanvas.clientWidth / 2, mapCanvas.clientHeight / 2]);
 });
 handButton.addEventListener("click", () => {
   state.handMode = !state.handMode;
@@ -1271,10 +1279,48 @@ handButton.addEventListener("click", () => {
   requestDraw();
   syncUrl();
 });
-document.getElementById("fullscreenButton").addEventListener("click", () => {
-  if (document.fullscreenElement) document.exitFullscreen();
-  else mapStage.requestFullscreen();
+const fullscreenButton = document.getElementById("fullscreenButton");
+function syncFullscreen() {
+  const active = Boolean(document.fullscreenElement) || mapCard.classList.contains("is-expanded");
+  fullscreenButton.textContent = active ? "Quitter le plein écran" : "Plein écran";
+  fullscreenButton.setAttribute("aria-pressed", String(active));
+  document.body.classList.toggle("map-expanded", active);
+  backdropKey = "";
+  requestDraw();
+}
+fullscreenButton.addEventListener("click", () => {
+  // A viewport-sized map is reliable on iPhone and embedded browsers, which
+  // can reject or immediately exit the native Fullscreen API.
+  mapCard.classList.toggle("is-expanded");
+  syncFullscreen();
 });
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && mapCard.classList.contains("is-expanded") && !document.fullscreenElement) {
+    mapCard.classList.remove("is-expanded"); syncFullscreen();
+  }
+});
+probePinButton.addEventListener("pointerdown", event => event.stopPropagation());
+probePinButton.addEventListener("click", event => {
+  event.stopPropagation(); state.probePinned = !state.probePinned; requestDraw(); syncUrl();
+});
+let lastJourneyKey = "";
+function updateJourney() {
+  if (!state.originPoint || !state.probePoint) { journeyPanel.hidden = true; lastJourneyKey = ""; return; }
+  const key = `${cachedModelKey}:${state.probePoint}`;
+  if (key === lastJourneyKey) return;
+  lastJourneyKey = key;
+  const journey = describeJourney(state.data, getTravelModel(state.originPoint), state.probePoint);
+  journeyPanel.hidden = false; journeyContent.replaceChildren();
+  const add = text => { const p = document.createElement("p"); p.textContent = text; journeyContent.append(p); };
+  if (!journey.legs.length) add(`Marche directe estimée : ${formatMinutes(journey.minutes)}.`);
+  else {
+    add(`Marche : ${formatMinutes(journey.walking)} ; attente, accès et marges : ${formatMinutes(journey.waiting)}.`);
+    for (const leg of journey.legs) {
+      const method = leg.pattern === null ? " (estimation)" : " (durée horaire représentative)";
+      add(`${leg.routeId} : ${state.data.stations[leg.from].name} → ${state.data.stations[leg.to].name}, ${formatMinutes(leg.minutes)}${method}.`);
+    }
+  }
+}
 document.getElementById("shareButton").addEventListener("click", () => {
   sharePanel.hidden = !sharePanel.hidden;
   shareUrl.textContent = location.href;
@@ -1306,10 +1352,44 @@ document.getElementById("locateButton").addEventListener("click", () => {
     },
   );
 });
-window.addEventListener("resize", requestDraw);
+function zoomAt(factor, screen) {
+  if (!state.currentRender) return;
+  const {width,height} = mapCanvas.getBoundingClientRect();
+  const before = state.currentRender.transform.toWorld(...screen);
+  state.viewportScale = clamp(state.viewportScale * factor, minViewportScale(width,height), MAX_VIEWPORT_SCALE);
+  const focus = state.viewportCenter || state.currentRender.focus;
+  const transform = buildTransform(viewBounds(),width,height,state.viewportScale,focus);
+  const after = transform.toWorld(...screen);
+  state.viewportCenter = [focus[0]+before[0]-after[0],focus[1]+before[1]-after[1]];
+  requestDraw(); syncUrl();
+}
+mapCanvas.addEventListener("wheel", event => {
+  if (!event.ctrlKey && !state.handMode) return;
+  event.preventDefault();
+  const rect=mapCanvas.getBoundingClientRect();
+  zoomAt(Math.exp(-event.deltaY*0.002),[event.clientX-rect.left,event.clientY-rect.top]);
+}, {passive:false});
+let pinch = null;
+mapCanvas.addEventListener("touchstart", event => {
+  if (event.touches.length !== 2) return;
+  event.preventDefault(); endDrag();
+  pinch = Math.hypot(event.touches[0].clientX-event.touches[1].clientX,event.touches[0].clientY-event.touches[1].clientY);
+}, {passive:false});
+mapCanvas.addEventListener("touchmove", event => {
+  if (!pinch || event.touches.length !== 2) return;
+  event.preventDefault();
+  const next=Math.hypot(event.touches[0].clientX-event.touches[1].clientX,event.touches[0].clientY-event.touches[1].clientY);
+  const rect=mapCanvas.getBoundingClientRect();
+  zoomAt(next/pinch,[(event.touches[0].clientX+event.touches[1].clientX)/2-rect.left,(event.touches[0].clientY+event.touches[1].clientY)/2-rect.top]);
+  pinch=next;
+}, {passive:false});
+mapCanvas.addEventListener("touchend",()=>{pinch=null;});
+window.addEventListener("resize", () => {backdropKey=""; requestDraw();});
+new ResizeObserver(() => {backdropKey=""; requestDraw();}).observe(mapStage);
 
 async function init() {
   const response = await fetch(DATA_URL);
+  if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
   state.ready = true;
   restoreUrl();
@@ -1317,4 +1397,4 @@ async function init() {
   requestDraw();
 }
 
-init();
+init().catch(error => { statusText.textContent = "Impossible de charger la carte. Rechargez la page."; console.error(error); });

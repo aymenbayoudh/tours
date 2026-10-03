@@ -28,11 +28,39 @@ python3 scripts/sync_root_page.py
 
 Les extraits normalisés sont dans `data/tours/`. Le script `scripts/prepare_official_data.py` permet de les régénérer à partir des exports officiels et des KML de référence.
 
-### Vitesses TER
+### Calcul des temps (révision du 3 octobre 2026)
 
-Le calcul utilise des vitesses commerciales **par corridor**, au lieu d'une vitesse uniforme. Elles sont calibrées sur les meilleurs horaires directs publiés par SNCF Connect, divisés par la distance approximative du corridor, puis arrondies. Repères : [Tours–Orléans](https://www.sncf-connect.com/train/horaires/tours/orleans) ≈ 82 km/h, [Tours–Le Mans](https://www.sncf-connect.com/train/horaires/tours/le-mans) ≈ 79 km/h, [Tours–Saumur](https://www.sncf-connect.com/train/horaires/tours/saumur) ≈ 96 km/h, [Tours–Vierzon](https://www.sncf-connect.com/train/horaires/tours/vierzon) ≈ 78 km/h, [Tours–Poitiers](https://www.sncf-connect.com/train/horaires/tours/poitiers) ≈ 70 km/h, [Tours–Loches](https://www.sncf-connect.com/train/horaires/tours/loches) ≈ 52–58 km/h, [Tours–Chinon](https://www.sncf-connect.com/train/trajet/tours/chinon) ≈ 50 km/h, [Tours–Chartres](https://www.sncf-connect.com/train/trajet/tours/chartres) ≈ 55 km/h et [Tours–Paris-Austerlitz](https://www.sncf-connect.com/train/horaires/tours/paris) ≈ 95 km/h. Les valeurs exactes par ligne sont dans `TER_SPEED_KMH` de `build_data.py` ; les lignes d'un même corridor partagent parfois une même vitesse représentative.
+Les TER et le tram A utilisent désormais les **horaires officiels**, et non une vitesse uniforme par corridor. Le GTFS SNCF daté du 2 octobre 2026 est filtré sur les services circulant au moins une fois du **5 au 11 octobre 2026**. Les trajets par car sont exclus même lorsque leur ligne GTFS est classée ferroviaire. Chaque séquence d'arrêts conserve un trajet réel de durée médiane, avec sa direction, ses temps d'arrêt et ses permissions d'embarquement/débarquement.
 
-Les résultats restent des **estimations** : marche d'accès, attente et correspondances simplifiées ; pas de prise en compte des horaires réels, jours de circulation, retards ni des arrêts effectivement desservis par chaque train. Le passage d'une ligne devant une gare dans le KML sert d'approximation de desserte. Le tram B et le BHNS C représentent leur réseau projeté en 2028.
+Le moteur compare la marche directe aux trajets en transport :
+
+1. Marche à 4,8 km/h, en ligne droite, vers tous les arrêts possibles ; 1,8 minute d'accès.
+2. Attente estimée : TER 15 min, navette 5 min, trams 4 min, BHNS C 3,25 min.
+3. Temps à bord issus du trajet horaire représentatif ; rester dans le même véhicule n'ajoute pas une nouvelle attente.
+4. Changement dans la même gare : 3,5 min + attente. Entre arrêts distants de 650 m au plus : marche + 2 min + attente. Les changements entre deux dessertes du même code TER sont possibles.
+5. À l'arrivée : 1,8 minute de sortie, puis marche vers le point choisi. Dijkstra retient le minimum parmi les possibilités.
+
+Cela reproduit les intervalles B–C du **trajet de référence**, pas ceux de tous les trains. Il n'y a pas de choix de date/heure : un enchaînement peut combiner des services circulant à des heures ou des jours différents. Fréquences, correspondances réelles, retards, cheminements piétons, obstacles et accessibilité ne sont pas garantis.
+
+**Exceptions** : tram B à 18,4 km/h, BHNS C à 18 km/h, P21 vers Chinon à 50 km/h le long du tracé. Le GTFS retenu ne contient pas de train P21 ; cette ligne reste explicitement une hypothèse ferroviaire. Le bouton des projets retire B/C et leurs correspondances. Vendôme-Villiers-sur-Loir reste visible sans embarquement car le réseau sélectionné ne contient pas sa desserte TGV.
+
+La grille de couleur s'affine au zoom ; les halos dorés évaluent les gares directement, même si une zone est trop petite pour une maille. Le pourcentage suit le plus grand contour choisi, ou le curseur si aucun contour n'est coché. Contours 15/30/45/60/90/120 min ; curseur jusqu'à 180 min ; zoom maximal ×120. L'épingle dans la bulle d'arrivée la verrouille, y compris via un bouton tactile. Le plein écran occupe toute la fenêtre, sans dépendre d'une API native absente sur certains mobiles.
+
+Sous la carte : **Voir le trajet retenu** et **Comment sont calculés les temps ?** exposent les étapes et hypothèses.
+
+Pour actualiser les horaires depuis les archives officielles téléchargées :
+
+```bash
+python3 scripts/prepare_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/filbleu.zip
+python3 build_data.py
+python3 scripts/sync_root_page.py
+node tests/routing.test.mjs
+python3 scripts/audit_timetables.py --sncf /chemin/sncf.zip --filbleu /chemin/filbleu.zip
+```
+
+Sources horaires : [SNCF sur transport.data.gouv.fr](https://transport.data.gouv.fr/datasets/horaires-sncf), [archive SNCF officielle](https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip), [fiche tram A rentrée 2026](https://www.filbleu.fr/fileadmin/productions/05_Hiver26-27/01_sept26/ficheslignes/Filbleu_A_Rentree26.pdf). L'extraction Fil Bleu est à relancer avec celle des horaires avant reconstruction.
+
+Résultats, contrôles et limites : [AUDIT.md](AUDIT.md).
 
 `site/` est le contenu publié par GitHub Actions. L'entrée `index.html` à la racine permet aussi la publication Pages depuis `main` ; elle est régénérée par `scripts/sync_root_page.py`.
 
