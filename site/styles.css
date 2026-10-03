@@ -317,7 +317,7 @@ h1 {
 }
 
 
-.probe-pin { position: absolute; width: 44px; height: 44px; border: 0; border-radius: 9px; background: transparent; cursor: pointer; font-size: 19px; touch-action: manipulation; }
+.probe-pin { position: absolute; width: 24px; height: 24px; border: 0; border-radius: 5px; background: transparent; cursor: pointer; font-size: 11px; line-height: 24px; padding: 0; touch-action: manipulation; }
 .probe-pin[aria-pressed="true"] { background: #1c2f42; }
 button:focus-visible, summary:focus-visible, input:focus-visible { outline: 3px solid #d77824; outline-offset: 3px; }
 .map-hint { font-size: .8rem; color: var(--muted); line-height: 1.4; margin: 10px 0; }

@@ -476,14 +476,21 @@ function drawStations(drawCtx, projectPoint) {
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     const index = state.data.stations.indexOf(station);
-    if (model && model.activeStations[index] && routeEstimate(state.data, model, station.point) <= threshold) {
+    if (model && model.activeStations[index] && routeEstimate(state.data, model, station.point) <= threshold && !station.inSerm) {
+      // Outside the SERM there is no raster cell to show at overview scale.
+      // Repeat the actual isochrone colour locally so a reachable station stays
+      // visible without adding a separate yellow accessibility marker.
+      const minutes = routeEstimate(state.data, model, station.point);
+      const colour = heatmapColor(minutes);
+      const radius = state.viewportScale < 2 ? 11 : 7;
+      const gradient = drawCtx.createRadialGradient(x, y, 1, x, y, radius);
+      gradient.addColorStop(0, `${colour}cc`);
+      gradient.addColorStop(0.72, `${colour}55`);
+      gradient.addColorStop(1, `${colour}00`);
       drawCtx.beginPath();
-      drawCtx.arc(x, y, state.viewportScale < 2 ? 5.5 : 4, 0, Math.PI * 2);
-      drawCtx.fillStyle = "rgba(255,201,85,0.8)";
+      drawCtx.arc(x, y, radius, 0, Math.PI * 2);
+      drawCtx.fillStyle = gradient;
       drawCtx.fill();
-      drawCtx.lineWidth = 1;
-      drawCtx.strokeStyle = "#9b5700";
-      drawCtx.stroke();
     }
     drawCtx.beginPath();
     drawCtx.arc(x, y, station.mode === "TRAM" ? 2.6 : station.mode === "BHNS" ? 2.3 : 2, 0, Math.PI * 2);
@@ -652,9 +659,9 @@ function drawMarker(drawCtx, screen, color, radius = 6) {
   drawCtx.stroke();
 }
 
-function drawLabelBubble(drawCtx, screen, lines, color, below = false, actionSpace = 0) {
-  const padX = 12;
-  const padY = 8;
+function drawLabelBubble(drawCtx, screen, lines, color, below = false, actionSpace = 0, compact = false) {
+  const padX = compact ? 6 : 12;
+  const padY = compact ? 4 : 8;
   const items = lines.map((line) => typeof line === "string" ? { text: line, small: false } : line);
   drawCtx.textAlign = "center";
   drawCtx.textBaseline = "middle";
@@ -662,16 +669,16 @@ function drawLabelBubble(drawCtx, screen, lines, color, below = false, actionSpa
   const canvasHeight = mapCanvas.getBoundingClientRect().height;
   const maxTextWidth = Math.min(360, canvasWidth - padX * 2 - 16 - actionSpace);
   for (const item of items) {
-    drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
+    drawCtx.font = item.small ? `500 ${compact ? 8 : 11}px Outfit, sans-serif` : `600 ${compact ? 9 : 13}px Outfit, sans-serif`;
     while (item.text.length > 8 && drawCtx.measureText(item.text).width > maxTextWidth) {
       item.text = `${item.text.slice(0, -2)}…`;
     }
   }
   const width = Math.ceil(Math.max(...items.map((item) => {
-    drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
+    drawCtx.font = item.small ? `500 ${compact ? 8 : 11}px Outfit, sans-serif` : `600 ${compact ? 9 : 13}px Outfit, sans-serif`;
     return drawCtx.measureText(item.text).width;
   }))) + padX * 2 + actionSpace;
-  const height = padY * 2 + items.reduce((sum, item) => sum + (item.small ? 14 : 16), 0);
+  const height = padY * 2 + items.reduce((sum, item) => sum + (item.small ? (compact ? 9 : 14) : (compact ? 11 : 16)), 0);
   const desiredX = screen[0] > canvasWidth * 0.55 ? screen[0] - width - 14 : screen[0] + 14;
   const x = clamp(desiredX, 8, canvasWidth - width - 8);
   const y = clamp(below ? screen[1] + 12 : screen[1] - height - 10, 8, canvasHeight - height - 8);
@@ -689,8 +696,8 @@ function drawLabelBubble(drawCtx, screen, lines, color, below = false, actionSpa
   drawCtx.fillStyle = "#1c2f42";
   let lineY = y + padY;
   for (const item of items) {
-    const lineHeight = item.small ? 14 : 16;
-    drawCtx.font = item.small ? "500 11px Outfit, sans-serif" : "600 13px Outfit, sans-serif";
+    const lineHeight = item.small ? (compact ? 9 : 14) : (compact ? 11 : 16);
+    drawCtx.font = item.small ? `500 ${compact ? 8 : 11}px Outfit, sans-serif` : `600 ${compact ? 9 : 13}px Outfit, sans-serif`;
     drawCtx.fillStyle = item.small ? "#52687a" : "#1c2f42";
     drawCtx.fillText(item.text, x + (width - actionSpace) / 2, lineY + lineHeight / 2);
     lineY += lineHeight;
@@ -863,9 +870,9 @@ function drawMap() {
     const probeLines = ["Arrivée", placeName(state.probePoint)];
     if (Number.isFinite(travelMinutes)) probeLines.unshift(formatMinutes(travelMinutes));
     probeLines.push(...stationModeLines(state.probePoint));
-    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 46);
+    const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 24, true);
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
-    probePinButton.style.left = `${probeLabel.x + probeLabel.width - 46}px`;
+    probePinButton.style.left = `${probeLabel.x + probeLabel.width - 24}px`;
     probePinButton.style.top = `${probeLabel.y + 3}px`;
     probePinButton.setAttribute("aria-pressed", String(state.probePinned));
     probePinButton.setAttribute("aria-label", state.probePinned ? "Déverrouiller l’arrivée" : "Épingler l’arrivée");
