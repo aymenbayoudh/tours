@@ -10,7 +10,7 @@ import argparse
 import heapq
 import json
 import math
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -99,6 +99,32 @@ def main():
         adjacency[a].append((b, metres))
         adjacency[b].append((a, metres))
 
+    # Record topology health explicitly. A sudden rise in road/stop components
+    # is a useful signal that bridge/tunnel endpoint handling or a source change
+    # has broken continuity even if local transfer tests still happen to pass.
+    components = [-1] * len(nodes)
+    component_sizes = []
+    for start in range(len(nodes)):
+        if components[start] >= 0:
+            continue
+        component_id = len(component_sizes)
+        stack = [start]
+        components[start] = component_id
+        size = 0
+        while stack:
+            current = stack.pop()
+            size += 1
+            for neighbour, _ in adjacency[current]:
+                if components[neighbour] < 0:
+                    components[neighbour] = component_id
+                    stack.append(neighbour)
+        component_sizes.append(size)
+    stop_component_counts = Counter(components[node] for node, _ in snaps)
+    top_stop_components = [
+        [component_id, component_sizes[component_id], stop_count]
+        for component_id, stop_count in stop_component_counts.most_common(10)
+    ]
+
     stop_buckets = defaultdict(list)
     for index, station in enumerate(stops):
         point = station["point"]
@@ -153,13 +179,19 @@ def main():
             "roadWalkablePairs": len(pairs),
             "snapMedianMetres": round(sorted(snap_gaps)[len(snap_gaps) // 2], 1),
             "snapMaxMetres": round(max(snap_gaps), 1),
+            "roadComponents": len(component_sizes),
+            "largestRoadComponentNodes": max(component_sizes),
+            "stopComponents": len(stop_component_counts),
+            "largestStopComponentStops": max(stop_component_counts.values()),
+            "topStopComponents": top_stop_components,
         },
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(
         f"Wrote {OUTPUT}: {len(stops)} covered stops, {len(pairs)}/{candidate_count} "
         f"nearby pairs remain within {MAX_TRANSFER_METRES:.0f} m on BD TOPO; "
-        f"snap max {max(snap_gaps):.1f} m"
+        f"snap max {max(snap_gaps):.1f} m; "
+        f"{len(stop_component_counts)} stop components across {len(component_sizes)} road components"
     )
 
 
