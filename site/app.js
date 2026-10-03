@@ -994,7 +994,7 @@ function formatCoord(value) {
   return Number(value).toFixed(SHARE_DECIMALS);
 }
 
-function heatmapColor(minutes, alphaMultiplier = 1) {
+function heatmapColor(minutes, alphaMultiplier = 1, useStopAlpha = true) {
   const t = clamp(minutes / state.maxTransitTime, 0, 1);
   const stops = displaySettings.isochroneStops;
   let left = stops[0];
@@ -1011,7 +1011,8 @@ function heatmapColor(minutes, alphaMultiplier = 1) {
   const rightRgb = hexToRgb(right.color);
   const rgb = leftRgb.map((value, i) => Math.round(value + (rightRgb[i] - value) * mix));
   const stopAlpha = left.alpha + (right.alpha - left.alpha) * mix;
-  const alpha = clamp(stopAlpha * displaySettings.isochroneOpacity * alphaMultiplier, 0, 1);
+  const alphaBase = useStopAlpha ? stopAlpha : 1;
+  const alpha = clamp(alphaBase * displaySettings.isochroneOpacity * alphaMultiplier, 0, 1);
   return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
 }
 
@@ -1296,7 +1297,21 @@ function drawCommuneLabels(drawCtx, projectPoint) {
   drawCtx.textAlign = "left";
 }
 
-function drawStations(drawCtx, projectPoint) {
+function minimumWarpMinutesNearPoint(warp, point) {
+  if (!warp?.minutes?.length || !warp.minutes[0]?.length) return Infinity;
+  const col = (point[0] - warp.bounds[0]) / warp.cellW - 0.5;
+  const row = (point[1] - warp.bounds[1]) / warp.cellH - 0.5;
+  const rows = [Math.floor(row), Math.ceil(row)];
+  const cols = [Math.floor(col), Math.ceil(col)];
+  let best = Infinity;
+  for (const r of rows) for (const c of cols) {
+    if (r < 0 || c < 0 || r >= warp.minutes.length || c >= warp.minutes[0].length || !warp.validMask[r][c]) continue;
+    best = Math.min(best, warp.minutes[r][c]);
+  }
+  return best;
+}
+
+function drawStations(drawCtx, projectPoint, warp) {
   const source = heatmapSourcePoint();
   const model = source ? getTravelModel(source) : null;
   const threshold = state.maxTransitTime;
@@ -1307,24 +1322,19 @@ function drawStations(drawCtx, projectPoint) {
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     const index = state.data.stations.indexOf(station);
-    if (model && model.activeStations[index] && routeEstimate(state.data, model, station.point) <= threshold && !station.inSerm) {
-      // Outside the SERM there is no raster cell to show at overview scale.
-      // Repeat the actual isochrone colour locally so a reachable station stays
-      // visible without adding a separate yellow accessibility marker.
-      const minutes = routeEstimate(state.data, model, station.point);
-      const colour = (alpha) => heatmapColor(minutes, alpha);
-      const radius = state.viewportScale < 2 ? 11 : 7;
-      const gradient = drawCtx.createRadialGradient(x, y, 1, x, y, radius);
-      gradient.addColorStop(0, colour(0.8));
-      gradient.addColorStop(0.72, colour(0.32));
-      gradient.addColorStop(1, colour(0));
+    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : displaySettings.stationRadius;
+    const minutes = model && model.activeStations[index] ? routeEstimate(state.data, model, station.point) : Infinity;
+    const rasterMissesStation = Number.isFinite(minutes) && minutes <= threshold && minimumWarpMinutesNearPoint(warp, station.point) > threshold;
+    if (rasterMissesStation) {
+      // A ring is deliberately a point symbol, not a fake geographic surface.
+      // It also represents reachable stations outside the SERM, where the raster is clipped.
       drawCtx.beginPath();
-      drawCtx.arc(x, y, radius, 0, Math.PI * 2);
-      drawCtx.fillStyle = gradient;
-      drawCtx.fill();
+      drawCtx.arc(x, y, Math.max(stationRadius + 3.2, 5), 0, Math.PI * 2);
+      drawCtx.strokeStyle = heatmapColor(minutes, 1.35, false);
+      drawCtx.lineWidth = 2.2;
+      drawCtx.stroke();
     }
     drawCtx.beginPath();
-    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : displaySettings.stationRadius;
     drawCtx.arc(x, y, stationRadius, 0, Math.PI * 2);
     drawCtx.fillStyle = "#fff";
     drawCtx.fill();
@@ -1702,7 +1712,7 @@ function drawMap() {
     drawDepartmentLimits(baseCtx, projectPoint);
     drawRoutes(baseCtx, projectPoint);
     drawCommuneLabels(baseCtx, projectPoint);
-    drawStations(baseCtx, projectPoint);
+    drawStations(baseCtx, projectPoint, warp);
     backdropKey = nextBackdropKey;
   }
   ctx.drawImage(mapBackdrop, 0, 0, width, height);
