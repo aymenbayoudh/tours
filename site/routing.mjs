@@ -159,7 +159,12 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     return { minutes: best, node };
   });
   const activeStations = data.boardingStates.map((nodes) => nodes.some((n) => allowed[n]));
-  return { origin, includeProjects, distances, previous, stationArrivals, activeStations, settings };
+  const stationOrder = stationArrivals
+    .map((arrival, index) => [arrival.minutes, index])
+    .filter(([minutes]) => Number.isFinite(minutes))
+    .sort((a, b) => a[0] - b[0])
+    .map(([, index]) => index);
+  return { origin, includeProjects, distances, previous, stationArrivals, activeStations, stationOrder, settings };
 }
 
 export function estimateTravel(data, model, destination, details = false) {
@@ -167,9 +172,10 @@ export function estimateTravel(data, model, destination, details = false) {
   const exitPenalty = model.settings?.stationExitPenalty ?? data.meta.stationAccessPenalty;
   let best = distance(model.origin, destination) / walk;
   let bestStation = -1;
-  for (let i = 0; i < data.stations.length; i += 1) {
+  const candidates = model.stationOrder || data.stations.map((_, index) => index);
+  for (const i of candidates) {
     const arrival = model.stationArrivals[i].minutes + exitPenalty;
-    if (arrival >= best) continue;
+    if (arrival >= best) break;
     const point = data.stations[i].point;
     const remaining = (best - arrival) * walk;
     if (Math.abs(point[0] - destination[0]) >= remaining || Math.abs(point[1] - destination[1]) >= remaining) continue;
