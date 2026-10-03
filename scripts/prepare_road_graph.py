@@ -140,19 +140,21 @@ def main():
     fetched = retained = rejected = 0
     sample_properties = None
 
-    def node(point_xy):
-        key = (round(point_xy[0], 1), round(point_xy[1], 1))
+    def node(point_xy, level):
+        # Do not connect coincident XY endpoints across bridges/tunnels.
+        # BD TOPO segments roads when position relative to ground changes.
+        key = (round(point_xy[0], 1), round(point_xy[1], 1), str(level or "0"))
         index = node_index.get(key)
         if index is None:
             index = len(nodes)
             node_index[key] = index
-            nodes.append([key[0], key[1]])
+            nodes.append([key[0], key[1], key[2]])
         return index
 
-    def add_edge(a_point, b_point, metres):
+    def add_edge(a_point, b_point, metres, level):
         if metres <= 0.05:
             return
-        a, b = node(a_point), node(b_point)
+        a, b = node(a_point, level), node(b_point, level)
         if a == b:
             return
         key = (min(a, b), max(a, b))
@@ -189,6 +191,7 @@ def main():
                 if not pedestrian_allowed(props):
                     rejected += 1
                     continue
+                level = props.get("position_par_rapport_au_sol")
                 for line in feature_lines(geometry):
                     line = [p[:2] for p in line if len(p) >= 2]
                     if len(line) < 2 or not intersects_serm(line, epci):
@@ -208,7 +211,7 @@ def main():
                             need = MAX_EDGE_METRES - accumulated
                             t = need / remaining
                             cut = (cursor[0] + (b[0] - cursor[0]) * t, cursor[1] + (b[1] - cursor[1]) * t)
-                            add_edge(current, cut, MAX_EDGE_METRES)
+                            add_edge(current, cut, MAX_EDGE_METRES, level)
                             current = cut
                             cursor = cut
                             remaining -= need
@@ -216,7 +219,7 @@ def main():
                         accumulated += remaining
                     end = xy(*line[-1])
                     if math.dist(current, end) > 0.05:
-                        add_edge(current, end, accumulated)
+                        add_edge(current, end, accumulated, level)
             if len(features) < PAGE_SIZE:
                 break
             start += len(features)
@@ -236,7 +239,7 @@ def main():
             "retrievedAtBuild": True,
             "bbox": [round(x, 7) for x in bbox],
             "walkSpeedMetresPerMinute": WALK_METRES_PER_MINUTE,
-            "notes": "Accès piéton BD TOPO respecté lorsqu’il est renseigné ; autoroutes/bretelles et accès privés non explicitement libres exclus.",
+            "notes": "Accès piéton BD TOPO respecté lorsqu’il est renseigné ; autoroutes/bretelles et accès privés non explicitement libres exclus ; le niveau par rapport au sol fait partie de la clé topologique.",
         },
         "nodes": nodes,
         "edges": edges,
