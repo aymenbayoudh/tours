@@ -112,7 +112,11 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   const settings = normalizeSettings(data, customSettings);
   const distances = new Float64Array(data.routeStates.length).fill(Infinity);
   const previous = new Int32Array(data.routeStates.length).fill(-1);
-  const allowed = data.routeStates.map((s) => includeProjects || !data.routeInfo[s.routeId]?.planned);
+  const allowed = data.routeStates.map((s) => {
+    const info = data.routeInfo?.[s.routeId];
+    if (info?.serviceStatus?.status === "suspended") return false;
+    return includeProjects || !info?.planned;
+  });
   const queue = new MinHeap();
 
   // Consider every possible boarding stop, not just the closest handful.
