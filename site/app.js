@@ -668,6 +668,7 @@ function applyDisplayNumber(input) {
   displaySettings[key] = value;
   input.value = String(value);
   saveDisplaySettings();
+  if (key === "isochroneOpacity") syncDisplaySettingsControls();
   invalidateVisualSettings();
 }
 
