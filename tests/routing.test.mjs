@@ -57,6 +57,7 @@ const refWalk=d.meta.walkMetersPerMinute||80;
 const refEntry=d.meta.stationAccessPenalty??1.8;
 const refRouteMode=(routeId)=>d.routeInfo?.[routeId]?.mode||(routeId==='NAVETTE'?'NAVETTE':routeId?.startsWith('TRAM')?'TRAM':routeId?.startsWith('BHNS')?'BHNS':'TER');
 const refWait=(routeId)=>({NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15;
+const refAllowed=d.routeStates.map(s=>d.routeInfo?.[s.routeId]?.serviceStatus?.status!=='suspended');
 const refEdgeCost=(fromNode,toNode,storedCost)=>{
   const a=d.routeStates[fromNode],b=d.routeStates[toNode];
   if(!a||!b)return storedCost;
@@ -73,14 +74,15 @@ const refEdgeCost=(fromNode,toNode,storedCost)=>{
   }
   return storedCost;
 };
-d.stations.forEach((s,i)=>{for(const n of d.boardingStates[i])reference[n]=Math.hypot(s.point[0]-src[0],s.point[1]-src[1])/refWalk+refEntry+refWait(d.routeStates[n].routeId);});
+d.stations.forEach((s,i)=>{for(const n of d.boardingStates[i])if(refAllowed[n])reference[n]=Math.hypot(s.point[0]-src[0],s.point[1]-src[1])/refWalk+refEntry+refWait(d.routeStates[n].routeId);});
 for(let k=0;k<reference.length;k++){
   let node=-1,value=Infinity;
   for(let n=0;n<reference.length;n++)if(!visited[n]&&reference[n]<value){value=reference[n];node=n;}
   if(node<0)break;visited[node]=true;
-  for(const [next,cost] of d.adjacency[node])reference[next]=Math.min(reference[next],value+refEdgeCost(node,next,cost));
+  for(const [next,cost] of d.adjacency[node])if(refAllowed[next])reference[next]=Math.min(reference[next],value+refEdgeCost(node,next,cost));
 }
 // 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below any user-facing precision.
 reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch'));
+for(const [n,state] of d.routeStates.entries())if(state.routeId==='TER P21')check(!Number.isFinite(model.distances[n]),'Suspended P21 must not be routable');
 const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,stations:d.stations.length,noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
