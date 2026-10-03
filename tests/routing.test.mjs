@@ -33,15 +33,31 @@ d.stations.forEach((station,index)=>{
 });
 check([...parentGroups.values()].some(group=>group.length>=2),'Opposite/related physical bus stops were unexpectedly merged');
 let sameCodeChanges=0,crossMode=0;
-for(let i=0;i<d.stations.length;i++)for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
-  const x=d.routeStates[a],y=d.routeStates[b];
-  if(x.pattern!==null&&x.pattern===y.pattern)continue;
-  check(d.adjacency[a].some(([n])=>n===b),'Missing transfer at station');
-  if(x.routeId===y.routeId&&x.pattern!==y.pattern)sameCodeChanges++;
+const alightHub=Array(d.stations.length).fill(-1),boardHub=Array(d.stations.length).fill(-1);
+d.routeStates.forEach((state,index)=>{
+  if(state.role==='alight')alightHub[state.stationIndex]=index;
+  if(state.role==='board')boardHub[state.stationIndex]=index;
+});
+for(let i=0;i<d.stations.length;i++){
+  if(d.stationStates[i].length){
+    check(alightHub[i]>=0,'Missing alighting hub');
+    for(const a of d.stationStates[i])check(d.adjacency[a].some(([n])=>n===alightHub[i]),'Arrival not linked to alighting hub');
+  }
+  if(d.boardingStates[i].length){
+    check(boardHub[i]>=0,'Missing boarding hub');
+    for(const b of d.boardingStates[i])check(d.adjacency[boardHub[i]].some(([n])=>n===b),'Boarding hub not linked to departure');
+  }
+  if(alightHub[i]>=0&&boardHub[i]>=0)check(d.adjacency[alightHub[i]].some(([n])=>n===boardHub[i]),'Missing same-stop transfer');
+  for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
+    const x=d.routeStates[a],y=d.routeStates[b];
+    if(x.pattern!==null&&x.pattern===y.pattern)continue;
+    if(x.routeId===y.routeId&&x.pattern!==y.pattern)sameCodeChanges++;
+  }
 }
 for(let i=0;i<d.stations.length;i++)for(let j=i+1;j<d.stations.length;j++){
   if(Math.hypot(...d.stations[i].point.map((x,k)=>x-d.stations[j].point[k]))>650)continue;
-  for(const a of d.stationStates[i])for(const b of d.boardingStates[j])check(d.adjacency[a].some(([n])=>n===b),'Missing nearby transfer');
+  if(alightHub[i]>=0&&boardHub[j]>=0)check(d.adjacency[alightHub[i]].some(([n])=>n===boardHub[j]),'Missing nearby transfer');
+  if(alightHub[j]>=0&&boardHub[i]>=0)check(d.adjacency[alightHub[j]].some(([n])=>n===boardHub[i]),'Missing reverse nearby transfer');
   if(d.stations[i].mode!==d.stations[j].mode)crossMode++;
 }
 const station=(name,route)=>{const s=d.stations.find(s=>s.name===name&&(!route||s.routes.includes(route)));assert.ok(s,`Missing station ${name}`);return s;};
@@ -50,7 +66,7 @@ const examples=[];const start=performance.now();let maxModel=0;
 for(const name of names){
   const source=station(name);const t=performance.now();const model=buildTravelModel(d,source.point,true);maxModel=Math.max(maxModel,performance.now()-t);
   const noProjects=buildTravelModel(d,source.point,false);
-  d.routeStates.forEach((s,i)=>{if(d.routeInfo[s.routeId].planned)check(!Number.isFinite(noProjects.distances[i]),'Disabled project reachable');});
+  d.routeStates.forEach((s,i)=>{if(d.routeInfo?.[s.routeId]?.planned)check(!Number.isFinite(noProjects.distances[i]),'Disabled project reachable');});
   let previous=0;
   for(const threshold of [15,30,45,60,90,120,180]){const r=reachability(d,model,threshold);check(r.reachable>=previous,'Nonmonotonic reachability');previous=r.reachable;}
   for(const target of d.stations){
@@ -77,6 +93,12 @@ const refAllowed=d.routeStates.map(s=>d.routeInfo?.[s.routeId]?.serviceStatus?.s
 const refEdgeCost=(fromNode,toNode,storedCost)=>{
   const a=d.routeStates[fromNode],b=d.routeStates[toNode];
   if(!a||!b)return storedCost;
+  if(a.role==='board'&&b.role==='departure')return refWait(b.routeId);
+  if(a.role==='alight'&&b.role==='board'){
+    if(a.stationIndex===b.stationIndex)return 3.5;
+    const aPoint=d.stations[a.stationIndex].point,bPoint=d.stations[b.stationIndex].point;
+    return Math.hypot(aPoint[0]-bPoint[0],aPoint[1]-bPoint[1])/refWalk+2;
+  }
   if(a.role==='departure'&&b.role==='arrival'&&a.routeId===b.routeId&&a.stationIndex!==b.stationIndex)return storedCost;
   if(a.role==='arrival'&&b.role==='departure'){
     const sameStation=a.stationIndex===b.stationIndex;
@@ -100,5 +122,5 @@ for(let k=0;k<reference.length;k++){
 // 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below any user-facing precision.
 reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch'));
 for(const [n,state] of d.routeStates.entries())if(state.routeId==='TER P21')check(!Number.isFinite(model.distances[n]),'Suspended P21 must not be routable');
-const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,stations:d.stations.length,noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
+const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
