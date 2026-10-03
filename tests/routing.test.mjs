@@ -63,7 +63,12 @@ for(let i=0;i<d.stations.length;i++){
     const state=d.routeStates[next];
     if(state?.role!=='board'||state.stationIndex===i)continue;
     if(Number.isFinite(walkMetres)){
-      check(walkMetres>0&&walkMetres<=650+1e-7,'Invalid walking-transfer distance');
+      check(walkMetres>=0&&walkMetres<=650+1e-7,'Invalid walking-transfer distance');
+      if(walkMetres===0){
+        const other=d.stations[state.stationIndex];
+        const direct=Math.hypot(d.stations[i].point[0]-other.point[0],d.stations[i].point[1]-other.point[1]);
+        check(direct<=0.2,'Zero-distance transfer between non-colocated stops');
+      }
       if(d.stations[i].inSerm&&d.stations[state.stationIndex].inSerm)roadTransferEdges++;
     }
   }
