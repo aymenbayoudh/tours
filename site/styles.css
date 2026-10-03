@@ -299,7 +299,7 @@ h1 {
   width: 92px;
   height: 8px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #dc4525, #f47f2e, #ffc44f, #f8e89c, #95bcd3, #ffffff);
+  background: linear-gradient(90deg, #dc4525, #f47f2e, #ffc44f, #f8e89c, rgba(255,226,161,.42), rgba(255,226,161,0));
 }
 
 .notes {
@@ -928,5 +928,195 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px; }
 
   .route-group-tools small {
     display: none;
+  }
+}
+
+
+/* Isochrones et palette EPCI */
+.epci-palette-toolbar,
+.isochrone-gradient-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 9px;
+}
+
+.epci-palette-toolbar > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.isochrone-opacity-row {
+  margin-bottom: 10px;
+}
+
+.isochrone-gradient-preview {
+  height: 22px;
+  margin: 8px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, #dc4525, #f47f2e, #ffc44f, #f8e89c, rgba(255,226,161,.42), rgba(255,226,161,0));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35);
+}
+
+.isochrone-gradient-controls {
+  display: grid;
+  gap: 6px;
+}
+
+.isochrone-stop-row {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border: 1px solid rgba(126, 143, 155, 0.15);
+  border-radius: 10px;
+  background: rgba(247, 249, 250, 0.72);
+}
+
+.isochrone-stop-label strong,
+.isochrone-stop-label small {
+  display: block;
+}
+
+.isochrone-stop-label strong {
+  font-size: 0.76rem;
+}
+
+.isochrone-stop-label small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.64rem;
+}
+
+.isochrone-stop-picker {
+  display: grid;
+  grid-template-columns: 46px minmax(110px, 160px) 40px;
+  align-items: center;
+  gap: 7px;
+}
+
+.isochrone-stop-picker input[type="color"] {
+  width: 46px;
+  height: 34px;
+  box-sizing: border-box;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.isochrone-alpha-track {
+  position: relative;
+  height: 28px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #dfe4e7 25%, transparent 25%),
+    linear-gradient(-45deg, #dfe4e7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #dfe4e7 75%),
+    linear-gradient(-45deg, transparent 75%, #dfe4e7 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+}
+
+.isochrone-alpha-track::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: inherit;
+}
+
+.isochrone-alpha-track input[type="range"] {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  padding: 0 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.isochrone-alpha-track input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(28,47,66,.22);
+}
+
+.isochrone-alpha-track input[type="range"]::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1c2f42;
+  box-shadow: 0 0 0 1px rgba(28,47,66,.35);
+  -webkit-appearance: none;
+}
+
+.isochrone-alpha-track input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(28,47,66,.22);
+}
+
+.isochrone-alpha-track input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1c2f42;
+  box-shadow: 0 0 0 1px rgba(28,47,66,.35);
+}
+
+.isochrone-alpha-value {
+  color: var(--muted);
+  font: 600 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-align: right;
+}
+
+.gradient-reset-button {
+  margin-left: auto;
+  min-height: 32px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: 600 0.7rem/1 Outfit, sans-serif;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .isochrone-stop-row {
+    grid-template-columns: minmax(60px, .7fr) minmax(0, 1.7fr);
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .isochrone-stop-picker {
+    grid-template-columns: 38px minmax(78px, 1fr) 34px;
+    gap: 5px;
+  }
+
+  .isochrone-stop-picker input[type="color"] {
+    width: 38px;
+    height: 32px;
+  }
+
+  .isochrone-alpha-track,
+  .isochrone-alpha-track input[type="range"] {
+    height: 30px;
   }
 }
