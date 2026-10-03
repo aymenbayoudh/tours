@@ -1,5 +1,5 @@
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03b";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03a", import.meta.url).toString();
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03c";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03b", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -411,7 +411,7 @@ function buildRouteColorSettings() {
 
   const unique = new Map();
   for (const route of state.data.routes) {
-    if (route.mode === "RFN" || unique.has(route.id)) continue;
+    if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended" || unique.has(route.id)) continue;
     const info = state.data.routeInfo?.[route.id] || {};
     unique.set(route.id, {
       id: route.id,
@@ -1228,7 +1228,7 @@ function drawBasemap(drawCtx, projectPoint) {
 
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
-    if (route.mode === "RFN") continue;
+    if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended") continue;
     drawCtx.strokeStyle = routeDisplayColor(route);
     drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : displaySettings.terWidth;
     drawCtx.lineCap = "round";
@@ -1318,10 +1318,10 @@ function drawStations(drawCtx, projectPoint, warp) {
   const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
   const labels = [];
   for (const station of state.data.stations) {
-    if (station.mode === "TER" && (!station.routes || station.routes.length === 0)) continue;
+    const index = state.data.stations.indexOf(station);
+    if (station.mode === "TER" && ((!station.routes || station.routes.length === 0) || (model && !model.activeStations[index]))) continue;
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
-    const index = state.data.stations.indexOf(station);
     const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : displaySettings.stationRadius;
     const minutes = model && model.activeStations[index] ? routeEstimate(state.data, model, station.point) : Infinity;
     const rasterMissesStation = Number.isFinite(minutes) && minutes <= threshold && minimumWarpMinutesNearPoint(warp, station.point) > threshold;
