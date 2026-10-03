@@ -13,14 +13,6 @@ const MAX_TIME_MINUTES = 180;
 const OUTLINE_OPTIONS = [15, 30, 45, 60, 90, 120];
 const DEFAULT_OUTLINE_MINUTES = [15, 30, 60];
 const OUTLINE_WIDTHS = { 15: 1.4, 30: 2.1, 45: 2, 60: 1.5 };
-const OUTLINE_LABEL_DIRS = {
-  15: [-0.92, -0.78],
-  30: [0.72, -0.7],
-  45: [-0.12, -1],
-  60: [-0.88, -0.42],
-  90: [-0.5, 0.9],
-  120: [0.9, 0.7],
-};
 const DEFAULT_MAX_TIME_MINUTES = 90;
 const DEFAULT_INCLUDE_PROJECTS = true;
 const DEFAULT_ORIGIN = {
@@ -347,9 +339,8 @@ function computeViewportWarp(origin, transform, width, height) {
   for (let row = 0; row < gridRows; row += 1) {
     for (let col = 0; col < gridCols; col += 1) {
       const point = [bounds[0] + (col + 0.5) * cellW, bounds[1] + (row + 0.5) * cellH];
-      const travel = routeEstimate(state.data, model, point);
-      if (!pointInStaticGrid(point) && travel > Math.max(state.maxTransitTime, activeThreshold()) + 15) continue;
-      minutes[row][col] = travel;
+      if (!pointInStaticGrid(point)) continue;
+      minutes[row][col] = routeEstimate(state.data, model, point);
       validMask[row][col] = true;
     }
   }
@@ -529,6 +520,21 @@ function drawStations(drawCtx, projectPoint) {
   }
 }
 
+function clipToSerm(drawCtx, projectPoint) {
+  drawCtx.beginPath();
+  for (const epci of state.data.boroughs) {
+    for (const polygon of epci.polygons) {
+      for (const ring of polygon) {
+        if (!ring.length) continue;
+        drawCtx.moveTo(...projectPoint(ring[0]));
+        for (let i = 1; i < ring.length; i += 1) drawCtx.lineTo(...projectPoint(ring[i]));
+        drawCtx.closePath();
+      }
+    }
+  }
+  drawCtx.clip("evenodd");
+}
+
 function drawHeatmap(drawCtx, warp, projectPoint) {
   const { minutes, validMask } = warp;
   for (let row = 0; row < minutes.length; row += 1) {
@@ -568,6 +574,7 @@ function contourSegments(warp, threshold) {
   const segments = [];
   for (let row = 0; row < minutes.length - 1; row += 1) {
     for (let col = 0; col < minutes[row].length - 1; col += 1) {
+      if (!validMask[row][col] || !validMask[row][col + 1] || !validMask[row + 1][col + 1] || !validMask[row + 1][col]) continue;
       const bl = center(row, col);
       const br = center(row, col + 1);
       const tr = center(row + 1, col + 1);
@@ -614,100 +621,13 @@ function pointKey(point) {
   return `${point[0].toFixed(1)},${point[1].toFixed(1)}`;
 }
 
-function ringLength(ring) {
-  let length = 0;
-  for (let i = 1; i < ring.length; i += 1) length += distance(ring[i - 1], ring[i]);
-  return length;
-}
-
-function chainContourRings(segments) {
-  const adjacency = new Map();
-  const addEdge = (a, b) => {
-    const ka = pointKey(a);
-    const kb = pointKey(b);
-    if (ka === kb) return;
-    if (!adjacency.has(ka)) adjacency.set(ka, []);
-    adjacency.get(ka).push([ka, a, kb, b]);
-  };
-  for (const [a, b] of segments) {
-    addEdge(a, b);
-    addEdge(b, a);
-  }
-  const used = new Set();
-  const edgeKey = (ka, kb) => (ka < kb ? `${ka}|${kb}` : `${kb}|${ka}`);
-  const rings = [];
-  for (const [startKey, edges] of adjacency.entries()) {
-    for (const [, startPoint, firstKey, firstPoint] of edges) {
-      if (used.has(edgeKey(startKey, firstKey))) continue;
-      const ring = [startPoint];
-      let currentKey = firstKey;
-      let currentPoint = firstPoint;
-      used.add(edgeKey(startKey, firstKey));
-      while (currentKey !== startKey) {
-        ring.push(currentPoint);
-        const next = (adjacency.get(currentKey) || []).find(([, , nextKey]) => !used.has(edgeKey(currentKey, nextKey)));
-        if (!next) break;
-        used.add(edgeKey(currentKey, next[2]));
-        currentKey = next[2];
-        currentPoint = next[3];
-      }
-      if (ring.length >= 14) rings.push(ring);
-    }
-  }
-  rings.sort((a, b) => ringLength(b) - ringLength(a));
-  return rings;
-}
-
-function contourLabelSite(ring, origin, dir, projectPoint, width, height) {
-  let best = null;
-  let bestScore = -Infinity;
-  for (let i = 0; i < ring.length - 1; i += 1) {
-    const from = ring[i];
-    const to = ring[i + 1];
-    const mid = [(from[0] + to[0]) / 2, (from[1] + to[1]) / 2];
-    const [x, y] = projectPoint(mid);
-    if (x < 36 || y < 28 || x > width - 36 || y > height - 28) continue;
-    const align = (mid[0] - origin[0]) * dir[0] + (mid[1] - origin[1]) * dir[1];
-    const score = align + distance(from, to) * 0.2;
-    if (score > bestScore) {
-      bestScore = score;
-      const screenFrom = projectPoint(from);
-      const screenTo = projectPoint(to);
-      best = { world: mid, screen: [x, y], tangent: [screenTo[0] - screenFrom[0], screenTo[1] - screenFrom[1]] };
-    }
-  }
-  return best;
-}
-
-function drawContourLabel(drawCtx, site, text) {
-  let angle = Math.atan2(site.tangent[1], site.tangent[0]);
-  if (angle > Math.PI / 2 || angle < -Math.PI / 2) angle += Math.PI;
-  drawCtx.save();
-  drawCtx.translate(site.screen[0], site.screen[1]);
-  drawCtx.rotate(angle);
-  drawCtx.font = "700 12px Outfit, sans-serif";
-  drawCtx.textAlign = "center";
-  drawCtx.textBaseline = "middle";
-  drawCtx.strokeStyle = "rgba(255,252,247,0.94)";
-  drawCtx.lineWidth = 5;
-  drawCtx.lineJoin = "round";
-  drawCtx.strokeText(text, 0, 0);
-  drawCtx.fillStyle = "#111111";
-  drawCtx.fillText(text, 0, 0);
-  drawCtx.restore();
-}
-
 function drawOutline(drawCtx, warp, projectPoint) {
-  const rect = mapCanvas.getBoundingClientRect();
-  const origin = heatmapSourcePoint() || defaultCenter();
-  const labels = [];
   drawCtx.strokeStyle = "#111111";
   drawCtx.lineJoin = "round";
   drawCtx.lineCap = "round";
   for (const threshold of [...state.outlineMinutes].sort((a, b) => a - b)) {
     const segments = contourSegments(warp, threshold);
     if (!segments.length) continue;
-    const rings = chainContourRings(segments);
     drawCtx.lineWidth = OUTLINE_WIDTHS[threshold] || 2;
     drawCtx.beginPath();
     for (const [a, b] of segments) {
@@ -715,12 +635,7 @@ function drawOutline(drawCtx, warp, projectPoint) {
       drawCtx.lineTo(...projectPoint(b));
     }
     drawCtx.stroke();
-    const mainRing = rings[0];
-    if (!mainRing) continue;
-    const site = contourLabelSite(mainRing, origin, OUTLINE_LABEL_DIRS[threshold] || [1, 0], projectPoint, rect.width, rect.height);
-    if (site) labels.push({ site, text: `${threshold} min` });
   }
-  for (const label of labels) drawContourLabel(drawCtx, label.site, label.text);
 }
 
 function drawMarker(drawCtx, screen, color, radius = 6) {
@@ -920,12 +835,17 @@ function drawMap() {
     baseCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     baseCtx.fillStyle = "#efe6d6"; baseCtx.fillRect(0,0,width,height);
     drawBasemap(baseCtx, projectPoint);
-    if (warp) drawHeatmap(baseCtx, warp, projectPoint);
+    if (warp) {
+      baseCtx.save();
+      clipToSerm(baseCtx, projectPoint);
+      drawHeatmap(baseCtx, warp, projectPoint);
+      if (state.outlineMinutes.length) drawOutline(baseCtx, warp, projectPoint);
+      baseCtx.restore();
+    }
     drawDepartmentLimits(baseCtx, projectPoint);
     drawRoutes(baseCtx, projectPoint);
     drawCommuneLabels(baseCtx, projectPoint);
     drawStations(baseCtx, projectPoint);
-    if (warp && state.outlineMinutes.length) drawOutline(baseCtx, warp, projectPoint);
     backdropKey = nextBackdropKey;
   }
   ctx.drawImage(mapBackdrop, 0, 0, width, height);
