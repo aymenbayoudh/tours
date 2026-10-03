@@ -54,12 +54,30 @@ for(let i=0;i<d.stations.length;i++){
     if(x.routeId===y.routeId&&x.pattern!==y.pattern)sameCodeChanges++;
   }
 }
+const roadWalking=Boolean(d.meta?.walkingTransferSource?.generated);
+let roadTransferEdges=0;
+for(let i=0;i<d.stations.length;i++){
+  if(alightHub[i]<0)continue;
+  for(const edge of d.adjacency[alightHub[i]]){
+    const [next,,walkMetres]=edge;
+    const state=d.routeStates[next];
+    if(state?.role!=='board'||state.stationIndex===i)continue;
+    if(Number.isFinite(walkMetres)){
+      check(walkMetres>0&&walkMetres<=650+1e-7,'Invalid walking-transfer distance');
+      if(d.stations[i].inSerm&&d.stations[state.stationIndex].inSerm)roadTransferEdges++;
+    }
+  }
+}
 for(let i=0;i<d.stations.length;i++)for(let j=i+1;j<d.stations.length;j++){
   if(Math.hypot(...d.stations[i].point.map((x,k)=>x-d.stations[j].point[k]))>650)continue;
-  if(alightHub[i]>=0&&boardHub[j]>=0)check(d.adjacency[alightHub[i]].some(([n])=>n===boardHub[j]),'Missing nearby transfer');
-  if(alightHub[j]>=0&&boardHub[i]>=0)check(d.adjacency[alightHub[j]].some(([n])=>n===boardHub[i]),'Missing reverse nearby transfer');
+  const bothInSerm=d.stations[i].inSerm&&d.stations[j].inSerm;
+  if(!roadWalking||!bothInSerm){
+    if(alightHub[i]>=0&&boardHub[j]>=0)check(d.adjacency[alightHub[i]].some(([n])=>n===boardHub[j]),'Missing nearby fallback transfer');
+    if(alightHub[j]>=0&&boardHub[i]>=0)check(d.adjacency[alightHub[j]].some(([n])=>n===boardHub[i]),'Missing reverse nearby fallback transfer');
+  }
   if(d.stations[i].mode!==d.stations[j].mode)crossMode++;
 }
+if(roadWalking)check(roadTransferEdges>0,'No BD TOPO walking transfers found in SERM');
 const station=(name,route)=>{const s=d.stations.find(s=>s.name===name&&(!route||s.routes.includes(route)));assert.ok(s,`Missing station ${name}`);return s;};
 const names=['Tours','Blois-Chambord','Orléans','Paris-Austerlitz','Le Mans','Saumur','Rotière','Jean Jaurès'];
 const examples=[];const start=performance.now();let maxModel=0;
@@ -90,14 +108,15 @@ const refWait=(routeId)=>refRouteMode(routeId)==='BUS'
   ? (d.routeInfo?.[routeId]?.waitMinutes??d.routeWaits?.[routeId]??10)
   : (({NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15);
 const refAllowed=d.routeStates.map(s=>d.routeInfo?.[s.routeId]?.serviceStatus?.status!=='suspended');
-const refEdgeCost=(fromNode,toNode,storedCost)=>{
+const refEdgeCost=(fromNode,toNode,storedCost,walkingMetres)=>{
   const a=d.routeStates[fromNode],b=d.routeStates[toNode];
   if(!a||!b)return storedCost;
   if(a.role==='board'&&b.role==='departure')return refWait(b.routeId);
   if(a.role==='alight'&&b.role==='board'){
     if(a.stationIndex===b.stationIndex)return 3.5;
     const aPoint=d.stations[a.stationIndex].point,bPoint=d.stations[b.stationIndex].point;
-    return Math.hypot(aPoint[0]-bPoint[0],aPoint[1]-bPoint[1])/refWalk+2;
+    const metres=Number.isFinite(walkingMetres)?walkingMetres:Math.hypot(aPoint[0]-bPoint[0],aPoint[1]-bPoint[1]);
+    return metres/refWalk+2;
   }
   if(a.role==='departure'&&b.role==='arrival'&&a.routeId===b.routeId&&a.stationIndex!==b.stationIndex)return storedCost;
   if(a.role==='arrival'&&b.role==='departure'){
@@ -117,10 +136,10 @@ for(let k=0;k<reference.length;k++){
   let node=-1,value=Infinity;
   for(let n=0;n<reference.length;n++)if(!visited[n]&&reference[n]<value){value=reference[n];node=n;}
   if(node<0)break;visited[node]=true;
-  for(const [next,cost] of d.adjacency[node])if(refAllowed[next])reference[next]=Math.min(reference[next],value+refEdgeCost(node,next,cost));
+  for(const [next,cost,walkingMetres] of d.adjacency[node])if(refAllowed[next])reference[next]=Math.min(reference[next],value+refEdgeCost(node,next,cost,walkingMetres));
 }
 // 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below any user-facing precision.
 reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch'));
 for(const [n,state] of d.routeStates.entries())if(state.routeId==='TER P21')check(!Number.isFinite(model.distances[n]),'Suspended P21 must not be routable');
-const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
+const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
