@@ -6,6 +6,17 @@ const VIEWPORT_ZOOM_STEP = 1.32;
 const DEFAULT_VIEWPORT_SCALE = 1;
 const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 3.6;
+const DISPLAY_SETTINGS_STORAGE_KEY = "tours-display-settings-v1";
+const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
+  terWidth: ROUTE_LINE_WIDTH,
+  tramWidth: 4.2,
+  bhnsWidth: 3.4,
+  stationRadius: 2.5,
+  railStationRadius: 2,
+  labelScale: 1,
+  communeColor: "#c5d0db",
+  backgroundColor: "#efe6d6",
+});
 const HOVER_DEADBAND = 12;
 const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
@@ -21,6 +32,49 @@ const DEFAULT_ORIGIN = {
   label: "Gare de Tours",
 };
 const SHARE_DECIMALS = 5;
+
+function freshDisplaySettings() {
+  return { ...DEFAULT_DISPLAY_SETTINGS, routeColors: {} };
+}
+
+function validHexColor(value) {
+  return /^#[0-9a-f]{6}$/i.test(String(value || ""));
+}
+
+function normalizeDisplaySettings(value) {
+  const source = value && typeof value === "object" ? value : {};
+  const numeric = (key, min, max) => {
+    const number = Number(source[key]);
+    return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_DISPLAY_SETTINGS[key];
+  };
+  const routeColors = {};
+  if (source.routeColors && typeof source.routeColors === "object") {
+    for (const [routeId, color] of Object.entries(source.routeColors)) {
+      if (validHexColor(color)) routeColors[routeId] = color.toLowerCase();
+    }
+  }
+  return {
+    terWidth: numeric("terWidth", 0.5, 10),
+    tramWidth: numeric("tramWidth", 0.5, 10),
+    bhnsWidth: numeric("bhnsWidth", 0.5, 10),
+    stationRadius: numeric("stationRadius", 1, 10),
+    railStationRadius: numeric("railStationRadius", 1, 10),
+    labelScale: numeric("labelScale", 0.6, 1.8),
+    communeColor: validHexColor(source.communeColor) ? source.communeColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.communeColor,
+    backgroundColor: validHexColor(source.backgroundColor) ? source.backgroundColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.backgroundColor,
+    routeColors,
+  };
+}
+
+function loadDisplaySettings() {
+  try {
+    return normalizeDisplaySettings(JSON.parse(localStorage.getItem(DISPLAY_SETTINGS_STORAGE_KEY) || "null"));
+  } catch {
+    return freshDisplaySettings();
+  }
+}
+
+const displaySettings = loadDisplaySettings();
 
 const state = {
   data: null,
@@ -61,6 +115,13 @@ const shareUrl = document.getElementById("shareUrl");
 const settingsButton = document.getElementById("settingsButton");
 const settingsPanel = document.getElementById("settingsPanel");
 const settingsClose = document.getElementById("settingsClose");
+const displaySettingsButton = document.getElementById("displaySettingsButton");
+const displaySettingsPanel = document.getElementById("displaySettingsPanel");
+const displaySettingsScrim = document.getElementById("displaySettingsScrim");
+const displaySettingsClose = document.getElementById("displaySettingsClose");
+const displaySettingsDone = document.getElementById("displaySettingsDone");
+const displayResetAll = document.getElementById("displayResetAll");
+const displayRouteColors = document.getElementById("displayRouteColors");
 const handButton = document.getElementById("handButton");
 const projectsToggle = document.getElementById("projectsToggle");
 const probePinButton = document.getElementById("probePinButton");
@@ -69,6 +130,214 @@ const journeyPanel = document.getElementById("journeyPanel");
 const journeyContent = document.getElementById("journeyContent");
 const mapBackdrop = document.createElement("canvas");
 let backdropKey = "";
+
+function saveDisplaySettings() {
+  try {
+    localStorage.setItem(DISPLAY_SETTINGS_STORAGE_KEY, JSON.stringify(displaySettings));
+  } catch {
+    // The map remains usable when storage is disabled.
+  }
+}
+
+function invalidateVisualSettings() {
+  backdropKey = "";
+  requestDraw();
+}
+
+function defaultRouteColor(routeId) {
+  const info = state.data?.routeInfo?.[routeId];
+  if (validHexColor(info?.color)) return info.color.toLowerCase();
+  const route = state.data?.routes?.find((item) => item.id === routeId && validHexColor(item.color));
+  return route?.color?.toLowerCase() || "#345c77";
+}
+
+function routeDisplayColor(route) {
+  return displaySettings.routeColors[route.id] || route.color;
+}
+
+function setDisplaySettingsOpen(open) {
+  displaySettingsPanel.hidden = !open;
+  displaySettingsScrim.hidden = !open;
+  displaySettingsButton.setAttribute("aria-expanded", String(open));
+  if (open) {
+    setSettingsOpen(false);
+    sharePanel.hidden = true;
+    syncDisplaySettingsControls();
+  }
+}
+
+function setColorControl(key, value) {
+  const color = validHexColor(value) ? value.toLowerCase() : DEFAULT_DISPLAY_SETTINGS[key];
+  const picker = displaySettingsPanel.querySelector('[data-display-color="' + key + '"]');
+  const code = displaySettingsPanel.querySelector('[data-display-color-code="' + key + '"]');
+  if (picker) picker.value = color;
+  if (code) code.value = color.toUpperCase();
+}
+
+function syncDisplaySettingsControls() {
+  displaySettingsPanel.querySelectorAll("[data-display-number]").forEach((input) => {
+    const key = input.dataset.displayNumber;
+    input.value = String(displaySettings[key]);
+  });
+  setColorControl("communeColor", displaySettings.communeColor);
+  setColorControl("backgroundColor", displaySettings.backgroundColor);
+  displayRouteColors.querySelectorAll(".route-color-row").forEach((row) => {
+    const routeId = row.dataset.routeId;
+    const color = (displaySettings.routeColors[routeId] || defaultRouteColor(routeId)).toLowerCase();
+    const picker = row.querySelector("[data-route-color]");
+    const code = row.querySelector("[data-route-color-code]");
+    if (picker) picker.value = color;
+    if (code) code.value = color.toUpperCase();
+  });
+}
+
+function buildRouteColorSettings() {
+  if (!state.data) return;
+  const modes = { TER: 0, NAVETTE: 1, TRAM: 2, BHNS: 3 };
+  const unique = new Map();
+  for (const route of state.data.routes) {
+    if (route.mode === "RFN" || unique.has(route.id)) continue;
+    const info = state.data.routeInfo?.[route.id] || {};
+    unique.set(route.id, { id: route.id, mode: info.mode || route.mode, title: info.title || route.title || route.id });
+  }
+  const routes = [...unique.values()].sort((a, b) => (modes[a.mode] ?? 9) - (modes[b.mode] ?? 9) || a.id.localeCompare(b.id, "fr"));
+  displayRouteColors.replaceChildren();
+  for (const route of routes) {
+    const row = document.createElement("div");
+    row.className = "route-color-row";
+    row.dataset.routeId = route.id;
+
+    const label = document.createElement("div");
+    label.className = "route-color-label";
+    const strong = document.createElement("strong");
+    strong.textContent = route.id;
+    const small = document.createElement("small");
+    small.textContent = route.title;
+    label.append(strong, small);
+
+    const control = document.createElement("div");
+    control.className = "display-color-control";
+    const picker = document.createElement("input");
+    picker.type = "color";
+    picker.dataset.routeColor = route.id;
+    picker.setAttribute("aria-label", "Couleur de " + route.id);
+    const code = document.createElement("input");
+    code.type = "text";
+    code.maxLength = 7;
+    code.dataset.routeColorCode = route.id;
+    code.setAttribute("aria-label", "Code couleur de " + route.id);
+    const reset = document.createElement("button");
+    reset.type = "button";
+    reset.className = "display-row-reset";
+    reset.dataset.resetRoute = route.id;
+    reset.setAttribute("aria-label", "Rétablir la couleur de " + route.id);
+    reset.textContent = "↺";
+    control.append(picker, code, reset);
+    row.append(label, control);
+    displayRouteColors.append(row);
+  }
+  syncDisplaySettingsControls();
+}
+
+function applyDisplayNumber(input) {
+  const key = input.dataset.displayNumber;
+  const fallback = DEFAULT_DISPLAY_SETTINGS[key];
+  const min = Number(input.min);
+  const max = Number(input.max);
+  let value = Number(input.value);
+  if (!Number.isFinite(value)) value = fallback;
+  value = Math.max(min, Math.min(max, value));
+  displaySettings[key] = value;
+  input.value = String(value);
+  saveDisplaySettings();
+  invalidateVisualSettings();
+}
+
+displaySettingsPanel.addEventListener("input", (event) => {
+  const target = event.target;
+  if (target.matches("[data-display-number]")) {
+    applyDisplayNumber(target);
+    return;
+  }
+  if (target.matches("[data-display-color]")) {
+    const key = target.dataset.displayColor;
+    if (!validHexColor(target.value)) return;
+    displaySettings[key] = target.value.toLowerCase();
+    setColorControl(key, target.value);
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-display-color-code]")) {
+    const key = target.dataset.displayColorCode;
+    if (!validHexColor(target.value.trim())) return;
+    displaySettings[key] = target.value.trim().toLowerCase();
+    setColorControl(key, displaySettings[key]);
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-route-color]")) {
+    const routeId = target.dataset.routeColor;
+    if (!validHexColor(target.value)) return;
+    displaySettings.routeColors[routeId] = target.value.toLowerCase();
+    const code = target.closest(".route-color-row")?.querySelector("[data-route-color-code]");
+    if (code) code.value = target.value.toUpperCase();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+  if (target.matches("[data-route-color-code]")) {
+    const routeId = target.dataset.routeColorCode;
+    const color = target.value.trim();
+    if (!validHexColor(color)) return;
+    displaySettings.routeColors[routeId] = color.toLowerCase();
+    const picker = target.closest(".route-color-row")?.querySelector("[data-route-color]");
+    if (picker) picker.value = color;
+    target.value = color.toUpperCase();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+  }
+});
+
+displaySettingsPanel.addEventListener("blur", (event) => {
+  const target = event.target;
+  if (target.matches("[data-display-number]")) {
+    applyDisplayNumber(target);
+  } else if (target.matches("[data-display-color-code]")) {
+    setColorControl(target.dataset.displayColorCode, displaySettings[target.dataset.displayColorCode]);
+  } else if (target.matches("[data-route-color-code]")) {
+    syncDisplaySettingsControls();
+  }
+}, true);
+
+displaySettingsPanel.addEventListener("click", (event) => {
+  const adjust = event.target.closest("[data-adjust]");
+  if (adjust) {
+    const key = adjust.dataset.adjust;
+    const input = displaySettingsPanel.querySelector('[data-display-number="' + key + '"]');
+    if (!input) return;
+    input.value = String(Number(input.value || DEFAULT_DISPLAY_SETTINGS[key]) + Number(adjust.dataset.delta || input.step || 1));
+    applyDisplayNumber(input);
+    return;
+  }
+  const reset = event.target.closest("[data-reset-display]");
+  if (reset) {
+    const key = reset.dataset.resetDisplay;
+    displaySettings[key] = DEFAULT_DISPLAY_SETTINGS[key];
+    syncDisplaySettingsControls();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+    return;
+  }
+  const routeReset = event.target.closest("[data-reset-route]");
+  if (routeReset) {
+    delete displaySettings.routeColors[routeReset.dataset.resetRoute];
+    syncDisplaySettingsControls();
+    saveDisplaySettings();
+    invalidateVisualSettings();
+  }
+});
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -377,7 +646,7 @@ function drawPolyline(drawCtx, points, projectPoint) {
 }
 
 function drawBasemap(drawCtx, projectPoint) {
-  drawCtx.fillStyle = "#c5d0db";
+  drawCtx.fillStyle = displaySettings.communeColor;
   for (const borough of state.data.boroughs) {
     for (const polygon of borough.polygons) {
       drawCtx.beginPath();
@@ -400,8 +669,8 @@ function drawBasemap(drawCtx, projectPoint) {
 
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
-    drawCtx.strokeStyle = route.color;
-    drawCtx.lineWidth = route.mode === "RFN" ? 1.1 : route.mode === "TRAM" ? 4.2 : route.mode === "BHNS" ? 3.4 : ROUTE_LINE_WIDTH;
+    drawCtx.strokeStyle = route.mode === "RFN" ? route.color : routeDisplayColor(route);
+    drawCtx.lineWidth = route.mode === "RFN" ? 1.1 : route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : displaySettings.terWidth;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
     drawCtx.setLineDash(route.mode === "BHNS" ? [7, 5] : []);
@@ -451,9 +720,10 @@ function drawCommuneLabels(drawCtx, projectPoint) {
     if (right - left < 75 || bottom - top < 25) continue;
     const [x, y] = projectPoint(commune.label);
     if (x < 20 || y < 14 || x > width - 20 || y > height - 14) continue;
-    drawCtx.font = "600 11px Outfit, sans-serif";
+    const fontSize = 11 * displaySettings.labelScale;
+    drawCtx.font = "600 " + fontSize + "px Outfit, sans-serif";
     const textWidth = drawCtx.measureText(commune.name).width;
-    const box = [x - textWidth / 2 - 5, y - 10, x + textWidth / 2 + 5, y + 5];
+    const box = [x - textWidth / 2 - 5, y - fontSize + 1, x + textWidth / 2 + 5, y + 5];
     if (occupied.some(([a, b, c, d]) => box[0] < c && box[2] > a && box[1] < d && box[3] > b)) continue;
     occupied.push(box);
     drawCtx.textAlign = "center";
@@ -493,7 +763,8 @@ function drawStations(drawCtx, projectPoint) {
       drawCtx.fill();
     }
     drawCtx.beginPath();
-    drawCtx.arc(x, y, station.mode === "TRAM" ? 2.6 : station.mode === "BHNS" ? 2.3 : 2, 0, Math.PI * 2);
+    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : displaySettings.stationRadius;
+    drawCtx.arc(x, y, stationRadius, 0, Math.PI * 2);
     drawCtx.fillStyle = "#fff";
     drawCtx.fill();
     drawCtx.lineWidth = 0.55;
@@ -507,7 +778,7 @@ function drawStations(drawCtx, projectPoint) {
   const occupied = [];
   labels.sort((a, b) => Number(b.terminal) - Number(a.terminal) || a.station.name.localeCompare(b.station.name, "fr"));
   for (const { station, x, y, terminal } of labels) {
-    const fontSize = terminal ? 12 : 10;
+    const fontSize = (terminal ? 12 : 10) * displaySettings.labelScale;
     drawCtx.font = `${terminal ? 700 : 500} ${fontSize}px Outfit, sans-serif`;
     const textWidth = drawCtx.measureText(station.name).width;
     const candidates = [[x + 6, y - 5], [x - textWidth - 6, y - 5], [x + 6, y + 13], [x - textWidth - 6, y + 13]];
@@ -840,7 +1111,7 @@ function drawMap() {
     const baseCtx = mapBackdrop.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
     baseCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    baseCtx.fillStyle = "#efe6d6"; baseCtx.fillRect(0,0,width,height);
+    baseCtx.fillStyle = displaySettings.backgroundColor; baseCtx.fillRect(0,0,width,height);
     drawBasemap(baseCtx, projectPoint);
     if (warp) {
       baseCtx.save();
@@ -1141,8 +1412,25 @@ mapCanvas.addEventListener("dblclick", (event) => {
 function setSettingsOpen(open) {
   settingsPanel.hidden = !open;
   settingsButton.setAttribute("aria-expanded", open ? "true" : "false");
-  if (open) sharePanel.hidden = true;
+  if (open) {
+    sharePanel.hidden = true;
+    if (!displaySettingsPanel.hidden) setDisplaySettingsOpen(false);
+  }
 }
+
+displaySettingsButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  setDisplaySettingsOpen(displaySettingsPanel.hidden);
+});
+displaySettingsClose.addEventListener("click", () => setDisplaySettingsOpen(false));
+displaySettingsDone.addEventListener("click", () => setDisplaySettingsOpen(false));
+displaySettingsScrim.addEventListener("click", () => setDisplaySettingsOpen(false));
+displayResetAll.addEventListener("click", () => {
+  Object.assign(displaySettings, freshDisplaySettings());
+  syncDisplaySettingsControls();
+  saveDisplaySettings();
+  invalidateVisualSettings();
+});
 
 settingsButton.addEventListener("click", (event) => {
   event.stopPropagation();
@@ -1155,7 +1443,9 @@ document.addEventListener("click", (event) => {
   setSettingsOpen(false);
 });
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !settingsPanel.hidden) setSettingsOpen(false);
+  if (event.key !== "Escape") return;
+  if (!displaySettingsPanel.hidden) setDisplaySettingsOpen(false);
+  else if (!settingsPanel.hidden) setSettingsOpen(false);
 });
 
 function syncOutlineToggles() {
@@ -1319,6 +1609,8 @@ async function init() {
   if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
   state.ready = true;
+  buildRouteColorSettings();
+  syncDisplaySettingsControls();
   restoreUrl();
   state.dirty = false;
   requestDraw();
