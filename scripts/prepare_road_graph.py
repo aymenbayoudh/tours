@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Build a compact pedestrian road graph from IGN BD TOPO WFS.
 
-The raw national road layer is never shipped to the browser. We fetch only the
-bounding box of the 14 SERM EPCI, retain segments intersecting those EPCI,
-apply conservative pedestrian restrictions, and compact geometry into graph
-edges no longer than roughly 140 m so arbitrary points can snap locally.
+The raw national road layer is never shipped to the browser. We query the
+14 SERM EPCI envelopes separately, deduplicate features, retain only geometry
+intersecting the SERM, apply conservative pedestrian restrictions, and compact
+geometry into graph edges no longer than roughly 140 m.
 """
 from __future__ import annotations
 
@@ -164,54 +164,69 @@ def main():
         elif minutes < edges[previous][2]:
             edges[previous][2] = minutes
 
-    start = 0
-    while True:
-        page = request_page(bbox, start)
-        features = page.get("features", [])
-        if not features:
-            break
-        fetched += len(features)
-        for feature in features:
-            props = feature.get("properties") or {}
-            if sample_properties is None:
-                sample_properties = sorted(props)
-            if not pedestrian_allowed(props):
-                rejected += 1
-                continue
-            for line in feature_lines(feature.get("geometry")):
-                line = [p[:2] for p in line if len(p) >= 2]
-                if len(line) < 2 or not intersects_serm(line, epci):
+    seen_features = set()
+    requests = 0
+    for epci_number, (epci_bbox, _) in enumerate(epci, 1):
+        start = 0
+        while True:
+            page = request_page(epci_bbox, start)
+            requests += 1
+            features = page.get("features", [])
+            if not features:
+                break
+            fetched += len(features)
+            for feature in features:
+                props = feature.get("properties") or {}
+                geometry = feature.get("geometry")
+                feature_key = feature.get("id") or props.get("cleabs")
+                if not feature_key:
+                    feature_key = json.dumps(geometry, sort_keys=True, separators=(",", ":"))
+                if feature_key in seen_features:
                     continue
-                retained += 1
-                current = xy(*line[0])
-                accumulated = 0.0
-                for raw_a, raw_b in zip(line, line[1:]):
-                    a = xy(*raw_a[:2])
-                    b = xy(*raw_b[:2])
-                    seg = math.dist(a, b)
-                    if seg <= 0:
+                seen_features.add(feature_key)
+                if sample_properties is None:
+                    sample_properties = sorted(props)
+                if not pedestrian_allowed(props):
+                    rejected += 1
+                    continue
+                for line in feature_lines(geometry):
+                    line = [p[:2] for p in line if len(p) >= 2]
+                    if len(line) < 2 or not intersects_serm(line, epci):
                         continue
-                    cursor = a
-                    remaining = seg
-                    while accumulated + remaining >= MAX_EDGE_METRES:
-                        need = MAX_EDGE_METRES - accumulated
-                        t = need / remaining
-                        cut = (cursor[0] + (b[0] - cursor[0]) * t, cursor[1] + (b[1] - cursor[1]) * t)
-                        add_edge(current, cut, MAX_EDGE_METRES)
-                        current = cut
-                        cursor = cut
-                        remaining -= need
-                        accumulated = 0.0
-                    accumulated += remaining
-                end = xy(*line[-1])
-                if math.dist(current, end) > 0.05:
-                    add_edge(current, end, accumulated)
-        if len(features) < PAGE_SIZE:
-            break
-        start += len(features)
-        if start > 500_000:
-            raise RuntimeError("Unexpectedly large BD TOPO WFS result")
-        print(f"BD TOPO: fetched {fetched} features...", flush=True)
+                    retained += 1
+                    current = xy(*line[0])
+                    accumulated = 0.0
+                    for raw_a, raw_b in zip(line, line[1:]):
+                        a = xy(*raw_a[:2])
+                        b = xy(*raw_b[:2])
+                        seg = math.dist(a, b)
+                        if seg <= 0:
+                            continue
+                        cursor = a
+                        remaining = seg
+                        while accumulated + remaining >= MAX_EDGE_METRES:
+                            need = MAX_EDGE_METRES - accumulated
+                            t = need / remaining
+                            cut = (cursor[0] + (b[0] - cursor[0]) * t, cursor[1] + (b[1] - cursor[1]) * t)
+                            add_edge(current, cut, MAX_EDGE_METRES)
+                            current = cut
+                            cursor = cut
+                            remaining -= need
+                            accumulated = 0.0
+                        accumulated += remaining
+                    end = xy(*line[-1])
+                    if math.dist(current, end) > 0.05:
+                        add_edge(current, end, accumulated)
+            if len(features) < PAGE_SIZE:
+                break
+            start += len(features)
+            if start > 150_000:
+                raise RuntimeError(f"Unexpectedly large BD TOPO WFS result for EPCI {epci_number}")
+        print(
+            f"BD TOPO: EPCI {epci_number}/{len(epci)}; "
+            f"{len(seen_features)} unique features ({fetched} returned)...",
+            flush=True,
+        )
 
     output = {
         "source": {
@@ -226,14 +241,20 @@ def main():
         "nodes": nodes,
         "edges": edges,
         "stats": {
-            "featuresFetched": fetched,
+            "featuresReturned": fetched,
+            "uniqueFeaturesFetched": len(seen_features),
+            "wfsRequests": requests,
             "linePartsRetained": retained,
             "featuresRejectedByPedestrianRules": rejected,
             "propertyNames": sample_properties or [],
         },
     }
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"Wrote {OUTPUT}: {len(nodes)} road nodes, {len(edges)} walking edges, {retained} retained line parts from {fetched} fetched features")
+    print(
+        f"Wrote {OUTPUT}: {len(nodes)} road nodes, {len(edges)} walking edges, "
+        f"{retained} retained line parts from {len(seen_features)} unique features "
+        f"({fetched} returned across {requests} WFS requests)"
+    )
 
 
 if __name__ == "__main__":
