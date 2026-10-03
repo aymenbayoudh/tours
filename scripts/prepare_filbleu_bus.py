@@ -90,8 +90,9 @@ def main() -> None:
                 continue
             for item in times:
                 used_stops.add(item["physical"])
-            arrivals = [x["arrival"] / 60 for x in times]
-            departures = [x["departure"] / 60 for x in times]
+            first_departure = times[0]["departure"] / 60
+            arrivals = [x["arrival"] / 60 - first_departure for x in times]
+            departures = [x["departure"] / 60 - first_departure for x in times]
             if any(departure < arrival for arrival, departure in zip(arrivals, departures)) or any(arrivals[i + 1] < departures[i] for i in range(len(arrivals) - 1)):
                 continue
             sequence = tuple("FILBLEU:" + x["physical"] for x in times)
@@ -107,7 +108,7 @@ def main() -> None:
                 "shapeId": shape_id,
                 "directionId": direction,
             })
-            route_departures[route_id][direction].append(departures[0])
+            route_departures[route_id][direction].append(first_departure)
 
         patterns = representative(groups)
         for p in patterns:
