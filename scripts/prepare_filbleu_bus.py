@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Reduce the official Fil Bleu GTFS to compact bus data for 5–11 October 2026.
 
-The browser never receives the raw GTFS. We keep commercial stop areas as the
-routing nodes for this first bus layer, while preserving physical platforms in
-the reduced file so road-based walking can refine access later.
+The browser never receives the raw GTFS. Physical stop points remain distinct
+routing nodes (not merged across opposite sides of a road); their commercial
+stop area is retained as metadata for later road-based walking refinement.
 """
 from __future__ import annotations
 
@@ -76,7 +76,7 @@ def main() -> None:
 
         groups = defaultdict(list)
         route_departures = defaultdict(lambda: defaultdict(list))
-        used_parents = defaultdict(set)
+        used_stops = set()
         selected_shape_ids = set()
 
         for trip_id, times in stop_times.items():
@@ -86,25 +86,16 @@ def main() -> None:
             route_id = f"BUS {short}"
             times.sort(key=lambda x: x["sequence"])
 
-            # Collapse consecutive physical platforms belonging to the same
-            # commercial stop area, but retain the physical IDs separately.
-            collapsed = []
-            for item in times:
-                used_parents[item["parent"]].add(item["physical"])
-                if collapsed and collapsed[-1]["parent"] == item["parent"]:
-                    collapsed[-1]["departure"] = item["departure"]
-                    collapsed[-1]["pickup"] = collapsed[-1]["pickup"] or item["pickup"]
-                    collapsed[-1]["dropoff"] = collapsed[-1]["dropoff"] or item["dropoff"]
-                else:
-                    collapsed.append(dict(item))
-            if len(collapsed) < 2:
+            if len(times) < 2:
                 continue
-            arrivals = [x["arrival"] / 60 for x in collapsed]
-            departures = [x["departure"] / 60 for x in collapsed]
+            for item in times:
+                used_stops.add(item["physical"])
+            arrivals = [x["arrival"] / 60 for x in times]
+            departures = [x["departure"] / 60 for x in times]
             if any(departure < arrival for arrival, departure in zip(arrivals, departures)) or any(arrivals[i + 1] < departures[i] for i in range(len(arrivals) - 1)):
                 continue
-            sequence = tuple("FILBLEU:" + x["parent"] for x in collapsed)
-            permissions = tuple((x["pickup"], x["dropoff"]) for x in collapsed)
+            sequence = tuple("FILBLEU:" + x["physical"] for x in times)
+            permissions = tuple((x["pickup"], x["dropoff"]) for x in times)
             direction = trip.get("direction_id") or "0"
             shape_id = trip.get("shape_id") or ""
             label = f"Bus {short}" + (f" → {trip.get('trip_headsign','').strip()}" if trip.get("trip_headsign", "").strip() else "")
@@ -157,26 +148,20 @@ def main() -> None:
                 "gtfsRouteId": gtfs_id,
             }
 
-        # Keep commercial areas as runtime nodes, with all physical platforms
-        # retained for the later road-walking graph.
+        # Keep every physical boarding point separate. Parent stop areas are
+        # metadata only, so opposite platforms are never silently merged.
         reduced_stops = {}
-        for parent_id, physical_ids in used_parents.items():
-            parent = all_stops.get(parent_id)
-            children = [all_stops[sid] for sid in physical_ids if sid in all_stops]
-            point_source = parent if parent and parent.get("stop_lat") and parent.get("stop_lon") else (children[0] if children else None)
-            if not point_source:
+        for stop_id in sorted(used_stops):
+            stop = all_stops.get(stop_id)
+            if not stop or not stop.get("stop_lat") or not stop.get("stop_lon"):
                 continue
-            reduced_stops[parent_id] = {
-                "name": (parent or point_source).get("stop_name") or point_source.get("stop_name") or parent_id,
-                "point": [float(point_source["stop_lon"]), float(point_source["stop_lat"])],
-                "platforms": [
-                    {
-                        "id": child["stop_id"],
-                        "point": [float(child["stop_lon"]), float(child["stop_lat"])],
-                        "name": child.get("stop_name") or "",
-                    }
-                    for child in children if child.get("stop_lat") and child.get("stop_lon")
-                ],
+            parent_id = stop.get("parent_station") or ""
+            parent = all_stops.get(parent_id) if parent_id else None
+            reduced_stops[stop_id] = {
+                "name": stop.get("stop_name") or (parent or {}).get("stop_name") or stop_id,
+                "point": [float(stop["stop_lon"]), float(stop["stop_lat"])],
+                "parent": parent_id,
+                "areaName": (parent or {}).get("stop_name") or "",
             }
 
         # One simplified display geometry per representative pattern shape.
@@ -206,7 +191,7 @@ def main() -> None:
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"Wrote {OUTPUT}: {len(reduced_routes)} bus routes, {len(reduced_stops)} commercial stops, {len(patterns)} representative patterns, {len(shapes)} shapes")
+    print(f"Wrote {OUTPUT}: {len(reduced_routes)} bus routes, {len(reduced_stops)} physical stops, {len(patterns)} representative patterns, {len(shapes)} shapes")
 
 
 if __name__ == "__main__":
