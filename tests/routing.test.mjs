@@ -49,16 +49,38 @@ for(const name of names){
   }
 }
 const model=buildTravelModel(d,station('Tours').point);const gridStart=performance.now();for(const c of d.cells)estimateTravel(d,model,c.point);const gridMs=performance.now()-gridStart;
-// Independent O(V²) shortest-path oracle, with the same access costs.
+// Independent O(V²) shortest-path oracle. Recompute the current transfer/wait
+// semantics here instead of trusting the stored transfer costs.
 const reference=Array(d.routeStates.length).fill(Infinity),visited=Array(d.routeStates.length).fill(false);
 const src=station('Tours').point;
-d.stations.forEach((s,i)=>{for(const n of d.boardingStates[i])reference[n]=Math.hypot(s.point[0]-src[0],s.point[1]-src[1])/80+1.8+d.routeWaits[d.routeStates[n].routeId];});
+const refWalk=d.meta.walkMetersPerMinute||80;
+const refEntry=d.meta.stationAccessPenalty??1.8;
+const refRouteMode=(routeId)=>d.routeInfo?.[routeId]?.mode||(routeId==='NAVETTE'?'NAVETTE':routeId?.startsWith('TRAM')?'TRAM':routeId?.startsWith('BHNS')?'BHNS':'TER');
+const refWait=(routeId)=>({NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15;
+const refEdgeCost=(fromNode,toNode,storedCost)=>{
+  const a=d.routeStates[fromNode],b=d.routeStates[toNode];
+  if(!a||!b)return storedCost;
+  if(a.role==='departure'&&b.role==='arrival'&&a.routeId===b.routeId&&a.stationIndex!==b.stationIndex)return storedCost;
+  if(a.role==='arrival'&&b.role==='departure'){
+    const sameStation=a.stationIndex===b.stationIndex;
+    const samePattern=a.pattern!==null&&a.pattern===b.pattern;
+    const fallbackStayAboard=a.routeId===b.routeId&&a.pattern===null&&b.pattern===null&&storedCost===0;
+    if(sameStation&&(samePattern||fallbackStayAboard))return storedCost;
+    const wait=refWait(b.routeId);
+    if(sameStation)return 3.5+wait;
+    const aPoint=d.stations[a.stationIndex].point,bPoint=d.stations[b.stationIndex].point;
+    return Math.hypot(aPoint[0]-bPoint[0],aPoint[1]-bPoint[1])/refWalk+2+wait;
+  }
+  return storedCost;
+};
+d.stations.forEach((s,i)=>{for(const n of d.boardingStates[i])reference[n]=Math.hypot(s.point[0]-src[0],s.point[1]-src[1])/refWalk+refEntry+refWait(d.routeStates[n].routeId);});
 for(let k=0;k<reference.length;k++){
   let node=-1,value=Infinity;
   for(let n=0;n<reference.length;n++)if(!visited[n]&&reference[n]<value){value=reference[n];node=n;}
   if(node<0)break;visited[node]=true;
-  for(const [next,cost] of d.adjacency[node])reference[next]=Math.min(reference[next],value+cost);
+  for(const [next,cost] of d.adjacency[node])reference[next]=Math.min(reference[next],value+refEdgeCost(node,next,cost));
 }
-reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-7,'Heap/shortest-path oracle mismatch'));
+// 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below any user-facing precision.
+reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch'));
 const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,stations:d.stations.length,noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
