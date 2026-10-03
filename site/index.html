@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=2026-10-03c" />
+    <link rel="stylesheet" href="./styles.css?v=2026-10-03d" />
   </head>
   <body>
     <main class="page">
@@ -85,76 +85,112 @@
             <button id="displaySettingsClose" type="button" class="icon-button" aria-label="Fermer les paramètres">×</button>
           </div>
           <div class="display-settings-scroll">
-            <h4>Calcul des temps</h4>
-            <p class="display-settings-note">Les horaires GTFS restent la référence. Les vitesses règlent proportionnellement les temps à bord, tandis que les attentes et malus sont recalculés directement.</p>
-            <div class="display-settings-grid">
-              <span>Vitesse marche</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="walkSpeedKmh" data-delta="-0.1" aria-label="Réduire la vitesse de marche">−</button><input data-travel-number="walkSpeedKmh" type="number" min="1" max="12" step="0.1" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="walkSpeedKmh" data-delta="0.1" aria-label="Augmenter la vitesse de marche">+</button><button type="button" class="display-row-reset" data-reset-travel="walkSpeedKmh" aria-label="Rétablir la vitesse de marche">↺</button></label>
-              <span>Vitesse TER</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="terSpeedKmh" data-delta="-5" aria-label="Réduire la vitesse TER">−</button><input data-travel-number="terSpeedKmh" type="number" min="20" max="200" step="5" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="terSpeedKmh" data-delta="5" aria-label="Augmenter la vitesse TER">+</button><button type="button" class="display-row-reset" data-reset-travel="terSpeedKmh" aria-label="Rétablir la vitesse TER">↺</button></label>
-              <span>Vitesse tram</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="tramSpeedKmh" data-delta="-1" aria-label="Réduire la vitesse tram">−</button><input data-travel-number="tramSpeedKmh" type="number" min="5" max="60" step="1" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="tramSpeedKmh" data-delta="1" aria-label="Augmenter la vitesse tram">+</button><button type="button" class="display-row-reset" data-reset-travel="tramSpeedKmh" aria-label="Rétablir la vitesse tram">↺</button></label>
-              <span>Vitesse BHNS</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="bhnsSpeedKmh" data-delta="-1" aria-label="Réduire la vitesse BHNS">−</button><input data-travel-number="bhnsSpeedKmh" type="number" min="5" max="60" step="1" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="bhnsSpeedKmh" data-delta="1" aria-label="Augmenter la vitesse BHNS">+</button><button type="button" class="display-row-reset" data-reset-travel="bhnsSpeedKmh" aria-label="Rétablir la vitesse BHNS">↺</button></label>
-              <span>Vitesse navette</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="navetteSpeedKmh" data-delta="-5" aria-label="Réduire la vitesse navette">−</button><input data-travel-number="navetteSpeedKmh" type="number" min="10" max="120" step="5" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="navetteSpeedKmh" data-delta="5" aria-label="Augmenter la vitesse navette">+</button><button type="button" class="display-row-reset" data-reset-travel="navetteSpeedKmh" aria-label="Rétablir la vitesse navette">↺</button></label>
+            <p class="display-settings-note settings-intro">Les réglages sont enregistrés sur cet appareil. Ouvre seulement la catégorie que tu veux modifier.</p>
 
-              <span>Attente TER</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="terWait" data-delta="-0.5" aria-label="Réduire l’attente TER">−</button><input data-travel-number="terWait" type="number" min="0" max="60" step="0.5" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="terWait" data-delta="0.5" aria-label="Augmenter l’attente TER">+</button><button type="button" class="display-row-reset" data-reset-travel="terWait" aria-label="Rétablir l’attente TER">↺</button></label>
-              <span>Attente tram</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="tramWait" data-delta="-0.25" aria-label="Réduire l’attente tram">−</button><input data-travel-number="tramWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="tramWait" data-delta="0.25" aria-label="Augmenter l’attente tram">+</button><button type="button" class="display-row-reset" data-reset-travel="tramWait" aria-label="Rétablir l’attente tram">↺</button></label>
-              <span>Attente BHNS</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="bhnsWait" data-delta="-0.25" aria-label="Réduire l’attente BHNS">−</button><input data-travel-number="bhnsWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="bhnsWait" data-delta="0.25" aria-label="Augmenter l’attente BHNS">+</button><button type="button" class="display-row-reset" data-reset-travel="bhnsWait" aria-label="Rétablir l’attente BHNS">↺</button></label>
-              <span>Attente navette</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="navetteWait" data-delta="-0.25" aria-label="Réduire l’attente navette">−</button><input data-travel-number="navetteWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="navetteWait" data-delta="0.25" aria-label="Augmenter l’attente navette">+</button><button type="button" class="display-row-reset" data-reset-travel="navetteWait" aria-label="Rétablir l’attente navette">↺</button></label>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Vitesses</strong><small>marche · TER · tram · BHNS · navette</small></summary>
+              <div class="settings-collapse-body">
+                <p class="display-settings-note">Les horaires GTFS restent la référence : ces vitesses accélèrent ou ralentissent proportionnellement les temps à bord.</p>
+              <div class="display-settings-grid">
+                <span>Vitesse marche</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="walkSpeedKmh" data-delta="-0.1" aria-label="Réduire la vitesse de marche">−</button><input data-travel-number="walkSpeedKmh" type="number" min="1" max="12" step="0.1" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="walkSpeedKmh" data-delta="0.1" aria-label="Augmenter la vitesse de marche">+</button><button type="button" class="display-row-reset" data-reset-travel="walkSpeedKmh" aria-label="Rétablir la vitesse de marche">↺</button></label>
+                <span>Vitesse TER</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="terSpeedKmh" data-delta="-5" aria-label="Réduire la vitesse TER">−</button><input data-travel-number="terSpeedKmh" type="number" min="20" max="200" step="5" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="terSpeedKmh" data-delta="5" aria-label="Augmenter la vitesse TER">+</button><button type="button" class="display-row-reset" data-reset-travel="terSpeedKmh" aria-label="Rétablir la vitesse TER">↺</button></label>
+                <span>Vitesse tram</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="tramSpeedKmh" data-delta="-1" aria-label="Réduire la vitesse tram">−</button><input data-travel-number="tramSpeedKmh" type="number" min="5" max="60" step="1" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="tramSpeedKmh" data-delta="1" aria-label="Augmenter la vitesse tram">+</button><button type="button" class="display-row-reset" data-reset-travel="tramSpeedKmh" aria-label="Rétablir la vitesse tram">↺</button></label>
+                <span>Vitesse BHNS</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="bhnsSpeedKmh" data-delta="-1" aria-label="Réduire la vitesse BHNS">−</button><input data-travel-number="bhnsSpeedKmh" type="number" min="5" max="60" step="1" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="bhnsSpeedKmh" data-delta="1" aria-label="Augmenter la vitesse BHNS">+</button><button type="button" class="display-row-reset" data-reset-travel="bhnsSpeedKmh" aria-label="Rétablir la vitesse BHNS">↺</button></label>
+                <span>Vitesse navette</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="navetteSpeedKmh" data-delta="-5" aria-label="Réduire la vitesse navette">−</button><input data-travel-number="navetteSpeedKmh" type="number" min="10" max="120" step="5" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="navetteSpeedKmh" data-delta="5" aria-label="Augmenter la vitesse navette">+</button><button type="button" class="display-row-reset" data-reset-travel="navetteSpeedKmh" aria-label="Rétablir la vitesse navette">↺</button></label>
+              </div>
+              </div>
+            </details>
 
-              <span>Malus entrée station</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="stationEntryPenalty" data-delta="-0.1" aria-label="Réduire le malus d’entrée">−</button><input data-travel-number="stationEntryPenalty" type="number" min="0" max="20" step="0.1" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="stationEntryPenalty" data-delta="0.1" aria-label="Augmenter le malus d’entrée">+</button><button type="button" class="display-row-reset" data-reset-travel="stationEntryPenalty" aria-label="Rétablir le malus d’entrée">↺</button></label>
-              <span>Malus sortie station</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="stationExitPenalty" data-delta="-0.1" aria-label="Réduire le malus de sortie">−</button><input data-travel-number="stationExitPenalty" type="number" min="0" max="20" step="0.1" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="stationExitPenalty" data-delta="0.1" aria-label="Augmenter le malus de sortie">+</button><button type="button" class="display-row-reset" data-reset-travel="stationExitPenalty" aria-label="Rétablir le malus de sortie">↺</button></label>
-              <span>Malus correspondance</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="transferPenalty" data-delta="-0.25" aria-label="Réduire le malus de correspondance">−</button><input data-travel-number="transferPenalty" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="transferPenalty" data-delta="0.25" aria-label="Augmenter le malus de correspondance">+</button><button type="button" class="display-row-reset" data-reset-travel="transferPenalty" aria-label="Rétablir le malus de correspondance">↺</button></label>
-              <span>Malus correspondance à pied</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="walkingTransferPenalty" data-delta="-0.25" aria-label="Réduire le malus de correspondance à pied">−</button><input data-travel-number="walkingTransferPenalty" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="walkingTransferPenalty" data-delta="0.25" aria-label="Augmenter le malus de correspondance à pied">+</button><button type="button" class="display-row-reset" data-reset-travel="walkingTransferPenalty" aria-label="Rétablir le malus de correspondance à pied">↺</button></label>
-            </div>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Attentes</strong><small>à chaque embarquement</small></summary>
+              <div class="settings-collapse-body">
+              <div class="display-settings-grid">
+                <span>Attente TER</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="terWait" data-delta="-0.5" aria-label="Réduire l’attente TER">−</button><input data-travel-number="terWait" type="number" min="0" max="60" step="0.5" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="terWait" data-delta="0.5" aria-label="Augmenter l’attente TER">+</button><button type="button" class="display-row-reset" data-reset-travel="terWait" aria-label="Rétablir l’attente TER">↺</button></label>
+                <span>Attente tram</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="tramWait" data-delta="-0.25" aria-label="Réduire l’attente tram">−</button><input data-travel-number="tramWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="tramWait" data-delta="0.25" aria-label="Augmenter l’attente tram">+</button><button type="button" class="display-row-reset" data-reset-travel="tramWait" aria-label="Rétablir l’attente tram">↺</button></label>
+                <span>Attente BHNS</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="bhnsWait" data-delta="-0.25" aria-label="Réduire l’attente BHNS">−</button><input data-travel-number="bhnsWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="bhnsWait" data-delta="0.25" aria-label="Augmenter l’attente BHNS">+</button><button type="button" class="display-row-reset" data-reset-travel="bhnsWait" aria-label="Rétablir l’attente BHNS">↺</button></label>
+                <span>Attente navette</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="navetteWait" data-delta="-0.25" aria-label="Réduire l’attente navette">−</button><input data-travel-number="navetteWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="navetteWait" data-delta="0.25" aria-label="Augmenter l’attente navette">+</button><button type="button" class="display-row-reset" data-reset-travel="navetteWait" aria-label="Rétablir l’attente navette">↺</button></label>
+              </div>
+              </div>
+            </details>
 
-            <h4>Réseau</h4>
-            <div class="display-settings-grid">
-              <span>Épaisseur TER</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur TER">−</button><input data-display-number="terWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur TER">+</button><button type="button" class="display-row-reset" data-reset-display="terWidth" aria-label="Rétablir l’épaisseur TER">↺</button></label>
-              <span>Épaisseur tram</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur tram">−</button><input data-display-number="tramWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur tram">+</button><button type="button" class="display-row-reset" data-reset-display="tramWidth" aria-label="Rétablir l’épaisseur tram">↺</button></label>
-              <span>Épaisseur BHNS</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur BHNS">−</button><input data-display-number="bhnsWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur BHNS">+</button><button type="button" class="display-row-reset" data-reset-display="bhnsWidth" aria-label="Rétablir l’épaisseur BHNS">↺</button></label>
-              <span>Ronds des stations</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="-0.2" aria-label="Réduire les stations">−</button><input data-display-number="stationRadius" type="number" min="1" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="0.2" aria-label="Agrandir les stations">+</button><button type="button" class="display-row-reset" data-reset-display="stationRadius" aria-label="Rétablir les stations">↺</button></label>
-              <span>Ronds des gares</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="-0.2" aria-label="Réduire les gares">−</button><input data-display-number="railStationRadius" type="number" min="1" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="0.2" aria-label="Agrandir les gares">+</button><button type="button" class="display-row-reset" data-reset-display="railStationRadius" aria-label="Rétablir les gares">↺</button></label>
-              <span>Taille des étiquettes</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="-0.05" aria-label="Réduire les étiquettes">−</button><input data-display-number="labelScale" type="number" min="0.6" max="1.8" step="0.05" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="0.05" aria-label="Agrandir les étiquettes">+</button><button type="button" class="display-row-reset" data-reset-display="labelScale" aria-label="Rétablir les étiquettes">↺</button></label>
-              <span>Traits des communes</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="-0.1" aria-label="Réduire les traits communaux">−</button><input data-display-number="communeBorderWidth" type="number" min="0.1" max="6" step="0.1" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="0.1" aria-label="Augmenter les traits communaux">+</button><button type="button" class="display-row-reset" data-reset-display="communeBorderWidth" aria-label="Rétablir les traits communaux">↺</button></label>
-              <span>Traits des EPCI</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="-0.1" aria-label="Réduire les traits EPCI">−</button><input data-display-number="epciBorderWidth" type="number" min="0.2" max="8" step="0.1" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="0.1" aria-label="Augmenter les traits EPCI">+</button><button type="button" class="display-row-reset" data-reset-display="epciBorderWidth" aria-label="Rétablir les traits EPCI">↺</button></label>
-              <span>Opacité des isochrones</span>
-              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="-0.05" aria-label="Réduire l’opacité des isochrones">−</button><input data-display-number="isochroneOpacity" type="number" min="0" max="0.95" step="0.05" inputmode="decimal"><small>α</small><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="0.05" aria-label="Augmenter l’opacité des isochrones">+</button><button type="button" class="display-row-reset" data-reset-display="isochroneOpacity" aria-label="Rétablir l’opacité des isochrones">↺</button></label>
-            </div>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Malus</strong><small>entrée · sortie · correspondances</small></summary>
+              <div class="settings-collapse-body">
+              <div class="display-settings-grid">
+                <span>Malus entrée station</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="stationEntryPenalty" data-delta="-0.1" aria-label="Réduire le malus d’entrée">−</button><input data-travel-number="stationEntryPenalty" type="number" min="0" max="20" step="0.1" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="stationEntryPenalty" data-delta="0.1" aria-label="Augmenter le malus d’entrée">+</button><button type="button" class="display-row-reset" data-reset-travel="stationEntryPenalty" aria-label="Rétablir le malus d’entrée">↺</button></label>
+                <span>Malus sortie station</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="stationExitPenalty" data-delta="-0.1" aria-label="Réduire le malus de sortie">−</button><input data-travel-number="stationExitPenalty" type="number" min="0" max="20" step="0.1" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="stationExitPenalty" data-delta="0.1" aria-label="Augmenter le malus de sortie">+</button><button type="button" class="display-row-reset" data-reset-travel="stationExitPenalty" aria-label="Rétablir le malus de sortie">↺</button></label>
+                <span>Malus correspondance</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="transferPenalty" data-delta="-0.25" aria-label="Réduire le malus de correspondance">−</button><input data-travel-number="transferPenalty" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="transferPenalty" data-delta="0.25" aria-label="Augmenter le malus de correspondance">+</button><button type="button" class="display-row-reset" data-reset-travel="transferPenalty" aria-label="Rétablir le malus de correspondance">↺</button></label>
+                <span>Malus correspondance à pied</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="walkingTransferPenalty" data-delta="-0.25" aria-label="Réduire le malus de correspondance à pied">−</button><input data-travel-number="walkingTransferPenalty" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="walkingTransferPenalty" data-delta="0.25" aria-label="Augmenter le malus de correspondance à pied">+</button><button type="button" class="display-row-reset" data-reset-travel="walkingTransferPenalty" aria-label="Rétablir le malus de correspondance à pied">↺</button></label>
+              </div>
+              </div>
+            </details>
 
-            <h4>Fond de carte</h4>
-            <div class="display-settings-grid">
-              <span>Couleur par défaut des communes</span>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Réseau et limites</strong><small>épaisseurs · stations · étiquettes</small></summary>
+              <div class="settings-collapse-body">
+              <div class="display-settings-grid">
+                <span>Épaisseur TER</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur TER">−</button><input data-display-number="terWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur TER">+</button><button type="button" class="display-row-reset" data-reset-display="terWidth" aria-label="Rétablir l’épaisseur TER">↺</button></label>
+                <span>Épaisseur tram</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur tram">−</button><input data-display-number="tramWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur tram">+</button><button type="button" class="display-row-reset" data-reset-display="tramWidth" aria-label="Rétablir l’épaisseur tram">↺</button></label>
+                <span>Épaisseur BHNS</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="-0.2" aria-label="Réduire l’épaisseur BHNS">−</button><input data-display-number="bhnsWidth" type="number" min="0.5" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="0.2" aria-label="Augmenter l’épaisseur BHNS">+</button><button type="button" class="display-row-reset" data-reset-display="bhnsWidth" aria-label="Rétablir l’épaisseur BHNS">↺</button></label>
+                <span>Ronds des stations</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="-0.2" aria-label="Réduire les stations">−</button><input data-display-number="stationRadius" type="number" min="1" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="0.2" aria-label="Agrandir les stations">+</button><button type="button" class="display-row-reset" data-reset-display="stationRadius" aria-label="Rétablir les stations">↺</button></label>
+                <span>Ronds des gares</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="-0.2" aria-label="Réduire les gares">−</button><input data-display-number="railStationRadius" type="number" min="1" max="10" step="0.2" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="0.2" aria-label="Agrandir les gares">+</button><button type="button" class="display-row-reset" data-reset-display="railStationRadius" aria-label="Rétablir les gares">↺</button></label>
+                <span>Taille des étiquettes</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="-0.05" aria-label="Réduire les étiquettes">−</button><input data-display-number="labelScale" type="number" min="0.6" max="1.8" step="0.05" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="0.05" aria-label="Agrandir les étiquettes">+</button><button type="button" class="display-row-reset" data-reset-display="labelScale" aria-label="Rétablir les étiquettes">↺</button></label>
+                <span>Traits des communes</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="-0.1" aria-label="Réduire les traits communaux">−</button><input data-display-number="communeBorderWidth" type="number" min="0.1" max="6" step="0.1" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="0.1" aria-label="Augmenter les traits communaux">+</button><button type="button" class="display-row-reset" data-reset-display="communeBorderWidth" aria-label="Rétablir les traits communaux">↺</button></label>
+                <span>Traits des EPCI</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="-0.1" aria-label="Réduire les traits EPCI">−</button><input data-display-number="epciBorderWidth" type="number" min="0.2" max="8" step="0.1" inputmode="decimal"><small>px</small><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="0.1" aria-label="Augmenter les traits EPCI">+</button><button type="button" class="display-row-reset" data-reset-display="epciBorderWidth" aria-label="Rétablir les traits EPCI">↺</button></label>
+                <span>Opacité des isochrones</span>
+                              <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="-0.05" aria-label="Réduire l’opacité des isochrones">−</button><input data-display-number="isochroneOpacity" type="number" min="0" max="0.95" step="0.05" inputmode="decimal"><small>α</small><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="0.05" aria-label="Augmenter l’opacité des isochrones">+</button><button type="button" class="display-row-reset" data-reset-display="isochroneOpacity" aria-label="Rétablir l’opacité des isochrones">↺</button></label>
+              </div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Fond de carte</strong><small>couleur générale et isochrones</small></summary>
+              <div class="settings-collapse-body">
+                <div class="display-settings-grid">
+                  <span>Couleur par défaut des communes</span>
               <div class="display-color-control"><input type="color" data-display-color="communeColor" aria-label="Couleur par défaut des communes"><input type="text" maxlength="7" data-display-color-code="communeColor" aria-label="Code couleur par défaut des communes"><button type="button" class="display-row-reset" data-reset-display="communeColor" aria-label="Rétablir la couleur des communes">↺</button></div>
-              <span>Fond hors périmètre</span>
+                  <span>Fond hors périmètre</span>
               <div class="display-color-control"><input type="color" data-display-color="backgroundColor" aria-label="Couleur du fond"><input type="text" maxlength="7" data-display-color-code="backgroundColor" aria-label="Code couleur du fond"><button type="button" class="display-row-reset" data-reset-display="backgroundColor" aria-label="Rétablir la couleur du fond">↺</button></div>
-            </div>
-            <p class="display-settings-note">Si tu veux vérifier la couleur exacte des communes sans la teinte des carrés de temps de trajet, mets temporairement l’opacité des isochrones à 0.</p>
+                </div>
+                <p class="display-settings-note">L’échelle des temps conserve le dégradé rouge → orange → jaune → bleu clair, puis finit désormais en blanc au temps maximal.</p>
+              </div>
+            </details>
 
-            <h4>Couleurs des communes par EPCI</h4>
-            <div id="displayEpciColors" class="route-color-settings"></div>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Couleurs des communes par EPCI</strong><small>une couleur par intercommunalité</small></summary>
+              <div class="settings-collapse-body">
+                <div id="displayEpciColors" class="route-color-settings"></div>
+              </div>
+            </details>
 
-            <h4>Couleurs des lignes par zone</h4>
-            <p class="display-settings-note">Les lignes sont regroupées par grand corridor. Le bouton 🎨 de chaque groupe génère une nouvelle palette harmonisée et suffisamment contrastée.</p>
-            <div id="displayRouteColors" class="route-color-settings"></div>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Couleurs des lignes par direction</strong><small>Tours · Nord · Ouest · Est · Sud</small></summary>
+              <div class="settings-collapse-body">
+                <p class="display-settings-note">Classement repris du My Maps de référence. Une même liaison peut apparaître dans plusieurs directions lorsqu’elle traverse plusieurs corridors. 🎨 garde toutes les lignes du groupe dans une même famille de couleur, en variant surtout luminosité et saturation.</p>
+                <div id="displayRouteColors" class="route-color-settings"></div>
+              </div>
+            </details>
           </div>
           <div class="display-settings-actions">
             <button id="displayResetAll" type="button">Tout réinitialiser</button>
@@ -216,6 +252,6 @@
         </details>
       </footer>
     </main>
-    <script type="module" src="./app.js?v=2026-10-03e"></script>
+    <script type="module" src="./app.js?v=2026-10-03f"></script>
   </body>
 </html>
