@@ -1877,8 +1877,9 @@ function endDrag(event) {
   } catch {
     /* already released */
   }
-  if (!moved && target === "pan" && !state.probePoint && tapWorld) {
-    setProbe(tapWorld, { silent: true });
+  if (!moved && target === "pan" && tapWorld) {
+    if (!state.originPoint) setOrigin(tapWorld, { silent: true });
+    else if (!state.probePoint) setProbe(tapWorld, { silent: true });
   }
   syncUrl();
   requestDraw();
