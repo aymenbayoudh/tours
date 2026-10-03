@@ -1,5 +1,5 @@
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03c";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03b", import.meta.url).toString();
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03d";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03c", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -411,7 +411,7 @@ function buildRouteColorSettings() {
 
   const unique = new Map();
   for (const route of state.data.routes) {
-    if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended" || unique.has(route.id)) continue;
+    if (route.mode === "RFN" || route.mode === "BUS" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended" || unique.has(route.id)) continue;
     const info = state.data.routeInfo?.[route.id] || {};
     unique.set(route.id, {
       id: route.id,
@@ -1229,8 +1229,9 @@ function drawBasemap(drawCtx, projectPoint) {
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
     if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended") continue;
+    if (route.mode === "BUS" && state.viewportScale < 1.8) continue;
     drawCtx.strokeStyle = routeDisplayColor(route);
-    drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : displaySettings.terWidth;
+    drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : route.mode === "BUS" ? 1.35 : displaySettings.terWidth;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
     drawCtx.setLineDash(route.mode === "BHNS" ? [7, 5] : []);
@@ -1320,9 +1321,10 @@ function drawStations(drawCtx, projectPoint, warp) {
   for (const station of state.data.stations) {
     const index = state.data.stations.indexOf(station);
     if (station.mode === "TER" && ((!station.routes || station.routes.length === 0) || (model && !model.activeStations[index]))) continue;
+    if (station.mode === "BUS" && state.viewportScale < 2.4) continue;
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
-    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : displaySettings.stationRadius;
+    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : station.mode === "BUS" ? Math.max(1.4, displaySettings.stationRadius * 0.62) : displaySettings.stationRadius;
     const minutes = model && model.activeStations[index] ? routeEstimate(state.data, model, station.point) : Infinity;
     const rasterMissesStation = Number.isFinite(minutes) && minutes <= threshold && minimumWarpMinutesNearPoint(warp, station.point) > threshold;
     if (rasterMissesStation) {
@@ -1339,8 +1341,12 @@ function drawStations(drawCtx, projectPoint, warp) {
     drawCtx.fillStyle = "#fff";
     drawCtx.fill();
     drawCtx.lineWidth = 0.55;
-    drawCtx.strokeStyle = station.mode === "TRAM" ? (station.planned ? "#1d91b6" : "#bd074e") : station.mode === "BHNS" ? "#e18529" : "#345c77";
+    drawCtx.strokeStyle = station.mode === "TRAM" ? (station.planned ? "#1d91b6" : "#bd074e") : station.mode === "BHNS" ? "#e18529" : station.mode === "BUS" ? "#4b677d" : "#345c77";
     drawCtx.stroke();
+    if (station.mode === "BUS") {
+      if (state.viewportScale >= 6) labels.push({ station, x, y, terminal: false });
+      continue;
+    }
     if (station.mode !== "TER") continue;
     const terminal = station.terminal || major.test(station.name);
     const show = terminal ? state.viewportScale >= 0.55 : !station.inSerm && state.viewportScale >= 0.8;
@@ -1571,7 +1577,12 @@ function stationModeLines(point) {
   else if (routeId === "TRAM B") lines.push({ text: "Tramway B · projet 2028", small: true });
   else if (routeId === "BHNS C") lines.push({ text: "BHNS C · projet 2028", small: true });
   else if (routeId === "NAVETTE") lines.push({ text: "Navette Tours ↔ Saint-Pierre-des-Corps", small: true });
-  else {
+  else if (routeId.startsWith("BUS ")) {
+    const info = state.data.routeInfo?.[routeId] || {};
+    const wait = Number(info.waitMinutes);
+    lines.push({ text: info.title || routeId, small: true });
+    if (Number.isFinite(wait)) lines.push({ text: `Attente modélisée : ${wait % 1 ? wait.toFixed(1) : wait} min`, small: true });
+  } else {
     const title = state.data.routeInfo?.[routeId]?.title || "";
     const endpoints = title.includes(" - ") ? title.slice(title.indexOf(" - ") + 3) : title;
     lines.push({ text: `${routeId} · ${endpoints}`, small: true });
@@ -1622,7 +1633,7 @@ function syncStatus(warp, travelMinutes) {
     const { reachable, total } = summarizeReachability(source);
     const percent = Math.round((reachable / total) * 100);
     const percentText = reachable > 0 && percent === 0 ? "Moins de 1 %" : `${percent} %`;
-    reachText.textContent = `${percentText} des gares et arrêts du réseau sélectionné sont joignables en ${activeThreshold()} minutes depuis ce point (estimation).`;
+    reachText.textContent = `${percentText} des points d’arrêt intégrés au calcul sont joignables en ${activeThreshold()} minutes depuis ce point (estimation, pas une part de population).`;
   }
 }
 
@@ -1633,7 +1644,7 @@ function nearestLandPoint(point) {
   let bestDistance = Infinity;
   const tolerance = Math.min(8000, Math.max(1500, 8 / (state.currentRender?.transform.scale || 0.004)));
   for (const route of state.data.routes) {
-    if (route.mode === "RFN") continue;
+    if (route.mode === "RFN" || route.mode === "BUS") continue;
     for (let i = 1; i < route.points.length; i += 1) {
       const a = route.points[i - 1];
       const b = route.points[i];
