@@ -70,6 +70,7 @@ function waitForRoute(data, routeId, settings) {
   if (mode === "NAVETTE") return settings.navetteWait;
   if (mode === "TRAM") return settings.tramWait;
   if (mode === "BHNS") return settings.bhnsWait;
+  if (mode === "BUS") return numeric(data.routeInfo?.[routeId]?.waitMinutes, data.routeWaits?.[routeId] ?? 10, 0);
   return settings.terWait;
 }
 
