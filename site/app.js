@@ -174,7 +174,6 @@ const state = {
   dragPointerId: null,
   dragMoved: false,
   dragStartScreen: null,
-  routeGeometryAnchors: [],
   pinHits: { origin: null, probe: null },
   dirty: false,
 };
@@ -237,8 +236,6 @@ function invalidateTravelSettings() {
   cachedModelKey = "";
   cachedWarp = null;
   cachedWarpKey = "";
-  reachableRouteBandsKey = "";
-  reachableRouteBands = [];
   backdropKey = "";
   lastJourneyKey = "";
   requestDraw();
@@ -1064,8 +1061,6 @@ let cachedModel = null;
 let cachedModelKey = "";
 let cachedWarp = null;
 let cachedWarpKey = "";
-let reachableRouteBandsKey = "";
-let reachableRouteBands = [];
 function activeThreshold() {
   return state.outlineMinutes.length ? Math.max(...state.outlineMinutes) : state.maxTransitTime;
 }
@@ -1216,168 +1211,11 @@ function drawBasemap(drawCtx, projectPoint) {
 
 }
 
-function snapUnservedRailStationsToRfn() {
-  const rfn = state.data.routes.filter((route) => route.mode === "RFN");
-  for (const station of state.data.stations) {
-    if (station.mode !== "TER" || station.routes?.length) continue;
-    let bestPoint = station.point;
-    let bestDistance = Infinity;
-    for (const route of rfn) {
-      for (let i = 1; i < route.points.length; i += 1) {
-        const candidate = closestOnSegment(station.point, route.points[i - 1], route.points[i]);
-        const gap = distance(station.point, candidate);
-        if (gap < bestDistance) {
-          bestDistance = gap;
-          bestPoint = candidate;
-        }
-      }
-    }
-    if (bestDistance <= 700) station.drawPoint = bestPoint;
-  }
-}
-
-function routePointPosition(points, point) {
-  let best = null;
-  for (let i = 0; i < points.length - 1; i += 1) {
-    const candidate = closestOnSegment(point, points[i], points[i + 1]);
-    const gap = distance(point, candidate);
-    if (!best || gap < best.distance) {
-      const segmentLength = distance(points[i], points[i + 1]) || 1;
-      best = {
-        distance: gap,
-        position: i + distance(points[i], candidate) / segmentLength,
-      };
-    }
-  }
-  return best;
-}
-
-function buildRouteGeometryAnchors() {
-  state.routeGeometryAnchors = state.data.routes.map((route, routeIndex) => {
-    if (route.mode === "RFN" || route.points.length < 2) return null;
-    const anchors = [];
-    state.data.stations.forEach((station, stationIndex) => {
-      if (!station.routes?.includes(route.id)) return;
-      const projected = routePointPosition(route.points, station.point);
-      if (!projected || projected.distance > 2200) return;
-      anchors.push({ stationIndex, position: projected.position });
-    });
-    anchors.sort((a, b) => a.position - b.position);
-    return anchors.length >= 2 ? { routeIndex, anchors } : null;
-  }).filter(Boolean);
-}
-
-function routeSpecificMinutes(model, routeId, stationIndex) {
-  const station = state.data.stations[stationIndex];
-  if (distance(model.origin, station.point) < 1400) return 0;
-  let best = Infinity;
-  for (const node of state.data.stationStates[stationIndex] || []) {
-    const routeState = state.data.routeStates[node];
-    if (routeState?.routeId !== routeId || routeState.role !== "arrival") continue;
-    if (model.distances[node] < best) best = model.distances[node];
-  }
-  return Number.isFinite(best) ? best + (model.settings?.stationExitPenalty || 0) : Infinity;
-}
-
-function interpolateRouteMinutes(anchors, values, position) {
-  if (!anchors.length || position < anchors[0].position || position > anchors[anchors.length - 1].position) return Infinity;
-  let right = 1;
-  while (right < anchors.length && anchors[right].position < position) right += 1;
-  const left = Math.max(0, right - 1);
-  right = Math.min(anchors.length - 1, right);
-  if (left === right) return values[left];
-  const span = anchors[right].position - anchors[left].position || 1;
-  const t = clamp((position - anchors[left].position) / span, 0, 1);
-  if (!Number.isFinite(values[left]) || !Number.isFinite(values[right])) return Infinity;
-  return lerp(values[left], values[right], t);
-}
-
-function getReachableRouteBands(model) {
-  const key = `${cachedModelKey}:${state.maxTransitTime}`;
-  if (key === reachableRouteBandsKey) return reachableRouteBands;
-
-  const threshold = state.maxTransitTime;
-  const bands = [];
-
-  for (const mapping of state.routeGeometryAnchors) {
-    const route = state.data.routes[mapping.routeIndex];
-    if (state.data.routeInfo?.[route.id]?.planned && !state.includeProjects) continue;
-    const values = mapping.anchors.map((anchor) => routeSpecificMinutes(model, route.id, anchor.stationIndex));
-    let current = null;
-
-    const flush = () => {
-      if (current?.points.length >= 2) bands.push(current);
-      current = null;
-    };
-
-    for (let i = 0; i < route.points.length - 1; i += 1) {
-      const a = route.points[i];
-      const b = route.points[i + 1];
-      const midpoint = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-      if (pointInLand(midpoint)) {
-        flush();
-        continue;
-      }
-
-      let ta = interpolateRouteMinutes(mapping.anchors, values, i);
-      let tb = interpolateRouteMinutes(mapping.anchors, values, i + 1);
-      if (!Number.isFinite(ta) || !Number.isFinite(tb) || (ta > threshold && tb > threshold)) {
-        flush();
-        continue;
-      }
-
-      let p0 = a;
-      let p1 = b;
-      if (ta > threshold || tb > threshold) {
-        const fraction = clamp((threshold - ta) / (tb - ta || 1), 0, 1);
-        const cutoff = [lerp(a[0], b[0], fraction), lerp(a[1], b[1], fraction)];
-        if (ta <= threshold) {
-          p1 = cutoff;
-          tb = threshold;
-        } else {
-          p0 = cutoff;
-          ta = threshold;
-        }
-      }
-
-      const minutes = (ta + tb) / 2;
-      const bin = Math.round(minutes / 6) * 6;
-      if (!current || current.routeIndex !== mapping.routeIndex || current.bin !== bin) {
-        flush();
-        current = { routeIndex: mapping.routeIndex, bin, minutes, points: [p0, p1] };
-      } else {
-        current.points.push(p1);
-        current.minutes = (current.minutes + minutes) / 2;
-      }
-    }
-    flush();
-  }
-
-  reachableRouteBandsKey = key;
-  reachableRouteBands = bands;
-  return bands;
-}
-
-function drawReachableRouteBands(drawCtx, projectPoint, model) {
-  if (!model) return;
-  drawCtx.save();
-  drawCtx.lineCap = "round";
-  drawCtx.lineJoin = "round";
-  for (const band of getReachableRouteBands(model)) {
-    const route = state.data.routes[band.routeIndex];
-    const baseWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : displaySettings.terWidth;
-    drawCtx.strokeStyle = heatmapColor(band.minutes, 0.56);
-    drawCtx.lineWidth = baseWidth + 7;
-    drawCtx.setLineDash([]);
-    drawPolyline(drawCtx, band.points, projectPoint);
-  }
-  drawCtx.restore();
-}
-
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
-    drawCtx.strokeStyle = route.mode === "RFN" ? route.color : routeDisplayColor(route);
-    drawCtx.lineWidth = route.mode === "RFN" ? 1.1 : route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : displaySettings.terWidth;
+    if (route.mode === "RFN") continue;
+    drawCtx.strokeStyle = routeDisplayColor(route);
+    drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : displaySettings.terWidth;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
     drawCtx.setLineDash(route.mode === "BHNS" ? [7, 5] : []);
@@ -1451,6 +1289,7 @@ function drawStations(drawCtx, projectPoint) {
   const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
   const labels = [];
   for (const station of state.data.stations) {
+    if (station.mode === "TER" && (!station.routes || station.routes.length === 0)) continue;
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     const index = state.data.stations.indexOf(station);
@@ -1844,7 +1683,6 @@ function drawMap() {
       baseCtx.restore();
     }
     drawDepartmentLimits(baseCtx, projectPoint);
-    if (source) drawReachableRouteBands(baseCtx, projectPoint, getTravelModel(source));
     drawRoutes(baseCtx, projectPoint);
     drawCommuneLabels(baseCtx, projectPoint);
     drawStations(baseCtx, projectPoint);
@@ -2090,6 +1928,9 @@ mapCanvas.addEventListener("pointerdown", (event) => {
   const target = hit || (state.pinned ? "probe" : "origin");
   if (target === "probe" && state.probePinned) return;
   event.preventDefault();
+  if (hit && !state.viewportCenter && state.currentRender?.focus) {
+    state.viewportCenter = [...state.currentRender.focus];
+  }
   state.dragTarget = target;
   state.dragPointerId = event.pointerId;
   state.dragMoved = false;
@@ -2314,8 +2155,6 @@ async function init() {
   const response = await fetch(DATA_URL);
   if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
-  snapUnservedRailStationsToRfn();
-  buildRouteGeometryAnchors();
   state.ready = true;
   buildIsochroneGradientControls();
   buildEpciColorSettings();
