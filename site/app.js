@@ -469,6 +469,45 @@ function buildRouteColorSettings() {
   syncDisplaySettingsControls();
 }
 
+let epciPaletteSequence = 0;
+function applyPaletteToEpcis() {
+  if (!state.data) return;
+  const boroughs = [...state.data.boroughs].sort((a, b) => {
+    if (a.code === "243700754") return -1;
+    if (b.code === "243700754") return 1;
+    return a.name.localeCompare(b.name, "fr");
+  });
+
+  // Deliberately span the spectrum, with close variants inside several
+  // families (reds/pinks/oranges, blues/cyans, greens) instead of assigning
+  // one unrelated random colour to each EPCI.
+  const families = [
+    { hue: 4, sats: [76, 62], lights: [48, 64] },      // rouge
+    { hue: 338, sats: [72, 58], lights: [50, 68] },    // rose
+    { hue: 27, sats: [82, 68], lights: [52, 67] },     // orange
+    { hue: 44, sats: [78, 60], lights: [52, 69] },     // ambre
+    { hue: 210, sats: [74, 58], lights: [48, 66] },    // bleu
+    { hue: 231, sats: [66, 52], lights: [49, 67] },    // bleu violacé
+    { hue: 187, sats: [70, 54], lights: [45, 64] },    // bleu-vert
+    { hue: 157, sats: [68, 52], lights: [43, 62] },    // vert
+    { hue: 118, sats: [58, 46], lights: [46, 64] },    // vert franc
+  ];
+  const offset = (++epciPaletteSequence * 3) % families.length;
+
+  boroughs.forEach((borough, index) => {
+    const family = families[(index + offset) % families.length];
+    const variant = Math.floor((index + epciPaletteSequence) / families.length) % 2;
+    const hueJitter = ((index * 7 + epciPaletteSequence * 5) % 11) - 5;
+    const saturation = family.sats[variant];
+    const lightness = family.lights[(index + epciPaletteSequence) % family.lights.length];
+    displaySettings.epciColors[borough.code] = hslToHex(family.hue + hueJitter, saturation, lightness);
+  });
+
+  syncDisplaySettingsControls();
+  saveDisplaySettings();
+  invalidateVisualSettings();
+}
+
 function buildEpciColorSettings() {
   if (!state.data || !displayEpciColors) return;
   displayEpciColors.replaceChildren();
@@ -686,6 +725,14 @@ displaySettingsPanel.addEventListener("click", (event) => {
     syncDisplaySettingsControls();
     saveDisplaySettings();
     invalidateVisualSettings();
+    return;
+  }
+
+  const epciPalette = event.target.closest("[data-palette-epci]");
+  if (epciPalette) {
+    event.preventDefault();
+    event.stopPropagation();
+    applyPaletteToEpcis();
     return;
   }
 
@@ -1044,10 +1091,7 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
     for (const polygon of commune.polygons) {
       for (const ring of polygon) {
         if (ring.length < 2) continue;
-        drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(255,255,255,0.58)" : "rgba(255,255,255,0.46)";
-        drawCtx.lineWidth = communeWidth + 1.15;
-        drawPolyline(drawCtx, ring, projectPoint);
-        drawCtx.strokeStyle = state.viewportScale >= 2 ? "rgba(42,61,78,0.70)" : "rgba(47,67,84,0.58)";
+        drawCtx.strokeStyle = "rgba(0,0,0,0.72)";
         drawCtx.lineWidth = communeWidth;
         drawPolyline(drawCtx, ring, projectPoint);
       }
@@ -1056,7 +1100,7 @@ function drawDepartmentLimits(drawCtx, projectPoint) {
   drawCtx.lineJoin = "round";
   drawCtx.lineCap = "round";
   for (const borough of state.data.boroughs) {
-    drawCtx.strokeStyle = borough.code === "243700754" ? "#294f6f" : "rgba(57,80,102,0.7)";
+    drawCtx.strokeStyle = "rgba(0,0,0,0.94)";
     drawCtx.lineWidth = displaySettings.epciBorderWidth * (borough.code === "243700754" ? 1.7 : 1);
     const rings = borough.outline?.length ? borough.outline : [];
     for (const ring of rings) {
