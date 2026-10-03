@@ -32,6 +32,8 @@ for (const p of data.timetablePatterns) {
 assert.equal(bus.routes['BUS R4'].calculationAvailable, false);
 assert.equal(bus.routes['BUS R5'].calculationAvailable, false);
 const origin = data.stations.find(s => s.id === 'FILBLEU:TTR:LEMOB-1').point;
+assert(data.stations.find(s => s.id === 'FILBLEU:TTR:LEMOB-1').displayRoutes.includes('BUS R4'),
+  'Excluded reservation service missing from display metadata');
 const target = data.stations.find(s => s.name === 'Baillardière').point;
 const trip = describeJourney(data, buildTravelModel(data, origin), target);
 assert(trip.minutes > 15, 'Les Montils–Baillardière still has a fictitious 15-minute shortcut');
