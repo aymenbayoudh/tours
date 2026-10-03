@@ -31,6 +31,7 @@ jobs:
           PY
           python3 scripts/prepare_filbleu_bus.py --gtfs /tmp/filbleu_gtfs.zip
           python3 build_data.py
+          python3 tests/walking_graph.test.py
           node tests/routing.test.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
