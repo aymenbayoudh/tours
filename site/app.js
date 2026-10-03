@@ -1268,13 +1268,14 @@ function buildRouteGeometryAnchors() {
 }
 
 function routeSpecificMinutes(model, routeId, stationIndex) {
+  const station = state.data.stations[stationIndex];
+  if (distance(model.origin, station.point) < 1400) return 0;
   let best = Infinity;
   for (const node of state.data.stationStates[stationIndex] || []) {
     const routeState = state.data.routeStates[node];
     if (routeState?.routeId !== routeId || routeState.role !== "arrival") continue;
     if (model.distances[node] < best) best = model.distances[node];
   }
-  if (distance(model.origin, state.data.stations[stationIndex].point) < 1400) best = Math.min(best, 0);
   return Number.isFinite(best) ? best + (model.settings?.stationExitPenalty || 0) : Infinity;
 }
 
