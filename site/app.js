@@ -32,11 +32,6 @@ const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   backgroundColor: "#efe6d6",
 });
 const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
-  walkSpeedKmh: 4.8,
-  terSpeedKmh: 80,
-  tramSpeedKmh: 22,
-  bhnsSpeedKmh: 18,
-  navetteSpeedKmh: 60,
   terWait: 15,
   tramWait: 4,
   bhnsWait: 3.25,
@@ -137,11 +132,6 @@ function normalizeTravelSettings(value) {
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_TRAVEL_SETTINGS[key];
   };
   return {
-    walkSpeedKmh: DEFAULT_TRAVEL_SETTINGS.walkSpeedKmh,
-    terSpeedKmh: DEFAULT_TRAVEL_SETTINGS.terSpeedKmh,
-    tramSpeedKmh: DEFAULT_TRAVEL_SETTINGS.tramSpeedKmh,
-    bhnsSpeedKmh: DEFAULT_TRAVEL_SETTINGS.bhnsSpeedKmh,
-    navetteSpeedKmh: DEFAULT_TRAVEL_SETTINGS.navetteSpeedKmh,
     terWait: numeric("terWait", 0, 60),
     tramWait: numeric("tramWait", 0, 30),
     bhnsWait: numeric("bhnsWait", 0, 30),
@@ -305,6 +295,8 @@ function syncDisplaySettingsControls() {
   displaySettingsPanel.querySelectorAll("[data-display-number]").forEach((input) => {
     const key = input.dataset.displayNumber;
     input.value = String(displaySettings[key]);
+    const percent = displaySettingsPanel.querySelector('[data-display-percent="' + key + '"]');
+    if (percent) percent.textContent = Math.round(Number(displaySettings[key]) * 100) + "%";
   });
   displaySettingsPanel.querySelectorAll("[data-travel-number]").forEach((input) => {
     const key = input.dataset.travelNumber;
@@ -438,8 +430,6 @@ function buildRouteColorSettings() {
     title.textContent = group;
     const tools = document.createElement("span");
     tools.className = "route-group-tools";
-    const count = document.createElement("small");
-    count.textContent = items.length + (items.length > 1 ? " lignes" : " ligne");
     const palette = document.createElement("button");
     palette.type = "button";
     palette.className = "display-palette-button";
@@ -447,7 +437,7 @@ function buildRouteColorSettings() {
     palette.textContent = "🎨";
     palette.title = "Nouvelle palette dans une même famille de couleur";
     palette.setAttribute("aria-label", "Générer une palette monochrome pour " + group);
-    tools.append(count, palette);
+    tools.append(palette);
     summary.append(title, tools);
     section.append(summary);
 
@@ -671,6 +661,8 @@ function applyDisplayNumber(input) {
   value = Math.max(min, Math.min(max, value));
   displaySettings[key] = value;
   input.value = String(value);
+  const percent = displaySettingsPanel.querySelector('[data-display-percent="' + key + '"]');
+  if (percent) percent.textContent = Math.round(value * 100) + "%";
   saveDisplaySettings();
   if (key === "isochroneOpacity") syncDisplaySettingsControls();
   invalidateVisualSettings();
@@ -1057,7 +1049,7 @@ function nearestStations(point, count, includePlanned = true) {
     const item = {
       index,
       name: station.name,
-      walkMinutes: distance(point, station.point) / (travelSettings.walkSpeedKmh * 1000 / 60) + travelSettings.stationEntryPenalty,
+      walkMinutes: distance(point, station.point) / state.data.meta.walkMetersPerMinute + travelSettings.stationEntryPenalty,
     };
     if (nearest.length === count && item.walkMinutes >= nearest[nearest.length - 1].walkMinutes) return;
     nearest.push(item);
