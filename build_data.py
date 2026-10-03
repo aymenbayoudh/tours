@@ -260,6 +260,7 @@ def build_stations_and_routes():
             continue
         stations.append({"id": "KML:" + name, "name": name, "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     tram = read_json("filbleu_tram.json")
+    bus = read_json("filbleu_bus.json")
     tram_paths = [[xy(*p) for p in shape["points"]] for shape in tram["shapes"]]
     tram_index = {}
     for stop_id, item in tram["stops"].items():
@@ -267,8 +268,24 @@ def build_stations_and_routes():
         point = xy(*item["point"])
         offset, draw_point = project_on_paths(point, tram_paths)
         stations.append({"id": "FILBLEU:" + stop_id, "name": item["name"], "point": point, "drawPoint": draw_point, "displayOffset": offset, "mode": "TRAM", "routes": {"TRAM A"}, "planned": False})
+    station_ids = {station["id"]: index for index, station in enumerate(stations)}
+    for stop_id, item in bus.get("stops", {}).items():
+        sid = "FILBLEU:" + stop_id
+        if sid in station_ids:
+            continue
+        station_ids[sid] = len(stations)
+        stations.append({"id": sid, "name": item["name"], "point": xy(*item["point"]), "mode": "BUS", "routes": set(), "planned": False, "parentStop": item.get("parent", "")})
     route_waits = {"TRAM A": 4.0, "TRAM B": 4.0, "BHNS C": 3.25}
     route_info = {"TRAM A": {"title": "Tramway A — Vaucanson ↔ Lycée Jean Monnet", "mode": "TRAM", "color": tram["route"]["color"], "planned": False}}
+    for route_id, item in bus.get("routes", {}).items():
+        route_waits[route_id] = float(item.get("waitMinutes", 10.0))
+        route_info[route_id] = {
+            "title": item.get("title", route_id),
+            "mode": "BUS",
+            "color": item.get("color", "#3b6f8f"),
+            "planned": False,
+            "waitMinutes": route_waits[route_id],
+        }
     edges = {}
     routes = []
     for i, item in enumerate(read_remi_routes()):
@@ -309,6 +326,11 @@ def build_stations_and_routes():
             if len(points) >= 2:
                 rail_base.append({"id": "RFN " + feature["code"], "color": "#9cabb7", "mode": "RFN", "points": [rounded(p) for p in points]})
     routes = rail_base + routes
+    for shape in bus.get("shapes", []):
+        info = route_info.get(shape["routeId"], {})
+        points = [xy(*p) for p in shape["points"]]
+        if len(points) >= 2:
+            routes.append({"id": shape["routeId"], "title": info.get("title", shape["routeId"]), "color": info.get("color", "#3b6f8f"), "mode": "BUS", "points": [rounded(p) for p in simplify(points, 45)]})
     for shape in tram["shapes"]:
         points = [xy(*p) for p in shape["points"]]
         routes.append({"id": "TRAM A", "color": tram["route"]["color"], "mode": "TRAM", "points": [rounded(p) for p in points]})
@@ -343,7 +365,8 @@ def build_stations_and_routes():
 
 def build_graph(stations, edges, route_waits):
     schedules = read_json("timetables.json")
-    patterns = schedules["patterns"]
+    bus = read_json("filbleu_bus.json")
+    patterns = schedules["patterns"] + bus.get("patterns", [])
     scheduled_routes = {p["routeId"] for p in patterns}
     by_id = {s["id"]: i for i, s in enumerate(stations)}
     route_states, adjacency = [], []
@@ -393,20 +416,36 @@ def build_graph(stations, edges, route_waits):
         add(ad, ba, minutes); add(bd, aa, minutes)
     # A transfer is possible only at an actual stopping point. Staying aboard
     # follows the pattern edges and pays neither a new wait nor transfer time.
-    for i, station in enumerate(stations):
+    for i in range(len(stations)):
         for src in station_states[i]:
             for dst in boarding_states[i]:
                 if route_states[src]["pattern"] is not None and route_states[src]["pattern"] == route_states[dst]["pattern"]: continue
                 add(src, dst, 3.5 + route_waits[route_states[dst]["routeId"]])
-        for j in range(i+1, len(stations)):
-            walk_distance = math.dist(station["point"], stations[j]["point"])
-            if walk_distance > 650: continue
-            for src in station_states[i]:
-                for dst in boarding_states[j]:
-                    add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
-            for src in station_states[j]:
-                for dst in boarding_states[i]:
-                    add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
+
+    # Nearby-stop transfers use a 650 m spatial bucket index rather than an
+    # O(n²) all-pairs scan. The Euclidean walk remains a temporary approximation
+    # until the road graph replaces it.
+    transfer_radius = 650.0
+    buckets = {}
+    for index, station in enumerate(stations):
+        key = (math.floor(station["point"][0] / transfer_radius), math.floor(station["point"][1] / transfer_radius))
+        buckets.setdefault(key, []).append(index)
+    for i, station in enumerate(stations):
+        bx, by = math.floor(station["point"][0] / transfer_radius), math.floor(station["point"][1] / transfer_radius)
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for j in buckets.get((bx + dx, by + dy), []):
+                    if j <= i:
+                        continue
+                    walk_distance = math.dist(station["point"], stations[j]["point"])
+                    if walk_distance > transfer_radius:
+                        continue
+                    for src in station_states[i]:
+                        for dst in boarding_states[j]:
+                            add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
+                    for src in station_states[j]:
+                        for dst in boarding_states[i]:
+                            add(src, dst, walk_distance / WALK_METRES_PER_MINUTE + 2 + route_waits[route_states[dst]["routeId"]])
     return route_states, station_states, boarding_states, adjacency, audit_patterns
 
 
