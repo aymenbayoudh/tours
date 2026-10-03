@@ -79,6 +79,18 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings) {
   const b = data.routeStates[toNode];
   if (!a || !b) return storedCost;
 
+  // Transfer hubs avoid a Cartesian product of route states at dense bus stops.
+  // The stored costs use defaults; recompute them here so shared/custom settings
+  // keep exactly the same semantics as direct transfer edges.
+  if (a.role === "board" && b.role === "departure") {
+    return waitForRoute(data, b.routeId, settings);
+  }
+  if (a.role === "alight" && b.role === "board") {
+    if (a.stationIndex === b.stationIndex) return settings.transferPenalty;
+    const walkDistance = distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point);
+    return walkDistance / settings.walkMetersPerMinute + settings.walkingTransferPenalty;
+  }
+
   // In-vehicle durations are already encoded in the graph: representative
   // GTFS durations when available, otherwise the fixed geometric fallback
   // produced at build time for unscheduled/project routes.
@@ -240,7 +252,10 @@ export function describeJourney(data, model, destination) {
   for (let i = 1; i < nodes.length; i += 1) {
     const a = data.routeStates[nodes[i - 1]];
     const b = data.routeStates[nodes[i]];
-    if (a.role === "arrival" && b.role === "departure" && a.stationIndex !== b.stationIndex) {
+    if (
+      ((a.role === "arrival" && b.role === "departure") || (a.role === "alight" && b.role === "board")) &&
+      a.stationIndex !== b.stationIndex
+    ) {
       walking += distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point) / walkSpeed;
     }
   }
