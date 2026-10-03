@@ -381,10 +381,13 @@ def build_graph(stations, edges, route_waits):
         if route is not None:
             stations[station]["routes"].add(route)
         return index
-    def add(a, b, minutes):
+    def add(a, b, minutes, walking_metres=None):
         if minutes < 0:
             raise ValueError("Negative graph edge")
-        adjacency[a].append([b, round(minutes, 4)])
+        edge = [b, round(minutes, 4)]
+        if walking_metres is not None:
+            edge.append(round(walking_metres, 1))
+        adjacency[a].append(edge)
     audit_patterns = []
     for number, pattern in enumerate(patterns):
         arrivals, departures = [], []
@@ -433,9 +436,29 @@ def build_graph(stations, edges, route_waits):
         if alight_hubs[i] is not None and board_hubs[i] is not None:
             add(alight_hubs[i], board_hubs[i], 3.5)
 
-    # Nearby-stop transfers keep the existing 650 m rule but connect hubs
-    # instead of every route-state pair. The Euclidean walk remains temporary
-    # until the prepared road graph replaces it.
+    # Within the SERM, use the sparse BD TOPO walking table when available.
+    # Outside that prepared coverage, keep the documented Euclidean fallback.
+    walking_path = DATA / "walking_transfers.json"
+    walking = json.loads(walking_path.read_text(encoding="utf-8")) if walking_path.exists() else {"generated": False}
+    walking_generated = bool(walking.get("generated"))
+    if walking_generated:
+        covered = set(walking.get("coveredStopIds", []))
+        missing = [station["id"] for station in stations if station.get("inSerm") and station["id"] not in covered]
+        if missing:
+            raise RuntimeError(
+                "Walking-transfer table does not cover current SERM stops; regenerate it first: "
+                + ", ".join(missing[:12])
+            )
+        for first_id, second_id, walk_distance in walking.get("pairs", []):
+            i, j = by_id.get(first_id), by_id.get(second_id)
+            if i is None or j is None:
+                continue
+            walk_distance = float(walk_distance)
+            if alight_hubs[i] is not None and board_hubs[j] is not None:
+                add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
+            if alight_hubs[j] is not None and board_hubs[i] is not None:
+                add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
+
     transfer_radius = 650.0
     buckets = {}
     for index, station in enumerate(stations):
@@ -448,13 +471,15 @@ def build_graph(stations, edges, route_waits):
                 for j in buckets.get((bx + dx, by + dy), []):
                     if j <= i:
                         continue
+                    if walking_generated and station.get("inSerm") and stations[j].get("inSerm"):
+                        continue
                     walk_distance = math.dist(station["point"], stations[j]["point"])
                     if walk_distance > transfer_radius:
                         continue
                     if alight_hubs[i] is not None and board_hubs[j] is not None:
-                        add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2)
+                        add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
                     if alight_hubs[j] is not None and board_hubs[i] is not None:
-                        add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2)
+                        add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
     return route_states, station_states, boarding_states, adjacency, audit_patterns
 
 
@@ -476,14 +501,16 @@ def build_grid(epci, stations, bounds):
 def main():
     epci, bounds, boroughs, communes = build_administration()
     stations, routes, edges, route_waits, route_info = build_stations_and_routes()
+    for station in stations:
+        station["inSerm"] = point_in_polygons(station["point"], epci)
     route_states, station_states, boarding_states, adjacency, audit_patterns = build_graph(stations, edges, route_waits)
     cells, mask = build_grid(epci, stations, bounds)
     visible_points = [p for route in routes for p in route["points"]] + [rounded(s["point"]) for s in stations]
     explore_bounds = [min(p[0] for p in visible_points) - 20_000, min(p[1] for p in visible_points) - 20_000, max(p[0] for p in visible_points) + 20_000, max(p[1] for p in visible_points) + 20_000]
     output = {
-        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {})},
+        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {}), "walkingTransferSource": (read_json("walking_transfers.json") if (DATA / "walking_transfers.json").exists() else {"generated": False})},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
-        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "drawPoint": rounded(s.get("drawPoint", s["point"])), "displayOffset": round(s.get("displayOffset", 0), 2), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "parentStop": s.get("parentStop", ""), "inSerm": point_in_polygons(s["point"], epci)} for s in stations],
+        "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "drawPoint": rounded(s.get("drawPoint", s["point"])), "displayOffset": round(s.get("displayOffset", 0), 2), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "parentStop": s.get("parentStop", ""), "inSerm": s["inSerm"]} for s in stations],
         "routeInfo": route_info,
         "routeStates": route_states, "stationStates": station_states, "boardingStates": boarding_states, "timetablePatterns": audit_patterns, "routeWaits": route_waits, "adjacency": adjacency, "cells": cells, "mask": mask,
     }
