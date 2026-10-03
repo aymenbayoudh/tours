@@ -136,7 +136,7 @@ def main():
     nodes = []
     node_index = {}
     edges = []
-    edge_seen = set()
+    edge_seen = {}
     fetched = retained = rejected = 0
     sample_properties = None
 
