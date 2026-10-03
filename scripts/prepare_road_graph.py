@@ -140,21 +140,26 @@ def main():
     fetched = retained = rejected = 0
     sample_properties = None
 
-    def node(point_xy, level):
-        # Do not connect coincident XY endpoints across bridges/tunnels.
-        # BD TOPO segments roads when position relative to ground changes.
-        key = (round(point_xy[0], 1), round(point_xy[1], 1), str(level or "0"))
+    def node(point_xy, internal_key=None):
+        # BD TOPO road continuity is represented by shared feature endpoints.
+        # Grade-separated crossings are not topologically split by IGN, so they
+        # must NOT be connected merely because their geometries cross.
+        #
+        # Our own ~140 m cut points are therefore private to one source line;
+        # only real BD TOPO line endpoints are merged by XY coordinate.
+        x, y = round(point_xy[0], 1), round(point_xy[1], 1)
+        key = ("internal", internal_key) if internal_key is not None else ("endpoint", x, y)
         index = node_index.get(key)
         if index is None:
             index = len(nodes)
             node_index[key] = index
-            nodes.append([key[0], key[1], key[2]])
+            nodes.append([x, y])
         return index
 
-    def add_edge(a_point, b_point, metres, level):
+    def add_edge(a_point, b_point, metres, a_internal=None, b_internal=None):
         if metres <= 0.05:
             return
-        a, b = node(a_point, level), node(b_point, level)
+        a, b = node(a_point, a_internal), node(b_point, b_internal)
         if a == b:
             return
         key = (min(a, b), max(a, b))
@@ -191,13 +196,14 @@ def main():
                 if not pedestrian_allowed(props):
                     rejected += 1
                     continue
-                level = props.get("position_par_rapport_au_sol")
-                for line in feature_lines(geometry):
+                for line_number, line in enumerate(feature_lines(geometry)):
                     line = [p[:2] for p in line if len(p) >= 2]
                     if len(line) < 2 or not intersects_serm(line, epci):
                         continue
                     retained += 1
                     current = xy(*line[0])
+                    current_internal = None  # a real BD TOPO endpoint
+                    cut_number = 0
                     accumulated = 0.0
                     for raw_a, raw_b in zip(line, line[1:]):
                         a = xy(*raw_a[:2])
@@ -211,15 +217,18 @@ def main():
                             need = MAX_EDGE_METRES - accumulated
                             t = need / remaining
                             cut = (cursor[0] + (b[0] - cursor[0]) * t, cursor[1] + (b[1] - cursor[1]) * t)
-                            add_edge(current, cut, MAX_EDGE_METRES, level)
+                            cut_internal = (feature_key, line_number, cut_number)
+                            add_edge(current, cut, MAX_EDGE_METRES, current_internal, cut_internal)
+                            cut_number += 1
                             current = cut
+                            current_internal = cut_internal
                             cursor = cut
                             remaining -= need
                             accumulated = 0.0
                         accumulated += remaining
                     end = xy(*line[-1])
                     if math.dist(current, end) > 0.05:
-                        add_edge(current, end, accumulated, level)
+                        add_edge(current, end, accumulated, current_internal, None)
             if len(features) < PAGE_SIZE:
                 break
             start += len(features)
@@ -239,7 +248,7 @@ def main():
             "retrievedAtBuild": True,
             "bbox": [round(x, 7) for x in bbox],
             "walkSpeedMetresPerMinute": WALK_METRES_PER_MINUTE,
-            "notes": "Accès piéton BD TOPO respecté lorsqu’il est renseigné ; autoroutes/bretelles et accès privés non explicitement libres exclus ; le niveau par rapport au sol fait partie de la clé topologique.",
+            "notes": "Accès piéton BD TOPO respecté lorsqu’il est renseigné ; autoroutes/bretelles et accès privés non explicitement libres exclus ; seuls les vrais endpoints BD TOPO sont fusionnés, les découpes artificielles internes restent propres à leur tronçon afin de ne pas connecter les franchissements sans nœud topologique.",
         },
         "nodes": nodes,
         "edges": edges,
