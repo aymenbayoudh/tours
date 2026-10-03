@@ -56,7 +56,9 @@ const src=station('Tours').point;
 const refWalk=d.meta.walkMetersPerMinute||80;
 const refEntry=d.meta.stationAccessPenalty??1.8;
 const refRouteMode=(routeId)=>d.routeInfo?.[routeId]?.mode||(routeId==='NAVETTE'?'NAVETTE':routeId?.startsWith('TRAM')?'TRAM':routeId?.startsWith('BHNS')?'BHNS':'TER');
-const refWait=(routeId)=>({NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15;
+const refWait=(routeId)=>refRouteMode(routeId)==='BUS'
+  ? (d.routeInfo?.[routeId]?.waitMinutes??d.routeWaits?.[routeId]??10)
+  : (({NAVETTE:5,TRAM:4,BHNS:3.25,TER:15})[refRouteMode(routeId)]??15);
 const refAllowed=d.routeStates.map(s=>d.routeInfo?.[s.routeId]?.serviceStatus?.status!=='suspended');
 const refEdgeCost=(fromNode,toNode,storedCost)=>{
   const a=d.routeStates[fromNode],b=d.routeStates[toNode];
