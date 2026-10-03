@@ -1,0 +1,45 @@
+name: Build road graph audit
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/prepare_road_graph.py"
+      - ".github/workflows/road-graph.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: road-graph-audit
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build compact IGN BD TOPO pedestrian graph
+        run: |
+          python3 scripts/prepare_road_graph.py
+          python3 - <<'PY'
+          import gzip, json
+          from pathlib import Path
+          p=Path("data/tours/road_graph.json")
+          d=json.loads(p.read_text())
+          raw=p.stat().st_size
+          gz=len(gzip.compress(p.read_bytes(), compresslevel=9))
+          print(json.dumps({
+              "nodes": len(d.get("nodes", [])),
+              "edges": len(d.get("edges", [])),
+              "stats": d.get("stats", {}),
+              "rawBytes": raw,
+              "gzipBytes": gz,
+          }, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: road-graph
+          path: data/tours/road_graph.json
+          retention-days: 1
