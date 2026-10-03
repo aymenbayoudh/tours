@@ -449,15 +449,22 @@ def build_graph(stations, edges, route_waits):
                 "Walking-transfer table does not cover current SERM stops; regenerate it first: "
                 + ", ".join(missing[:12])
             )
-        for first_id, second_id, walk_distance in walking.get("pairs", []):
+        def add_walking_pair(first_id, second_id, walk_distance):
             i, j = by_id.get(first_id), by_id.get(second_id)
             if i is None or j is None:
-                continue
+                return
             walk_distance = float(walk_distance)
             if alight_hubs[i] is not None and board_hubs[j] is not None:
                 add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
             if alight_hubs[j] is not None and board_hubs[i] is not None:
                 add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
+
+        for first_id, second_id, walk_distance in walking.get("pairs", []):
+            add_walking_pair(first_id, second_id, walk_distance)
+        for manual in walking.get("manualPairs", []):
+            if len(manual) < 3:
+                raise RuntimeError(f"Invalid manual walking pair: {manual!r}")
+            add_walking_pair(manual[0], manual[1], manual[2])
 
     transfer_radius = 650.0
     buckets = {}
@@ -508,7 +515,7 @@ def main():
     visible_points = [p for route in routes for p in route["points"]] + [rounded(s["point"]) for s in stations]
     explore_bounds = [min(p[0] for p in visible_points) - 20_000, min(p[1] for p in visible_points) - 20_000, max(p[0] for p in visible_points) + 20_000, max(p[1] for p in visible_points) + 20_000]
     walking_source = read_json("walking_transfers.json") if (DATA / "walking_transfers.json").exists() else {"generated": False}
-    walking_meta = {key: value for key, value in walking_source.items() if key not in {"pairs", "coveredStopIds"}}
+    walking_meta = {key: value for key, value in walking_source.items() if key not in {"pairs", "manualPairs", "coveredStopIds"}}
     output = {
         "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {}), "walkingTransferSource": walking_meta},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
