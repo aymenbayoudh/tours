@@ -26,6 +26,8 @@ const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   communeBorderWidth: 0.7,
   epciBorderWidth: 1.3,
   isochroneOpacity: 0.58,
+  communeFillOpacity: 1,
+  epciFillOpacity: 1,
   communeColor: "#c5d0db",
   backgroundColor: "#efe6d6",
 });
@@ -107,6 +109,8 @@ function normalizeDisplaySettings(value) {
     communeBorderWidth: numeric("communeBorderWidth", 0.1, 6),
     epciBorderWidth: numeric("epciBorderWidth", 0.2, 8),
     isochroneOpacity: numeric("isochroneOpacity", 0, 1),
+    communeFillOpacity: numeric("communeFillOpacity", 0, 1),
+    epciFillOpacity: numeric("epciFillOpacity", 0, 1),
     communeColor: validHexColor(source.communeColor) ? source.communeColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.communeColor,
     backgroundColor: validHexColor(source.backgroundColor) ? source.backgroundColor.toLowerCase() : DEFAULT_DISPLAY_SETTINGS.backgroundColor,
     routeColors: colorMap(source.routeColors),
@@ -133,11 +137,11 @@ function normalizeTravelSettings(value) {
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_TRAVEL_SETTINGS[key];
   };
   return {
-    walkSpeedKmh: numeric("walkSpeedKmh", 1, 12),
-    terSpeedKmh: numeric("terSpeedKmh", 20, 200),
-    tramSpeedKmh: numeric("tramSpeedKmh", 5, 60),
-    bhnsSpeedKmh: numeric("bhnsSpeedKmh", 5, 60),
-    navetteSpeedKmh: numeric("navetteSpeedKmh", 10, 120),
+    walkSpeedKmh: DEFAULT_TRAVEL_SETTINGS.walkSpeedKmh,
+    terSpeedKmh: DEFAULT_TRAVEL_SETTINGS.terSpeedKmh,
+    tramSpeedKmh: DEFAULT_TRAVEL_SETTINGS.tramSpeedKmh,
+    bhnsSpeedKmh: DEFAULT_TRAVEL_SETTINGS.bhnsSpeedKmh,
+    navetteSpeedKmh: DEFAULT_TRAVEL_SETTINGS.navetteSpeedKmh,
     terWait: numeric("terWait", 0, 60),
     tramWait: numeric("tramWait", 0, 30),
     bhnsWait: numeric("bhnsWait", 0, 30),
@@ -1181,6 +1185,20 @@ function drawPolyline(drawCtx, points, projectPoint) {
 }
 
 function drawBasemap(drawCtx, projectPoint) {
+  drawCtx.save();
+  drawCtx.globalAlpha = displaySettings.communeFillOpacity;
+  drawCtx.fillStyle = displaySettings.communeColor;
+  for (const commune of state.data.communes || []) {
+    for (const polygon of commune.polygons) {
+      drawCtx.beginPath();
+      tracePolygon(drawCtx, polygon, projectPoint);
+      drawCtx.fill();
+    }
+  }
+  drawCtx.restore();
+
+  drawCtx.save();
+  drawCtx.globalAlpha = displaySettings.epciFillOpacity;
   for (const borough of state.data.boroughs) {
     drawCtx.fillStyle = epciDisplayColor(borough);
     for (const polygon of borough.polygons) {
@@ -1189,6 +1207,7 @@ function drawBasemap(drawCtx, projectPoint) {
       drawCtx.fill();
     }
   }
+  drawCtx.restore();
 
   for (const polygon of state.data.parks) {
     drawCtx.beginPath();
