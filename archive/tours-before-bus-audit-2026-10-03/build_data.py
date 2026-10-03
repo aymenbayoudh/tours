@@ -274,7 +274,7 @@ def build_stations_and_routes():
         if sid in station_ids:
             continue
         station_ids[sid] = len(stations)
-        stations.append({"id": sid, "name": item["name"], "point": xy(*item["point"]), "mode": "BUS", "routes": set(), "planned": False, "parentStop": item.get("parent", ""), "displayRoutes": item.get("displayRoutes", [])})
+        stations.append({"id": sid, "name": item["name"], "point": xy(*item["point"]), "mode": "BUS", "routes": set(), "planned": False, "parentStop": item.get("parent", "")})
     route_waits = {"TRAM A": 4.0, "TRAM B": 4.0, "BHNS C": 3.25}
     route_info = {"TRAM A": {"title": "Tramway A — Vaucanson ↔ Lycée Jean Monnet", "mode": "TRAM", "color": tram["route"]["color"], "planned": False}}
     for route_id, item in bus.get("routes", {}).items():
@@ -285,9 +285,6 @@ def build_stations_and_routes():
             "color": item.get("color", "#3b6f8f"),
             "planned": False,
             "waitMinutes": route_waits[route_id],
-            "calculationAvailable": item.get("calculationAvailable", True),
-            "excludedReservationTrips": item.get("excludedReservationTrips", 0),
-            "waitMethod": item.get("waitMethod"),
         }
     edges = {}
     routes = []

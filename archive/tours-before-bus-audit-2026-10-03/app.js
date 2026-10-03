@@ -1,5 +1,5 @@
 import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03f";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03e", import.meta.url).toString();
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03d", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -1237,8 +1237,7 @@ function drawRoutes(drawCtx, projectPoint) {
     drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : route.mode === "BUS" ? 1.35 : displaySettings.terWidth;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
-    const excluded = state.data.routeInfo?.[route.id]?.calculationAvailable === false;
-    drawCtx.setLineDash(excluded ? [3, 5] : route.mode === "BHNS" ? [7, 5] : []);
+    drawCtx.setLineDash(route.mode === "BHNS" ? [7, 5] : []);
     drawPolyline(drawCtx, route.points, projectPoint);
   }
   drawCtx.setLineDash([]);
@@ -1574,7 +1573,7 @@ function stationModeLines(point) {
   const station = state.data.stations[nearest.index];
   const kind = station.id.startsWith("KML:") ? "Halte" : station.mode === "TER" ? "Gare" : "Arrêt";
   const lines = [{ text: `${kind} ${station.name}`, small: true }];
-  const ordered = [...new Set([...station.routes, ...(station.displayRoutes || [])])].sort((a, b) => Number(b.startsWith("TER ")) - Number(a.startsWith("TER ")) || a.localeCompare(b, "fr"));
+  const ordered = [...station.routes].sort((a, b) => Number(b.startsWith("TER ")) - Number(a.startsWith("TER ")) || a.localeCompare(b, "fr"));
   if (!ordered.length) { lines.push({text: "Sans desserte retenue dans le calcul", small: true}); return lines; }
   const routeId = ordered[0];
   if (routeId === "TRAM A") lines.push({ text: "Tramway A", small: true });
@@ -1585,23 +1584,13 @@ function stationModeLines(point) {
     const info = state.data.routeInfo?.[routeId] || {};
     const wait = Number(info.waitMinutes) * travelSettings.busWaitFactor;
     lines.push({ text: info.title || routeId, small: true });
-    if (info.calculationAvailable === false) lines.push({ text: "Sur réservation · hors calcul", small: true });
-    else if (Number.isFinite(wait)) lines.push({ text: `Attente de cette ligne : ${wait % 1 ? wait.toFixed(1) : wait} min`, small: true });
+    if (Number.isFinite(wait)) lines.push({ text: `Attente modélisée : ${wait % 1 ? wait.toFixed(1) : wait} min`, small: true });
   } else {
     const title = state.data.routeInfo?.[routeId]?.title || "";
     const endpoints = title.includes(" - ") ? title.slice(title.indexOf(" - ") + 3) : title;
     lines.push({ text: `${routeId} · ${endpoints}`, small: true });
   }
-  if (ordered.length > 1) {
-    const others = ordered.slice(1, 3).map(id => {
-      const info = state.data.routeInfo?.[id];
-      if (info?.calculationAvailable === false) return `${id} · réservation, hors calcul`;
-      if (info?.mode === "BUS") return `${id} · attente ${(info.waitMinutes * travelSettings.busWaitFactor).toFixed(1)} min`;
-      return id;
-    });
-    lines.push({ text: others.join(" ; "), small: true });
-    if (ordered.length > 3) lines.push({ text: `+ ${ordered.length - 3} autre(s) ligne(s)`, small: true });
-  }
+  if (ordered.length > 1) lines.push({ text: `+ ${ordered.length - 1} autre${ordered.length > 2 ? "s" : ""} ligne${ordered.length > 2 ? "s" : ""}`, small: true });
   return lines;
 }
 

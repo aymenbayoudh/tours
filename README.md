@@ -6,6 +6,12 @@ Les isochrones surfaciques restent limités au périmètre SERM. Hors SERM, les 
 
 Le **tram B et le BHNS C**, prévus pour 2028, sont inclus par défaut dans les temps estimés. L'option « Inclure tram B et BHNS C » permet de les exclure et recalcule les trajets. Les bus Fil Bleu sont issus du GTFS officiel courant ; les autres réseaux du SERM restent à intégrer séparément.
 
+L'[audit systémique des bus](BUS-AUDIT-2026-10-03.md) corrige l'import des courses
+sur réservation et le mélange des jours/branches dans les attentes. Les services
+conditionnels restent visibles, mais sont exclus des estimations régulières ;
+leurs temps GTFS de zone ne doivent pas être interprétés comme des déplacements
+instantanés. Le détail des 48 lignes et les contrôles sont consignés dans l'audit.
+
 ## Lancer le site
 
 ```bash

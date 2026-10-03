@@ -19,7 +19,7 @@ def rows(z, name):
 def seconds(value):
     h,m,s = map(int,value.split(':')); return h*3600+m*60+s
 
-def active_service_dates(z):
+def active_services(z):
     active = defaultdict(set)
     if 'calendar.txt' in z.namelist():
         names=['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
@@ -33,10 +33,7 @@ def active_service_dates(z):
             if r['date'] in allowed:
                 if r['exception_type']=='1':active[r['service_id']].add(r['date'])
                 else:active[r['service_id']].discard(r['date'])
-    return {s: dates for s,dates in active.items() if dates}
-
-def active_services(z):
-    return set(active_service_dates(z))
+    return {s for s,dates in active.items() if dates}
 
 def representative(groups):
     result=[]

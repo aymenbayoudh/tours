@@ -15,7 +15,7 @@ import zipfile
 from collections import defaultdict
 from pathlib import Path
 
-from prepare_timetables import active_service_dates, representative, rows, seconds
+from prepare_timetables import active_services, representative, rows, seconds
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "data" / "tours" / "filbleu_bus.json"
@@ -44,7 +44,7 @@ def main() -> None:
     args = parser.parse_args()
 
     with zipfile.ZipFile(args.gtfs) as z:
-        active = active_service_dates(z)
+        active = active_services(z)
         route_rows = {
             r["route_id"]: r for r in rows(z, "routes.txt")
             if r.get("route_type") == "3"
@@ -72,18 +72,12 @@ def main() -> None:
                 "departure": seconds(r["departure_time"]),
                 "pickup": r.get("pickup_type", "0") not in {"1"},
                 "dropoff": r.get("drop_off_type", "0") not in {"1"},
-                "reservation": r.get("pickup_type", "0") in {"2", "3"}
-                    or r.get("drop_off_type", "0") in {"2", "3"}
-                    or bool(r.get("pickup_booking_rule_id") or r.get("drop_off_booking_rule_id")),
             })
 
         groups = defaultdict(list)
         route_departures = defaultdict(lambda: defaultdict(list))
         used_stops = set()
         selected_shape_ids = set()
-        display_shapes = {}
-        display_stop_routes = defaultdict(set)
-        excluded_trips = defaultdict(int)
 
         for trip_id, times in stop_times.items():
             trip = trip_rows[trip_id]
@@ -96,18 +90,6 @@ def main() -> None:
                 continue
             for item in times:
                 used_stops.add(item["physical"])
-                display_stop_routes[item["physical"]].add(route_id)
-            shape_id = trip.get("shape_id") or ""
-            if shape_id:
-                selected_shape_ids.add(shape_id)
-                display_shapes.setdefault(shape_id, route_id)
-            # Reservation zones are not an ordered fixed itinerary. Identical
-            # timestamps must never become instantaneous cross-zone journeys.
-            # Keep their geometry as reference, but exclude conditional trips
-            # until a reservation-aware model is available.
-            if any(item["reservation"] for item in times):
-                excluded_trips[route_id] += 1
-                continue
             first_departure = times[0]["departure"] / 60
             arrivals = [x["arrival"] / 60 - first_departure for x in times]
             departures = [x["departure"] / 60 - first_departure for x in times]
@@ -125,12 +107,8 @@ def main() -> None:
                 "departures": departures,
                 "shapeId": shape_id,
                 "directionId": direction,
-                "requiresReservation": False,
             })
-            # Do not merge departures from different days or different origins
-            # of a branched line into one fictitious frequency.
-            for date in active[trip["service_id"]]:
-                route_departures[route_id][(date, direction, times[0]["parent"])].append(first_departure)
+            route_departures[route_id][direction].append(first_departure)
 
         patterns = representative(groups)
         for p in patterns:
@@ -158,15 +136,9 @@ def main() -> None:
             headways = []
             for departures in route_departures[runtime].values():
                 dep = sorted(set(departures))
-                gaps = [b - a for a, b in zip(dep, dep[1:]) if b > a]
-                # Rare school/partial services must not outweigh a frequent
-                # full-length service. Pool observed gaps, not bucket medians.
-                # A pair of near-simultaneous school departures does not imply
-                # a frequent all-day line: sparse buckets retain the fallback.
-                if len(dep) >= 4:
-                    headways.extend(gaps)
-                elif dep:
-                    headways.append(60.0)
+                gaps = [b - a for a, b in zip(dep, dep[1:]) if 3 <= b - a <= 180]
+                if gaps:
+                    headways.append(statistics.median(gaps))
             wait = min(30.0, max(2.0, statistics.median(headways) / 2 if headways else 30.0))
             reduced_routes[runtime] = {
                 "title": f"Bus {short} — {(route.get('route_long_name') or '').strip()}".rstrip(" —"),
@@ -175,10 +147,6 @@ def main() -> None:
                 "textColor": "#" + ((route.get("route_text_color") or "FFFFFF").lstrip("#")),
                 "waitMinutes": round(wait, 2),
                 "gtfsRouteId": gtfs_id,
-                "excludedReservationTrips": excluded_trips[runtime],
-                "calculationAvailable": any(p["routeId"] == runtime for p in patterns),
-                "excludedReason": "Service sur réservation non modélisé" if not any(p["routeId"] == runtime for p in patterns) and excluded_trips[runtime] else None,
-                "waitMethod": "half-median-headway-per-day-direction-origin-bounded-2-30",
             }
 
         # Keep every physical boarding point separate. Parent stop areas are
@@ -195,11 +163,10 @@ def main() -> None:
                 "point": [float(stop["stop_lon"]), float(stop["stop_lat"])],
                 "parent": parent_id,
                 "areaName": (parent or {}).get("stop_name") or "",
-                "displayRoutes": sorted(display_stop_routes[stop_id]),
             }
 
         # One simplified display geometry per representative pattern shape.
-        route_by_shape = dict(display_shapes)
+        route_by_shape = {}
         for p in patterns:
             sid = p.get("shapeId")
             if sid and sid not in route_by_shape:
@@ -217,7 +184,6 @@ def main() -> None:
             "license": "Licence Ouverte 2.0",
             "url": "https://data.tours-metropole.fr/api/v2/catalog/datasets/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/alternative_exports/filbleu_gtfszip",
             "referenceWeek": ["2026-10-05", "2026-10-11"],
-            "reservationPolicy": "conditional trips excluded from calculations; shapes retained",
         },
         "stops": reduced_stops,
         "routes": reduced_routes,
