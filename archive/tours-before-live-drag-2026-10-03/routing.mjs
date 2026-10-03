@@ -48,7 +48,6 @@ function normalizeSettings(data, value = {}) {
     terWait: numeric(value.terWait, 15, 0),
     navetteWait: numeric(value.navetteWait, 5, 0),
     tramWait: numeric(value.tramWait, 4, 0),
-    busWaitFactor: numeric(value.busWaitFactor, 1, 0),
     bhnsWait: numeric(value.bhnsWait, 3.25, 0),
     stationEntryPenalty: numeric(value.stationEntryPenalty, data.meta.stationAccessPenalty ?? 1.8, 0),
     stationExitPenalty: numeric(value.stationExitPenalty, data.meta.stationAccessPenalty ?? 1.8, 0),
@@ -71,7 +70,7 @@ function waitForRoute(data, routeId, settings) {
   if (mode === "NAVETTE") return settings.navetteWait;
   if (mode === "TRAM") return settings.tramWait;
   if (mode === "BHNS") return settings.bhnsWait;
-  if (mode === "BUS") return settings.busWaitFactor * numeric(data.routeInfo?.[routeId]?.waitMinutes, data.routeWaits?.[routeId] ?? 10, 0);
+  if (mode === "BUS") return numeric(data.routeInfo?.[routeId]?.waitMinutes, data.routeWaits?.[routeId] ?? 10, 0);
   return settings.terWait;
 }
 

@@ -1,4 +1,4 @@
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03f";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney } from "./routing.mjs?v=2026-10-03e";
 const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03d", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
@@ -36,7 +36,6 @@ const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
   tramWait: 4,
   bhnsWait: 3.25,
   navetteWait: 5,
-  busWaitFactor: 1,
   stationEntryPenalty: 1.8,
   stationExitPenalty: 1.8,
   transferPenalty: 3.5,
@@ -63,7 +62,6 @@ const TRAVEL_QUERY_PARAMS = Object.freeze({
   tramWait: "tramw",
   bhnsWait: "bhnsw",
   navetteWait: "navw",
-  busWaitFactor: "busfactor",
   stationEntryPenalty: "entry",
   stationExitPenalty: "exit",
   transferPenalty: "transfer",
@@ -149,7 +147,6 @@ function normalizeTravelSettings(value) {
     tramWait: numeric("tramWait", 0, 30),
     bhnsWait: numeric("bhnsWait", 0, 30),
     navetteWait: numeric("navetteWait", 0, 30),
-    busWaitFactor: numeric("busWaitFactor", 0, 3),
     stationEntryPenalty: numeric("stationEntryPenalty", 0, 20),
     stationExitPenalty: numeric("stationExitPenalty", 0, 20),
     transferPenalty: numeric("transferPenalty", 0, 30),
@@ -1140,7 +1137,7 @@ function pointInStaticGrid(point) {
 
 function computeViewportWarp(origin, transform, width, height) {
   const model = getTravelModel(origin);
-  const panPreview = state.dragTarget === "pan" || state.dragTarget === "origin";
+  const panPreview = state.dragTarget === "pan";
   const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${state.maxTransitTime}:${activeThreshold()}:${panPreview}`;
   if (cachedWarpKey === key) return cachedWarp;
   const topLeft = transform.toWorld(0, 0);
@@ -1582,7 +1579,7 @@ function stationModeLines(point) {
   else if (routeId === "NAVETTE") lines.push({ text: "Navette Tours ↔ Saint-Pierre-des-Corps", small: true });
   else if (routeId.startsWith("BUS ")) {
     const info = state.data.routeInfo?.[routeId] || {};
-    const wait = Number(info.waitMinutes) * travelSettings.busWaitFactor;
+    const wait = Number(info.waitMinutes);
     lines.push({ text: info.title || routeId, small: true });
     if (Number.isFinite(wait)) lines.push({ text: `Attente modélisée : ${wait % 1 ? wait.toFixed(1) : wait} min`, small: true });
   } else {
@@ -1696,17 +1693,17 @@ function drawMap() {
 
   const source = heatmapSourcePoint();
   const other = heatmapOtherPoint();
-  const movingOrigin = state.dragTarget === "origin";
+  const previewingOriginDrag = state.dragTarget === "origin" && state.dragMoved && Boolean(state.currentRender?.warp);
   const focusBounds = viewBounds();
   const scaleMul = clamp(state.viewportScale, minViewportScale(width, height), MAX_VIEWPORT_SCALE);
   const focus = state.viewportCenter || (scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter());
   const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
-  // Recompute from the current origin during every rendered drag frame.
-  // Use a lighter visible grid while moving, then refine on release.
-  const warp = source ? (movingOrigin || scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
-    ? computeViewportWarp(source, transform, width, height)
-    : computeWarp(source)) : null;
+  const warp = source ? (previewingOriginDrag
+    ? state.currentRender.warp
+    : (scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
+      ? computeViewportWarp(source, transform, width, height)
+      : computeWarp(source))) : null;
 
   const nextBackdropKey = `${cachedModelKey}:${cachedWarpKey}:${width}:${height}:${scaleMul}:${focus}:${state.maxTransitTime}:${state.outlineMinutes}`;
   if (nextBackdropKey !== backdropKey) {
@@ -1732,7 +1729,7 @@ function drawMap() {
   ctx.drawImage(mapBackdrop, 0, 0, width, height);
 
   let travelMinutes = null;
-  if (warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
+  if (!previewingOriginDrag && warp && other) travelMinutes = estimateTravel(source, warp.distances, other);
   state.pinHits = { origin: null, probe: null };
 
   if (state.probePoint) {
@@ -1740,9 +1737,9 @@ function drawMap() {
     const originScreen = state.originPoint ? projectPoint(state.originPoint) : null;
     const nearOrigin = originScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 130;
     drawMarker(ctx, probeScreen, "#1c2f42", state.dragTarget === "probe" ? 5 : 4);
-    const probeDescriptor = arrivalDescriptor(state.probePoint);
+    const probeDescriptor = previewingOriginDrag ? placeName(state.probePoint) : arrivalDescriptor(state.probePoint);
     const probeLines = [{ text: `Arrivée : ${probeDescriptor}`, small: false }];
-    probeLines.push({ text: Number.isFinite(travelMinutes) ? formatMinutes(travelMinutes) : "—", small: true });
+    probeLines.push({ text: previewingOriginDrag ? "mise à jour au relâchement" : (Number.isFinite(travelMinutes) ? formatMinutes(travelMinutes) : "—"), small: true });
     const probeLabel = drawLabelBubble(ctx, probeScreen, probeLines, "#1c2f42", nearOrigin && probeScreen[1] >= originScreen[1], 18, true);
     state.pinHits.probe = { screen: probeScreen, label: probeLabel };
   }
@@ -1761,7 +1758,7 @@ function drawMap() {
   state.currentRender = { warp, transform, focus };
   legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
-  syncStatus(warp, travelMinutes);
+  if (!previewingOriginDrag) syncStatus(warp, travelMinutes);
   if (!state.dragTarget) updateJourney();
   state.dirty = false;
 }
