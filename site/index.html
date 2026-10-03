@@ -246,13 +246,13 @@
             <li><strong>À bord :</strong> les TER et le tram A utilisent des séquences d’arrêts réellement présentes dans les GTFS SNCF et Fil Bleu pour la semaine du 5 au 11 octobre 2026. Pour chaque desserte, un trajet réel de durée médiane est retenu dans son intégralité. Le temps de B à C correspond donc à ce trajet de référence, y compris les arrêts intermédiaires. Les trains traversant une gare sans arrêt ne permettent pas d’y descendre.</li>
             <li><strong>Attente :</strong> par défaut, chaque embarquement ajoute 15 minutes pour un TER, 5 pour la navette, 4 pour un tram et 3 min 15 pour le BHNS. Ces valeurs sont modifiables ; elles ne reproduisent pas une heure de départ précise.</li>
             <li><strong>Correspondances :</strong> par défaut, changer dans une même gare ajoute 3 min 30 puis l’attente de la nouvelle ligne. Entre arrêts distincts déjà reliés dans le modèle (jusqu’à 650 m), on ajoute la marche, 2 minutes de marge et l’attente. Les deux malus sont modifiables. Rester dans le même véhicule conserve seulement le temps d’arrêt de l’horaire.</li>
-            <li><strong>Durées à bord et projets :</strong> quand un horaire GTFS est disponible, sa durée représentative est utilisée directement, sans correction par une vitesse réglable. Les tracés sans horaire utilisent les estimations fixes construites dans les données : notamment 18,4 km/h pour le tram B, 18 km/h pour le BHNS C et des vitesses commerciales calibrées pour les liaisons TER de secours. Décocher les projets retire le tram B et le BHNS C.</li>
+            <li><strong>Durées à bord et projets :</strong> quand un horaire GTFS ferroviaire est disponible, sa durée représentative est utilisée directement. Le tram B et le BHNS C restent des projets estimés à 18,4 et 18 km/h. Pour la semaine du 5 au 11 octobre 2026, la desserte ferroviaire Tours–Chinon est suspendue pour travaux : elle n'est pas recréée artificiellement ; ses autocars de substitution seront traités comme des bus. Décocher les projets retire le tram B et le BHNS C.</li>
             <li><strong>Résultat :</strong> le moteur recherche le trajet le plus court parmi ces possibilités. « Voir le trajet retenu » donne ses étapes. Les correspondances ne sont pas garanties à une date et une heure précises : les services peuvent circuler à des moments ou jours différents.</li>
             <li><strong>Isochrones :</strong> la couleur et les contours viennent d’une grille affinée quand on zoome. Une poche accessible peut être plus petite qu’une maille au dézoom ; un anneau coloré ponctuel signale alors la gare réellement accessible, sans représenter une surface artificielle. Le pourcentage utilise la plus grande durée cochée (ou le curseur si aucune courbe n’est cochée), parmi les arrêts desservis par le réseau sélectionné.</li>
           </ol>
         </details>
       </footer>
     </main>
-    <script type="module" src="./app.js?v=2026-10-03q"></script>
+    <script type="module" src="./app.js?v=2026-10-03r"></script>
   </body>
 </html>
