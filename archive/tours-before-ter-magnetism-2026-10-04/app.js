@@ -1,8 +1,7 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-04f";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-04f";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-04f";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04f";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04f", import.meta.url).toString();
+import { contourSegments } from "./isochrone.mjs?v=2026-10-04e";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-04e";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04e";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04e", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -20,7 +19,6 @@ const DEFAULT_ISOCHRONE_STOPS = Object.freeze([
   { t: 1, color: "#ffe2a1", alpha: 0 },
 ]);
 const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
-  railMagnetism: true,
   showBusLabels: true,
   terWidth: ROUTE_LINE_WIDTH,
   tramWidth: 4.2,
@@ -45,7 +43,6 @@ const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
   tramWait: 4,
   bhnsWait: 3.25,
   navetteWait: 5,
-  railMagnetRadiusKm: 1,
   busWaitFactor: 1,
   busEntryPenalty: 1.8,
   busExitPenalty: 1.8,
@@ -81,7 +78,6 @@ const TRAVEL_QUERY_PARAMS = Object.freeze({
   tramWait: "tramw",
   bhnsWait: "bhnsw",
   navetteWait: "navw",
-  railMagnetRadiusKm: "magnetradius",
   busWaitFactor: "busfactor",
   busEntryPenalty: "busentry",
   busExitPenalty: "busexit",
@@ -131,7 +127,6 @@ function normalizeDisplaySettings(value) {
     };
   });
   return {
-    railMagnetism: source.railMagnetism !== false,
     showBusLabels: source.showBusLabels !== false,
     terWidth: numeric("terWidth", 0.5, 10),
     tramWidth: numeric("tramWidth", 0.5, 10),
@@ -184,7 +179,6 @@ function normalizeTravelSettings(value) {
     tramWait: 4,
     bhnsWait: numeric("bhnsWait", 0, 30),
     navetteWait: 5,
-    railMagnetRadiusKm: numeric("railMagnetRadiusKm", 0.1, 3),
     busWaitFactor: numeric("busWaitFactor", 0, 3),
     busEntryPenalty: numeric("busEntryPenalty", 0, 30),
     busExitPenalty: numeric("busExitPenalty", 0, 30),
@@ -748,7 +742,6 @@ displaySettingsPanel.addEventListener("input", (event) => {
     displaySettings[target.dataset.displayToggle] = target.checked;
     saveDisplaySettings();
     invalidateVisualSettings();
-    if (target.dataset.displayToggle === "railMagnetism") syncUrl();
     return;
   }
   if (target.matches("[data-display-number]")) {
@@ -1159,7 +1152,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04f", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04e", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1432,7 +1425,7 @@ function drawStations(drawCtx, projectPoint, warp) {
     if (rasterMissesStation) {
       // A minimum-size coloured pocket preserves visibility at overview scale.
       // It is a display enlargement; the travel time and geographic grid stay unchanged.
-      const radius = stationRadius + (state.viewportScale < 2 ? 2.2 : 1.4);
+      const radius = state.viewportScale < 2 ? 11 : 7;
       const gradient = drawCtx.createRadialGradient(x, y, 0, x, y, radius);
       gradient.addColorStop(0, heatmapColor(minutes, 0.8));
       gradient.addColorStop(0.72, heatmapColor(minutes, 0.32));
@@ -1876,14 +1869,8 @@ function hitPin(screen) {
   return null;
 }
 
-function placePoint(world, magnet) {
-  const point = magnet && displaySettings.railMagnetism
-    ? snapToRailStation(world, state.data.stations, state.data.routeInfo, travelSettings.railMagnetRadiusKm * 1000) : world;
-  return nearestLandPoint(point);
-}
-
-function setOrigin(world, { pin = false, label = null, silent = false, magnet = true } = {}) {
-  const snapped = placePoint(world, magnet);
+function setOrigin(world, { pin = false, label = null, silent = false } = {}) {
+  const snapped = nearestLandPoint(world);
   if (!snapped) return;
   state.originPoint = snapped;
   state.originLabel = label;
@@ -1892,8 +1879,8 @@ function setOrigin(world, { pin = false, label = null, silent = false, magnet = 
   if (!silent) syncUrl();
 }
 
-function setProbe(world, pinned = false, { silent = false, magnet = true } = {}) {
-  const snapped = placePoint(world, magnet);
+function setProbe(world, pinned = false, { silent = false } = {}) {
+  const snapped = nearestLandPoint(world);
   if (!snapped) return;
   state.probePoint = snapped;
   state.probePinned = pinned;
@@ -1953,7 +1940,6 @@ function syncUrl() {
   params.set("calc", SHARE_CALC_VERSION);
   for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) params.set(param, String(travelSettings[key]));
   params.set("walking", state.walkingOnRoads ? "road" : "direct");
-  params.set("magnet", displaySettings.railMagnetism ? "1" : "0");
   if (state.viewportCenter) {
     const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
     params.set("view", `${formatCoord(lat)},${formatCoord(lon)}`);
@@ -1967,7 +1953,6 @@ function restoreUrl() {
   const params = new URLSearchParams(location.search);
   state.walkingOnRoads = params.get("walking") !== "direct";
   roadWalkingToggle.checked = state.walkingOnRoads;
-  if (params.has("magnet")) displaySettings.railMagnetism = params.get("magnet") !== "0";
   const origin = parsePair(params.get("origin"));
   const probe = parsePair(params.get("distance"));
   const outlineParam = params.get("outline");
@@ -2003,7 +1988,7 @@ function restoreUrl() {
     syncDisplaySettingsControls();
   }
   if (origin) {
-    setOrigin(origin, { pin: true, silent: true, magnet: false });
+    setOrigin(origin, { pin: true, silent: true });
   } else {
     setOrigin(lonLatToWorld(DEFAULT_ORIGIN.lon, DEFAULT_ORIGIN.lat), {
       pin: true,
@@ -2011,7 +1996,7 @@ function restoreUrl() {
       silent: true,
     });
   }
-  if (probe) setProbe(probe, false, { silent: true, magnet: false });
+  if (probe) setProbe(probe, false, { silent: true });
   if (params.get("view")) {
     state.viewportCenter = parsePair(params.get("view")) || defaultCenter();
     const zoom = Number(params.get("zoom"));
@@ -2283,7 +2268,7 @@ document.getElementById("locateButton").addEventListener("click", () => {
         statusText.textContent = "Votre position est hors du périmètre et des lignes affichées.";
         return;
       }
-      setOrigin(world, { pin: true, label: "Ma position", magnet: false });
+      setOrigin(world, { pin: true, label: "Ma position" });
     },
     () => {
       statusText.textContent = "Impossible de lire la position.";
