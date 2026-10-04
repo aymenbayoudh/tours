@@ -40,6 +40,7 @@ class MinHeap {
 }
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const ARTIFICIAL_TRANSFER_PREFERENCE_MINUTES = 180;
 function numeric(value, fallback, min = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? Math.max(min, number) : fallback;
@@ -219,10 +220,13 @@ function indexedEstimate(data, model, destination, walk, exitPenalty, best) {
 export function buildTravelModel(data, origin, includeProjects = true, customSettings = {}) {
   const settings = normalizeSettings(data, customSettings);
   const distances = new Float64Array(data.routeStates.length).fill(Infinity);
-  // Hidden preference dimension: number of artificial changes between
-  // representative profiles of the SAME TER route. It never changes the
-  // displayed minutes. A P→K (or any different-route) interchange costs zero
-  // here, so legitimate omnibus→express transfers remain fully available.
+  // Edge metadata marks artificial representative-service stitching: changing
+  // between profiles of the same TER, plus the redundant Saint-Pierre→Tours
+  // one-stop change when the incoming train already continues to Tours.
+  // Use a strong but finite preference (180 min per artificial change) rather
+  // than a strict lexicographic order, so avoiding a fake transfer can never
+  // make absurdly long initial walking dominate a sensible journey.
+  const preferenceScores = new Float64Array(data.routeStates.length).fill(Infinity);
   const sameRouteChanges = new Uint16Array(data.routeStates.length);
   sameRouteChanges.fill(65535);
   const previous = new Int32Array(data.routeStates.length).fill(-1);
@@ -256,53 +260,58 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     for (const node of data.boardingStates[index] || []) {
       if (!allowed[node]) continue;
       const value = access + waitForRoute(data, data.routeStates[node].routeId, settings);
-      if (value < distances[node]) {
+      if (value < preferenceScores[node]) {
         distances[node] = value;
+        preferenceScores[node] = value;
         sameRouteChanges[node] = 0;
-        queue.push([0, value, node]);
+        queue.push([value, value, node]);
       }
     }
   });
 
   while (queue.length) {
-    const [changes, value, node] = queue.pop();
-    if (changes !== sameRouteChanges[node] || value !== distances[node]) continue;
+    const [score, value, node] = queue.pop();
+    if (score !== preferenceScores[node] || value !== distances[node]) continue;
     for (const edge of data.adjacency[node]) {
       const [next, storedCost, walkingMetres] = edge;
       if (!allowed[next]) continue;
       const cost = adjustedEdgeCost(data, node, next, storedCost, settings, walkingMetres);
       const candidate = value + cost;
-      const candidateChanges = changes + (Number(edge[3]) || 0);
+      const candidateChanges = sameRouteChanges[node] + (Number(edge[3]) || 0);
+      const candidateScore = candidate + candidateChanges * ARTIFICIAL_TRANSFER_PREFERENCE_MINUTES;
       if (
-        candidateChanges < sameRouteChanges[next]
-        || (candidateChanges === sameRouteChanges[next] && candidate < distances[next])
+        candidateScore < preferenceScores[next]
+        || (candidateScore === preferenceScores[next] && candidate < distances[next])
       ) {
         distances[next] = candidate;
+        preferenceScores[next] = candidateScore;
         sameRouteChanges[next] = candidateChanges;
         previous[next] = node;
-        queue.push([candidateChanges, candidate, next]);
+        queue.push([candidateScore, candidate, next]);
       }
     }
   }
 
   const stationArrivals = data.stationStates.map((nodes) => {
     let best = Infinity;
+    let bestScore = Infinity;
     let bestChanges = 65535;
     let node = -1;
     for (const n of nodes) {
       if (
         allowed[n]
         && (
-          sameRouteChanges[n] < bestChanges
-          || (sameRouteChanges[n] === bestChanges && distances[n] < best)
+          preferenceScores[n] < bestScore
+          || (preferenceScores[n] === bestScore && distances[n] < best)
         )
       ) {
         best = distances[n];
+        bestScore = preferenceScores[n];
         bestChanges = sameRouteChanges[n];
         node = n;
       }
     }
-    return { minutes: best, node, sameRouteChanges: bestChanges };
+    return { minutes: best, node, sameRouteChanges: bestChanges, preferenceScore: bestScore };
   });
   const activeStations = data.boardingStates.map((nodes) => nodes.some((n) => allowed[n]));
   const stationOrder = stationArrivals
@@ -318,7 +327,7 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     });
     walkingField = road.search(seeds, true, limit);
   }
-  return { origin, includeProjects, distances, sameRouteChanges, previous, stationArrivals, activeStations, stationOrder, settings,
+  return { origin, includeProjects, distances, preferenceScores, sameRouteChanges, previous, stationArrivals, activeStations, stationOrder, settings,
     accessMinutes, walkingField, sourceCovered, sourceSnap, walkingLimitMinutes:customSettings.walkingLimitMinutes ?? Infinity,
     arrivalIndex: arrivalIndex(data, stationArrivals.map((a,i) => ({minutes:a.minutes + exitMargin(data, settings, i)}))) };
 }
