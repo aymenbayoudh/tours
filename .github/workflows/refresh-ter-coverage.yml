@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - ".github/workflows/refresh-ter-coverage.yml"
+      - "scripts/prepare_timetables.py"
+      - "build_data.py"
+      - "tests/routing.test.mjs"
   workflow_dispatch:
 
 permissions:
@@ -42,9 +45,11 @@ jobs:
           t=json.loads(Path("data/tours/timetables.json").read_text())
           d=json.loads(Path("site/data/commute_map_data.json").read_text())
           routes=set(p["routeId"] for p in t["patterns"])
-          required={"TER P14","TER P16","TER P10","TER K5+"}
+          required={"TER P14","TER P16","TER P10","TER K5+","TER K15","TER P5","TER P15"}
           missing=sorted(required-routes)
           assert not missing, f"Missing requested TER routes: {missing}"
+          assert "Paris - Châteaudun - Vendôme" in t["routes"]["TER P10"]["title"], "Wrong regional P10 imported"
+          assert "Orléans - Nevers" in t["routes"]["TER P14"]["title"], "Wrong regional P14 imported"
 
           def direct(route, first, second):
               for p in t["patterns"]:
