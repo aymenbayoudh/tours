@@ -20,9 +20,18 @@ export function coverageFor(data) {
 // Finite values outside the displayed time range are essential for marching
 // squares: Infinity must not remove a quad or produce a NaN intersection.
 export function surfaceValue(network, model, point, snap, ceiling) {
-  if (!snap || !model.walkingField) return ceiling;
-  const minutes = network.at(model.walkingField, snap).cost / (model.settings.walkMetersPerMinute * 100);
-  return Number.isFinite(minutes) ? Math.min(ceiling, minutes) : ceiling;
+  if (!snap || !model.pureWalkingField) return ceiling;
+  const speedCm = model.settings.walkMetersPerMinute * 100;
+  const pure = network.at(model.pureWalkingField, snap);
+  const pureMinutes = pure.cost / speedCm;
+  if (!Number.isFinite(pureMinutes)) return ceiling;
+  if (pureMinutes < model.shortTripFastestMinutes || !model.comfortWalkingField) return Math.min(ceiling, pureMinutes);
+
+  const comfort = network.at(model.comfortWalkingField, snap);
+  if (!Number.isFinite(comfort.cost)) return Math.min(ceiling, pureMinutes);
+  const transfers = comfort.owner >= 0 ? (model.comfortStationArrivals[comfort.owner]?.transferCount || 0) : 0;
+  const actualMinutes = comfort.cost / speedCm - transfers * model.comfortTransferPreferenceMinutes;
+  return Math.min(ceiling, actualMinutes);
 }
 
 export class WalkingEngine {
