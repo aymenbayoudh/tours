@@ -54,7 +54,10 @@ contre un calcul exhaustif : aucun écart dans le jeu courant. Dans trois passag
 sur la même machine, les 29 084 cellules passent de 1 366–1 798 ms à 70–88 ms.
 Ces mesures concernent le calcul Node, pas le dessin ni une garantie mobile.
 
-**Reste à faire dans la passation :** vélo seul et vélo jusqu’à une gare ; réseaux bus hors SMT. Le lot des accès depuis/vers des points libres et de la marche directe est intégré depuis le 4 octobre 2026 ; voir la section ci-dessous.
+**Reste à faire dans la passation :** accès depuis un départ arbitraire, marche
+directe et marche finale sur voirie ; vélo seul et vélo jusqu'à une gare ; réseaux
+bus hors SMT. Ces fonctions ne sont pas rendues complètes par la validation des
+seules correspondances piétonnes. Le graphe routier complet reste hors navigateur.
 
 ## Données
 
@@ -125,26 +128,3 @@ Le tram A, les TER et la navette utilisent désormais les départs de leurs GTFS
 Dans **Paramètres → Attentes**, les multiplicateurs TER, tram, bus et navette sont indépendants. ×0 supprime l’attente à chaque embarquement et sa mention dans les bulles ; les durées de parcours et les malus restent appliqués. Le tram B, sans horaires, conserve sa base de 4 minutes et utilise le multiplicateur tram. Le BHNS C conserve son attente forfaitaire modifiable. Les anciens réglages d’attente en minutes sont convertis en multiplicateurs par rapport aux anciennes bases (TER 15, tram 4, navette 5 minutes).
 
 **Paramètres → Réseau → Étiquettes des arrêts de bus** masque les noms uniquement ; le réseau et son calcul restent actifs. Ce choix d’affichage est mémorisé localement.
-
-
-### Marche depuis et vers les points libres — 4 octobre 2026
-
-Dans le SERM, le moteur utilise le réseau piéton IGN pour **départ → premier arrêt**, **dernier arrêt → destination** et **marche seule**. Il compare ces possibilités avec les transports, en conservant les durées horaires et les correspondances existantes. Les malus d’entrée et de sortie restent des marges résiduelles réglables, distinctes des longueurs de voirie. Un départ arbitraire ne se limite pas aux quelques arrêts les plus proches. La vitesse de marche, par défaut 4,8 km/h, est modifiable dans **Paramètres → Marche** et incluse dans les liens partagés ; elle agit aussi sur les correspondances piétonnes.
-
-Le graphe validé du run `37151657397` est préparé par `scripts/prepare_point_walking.py` : les chaînes sans branchement sont contractées, leurs longueurs et leurs géométries de raccord sont conservées. Le navigateur charge un binaire préparé de 5 592 569 octets gzip (11 364 228 octets décodés), plutôt que les 22 Mo du JSON de préparation. Cela ajoute environ 5,6 Mo au premier chargement, puis bénéficie du cache du navigateur ; ce coût n’est pas nul.
-
-- Raccord d’un point libre au segment piéton le plus proche : maximum **75 m**, sans connexion automatique entre rues croisées. Le raccord court lui-même est une approximation locale : accès intérieurs, barrières privées et traversée de chaussée ne sont pas certifiés.
-- Arrêts : raccords aux sommets conservant la méthode auditée, jusqu’à 150 m, avec regroupement des points de même nom à moins de 5 m. Le parvis de St-Pierre conserve son accès manuel documenté. À moins de 2 m d’un point de transport, le raccord terminal reste local.
-- Dans le SERM, aucun raccord plausible signifie une absence de chemin identifié, **pas** un remplacement silencieux par la ligne droite. Hors SERM, le repli géométrique demeure et un message indique cette approximation.
-- Pendant le déplacement du départ, les recherches piétonnes sont bornées au plus grand seuil affiché, avec 5 minutes de marge pour l’interpolation des contours. Puisque les coûts sont positifs, aucun chemin sous ce seuil n’est perdu ; le calcul complet est refait au relâchement, notamment pour les détails au-delà du seuil. Les points, temps et isochrones sont recalculés ensemble pendant le déplacement.
-- Tests : détour Jumeaux ~594 m pour 26 m géométriques, franchissement audité de Loire ~610 m, Île Aucard→Loire ~701 m, branches déconnectées, marche initiale/finale, marche directe et conservation des temps sous le seuil. Voir `tests/point_walking.test.mjs` et `tests/point_walking_preparation.test.py`.
-
-Le réseau représente les accès piétons retenus par le profil BD TOPO de préparation ; il ne certifie pas que tous les passages privés, tunnels de gare ou restrictions temporaires sont décrits. Le vélo n’est pas intégré par ce lot.
-
-Reconstruction du binaire (depuis une acquisition IGN validée, non téléchargée à chaque déploiement) :
-
-```sh
-python3 scripts/prepare_point_walking.py --road /chemin/road_graph.json --artifact-run 37151657397
-```
-
-Le manifeste `site/data/point_walking.meta.json` conserve le SHA-256 du graphe source et les tailles. Utiliser l’identifiant réel du run source lors d’une nouvelle acquisition, ou omettre `--artifact-run` pour une préparation locale.

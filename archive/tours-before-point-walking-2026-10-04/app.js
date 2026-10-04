@@ -1,6 +1,5 @@
-import { WalkingNetwork } from "./walking.mjs?v=2026-10-04a";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04a";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04a", import.meta.url).toString();
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-03g";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03g", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -34,7 +33,6 @@ const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   backgroundColor: "#efe6d6",
 });
 const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
-  walkSpeedKmh: 4.8,
   navetteWaitFactor: 1,
   terWaitFactor: 1,
   tramWaitFactor: 1,
@@ -65,7 +63,6 @@ const DEFAULT_ORIGIN = {
 const SHARE_DECIMALS = 5;
 const SHARE_CALC_VERSION = "2";
 const TRAVEL_QUERY_PARAMS = Object.freeze({
-  walkSpeedKmh: "walkspeed",
   navetteWaitFactor: "navfactor",
   terWaitFactor: "terfactor",
   tramWaitFactor: "tramfactor",
@@ -162,7 +159,6 @@ function normalizeTravelSettings(value) {
     return numeric(key, 0, 3);
   };
   return {
-    walkSpeedKmh: numeric("walkSpeedKmh", 1, 8),
     navetteWaitFactor: factor("navetteWaitFactor", "navetteWait", 5),
     terWaitFactor: factor("terWaitFactor", "terWait", 15),
     tramWaitFactor: factor("tramWaitFactor", "tramWait", 4),
@@ -1111,10 +1107,9 @@ function activeThreshold() {
 }
 function getTravelModel(origin) {
   const settingsKey = Object.entries(travelSettings).map(([key, value]) => key + ":" + value).join("|");
-  const walkingLimitMinutes = state.dragTarget === "origin" ? Math.max(activeThreshold(), state.maxTransitTime) + 5 : Infinity;
-  const key = `${origin[0]},${origin[1]},${state.includeProjects}:${settingsKey}:${walkingLimitMinutes}`;
+  const key = `${origin[0]},${origin[1]},${state.includeProjects}:${settingsKey}`;
   if (key !== cachedModelKey) {
-    cachedModel = buildTravelModel(state.data, origin, state.includeProjects, { ...travelSettings, walkingLimitMinutes });
+    cachedModel = buildTravelModel(state.data, origin, state.includeProjects, travelSettings);
     cachedModelKey = key;
   }
   return cachedModel;
@@ -1463,9 +1458,6 @@ function contourSegments(warp, threshold) {
   for (let row = 0; row < minutes.length - 1; row += 1) {
     for (let col = 0; col < minutes[row].length - 1; col += 1) {
       if (!validMask[row][col] || !validMask[row][col + 1] || !validMask[row + 1][col + 1] || !validMask[row + 1][col]) continue;
-      // Unknown/unreachable samples have no finite threshold crossing. Never
-      // feed Infinity into interpolation: Canvas can join unrelated segments.
-      if (![minutes[row][col], minutes[row][col+1], minutes[row+1][col+1], minutes[row+1][col]].every(Number.isFinite)) continue;
       const bl = center(row, col);
       const br = center(row, col + 1);
       const tr = center(row + 1, col + 1);
@@ -1678,18 +1670,6 @@ function syncStatus(warp, travelMinutes) {
   } else {
     const prefix = state.pinned ? "Carte depuis" : "Près de";
     statusText.textContent = `${prefix} ${sourceName}`;
-  }
-  const walkingNote = document.getElementById("walkingCoverageNote");
-  if (walkingNote && state.data.walkingNetwork) {
-    const model = getTravelModel(source);
-    const targetCovered = !other || state.data.walkingNetwork.coverage(other);
-    walkingNote.textContent = !model.sourceCovered || !targetCovered
-      ? "Hors de la couverture SERM, certaines portions de marche restent estimées en ligne droite."
-      : !model.sourceSnap
-        ? "Ce départ n’a pas d’accès piéton identifié à proximité. Placez-le plus près d’une rue ou d’un arrêt."
-        : other && !state.data.walkingNetwork.freeSnap(other) && !state.data.walkingNetwork.stationsAt(other).length
-        ? "Ce point d’arrivée n’a pas d’accès piéton identifié à proximité. Placez-le plus près d’une rue ou d’un arrêt."
-        : "Marche sur voirie IGN dans le SERM ; raccords courts aux points choisis estimés localement.";
   }
   if (warp) {
     const { reachable, total } = summarizeReachability(source);
@@ -2192,8 +2172,6 @@ function updateJourney() {
   const journey = describeJourney(state.data, getTravelModel(state.originPoint), state.probePoint);
   journeyPanel.hidden = false; journeyContent.replaceChildren();
   const add = text => { const p = document.createElement("p"); p.textContent = text; journeyContent.append(p); };
-  if (journey.roadUnavailable) { add("Aucun chemin piéton identifié vers ce point. Placez-le plus près d’une rue ou d’un arrêt."); return; }
-  if (journey.walkingApproximation) add("Certaines portions hors couverture sont estimées en ligne droite.");
   if (!journey.legs.length) add(`Marche directe estimée : ${formatMinutes(journey.minutes)}.`);
   else {
     add(`Marche : ${formatMinutes(journey.walking)} ; attente, accès et marges : ${formatMinutes(journey.waiting)}.`);
@@ -2273,16 +2251,6 @@ async function init() {
   const response = await fetch(DATA_URL);
   if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
-  statusText.textContent = "Chargement des accès à pied…";
-  const walkingResponse = await fetch(new URL("./data/point_walking.bin.gz?v=2026-10-04a", import.meta.url));
-  if (!walkingResponse.ok) throw new Error(`Chargement de la voirie impossible (${walkingResponse.status})`);
-  const packed = await walkingResponse.arrayBuffer();
-  const signature = new Uint8Array(packed,0,Math.min(2,packed.byteLength));
-  const buffer = signature[0] === 31 && signature[1] === 139
-    ? await new Response(new Blob([packed]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer()
-    : packed;
-  state.data.walkingNetwork = new WalkingNetwork(buffer, pointInLand);
-  state.data.walkingNetwork.stationSnaps(state.data.stations);
   state.ready = true;
   buildIsochroneGradientControls();
   buildEpciColorSettings();

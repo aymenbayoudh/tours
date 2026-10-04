@@ -1,3 +1,11 @@
+# Mise à jour — 4 octobre 2026
+
+Les accès depuis/vers les points libres et la marche directe sont maintenant intégrés sur le graphe IGN dans le SERM. Les paragraphes du 3 octobre ci-dessous sont un état historique. Voir la section « Marche depuis et vers les points libres » du README pour l’architecture, les limites de couverture et les raccords locaux.
+
+Le jeu préparé conserve 215 690 jonctions, 295 510 chaînes et 871 631 points de géométrie. Aucun simple croisement géométrique n’est transformé en connexion. Les tests ciblés de contraction et de marche initiale/finale sont ajoutés au déploiement. Le fichier chargé représente environ 5,6 Mo gzip supplémentaires au premier chargement ; les mesures Node sur cette machine donnent environ 40–55 ms pour un modèle de déplacement limité à 90 minutes après échauffement, et environ 190–250 ms pour les premières constructions complètes. Ce ne sont pas des garanties de performance tactile sur un téléphone réel.
+
+---
+
 # Marche sur voirie — état du 3 octobre 2026
 
 Ce document décrit l'état courant du lot **marche** prévu par `PASSATION-TOURS-BUS-MARCHE-VELO.md`. Il complète l'audit historique sans prétendre que toute la marche du site utilise déjà la voirie.

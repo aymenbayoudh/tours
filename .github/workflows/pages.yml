@@ -26,6 +26,8 @@ jobs:
         run: |
           python3 build_data.py
           python3 tests/walking_graph.test.py
+          python3 tests/point_walking_preparation.test.py
+          node tests/point_walking.test.mjs
           node tests/routing.test.mjs
           node tests/bus_data.test.mjs
           node tests/spatial_estimate.test.mjs

@@ -44,7 +44,7 @@ function numeric(value, fallback, min = 0) {
 
 function normalizeSettings(data, value = {}) {
   return {
-    walkMetersPerMinute: numeric(value.walkSpeedKmh, (data.meta.walkMetersPerMinute || 80) * 60 / 1000, 0.5) * 1000 / 60,
+    walkMetersPerMinute: data.meta.walkMetersPerMinute || 80,
     navetteWaitFactor: numeric(value.navetteWaitFactor, 1, 0),
     terWaitFactor: numeric(value.terWaitFactor, 1, 0),
     tramWaitFactor: numeric(value.tramWaitFactor, 1, 0),
@@ -214,26 +214,9 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   });
   const queue = new MinHeap();
 
-  const road = data.walkingNetwork;
-  const speedCm = settings.walkMetersPerMinute * 100;
-  const limit = (customSettings.walkingLimitMinutes ?? Infinity) * speedCm;
-  const accessMinutes = new Float64Array(data.stations.length);
-  const sourceCovered = road?.coverage(origin) || false;
-  let sourceSnap = sourceCovered ? road.freeSnap(origin) : undefined;
-  if (sourceCovered) {
-    const coincident = road.stationsAt(origin).find(i => road.stops[i]) ?? -1;
-    if (coincident >= 0 && road.stops[coincident]) sourceSnap = road.stops[coincident];
-  }
-  const sourceField = sourceSnap ? road.search([[sourceSnap, 0, -1]], false, limit) : null;
   // Consider every possible boarding stop, not just the closest handful.
   data.stations.forEach((station, index) => {
-    let walking = distance(origin, station.point) / settings.walkMetersPerMinute;
-    if (sourceCovered) {
-      walking = sourceField && road.stops[index] ? road.at(sourceField, road.stops[index]).cost / speedCm : Infinity;
-      if (distance(origin, station.point) <= 2) walking = distance(origin, station.point) / settings.walkMetersPerMinute;
-    }
-    accessMinutes[index] = walking;
-    const access = walking + settings.stationEntryPenalty;
+    const access = distance(origin, station.point) / settings.walkMetersPerMinute + settings.stationEntryPenalty;
     for (const node of data.boardingStates[index] || []) {
       if (!allowed[node]) continue;
       const value = access + waitForRoute(data, data.routeStates[node].routeId, settings);
@@ -276,37 +259,13 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     .filter(([minutes]) => Number.isFinite(minutes))
     .sort((a, b) => a[0] - b[0])
     .map(([, index]) => index);
-  let walkingField = null;
-  if (road) {
-    const seeds = sourceSnap ? [[sourceSnap, 0, -1]] : [];
-    data.stations.forEach((station, i) => {
-      if (road.stops[i] && Number.isFinite(stationArrivals[i].minutes)) seeds.push([road.stops[i], (stationArrivals[i].minutes + settings.stationExitPenalty) * speedCm, i]);
-    });
-    walkingField = road.search(seeds, true, limit);
-  }
   return { origin, includeProjects, distances, previous, stationArrivals, activeStations, stationOrder, settings,
-    accessMinutes, walkingField, sourceCovered, sourceSnap, walkingLimitMinutes:customSettings.walkingLimitMinutes ?? Infinity,
     arrivalIndex: arrivalIndex(data, stationArrivals) };
 }
 
 export function estimateTravel(data, model, destination, details = false) {
   const walk = model.settings?.walkMetersPerMinute || data.meta.walkMetersPerMinute;
   const exitPenalty = model.settings?.stationExitPenalty ?? data.meta.stationAccessPenalty;
-  const road = data.walkingNetwork;
-  if (road && road.coverage(destination)) {
-    if (distance(model.origin, destination) < 0.1) return details ? {minutes:0, station:-1, finalWalkMinutes:0, walkingApproximation:false} : 0;
-    const snap = road.freeSnap(destination);
-    let result = snap && model.walkingField ? road.at(model.walkingField, snap) : {cost:Infinity,owner:-1};
-    let minutes = result.cost / (walk * 100), station = result.owner;
-    // At a transport point, arriving there requires no extra street access.
-    const coincidentStations = road.stationsAt(destination);
-    for (const coincident of coincidentStations) {
-      const value = model.stationArrivals[coincident].minutes + exitPenalty + distance(destination, data.stations[coincident].point) / walk;
-      if (value < minutes && value <= model.walkingLimitMinutes) { minutes=value; station=coincident; }
-    }
-    const finalWalkMinutes = station >= 0 ? Math.max(0, minutes - model.stationArrivals[station].minutes - exitPenalty) : minutes;
-    return details ? {minutes, station, finalWalkMinutes, walkingApproximation:!model.sourceCovered, roadUnavailable:!Number.isFinite(minutes)} : minutes;
-  }
   let best = distance(model.origin, destination) / walk;
   // Keep the stable, time-sorted scan for journey details and tie selection.
   if (!details && model.arrivalIndex) return indexedEstimate(data, model, destination, walk, exitPenalty, best);
@@ -324,7 +283,7 @@ export function estimateTravel(data, model, destination, details = false) {
       bestStation = i;
     }
   }
-  return details ? { minutes: best, station: bestStation, finalWalkMinutes: bestStation>=0 ? distance(data.stations[bestStation].point,destination)/walk : best, walkingApproximation:Boolean(road) } : best;
+  return details ? { minutes: best, station: bestStation } : best;
 }
 
 export function reachability(data, model, threshold) {
@@ -341,7 +300,7 @@ export function reachability(data, model, threshold) {
 export function describeJourney(data, model, destination) {
   const result = estimateTravel(data, model, destination, true);
   const walkSpeed = model.settings?.walkMetersPerMinute || data.meta.walkMetersPerMinute;
-  if (result.station < 0) return { minutes: result.minutes, legs: [], walking: result.minutes, waiting: 0, walkingApproximation:result.walkingApproximation, roadUnavailable:result.roadUnavailable };
+  if (result.station < 0) return { minutes: result.minutes, legs: [], walking: result.minutes, waiting: 0 };
   const nodes = [];
   let n = model.stationArrivals[result.station].node;
   while (n >= 0) {
@@ -374,7 +333,7 @@ export function describeJourney(data, model, destination) {
   }
 
   const first = data.routeStates[nodes[0]].stationIndex;
-  let walking = (model.accessMinutes?.[first] ?? distance(model.origin,data.stations[first].point)/walkSpeed) + (result.finalWalkMinutes ?? distance(destination,data.stations[result.station].point)/walkSpeed);
+  let walking = (distance(model.origin, data.stations[first].point) + distance(destination, data.stations[result.station].point)) / walkSpeed;
   for (let i = 1; i < nodes.length; i += 1) {
     const a = data.routeStates[nodes[i - 1]];
     const b = data.routeStates[nodes[i]];
@@ -391,7 +350,6 @@ export function describeJourney(data, model, destination) {
   }
   return {
     minutes: result.minutes,
-    walkingApproximation:result.walkingApproximation,
     legs,
     walking,
     waiting: Math.max(0, result.minutes - walking - legs.reduce((sum, l) => sum + l.minutes, 0)),

@@ -1,0 +1,31 @@
+{
+  "format": "TKW2",
+  "source": {
+    "name": "IGN BD TOPO v3 — Tronçons de route",
+    "url": "https://data.geopf.fr/wfs/ows",
+    "typeName": "BDTOPO_V3:troncon_de_route",
+    "retrievedAtBuild": true,
+    "bbox": [
+      -0.4184013,
+      46.736711,
+      1.5290541,
+      47.9572128
+    ],
+    "walkSpeedMetresPerMinute": 80.0,
+    "notes": "Accès piéton BD TOPO respecté lorsqu’il est renseigné ; autoroutes/bretelles et accès privés non explicitement libres exclus ; seuls les vrais endpoints BD TOPO sont fusionnés, les découpes artificielles internes restent propres à leur tronçon afin de ne pas connecter les franchissements sans nœud topologique."
+  },
+  "license": "Licence Ouverte Etalab 2.0",
+  "sourceSHA256": "89d86d3ef5175aac94ea3b3dc7c0a34077518187176ae0078157e54a0f331297",
+  "sourceArtifactRun": 37151657397,
+  "preparedDate": "2026-10-04",
+  "maxFreePointSnapMetres": 75,
+  "maxStopSnapMetres": 150,
+  "quantization": "coordinates 0.1 m, lengths 0.01 m",
+  "stats": {
+    "junctions": 215690,
+    "chains": 295510,
+    "geometryPoints": 871631,
+    "rawBytes": 11364228,
+    "gzipBytes": 5592569
+  }
+}
