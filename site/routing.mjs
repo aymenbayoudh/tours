@@ -443,9 +443,9 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   });
   return {
     origin, includeProjects, settings, allowed, accessMinutes, activeStations,
-    pureDistances:pure.distances, purePrevious:pure.previous, pureTransferCounts:pure.transferCounts,
+    pureDistances:pure.distances, purePrevious:pure.previous, pureTransferCounts:pure.transferCounts, purePreferenceScores:pure.preferenceScores,
     pureStationArrivals:pure.stationArrivals, pureStationOrder:pure.stationOrder,
-    comfortDistances:comfort.distances, comfortPrevious:comfort.previous, comfortTransferCounts:comfort.transferCounts,
+    comfortDistances:comfort.distances, comfortPrevious:comfort.previous, comfortTransferCounts:comfort.transferCounts, comfortPreferenceScores:comfort.preferenceScores,
     comfortStationArrivals:comfort.stationArrivals, comfortStationOrder:comfort.stationOrder,
     pureWalkingField, comfortWalkingField,
     pureArrivalIndex:arrivalIndex(data, pure.stationArrivals.map((a,i)=>({minutes:a.preferenceScore + exitMargin(data,settings,i)}))),
