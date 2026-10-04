@@ -3,7 +3,7 @@
 ## Bus locaux hors SMT intégrés — 4 octobre 2026
 
 Reprise après `f724bb6`, en conservant les derniers correctifs de continuité TER.
-Les sources collectées dans l’autre conversation sont maintenant raccordées à la carte, aux trajets et aux isochrones : **34 lignes, 750 arrêts physiques et 142 motifs horaires** (hors réseau Fil Bleu déjà présent).
+Les sources collectées dans l’autre conversation sont maintenant raccordées à la carte, aux trajets et aux isochrones : **56 lignes, 1 077 identifiants d’arrêt et 249 profils horaires** (hors réseau Fil Bleu déjà présent).
 
 | Réseau | Lignes ajoutées |
 |---|---|
@@ -11,6 +11,10 @@ Les sources collectées dans l’autre conversation sont maintenant raccordées 
 | MOVE / Territoires Vendômois | A, TGV, partie annuelle sans réservation de M |
 | CVL Mobilité | A, incluant sa desserte de Bourgueil / Port-Boulet, sans doublon par EPCI |
 | Le Bus Amboise | Nav1 |
+| Ogalo | A–D, L1–L7, L10–L12, L14–L17 et navette ZI Clos Bonnet–Chacé |
+| Fil Rouge | Château-Renault, horaire actuel jusqu’au 30 octobre 2026 |
+| Le Lien Bléré | Navette entre gare, centre-ville, zones d’activité et A85 |
+| Le Lien Loches | Deux boucles consécutives du même véhicule |
 
 Les identifiants des réseaux sont séparés : Azalys A ne devient pas Fil Bleu A ; ses navettes N1/N2 ne sont pas les lignes nocturnes Fil Bleu exclues. Chaque motif horaire conserve un vecteur complet d’une vraie course, ses permissions et son sens. MOVE M est contrôlée contre la fiche du 9 septembre 2026 : seules les colonnes annuelles sans réservation sont retenues, sans les cellules scolaires de début de course au retour. La période de référence reste le 5–11 octobre 2026, sans simulation d’une heure de départ exacte.
 
@@ -30,9 +34,9 @@ python3 scripts/sync_root_page.py
 
 Le mode `--prepare-transfers` exige un fichier intermédiaire séparé ; une publication normale continue de refuser une table piétonne incomplète.
 
-**À poursuivre :** Ogalo (GTFS périmé et absent de l’agrégat actuel ; horaires PDF actuels à reconstruire), Fil Rouge, Le Lien Bléré/Loches et lignes locales MOVE absentes du GTFS. Le plan de Loches ne suffit pas à produire des durées ; les coordonnées et les horaires doivent être vérifiés ensemble. Cars régionaux Centre-Val de Loire différés conformément au périmètre demandé. Voir [l’état détaillé](data/tours/LOCAL-BUS-INTEGRATION-2026-10-04.md).
+**Lot local préparé :** les services fixes identifiés sont intégrés. Les lignes entièrement sur réservation sont absentes ; les lignes mixtes gardent leurs courses publiques régulières. Les circuits scolaires, nocturnes et saisonniers restent exclus. Les lignes Rémi restent pour le lot régional. Voir [l’état détaillé](data/tours/LOCAL-BUS-INTEGRATION-2026-10-04.md).
 
-Copie de l’état d’origine dans `archive/tours-before-local-bus-integration-2026-10-04/`.
+Copies des états d’origine dans `archive/tours-before-local-bus-integration-2026-10-04/` et `archive/tours-before-local-network-completion-2026-10-04/`.
 
 ## Marche sur voirie réactivée — 4 octobre 2026
 
@@ -50,7 +54,7 @@ Carte interactive des trajets estimés en TER, tram, BHNS et bus Fil Bleu, Azaly
 
 Les isochrones surfaciques restent limités au périmètre SERM. Hors SERM, les gares accessibles sont signalées ponctuellement sans fabriquer de grand halo territorial. Les courbes restent centrées sur le **départ** quand une arrivée est ajoutée. Les limites des 425 communes IGN du SERM sont visibles ; leurs noms apparaissent au zoom rapproché. Les lignes et petits arrêts de bus sont progressivement masqués au dézoom pour préserver la lisibilité, mais restent présents dans le calcul.
 
-Le **tram B et le BHNS C**, prévus pour 2028, sont inclus par défaut dans les temps estimés. L'option « Inclure tram B et BHNS C » permet de les exclure et recalcule les trajets. Les bus Fil Bleu sont issus du GTFS officiel courant ; 34 lignes locales supplémentaires sont intégrées : Azalys (29), MOVE A/TGV/M (3), CVL Mobilité A et Le Bus Amboise Nav1. Les autres réseaux restent à reconstruire à partir de leurs fiches officielles.
+Le **tram B et le BHNS C**, prévus pour 2028, sont inclus par défaut dans les temps estimés. L'option « Inclure tram B et BHNS C » permet de les exclure et recalcule les trajets. Les bus Fil Bleu sont issus du GTFS officiel courant ; 56 lignes locales supplémentaires sont intégrées : Azalys (29), MOVE A/TGV/M (3), CVL Mobilité A, Le Bus Amboise Nav1, Ogalo (19), Fil Rouge et Le Lien Bléré/Loches.
 
 L'[audit systémique des bus](BUS-AUDIT-2026-10-03.md) corrige l'import des courses
 sur réservation et le mélange des jours/branches dans les attentes. Les services

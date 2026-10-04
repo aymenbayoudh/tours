@@ -206,11 +206,9 @@ if(roadWalking){
     if(from!==undefined)check(d.routeStates[from].routeId!==d.routeStates[edge[0]].routeId,'Jumeaux same-line reboarding edge survived');
   }
 
-  const island=byId('FILBLEU:TTR:ILAUB-1'),loire=byId('FILBLEU:TTR:LOIRB-1');
-  check(island>=0&&loire>=0,'Missing Loire barrier fixtures');
-  const loireDirect=Math.hypot(d.stations[island].point[0]-d.stations[loire].point[0],d.stations[island].point[1]-d.stations[loire].point[1]);
-  check(loireDirect<300,'Loire barrier fixture is no longer geometrically close');
-  check(transferEdges(island,loire).length===0,'Short straight-line Loire crossing incorrectly became a walking transfer');
+  // The old Loire-side fixture was served only by reservation-only BUS R10,
+  // which is intentionally absent from the published network now.
+  check(!d.routeInfo['BUS R10'],'Reservation-only R10 must not return');
 
   const porteLoire=byId('FILBLEU:TTR:PODLB-1'),choiseul=byId('FILBLEU:TTR:CHONB-2A');
   check(porteLoire>=0&&choiseul>=0,'Missing allowed Loire bridge fixtures');

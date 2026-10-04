@@ -213,6 +213,16 @@ def main() -> None:
             if len(pts) >= 2:
                 shapes.append({"routeId": route_id, "shapeId": sid, "points": simplify(pts)})
 
+    # Entirely conditional lines are absent from both the map and settings.
+    # Mixed lines retain their regular courses and their existing calculation.
+    removed_reservation = sorted(route for route,info in reduced_routes.items()
+        if not info["calculationAvailable"] and info["excludedReservationTrips"])
+    reduced_routes = {route:info for route,info in reduced_routes.items() if route not in removed_reservation}
+    shapes = [shape for shape in shapes if shape["routeId"] in reduced_routes]
+    for stop in reduced_stops.values():
+        stop["displayRoutes"] = [route for route in stop["displayRoutes"] if route in reduced_routes]
+    reduced_stops = {sid:stop for sid,stop in reduced_stops.items() if stop["displayRoutes"]}
+
     output = {
         "source": {
             "name": "Réseau urbain et périurbain Fil Bleu — GTFS",
@@ -221,7 +231,8 @@ def main() -> None:
             "url": "https://data.tours-metropole.fr/api/v2/catalog/datasets/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/alternative_exports/filbleu_gtfszip",
             "referenceWeek": ["2026-10-05", "2026-10-11"],
             "excludedServiceLines": sorted(EXCLUDED_SERVICE_LINES),
-            "reservationPolicy": "conditional trips excluded from calculations; shapes retained",
+            "removedReservationOnlyRoutes": removed_reservation,
+            "reservationPolicy": "entirely reservation-only lines removed from map and calculations; mixed lines retain regular courses",
         },
         "stops": reduced_stops,
         "routes": reduced_routes,

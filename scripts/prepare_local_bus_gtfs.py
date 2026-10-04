@@ -126,6 +126,23 @@ def main():
         for key in ('patterns', 'shapes'):
             out[key].extend(prepared[key])
         print(network['id'], len(prepared['routes']), 'routes', len(prepared['stops']), 'stops', len(prepared['patterns']), 'patterns')
+    # Current PDF-backed networks. Never substitute historical Ogalo GTFS times.
+    from prepare_ogalo_pdf import prepare as prepare_ogalo
+    supplements = [prepare_ogalo(), json.loads((SOURCES / 'prepared/local-shuttles.json').read_text())]
+    for prepared in supplements:
+        for key in ('stops', 'routes'):
+            if set(out[key]) & set(prepared[key]):
+                raise ValueError(f'Duplicate namespaced {key}')
+            out[key].update(prepared[key])
+        out['sources'].extend(prepared['sources'])
+        for key in ('patterns', 'shapes'):
+            out[key].extend(prepared[key])
+    for pattern in out['patterns']:
+        if pattern['routeId'] not in out['routes'] or any(sid not in out['stops'] for sid in pattern['stops']):
+            raise ValueError('Incomplete local bus course')
+        if len(pattern['stops']) != len(pattern['arrivals']) or len(pattern['stops']) != len(pattern['departures']):
+            raise ValueError('Inconsistent local bus vector')
+    print('TOTAL', len(out['routes']), 'routes', len(out['stops']), 'stops', len(out['patterns']), 'profiles')
     (DATA / 'local_bus.json').write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')))
 
 

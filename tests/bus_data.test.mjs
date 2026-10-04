@@ -35,11 +35,13 @@ for (const p of data.timetablePatterns) {
     intervals++;
   }
 }
-assert.equal(bus.routes['BUS R4'].calculationAvailable, false);
-assert.equal(bus.routes['BUS R5'].calculationAvailable, false);
+for (const id of ['BUS R3','BUS R4','BUS R5','BUS R6','BUS R7','BUS R8','BUS R9','BUS R10','BUS R11','BUS R12']) {
+  assert(!bus.routes[id], `Reservation-only line remains in import: ${id}`);
+  assert(!data.routeInfo[id], `Reservation-only line remains in settings: ${id}`);
+  assert(!data.routes.some(r=>r.id===id), `Reservation-only line still drawn: ${id}`);
+  assert(!data.stations.some(s=>s.displayRoutes.includes(id)), `Reservation-only stop metadata remains: ${id}`);
+}
 const origin = data.stations.find(s => s.id === 'FILBLEU:TTR:LEMOB-1').point;
-assert(data.stations.find(s => s.id === 'FILBLEU:TTR:LEMOB-1').displayRoutes.includes('BUS R4'),
-  'Excluded reservation service missing from display metadata');
 const target = data.stations.find(s => s.name === 'Baillardière').point;
 const trip = describeJourney(data, buildTravelModel(data, origin), target);
 assert(trip.minutes > 15, 'Les Montils–Baillardière still has a fictitious 15-minute shortcut');

@@ -1,0 +1,26 @@
+{
+  "checkedOn": "2026-10-04",
+  "searchScope": [
+    "transport.data.gouv.fr datasets",
+    "data.gouv.fr provider resources",
+    "official municipality/operator publications",
+    "official WordPress media endpoints",
+    "Ogalo GTFS and NeTEx stop catalog"
+  ],
+  "result": "No complete current official GTFS/GeoJSON/SIG shapes identified for Le Lien Loches, Le Lien Bléré or Fil Rouge. Historical official Ogalo shapes reused where applicable; current modified courses reconstructed on OSM roads. This is a documented search result, not proof of nonexistence.",
+  "ogaloNetex": {
+    "url": "https://mobi-iti-pdl.okina.fr/static/mobiiti_saumur_val_de_loire/netex_arret_saumur.zip",
+    "sha256": "e275cf52d56d008851289fbb34985c86c577b88f51969909fba0bac07756a307",
+    "officialNewStop": "F.LUMIERE, -0.077578, 47.238979"
+  },
+  "industrialPlaces": {
+    "url": "https://georisques.gouv.fr/api/v1/installations_classees?code_insee=49060&page_size=100",
+    "coordinateAnchors": [
+      "MARIE SURGELES USINE (La Lisière)",
+      "CHAUCER FOODS (Les Vignes)",
+      "CAVE DES VIGNERONS DE SAUMUR (La Perrière)"
+    ]
+  },
+  "roadLicense": "© OpenStreetMap contributors — ODbL",
+  "geometryDoesNotDetermineTravelTimes": true
+}

@@ -386,11 +386,45 @@ def build_stations_and_routes():
             if len(points) >= 2:
                 rail_base.append({"id": "RFN " + feature["code"], "color": "#9cabb7", "mode": "RFN", "points": [rounded(p) for p in points]})
     routes = rail_base + routes
+    bus_stop_points = {}
+    for catalogue in (bus.get("stops", {}), local_bus.get("stops", {})):
+        for item in catalogue.values():
+            point = xy(*item["point"])
+            for route_id in item.get("displayRoutes", []):
+                bus_stop_points.setdefault(route_id, []).append(point)
+    bus_stop_point_set = {tuple(point) for values in bus_stop_points.values() for point in values}
     for shape in bus.get("shapes", []):
         info = route_info.get(shape["routeId"], {})
         points = [xy(*p) for p in shape["points"]]
         if len(points) >= 2:
-            routes.append({"id": shape["routeId"], "title": info.get("title", shape["routeId"]), "color": info.get("color", "#3b6f8f"), "mode": "BUS", "points": [rounded(p) for p in simplify(points, 45)]})
+            # Current route PDFs can place an official stop a few metres off
+            # the inherited or road-reconstructed display trace. Insert stops
+            # on the nearest segment (only within 100 m) so line and markers
+            # remain visually connected after simplification.
+            anchored = [points[0]]
+            for a, b in zip(points, points[1:]):
+                dx, dy = b[0]-a[0], b[1]-a[1]
+                den = dx*dx+dy*dy
+                interior = []
+                for stop_point in bus_stop_points.get(shape["routeId"], []):
+                    t = max(0.0, min(1.0, ((stop_point[0]-a[0])*dx+(stop_point[1]-a[1])*dy)/den)) if den else 0.0
+                    projected = (a[0]+t*dx, a[1]+t*dy)
+                    distance = math.dist(stop_point, projected)
+                    if distance <= 100 and distance > 0.01 and 0 < t < 1:
+                        interior.append((t, stop_point))
+                for _, stop_point in sorted(interior, key=lambda row: row[0]):
+                    if math.dist(anchored[-1], stop_point) > 0.01:
+                        anchored.append(stop_point)
+                if math.dist(anchored[-1], b) > 0.01:
+                    anchored.append(b)
+            points = anchored
+            # Preserve exact prepared stop vertices while simplifying road bends.
+            anchors = sorted({0, len(points)-1} | {i for i,p in enumerate(points) if tuple(p) in bus_stop_point_set})
+            display = []
+            for start,end in zip(anchors, anchors[1:]):
+                part = simplify(points[start:end+1], 45)
+                display.extend(part if not display else part[1:])
+            routes.append({"id": shape["routeId"], "title": info.get("title", shape["routeId"]), "color": info.get("color", "#3b6f8f"), "mode": "BUS", "points": [rounded(p) for p in display]})
     for shape in tram["shapes"]:
         points = [xy(*p) for p in shape["points"]]
         routes.append({"id": "TRAM A", "color": tram["route"]["color"], "mode": "TRAM", "points": [rounded(p) for p in points]})

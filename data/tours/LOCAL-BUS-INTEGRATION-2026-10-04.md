@@ -42,16 +42,8 @@ La voirie chargée par le navigateur est inchangée. Le fichier de transport pas
 
 Le détail chiffré est dans `local-bus-integration-audit.json`.
 
-## Travail restant, distinct du lot publié
+## Complément terminé
 
-| Réseau / territoire | Première étape nécessaire |
-|---|---|
-| Ogalo / Saumur Val de Loire | Reconstruire les courses actuelles à partir des fiches urbaines et périurbaines, puis vérifier chaque arrêt/tracé. Le GTFS dédié finit au 31 août 2026. Le contrôle répété de l’agrégat régional actuel ne trouve aucune agence Ogalo ; ne pas prolonger artificiellement son calendrier. Attention aux travaux de la ligne D et aux lignes partagées avec Aléop. |
-| Fil Rouge / Château-Renault | Géoréférencer les arrêts et le tracé avec une source vérifiable, puis transcrire les courses régulières de la fiche actuelle. Conserver la version du 2 novembre séparément, avec une date d’application explicite. Les arrêts « sur demande » ne sont pas assimilés automatiquement à une réservation de course. |
-| Le Lien / Bléré | Normaliser les cinq rotations de la fiche en image, puis raccorder les coordonnées et le tracé officiels. L’annonce de lancement en juin n’en fait pas une ligne d’été. |
-| Le Lien / Loches | Le plan des deux boucles est collecté, mais il manque un horaire complet vérifié et les coordonnées/tracés à normaliser. La page touristique « A plus dans l’bus » traite de cars estivaux Rémi : elle ne justifie pas les horaires du Lien. |
-| MOVE non urbain | Reprendre les fiches 7, 8, 9, 13-440, 14 et 492, absentes du GTFS urbain. Vérifier l’autorité et les courses régulières avant de confondre ces lignes locales avec le futur lot régional. |
-| Autres EPCI sans offre fixe identifiée | Maintenir l’état « pas de source régulière identifiée », plutôt qu’inventer une ligne à partir d’un service sur réservation. |
-| Cars régionaux Centre-Val de Loire | Lot différé selon la demande de l’utilisateur. |
+Ogalo, Fil Rouge et Le Lien Bléré/Loches sont désormais intégrés. Le total est de 56 lignes locales hors Fil Bleu, 1 077 identifiants d’arrêt et 249 profils. Voir [le compte rendu du complément](LOCAL-BUS-COMPLETION-2026-10-04.md) pour les sélections, exclusions, tracés et validations actuelles.
 
-Les sources et versions sont dans `TRANSPORT-SOURCES.md` et `local-networks-2026-10-04/`. Les fichiers originaux avant ce lot sont sauvegardés dans `archive/tours-before-local-bus-integration-2026-10-04/`.
+Les cars régionaux Centre-Val de Loire restent pour le lot suivant. Les services à réservation, scolaires exclus et saisonniers ne sont pas des réseaux locaux manquants à importer comme offre permanente.

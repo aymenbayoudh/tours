@@ -1,0 +1,866 @@
+[
+  {
+    "stop": "LOCHES:gare",
+    "originalPoint": [
+      1.0001887,
+      47.1302381
+    ],
+    "point": [
+      1.0001887,
+      47.1302381
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "LOCHES:verdun",
+    "originalPoint": [
+      0.994764,
+      47.128736
+    ],
+    "point": [
+      0.9947813926270161,
+      47.12874737057964
+    ],
+    "displayRoadProjectionMetres": 1.8
+  },
+  {
+    "stop": "LOCHES:chauvellerie",
+    "originalPoint": [
+      0.9887,
+      47.13105
+    ],
+    "point": [
+      0.9887783707508205,
+      47.130997688237905
+    ],
+    "displayRoadProjectionMetres": 8.3
+  },
+  {
+    "stop": "LOCHES:superu",
+    "originalPoint": [
+      0.98149,
+      47.13529
+    ],
+    "point": [
+      0.9821283259831312,
+      47.13495946591646
+    ],
+    "displayRoadProjectionMetres": 60.7
+  },
+  {
+    "stop": "LOCHES:saucier",
+    "originalPoint": [
+      0.988036,
+      47.136065
+    ],
+    "point": [
+      0.9881601138865256,
+      47.13612846535741
+    ],
+    "displayRoadProjectionMetres": 11.7
+  },
+  {
+    "stop": "LOCHES:miroiterie",
+    "originalPoint": [
+      0.992988,
+      47.138593
+    ],
+    "point": [
+      0.9931057540667564,
+      47.138649425595645
+    ],
+    "displayRoadProjectionMetres": 10.9
+  },
+  {
+    "stop": "LOCHES:pompiers",
+    "originalPoint": [
+      1.001,
+      47.1386048
+    ],
+    "point": [
+      1.0012266672823762,
+      47.138595986284024
+    ],
+    "displayRoadProjectionMetres": 17.2
+  },
+  {
+    "stop": "LOCHES:stjacques",
+    "originalPoint": [
+      0.9996,
+      47.13717
+    ],
+    "point": [
+      0.9996040820007213,
+      47.13716944827032
+    ],
+    "displayRoadProjectionMetres": 0.3
+  },
+  {
+    "stop": "LOCHES:mairie",
+    "originalPoint": [
+      1.0124996,
+      47.1281164
+    ],
+    "point": [
+      1.0127585,
+      47.1279853
+    ],
+    "displayRoadProjectionMetres": 24.4
+  },
+  {
+    "stop": "LOCHES:aquilon",
+    "originalPoint": [
+      1.007516,
+      47.129282
+    ],
+    "point": [
+      1.0075204877289452,
+      47.12923968678569
+    ],
+    "displayRoadProjectionMetres": 4.7
+  },
+  {
+    "stop": "LOCHES:hopital",
+    "originalPoint": [
+      1.0025043,
+      47.1288188
+    ],
+    "point": [
+      1.0025070430423002,
+      47.12880782844509
+    ],
+    "displayRoadProjectionMetres": 1.2
+  },
+  {
+    "stop": "LOCHES:associations",
+    "originalPoint": [
+      1.002056,
+      47.122244
+    ],
+    "point": [
+      1.0020597436432699,
+      47.12224110559189
+    ],
+    "displayRoadProjectionMetres": 0.4
+  },
+  {
+    "stop": "LOCHES:confiserie",
+    "originalPoint": [
+      1.002343,
+      47.116332
+    ],
+    "point": [
+      1.0025264987480802,
+      47.11638070159676
+    ],
+    "displayRoadProjectionMetres": 14.9
+  },
+  {
+    "stop": "LOCHES:leclerc",
+    "originalPoint": [
+      1.00578,
+      47.10923
+    ],
+    "point": [
+      1.0061590978248949,
+      47.10941303455314
+    ],
+    "displayRoadProjectionMetres": 35.2
+  },
+  {
+    "stop": "LOCHES:natureo",
+    "originalPoint": [
+      0.9838573,
+      47.1223917
+    ],
+    "point": [
+      0.9838832051929856,
+      47.1223963126552
+    ],
+    "displayRoadProjectionMetres": 2.0
+  },
+  {
+    "stop": "LOCHES:puygibault",
+    "originalPoint": [
+      0.9766674,
+      47.1167986
+    ],
+    "point": [
+      0.9777084075368363,
+      47.11668276947447
+    ],
+    "displayRoadProjectionMetres": 79.7
+  },
+  {
+    "stop": "LOCHES:basclos",
+    "originalPoint": [
+      0.988832,
+      47.122207
+    ],
+    "point": [
+      0.9888605303868078,
+      47.12217999956029
+    ],
+    "displayRoadProjectionMetres": 3.7
+  },
+  {
+    "stop": "LOCHES:cite",
+    "originalPoint": [
+      0.9814578,
+      47.1272472
+    ],
+    "point": [
+      0.9814578,
+      47.1272472
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "LOCHES:social",
+    "originalPoint": [
+      0.991114,
+      47.126725
+    ],
+    "point": [
+      0.9912016795276457,
+      47.12677699789314
+    ],
+    "displayRoadProjectionMetres": 8.8
+  },
+  {
+    "stop": "BLERE:gare",
+    "originalPoint": [
+      0.9878877,
+      47.337601
+    ],
+    "point": [
+      0.9878877,
+      47.337601
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "BLERE:quai",
+    "originalPoint": [
+      0.9900269,
+      47.3302062
+    ],
+    "point": [
+      0.9900269,
+      47.3302062
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "BLERE:piscine",
+    "originalPoint": [
+      0.99502,
+      47.3268095
+    ],
+    "point": [
+      0.99502,
+      47.3268095
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "BLERE:ehpad",
+    "originalPoint": [
+      0.99578,
+      47.319401
+    ],
+    "point": [
+      0.9957888085771558,
+      47.31943442683771
+    ],
+    "displayRoadProjectionMetres": 3.8
+  },
+  {
+    "stop": "BLERE:emergence",
+    "originalPoint": [
+      1.017608,
+      47.324567
+    ],
+    "point": [
+      1.0176306854604253,
+      47.32465889801813
+    ],
+    "displayRoadProjectionMetres": 10.4
+  },
+  {
+    "stop": "BLERE:nobel1",
+    "originalPoint": [
+      1.01724,
+      47.32354
+    ],
+    "point": [
+      1.0172421263718032,
+      47.32353981369871
+    ],
+    "displayRoadProjectionMetres": 0.2
+  },
+  {
+    "stop": "BLERE:nobel2",
+    "originalPoint": [
+      1.0231495,
+      47.323037
+    ],
+    "point": [
+      1.0231670689298897,
+      47.32312160761544
+    ],
+    "displayRoadProjectionMetres": 9.5
+  },
+  {
+    "stop": "BLERE:gendarmerie",
+    "originalPoint": [
+      0.9913316,
+      47.3171975
+    ],
+    "point": [
+      0.991368845154704,
+      47.317460786278346
+    ],
+    "displayRoadProjectionMetres": 29.4
+  },
+  {
+    "stop": "BLERE:gaulpied",
+    "originalPoint": [
+      0.985849,
+      47.291013
+    ],
+    "point": [
+      0.985840370510032,
+      47.29099863459879
+    ],
+    "displayRoadProjectionMetres": 1.7
+  },
+  {
+    "stop": "BLERE:covoiturage",
+    "originalPoint": [
+      0.988306,
+      47.286574
+    ],
+    "point": [
+      0.9882893115353439,
+      47.28649406029045
+    ],
+    "displayRoadProjectionMetres": 9.0
+  },
+  {
+    "stop": "FILROUGE:saint",
+    "originalPoint": [
+      0.9156167,
+      47.5959077
+    ],
+    "point": [
+      0.9156167,
+      47.5959077
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:ruau",
+    "originalPoint": [
+      0.9219617,
+      47.6001435
+    ],
+    "point": [
+      0.9219617,
+      47.6001435
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:zola",
+    "originalPoint": [
+      0.9247003,
+      47.6008886
+    ],
+    "point": [
+      0.9247003,
+      47.6008886
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:gendarmerie",
+    "originalPoint": [
+      0.9260179,
+      47.5982406
+    ],
+    "point": [
+      0.9260179,
+      47.5982406
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:8mai",
+    "originalPoint": [
+      0.9206414,
+      47.5972414
+    ],
+    "point": [
+      0.9206414,
+      47.5972414
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:stade",
+    "originalPoint": [
+      0.9132947,
+      47.5962594
+    ],
+    "point": [
+      0.9132947,
+      47.5962594
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:jaur\u00e8s",
+    "originalPoint": [
+      0.9150373,
+      47.5929068
+    ],
+    "point": [
+      0.9150373,
+      47.5929068
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:hugo",
+    "originalPoint": [
+      0.9196671,
+      47.5911476
+    ],
+    "point": [
+      0.9196671,
+      47.5911476
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:joran",
+    "originalPoint": [
+      0.9216292,
+      47.5898605
+    ],
+    "point": [
+      0.9216292,
+      47.5898605
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:hopital",
+    "originalPoint": [
+      0.9177474,
+      47.588712
+    ],
+    "point": [
+      0.9177474,
+      47.588712
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:delamotte",
+    "originalPoint": [
+      0.9120765,
+      47.5874674
+    ],
+    "point": [
+      0.9120765,
+      47.5874674
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:beauregard",
+    "originalPoint": [
+      0.9095428,
+      47.5869791
+    ],
+    "point": [
+      0.9095566855834939,
+      47.58694936866524
+    ],
+    "displayRoadProjectionMetres": 3.5
+  },
+  {
+    "stop": "FILROUGE:michelet",
+    "originalPoint": [
+      0.9096813,
+      47.5906287
+    ],
+    "point": [
+      0.9096813,
+      47.5906287
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:tannerie",
+    "originalPoint": [
+      0.9081276,
+      47.5909276
+    ],
+    "point": [
+      0.9081276,
+      47.5909276
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:cc",
+    "originalPoint": [
+      0.9079383,
+      47.5898513
+    ],
+    "point": [
+      0.9079383,
+      47.5898513
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:maine",
+    "originalPoint": [
+      0.9051992,
+      47.5887248
+    ],
+    "point": [
+      0.9051992,
+      47.5887248
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:boulevard",
+    "originalPoint": [
+      0.9027546,
+      47.5872618
+    ],
+    "point": [
+      0.9027546,
+      47.5872618
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:gare",
+    "originalPoint": [
+      0.9017506,
+      47.5876432
+    ],
+    "point": [
+      0.9017506,
+      47.5876432
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:commerce",
+    "originalPoint": [
+      0.9013503,
+      47.5899102
+    ],
+    "point": [
+      0.9013503,
+      47.5899102
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:bizet",
+    "originalPoint": [
+      0.8944743,
+      47.5939414
+    ],
+    "point": [
+      0.8944743,
+      47.5939414
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:curie",
+    "originalPoint": [
+      0.898038,
+      47.594467
+    ],
+    "point": [
+      0.898038,
+      47.594467
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:belair",
+    "originalPoint": [
+      0.8987854,
+      47.5939648
+    ],
+    "point": [
+      0.8987854,
+      47.5939648
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:fosse",
+    "originalPoint": [
+      0.8945276,
+      47.5882627
+    ],
+    "point": [
+      0.8945276,
+      47.5882627
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:boisniere",
+    "originalPoint": [
+      0.8961395,
+      47.5873884
+    ],
+    "point": [
+      0.8961395,
+      47.5873884
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:foulerie",
+    "originalPoint": [
+      0.9098085,
+      47.5895395
+    ],
+    "point": [
+      0.9098085,
+      47.5895395
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:mairie",
+    "originalPoint": [
+      0.9130792,
+      47.5928637
+    ],
+    "point": [
+      0.9130890605371107,
+      47.59282970266226
+    ],
+    "displayRoadProjectionMetres": 3.9
+  },
+  {
+    "stop": "FILROUGE:gaulle",
+    "originalPoint": [
+      0.9124642,
+      47.595495
+    ],
+    "point": [
+      0.9124642,
+      47.595495
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:colette",
+    "originalPoint": [
+      0.9238546,
+      47.6002934
+    ],
+    "point": [
+      0.9238546,
+      47.6002934
+    ],
+    "displayRoadProjectionMetres": 0.0
+  },
+  {
+    "stop": "FILROUGE:malraux",
+    "originalPoint": [
+      0.905824,
+      47.58855
+    ],
+    "point": [
+      0.9057511834827492,
+      47.58869547095928
+    ],
+    "displayRoadProjectionMetres": 17.1
+  },
+  {
+    "stop": "FILROUGE:petit",
+    "originalPoint": [
+      0.897302,
+      47.590097
+    ],
+    "point": [
+      0.897313088955964,
+      47.59006660464785
+    ],
+    "displayRoadProjectionMetres": 3.5
+  },
+  {
+    "stop": "OGALOZI:gare",
+    "originalPoint": [
+      -0.071887,
+      47.269505
+    ],
+    "point": [
+      -0.07186812707869436,
+      47.26951808471913
+    ],
+    "displayRoadProjectionMetres": 2.0
+  },
+  {
+    "stop": "OGALOZI:ponts",
+    "originalPoint": [
+      -0.072848,
+      47.264591
+    ],
+    "point": [
+      -0.07288656861696173,
+      47.26461191622656
+    ],
+    "displayRoadProjectionMetres": 3.7
+  },
+  {
+    "stop": "OGALOZI:portail",
+    "originalPoint": [
+      -0.078504,
+      47.259243
+    ],
+    "point": [
+      -0.07852257225489,
+      47.25924545533101
+    ],
+    "displayRoadProjectionMetres": 1.4
+  },
+  {
+    "stop": "OGALOZI:balzac",
+    "originalPoint": [
+      -0.080112,
+      47.251698
+    ],
+    "point": [
+      -0.08005009286423402,
+      47.25174304580586
+    ],
+    "displayRoadProjectionMetres": 6.9
+  },
+  {
+    "stop": "OGALOZI:bonnet",
+    "originalPoint": [
+      -0.070164,
+      47.241066
+    ],
+    "point": [
+      -0.07017034585478416,
+      47.24106514762787
+    ],
+    "displayRoadProjectionMetres": 0.5
+  },
+  {
+    "stop": "OGALOZI:moulin",
+    "originalPoint": [
+      -0.070046,
+      47.23808
+    ],
+    "point": [
+      -0.07030018856716494,
+      47.238087377326984
+    ],
+    "displayRoadProjectionMetres": 19.2
+  },
+  {
+    "stop": "OGALOZI:poirier",
+    "originalPoint": [
+      -0.054501,
+      47.207922
+    ],
+    "point": [
+      -0.054608943744696124,
+      47.20785580985781
+    ],
+    "displayRoadProjectionMetres": 11.0
+  },
+  {
+    "stop": "OGALOZI:weiss",
+    "originalPoint": [
+      -0.058877,
+      47.209299
+    ],
+    "point": [
+      -0.060583086804111584,
+      47.20937301381247
+    ],
+    "displayRoadProjectionMetres": 129.2
+  },
+  {
+    "stop": "OGALOZI:champigny",
+    "originalPoint": [
+      -0.066701,
+      47.214118
+    ],
+    "point": [
+      -0.06670354645160506,
+      47.21409376425155
+    ],
+    "displayRoadProjectionMetres": 2.7
+  },
+  {
+    "stop": "OGALOZI:lisiere",
+    "originalPoint": [
+      -0.070572,
+      47.209391
+    ],
+    "point": [
+      -0.07051692002204552,
+      47.210211850308674
+    ],
+    "displayRoadProjectionMetres": 91.4
+  },
+  {
+    "stop": "OGALOZI:vignes",
+    "originalPoint": [
+      -0.06947,
+      47.204447
+    ],
+    "point": [
+      -0.06946910921814625,
+      47.20445204360965
+    ],
+    "displayRoadProjectionMetres": 0.6
+  },
+  {
+    "stop": "OGALOZI:perriere",
+    "originalPoint": [
+      -0.070857,
+      47.199563
+    ],
+    "point": [
+      -0.07085158911593786,
+      47.199527200205175
+    ],
+    "displayRoadProjectionMetres": 4.0
+  },
+  {
+    "stop": "OGALOZI:orleans",
+    "originalPoint": [
+      -0.079736,
+      47.258575
+    ],
+    "point": [
+      -0.07978754976638369,
+      47.25860245647841
+    ],
+    "displayRoadProjectionMetres": 5.0
+  }
+]

@@ -37,7 +37,7 @@ const data=JSON.parse(fs.readFileSync(new URL('../site/data/commute_map_data.jso
 const covered=p=>{const m=data.meta,c=Math.floor((p[0]-m.bounds[0])/(m.bounds[2]-m.bounds[0])*m.gridCols),r=Math.floor((p[1]-m.bounds[1])/(m.bounds[3]-m.bounds[1])*m.gridRows);return c>=0&&r>=0&&c<m.gridCols&&r<m.gridRows&&data.mask[r*m.gridCols+c]!==-1};
 const network=new WalkingNetwork(binary.buffer.slice(binary.byteOffset,binary.byteOffset+binary.byteLength),covered);data.walkingNetwork=network;network.stationSnaps(data.stations);
 const named=name=>data.stations.map((s,i)=>({s,i})).filter(x=>x.s.name===name);
-const pairs=[['Jumeaux','Jumeaux'],['Porte de Loire','Place Choiseul'],['Ile Aucard','Loire']];
+const pairs=[['Jumeaux','Jumeaux'],['Porte de Loire','Place Choiseul'],['Ile Aucard','Place Choiseul']];
 const measured=[];
 for(const [a,b] of pairs){const aa=named(a),bb=named(b);assert(aa.length&&bb.length);const first=aa[0],second=a===b?aa.find(x=>x.i!==first.i):bb[0];const f=network.search([[network.stops[first.i],0,-1]]);const metres=network.at(f,network.stops[second.i]).cost/100;const direct=Math.hypot(first.s.point[0]-second.s.point[0],first.s.point[1]-second.s.point[1]);assert(metres>=direct-1);if(a==='Jumeaux')assert(metres>500);if(a==='Ile Aucard')assert(metres>650);measured.push({from:a,to:b,roadMetres:Math.round(metres),straightMetres:Math.round(direct)});}
 const portal=data.stations.findIndex(s=>s.id==='FILBLEU:TTR:PODLB-1'),bridge=data.stations.findIndex(s=>s.id==='FILBLEU:TTR:CHONB-2A');
