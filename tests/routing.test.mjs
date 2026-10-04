@@ -89,9 +89,17 @@ for(let i=0;i<d.stations.length;i++){
     }
     const targetPattern=Number.isInteger(b.pattern)?d.timetablePatterns[b.pattern]:null;
     const sourcePattern=Number.isInteger(a.pattern)?d.timetablePatterns[a.pattern]:null;
-    const previous=sourcePattern?.stops[sourcePattern.stops.indexOf(i)-1];
-    const redundantRail=previous!==undefined&&targetPattern?.stops.slice(0,targetPattern.stops.indexOf(i)).includes(previous);
-    if(redundantRail){check(!edge,'Do not catch a rail service already boardable at the preceding stop');continue;}
+    const sourcePos=sourcePattern?.stops.indexOf(i)??-1;
+    const targetPos=targetPattern?.stops.indexOf(i)??-1;
+    const previous=sourcePos>0?sourcePattern.stops[sourcePos-1]:undefined;
+    const sourceNext=sourcePos>=0&&sourcePos+1<sourcePattern.stops.length?sourcePattern.stops[sourcePos+1]:undefined;
+    const targetNext=targetPos>=0&&targetPos+1<targetPattern.stops.length?targetPattern.stops[targetPos+1]:undefined;
+    const sameNextRail=sourceNext!==undefined&&sourceNext===targetNext;
+    const catchUpRail=previous!==undefined&&targetPattern?.stops.slice(0,targetPos).includes(previous);
+    if(sameNextRail||catchUpRail){
+      check(!edge,sameNextRail?'Do not change TER when both services have the same next station':'Do not catch a rail service already boardable at the preceding stop');
+      continue;
+    }
     check(Boolean(edge),'Missing same-stop route interchange');
     const firstCode=(a.routeId||'').replace(/^TER /,'');
     const secondCode=(b.routeId||'').replace(/^TER /,'');
@@ -368,6 +376,24 @@ const chartresTours=describeJourney(d,chartresModel,station('Tours').point);
 check(chartresTours.legs[0].routeId==='TER P33','Chartres→Tours should use direct P33');
 check(chartresTours.legs[0].from===d.stations.indexOf(chartres),'Chartres→Tours direct leg should start at Chartres');
 check(d.stations[chartresTours.legs[0].to].name==='Tours','Chartres→Tours direct leg should end at Tours');
+
+const fondettesIndex=d.stations.findIndex(s=>s.name==='Fondettes - Saint-Cyr-sur-Loire');
+check(fondettesIndex>=0,'Fondettes-Saint-Cyr station missing');
+const p33Fondettes=alightHub[fondettesIndex].filter(h=>d.routeStates[h].routeId==='TER P33');
+const k30Fondettes=boardHub[fondettesIndex].filter(h=>d.routeStates[h].routeId==='TER K30');
+check(p33Fondettes.length>0&&k30Fondettes.length>0,'P33/K30 Fondettes hubs missing');
+for(const first of p33Fondettes)for(const second of k30Fondettes){
+  const a=d.routeStates[first],b=d.routeStates[second];
+  if(nextStopFor(a,fondettesIndex)===toursIndex&&nextStopFor(b,fondettesIndex)===toursIndex){
+    check(!d.adjacency[first].some(([n])=>n===second),'P33→K30 at Fondettes must be blocked when both go next to Tours');
+  }
+}
+const chateauRenaultModel=buildTravelModel(d,station('Château-Renault').point,true);
+const chateauToPortBoulet=describeJourney(d,chateauRenaultModel,station('Port-Boulet').point);
+check(!chateauToPortBoulet.legs.some((leg,i)=>{
+  const next=chateauToPortBoulet.legs[i+1];
+  return leg.routeId==='TER P33'&&leg.to===fondettesIndex&&next?.routeId==='TER K30'&&next.from===fondettesIndex;
+}),'Château-Renault→Port-Boulet must not insert P33→K30 at Fondettes: '+JSON.stringify(chateauToPortBoulet.legs.map(l=>({route:l.routeId,from:d.stations[l.from].name,to:d.stations[l.to].name,minutes:l.minutes}))));
 
 const saumur=station('Saumur');
 const saumurIndex=d.stations.indexOf(saumur);
