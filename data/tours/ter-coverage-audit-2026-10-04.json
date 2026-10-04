@@ -1,0 +1,3822 @@
+{
+  "feed": {
+    "feed_id": "0",
+    "feed_publisher_name": "SNCF",
+    "feed_publisher_url": "http://www.sncf.com",
+    "feed_lang": "fr",
+    "feed_start_date": "20261002",
+    "feed_end_date": "20270331",
+    "feed_version": "2026-10-02",
+    "conv_rev": "1.179",
+    "plan_rev": "1790970443"
+  },
+  "referenceWeek": [
+    "2026-10-05",
+    "2026-10-11"
+  ],
+  "loadedRailStations": 155,
+  "retainedRailPatterns": 137,
+  "officialDirectPairsAmongLoadedStations": 3046,
+  "directPairsNotRepresented": 184,
+  "missingDirectPairs": [
+    {
+      "from": "Chartres",
+      "to": "Le Mans",
+      "fromId": "SNCF:87394007",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K3 — Paris - Chartres - Le Mans",
+        "train": "862515",
+        "minutes": 70.0,
+        "tripId": "OCESN862515F1187_F:TER:FR:Line::9F945086-5773-42EF-92D0-CCD63F7C134E::87393009:87396002:11:1324:20261024"
+      },
+      "sourceTripCount": 32
+    },
+    {
+      "from": "Chartres",
+      "to": "Angers-St-Laud",
+      "fromId": "SNCF:87394007",
+      "toId": "SNCF:87484006",
+      "sample": {
+        "line": "P3 — Chartres - Le Mans - Angers",
+        "train": "862559",
+        "minutes": 166.0,
+        "tripId": "OCESN862559F1187_F:TER:FR:Line::95D7FD74-472E-41BE-8455-BCCC03A72D17::87394007:87484006:24:905:20261211"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Le Mans",
+      "to": "Chartres",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87394007",
+      "sample": {
+        "line": "K3 — Le Mans - Paris Montparnasse",
+        "train": "862500",
+        "minutes": 70.0,
+        "tripId": "OCESN862500F1187_F:TER:FR:Line::484B5749-966E-4516-9352-C1ADD9406916::87396002:87391003:12:553:20261207"
+      },
+      "sourceTripCount": 34
+    },
+    {
+      "from": "Le Mans",
+      "to": "Nantes",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 85.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Le Mans",
+      "to": "Ancenis",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481192",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 66.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Le Mans",
+      "to": "La Baule-les-Pins",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481697",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 147.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "St-Nazaire",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481705",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 130.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "Pornichet",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481747",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 142.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "La Baule-Escoublac",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481754",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 150.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "Le Pouliguen",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481762",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 157.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "Batz-sur-Mer",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481770",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 161.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "Le Croisic",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481788",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 166.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "Savenay",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87481838",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 116.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Le Mans",
+      "to": "Angers-St-Laud",
+      "fromId": "SNCF:87396002",
+      "toId": "SNCF:87484006",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857385",
+        "minutes": 42.0,
+        "tripId": "OCESN857385F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87396002:87481788:13:1011:20261206"
+      },
+      "sourceTripCount": 32
+    },
+    {
+      "from": "Nantes",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481002",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 89.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 16
+    },
+    {
+      "from": "Nantes",
+      "to": "La Possonnière",
+      "fromId": "SNCF:87481002",
+      "toId": "SNCF:87484337",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857506",
+        "minutes": 43.0,
+        "tripId": "OCESN857506F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:906:20261211"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Nantes",
+      "to": "Champtocé-sur-Loire",
+      "fromId": "SNCF:87481002",
+      "toId": "SNCF:87484352",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857524",
+        "minutes": 34.0,
+        "tripId": "OCESN857524F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:1810:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Nantes",
+      "to": "Ingrandes",
+      "fromId": "SNCF:87481002",
+      "toId": "SNCF:87484360",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857504",
+        "minutes": 30.0,
+        "tripId": "OCESN857504F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:811:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Nantes",
+      "to": "Varades - Saint-Florent-le-Vieil",
+      "fromId": "SNCF:87481002",
+      "toId": "SNCF:87484386",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857504",
+        "minutes": 24.0,
+        "tripId": "OCESN857504F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:811:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Nantes",
+      "to": "La Roche-sur-Yon",
+      "fromId": "SNCF:87481002",
+      "toId": "SNCF:87486019",
+      "sample": {
+        "line": "K8 — Nantes - Les Sables D'Olonne",
+        "train": "858859",
+        "minutes": 49.0,
+        "tripId": "OCESN858859F1187_F:TER:FR:Line::E2CDA413-39E6-4C97-B5A2-48F59C5504A0::87481002:87486449:8:1026:20261211"
+      },
+      "sourceTripCount": 28
+    },
+    {
+      "from": "Ancenis",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481192",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 71.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 16
+    },
+    {
+      "from": "Ancenis",
+      "to": "La Possonnière",
+      "fromId": "SNCF:87481192",
+      "toId": "SNCF:87484337",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857562",
+        "minutes": 24.0,
+        "tripId": "OCESN857562F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:12:1710:20261212"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Ancenis",
+      "to": "Champtocé-sur-Loire",
+      "fromId": "SNCF:87481192",
+      "toId": "SNCF:87484352",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857524",
+        "minutes": 16.0,
+        "tripId": "OCESN857524F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:1810:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Ancenis",
+      "to": "Ingrandes",
+      "fromId": "SNCF:87481192",
+      "toId": "SNCF:87484360",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857504",
+        "minutes": 12.0,
+        "tripId": "OCESN857504F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:811:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Ancenis",
+      "to": "Varades - Saint-Florent-le-Vieil",
+      "fromId": "SNCF:87481192",
+      "toId": "SNCF:87484386",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857504",
+        "minutes": 6.0,
+        "tripId": "OCESN857504F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:811:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "La Baule-les-Pins",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481697",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 148.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "St-Nazaire",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481705",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 132.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Pornichet",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481747",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 144.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Baule-Escoublac",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481754",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 152.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Le Pouliguen",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481762",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 160.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Batz-sur-Mer",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481770",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 164.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Le Croisic",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481788",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 168.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Savenay",
+      "to": "Le Mans",
+      "fromId": "SNCF:87481838",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857394",
+        "minutes": 115.0,
+        "tripId": "OCESN857394F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481788:87396002:14:2239:20261206"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Angers-St-Laud",
+      "to": "Le Mans",
+      "fromId": "SNCF:87484006",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "K15 — Le Croisic - Nantes - Le Mans",
+        "train": "857304",
+        "minutes": 44.0,
+        "tripId": "OCESN857304F1187_F:TER:FR:Line::88159CE6-0DEE-4F27-AC8E-C4D1FB16CDFC::87481002:87396002:5:916:20261211"
+      },
+      "sourceTripCount": 32
+    },
+    {
+      "from": "La Possonnière",
+      "to": "Le Mans",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857502",
+        "minutes": 59.0,
+        "tripId": "OCESN857502F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87396002:10:753:20261211"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Possonnière",
+      "to": "Angers-St-Laud",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87484006",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857504",
+        "minutes": 9.0,
+        "tripId": "OCESN857504F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:811:20261211"
+      },
+      "sourceTripCount": 40
+    },
+    {
+      "from": "La Possonnière",
+      "to": "Saumur",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87487603",
+      "sample": {
+        "line": "C20 — Cholet Angers Saumur",
+        "train": "858798",
+        "minutes": 50.0,
+        "tripId": "OCESN858798F1187_F:TER:FR:Line::022B77D9-D121-4DCB-B808-FB2F7931866B::87484303:87487603:12:811:20261211"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "La Possonnière",
+      "to": "La Bohalle",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87487843",
+      "sample": {
+        "line": "C20 — Cholet Angers Saumur",
+        "train": "858798",
+        "minutes": 24.0,
+        "tripId": "OCESN858798F1187_F:TER:FR:Line::022B77D9-D121-4DCB-B808-FB2F7931866B::87484303:87487603:12:811:20261212"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "La Possonnière",
+      "to": "Les Rosiers-sur-Loire",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87487876",
+      "sample": {
+        "line": "C20 — Cholet Angers Saumur",
+        "train": "858798",
+        "minutes": 38.0,
+        "tripId": "OCESN858798F1187_F:TER:FR:Line::022B77D9-D121-4DCB-B808-FB2F7931866B::87484303:87487603:12:811:20261211"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "La Possonnière",
+      "to": "La Ménitré",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87487884",
+      "sample": {
+        "line": "C20 — Cholet Angers Saumur",
+        "train": "858798",
+        "minutes": 33.0,
+        "tripId": "OCESN858798F1187_F:TER:FR:Line::022B77D9-D121-4DCB-B808-FB2F7931866B::87484303:87487603:12:811:20261211"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "La Possonnière",
+      "to": "St-Mathurin",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87487892",
+      "sample": {
+        "line": "C20 — Cholet Angers Saumur",
+        "train": "858798",
+        "minutes": 29.0,
+        "tripId": "OCESN858798F1187_F:TER:FR:Line::022B77D9-D121-4DCB-B808-FB2F7931866B::87484303:87487603:12:811:20261211"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "La Possonnière",
+      "to": "Trélazé",
+      "fromId": "SNCF:87484337",
+      "toId": "SNCF:87701532",
+      "sample": {
+        "line": "C20 — Cholet Angers Saumur",
+        "train": "858798",
+        "minutes": 19.0,
+        "tripId": "OCESN858798F1187_F:TER:FR:Line::022B77D9-D121-4DCB-B808-FB2F7931866B::87484303:87487603:12:811:20261211"
+      },
+      "sourceTripCount": 2
+    },
+    {
+      "from": "Champtocé-sur-Loire",
+      "to": "Le Mans",
+      "fromId": "SNCF:87484352",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857502",
+        "minutes": 67.0,
+        "tripId": "OCESN857502F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87396002:10:753:20261211"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Champtocé-sur-Loire",
+      "to": "Angers-St-Laud",
+      "fromId": "SNCF:87484352",
+      "toId": "SNCF:87484006",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857564",
+        "minutes": 15.0,
+        "tripId": "OCESN857564F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:10:1911:20261206"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Champtocé-sur-Loire",
+      "to": "La Possonnière",
+      "fromId": "SNCF:87484352",
+      "toId": "SNCF:87484337",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857502",
+        "minutes": 7.0,
+        "tripId": "OCESN857502F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87396002:10:753:20261211"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Ingrandes",
+      "to": "Le Mans",
+      "fromId": "SNCF:87484360",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857502",
+        "minutes": 72.0,
+        "tripId": "OCESN857502F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87396002:10:753:20261211"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Ingrandes",
+      "to": "Angers-St-Laud",
+      "fromId": "SNCF:87484360",
+      "toId": "SNCF:87484006",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857564",
+        "minutes": 20.0,
+        "tripId": "OCESN857564F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:10:1911:20261206"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Ingrandes",
+      "to": "La Possonnière",
+      "fromId": "SNCF:87484360",
+      "toId": "SNCF:87484337",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857506",
+        "minutes": 11.0,
+        "tripId": "OCESN857506F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:906:20261211"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Ingrandes",
+      "to": "Champtocé-sur-Loire",
+      "fromId": "SNCF:87484360",
+      "toId": "SNCF:87484352",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857506",
+        "minutes": 3.0,
+        "tripId": "OCESN857506F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:906:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Varades - Saint-Florent-le-Vieil",
+      "to": "Le Mans",
+      "fromId": "SNCF:87484386",
+      "toId": "SNCF:87396002",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857502",
+        "minutes": 78.0,
+        "tripId": "OCESN857502F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87396002:10:753:20261211"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Varades - Saint-Florent-le-Vieil",
+      "to": "Angers-St-Laud",
+      "fromId": "SNCF:87484386",
+      "toId": "SNCF:87484006",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857564",
+        "minutes": 26.0,
+        "tripId": "OCESN857564F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:10:1911:20261206"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Varades - Saint-Florent-le-Vieil",
+      "to": "La Possonnière",
+      "fromId": "SNCF:87484386",
+      "toId": "SNCF:87484337",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857524",
+        "minutes": 17.0,
+        "tripId": "OCESN857524F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:1810:20261211"
+      },
+      "sourceTripCount": 18
+    },
+    {
+      "from": "Varades - Saint-Florent-le-Vieil",
+      "to": "Champtocé-sur-Loire",
+      "fromId": "SNCF:87484386",
+      "toId": "SNCF:87484352",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857524",
+        "minutes": 8.0,
+        "tripId": "OCESN857524F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:1810:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "Varades - Saint-Florent-le-Vieil",
+      "to": "Ingrandes",
+      "fromId": "SNCF:87484386",
+      "toId": "SNCF:87484360",
+      "sample": {
+        "line": "P5 — Nantes - Angers St Laud - Le Mans",
+        "train": "857524",
+        "minutes": 4.0,
+        "tripId": "OCESN857524F1187_F:TER:FR:Line::08AFFE9A-2809-4FB2-AD6C-C50161E2E96A::87481002:87484006:7:1810:20261211"
+      },
+      "sourceTripCount": 19
+    },
+    {
+      "from": "La Roche-sur-Yon",
+      "to": "Nantes",
+      "fromId": "SNCF:87486019",
+      "toId": "SNCF:87481002",
+      "sample": {
+        "line": "K9 — Nantes - La Rochelle",
+        "train": "859802",
+        "minutes": 41.0,
+        "tripId": "OCESN859802F1187_F:TER:FR:Line::0732042B-024F-4BDC-AFC7-37B9EAFF657D::87485003:87481002:4:802:20261211"
+      },
+      "sourceTripCount": 29
+    },
+    {
+      "from": "Orléans",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "K8+ — Paris - Orléans",
+        "train": "860500",
+        "minutes": 64.0,
+        "tripId": "OCESN860500F1187_F:TER:FR:Line::1BF2D66F-09EF-4CB8-A003-1417C1EA6532::87543009:87547000:3:608:20261119"
+      },
+      "sourceTripCount": 44
+    },
+    {
+      "from": "Orléans",
+      "to": "Suèvres",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 40.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Orléans",
+      "to": "Menars",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 45.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Orléans",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 50.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Orléans",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861327",
+        "minutes": 49.0,
+        "tripId": "OCESN861327F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87576207:8:1920:20261211"
+      },
+      "sourceTripCount": 32
+    },
+    {
+      "from": "Orléans",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861327",
+        "minutes": 60.0,
+        "tripId": "OCESN861327F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87576207:8:1920:20261211"
+      },
+      "sourceTripCount": 17
+    },
+    {
+      "from": "Orléans",
+      "to": "Bourges",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 70.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 17
+    },
+    {
+      "from": "Orléans",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 78.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Orléans",
+      "to": "Avord",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576439",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 87.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Orléans",
+      "to": "Bengy",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576447",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 93.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Orléans",
+      "to": "Nérondes",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576454",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 99.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Orléans",
+      "to": "La Guerche-sur-l'Aubois",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87576470",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 108.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Orléans",
+      "to": "Nevers",
+      "fromId": "SNCF:87543009",
+      "toId": "SNCF:87696005",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 122.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Les Aubrais-Orléans",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87543017",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3903",
+        "minutes": 37.0,
+        "tripId": "OCESN3903F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87547000:87576207:5:903:20261211"
+      },
+      "sourceTripCount": 16
+    },
+    {
+      "from": "Les Aubrais-Orléans",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87543017",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861305",
+        "minutes": 62.0,
+        "tripId": "OCESN861305F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543017:87576207:8:820:20261126"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Les Aubrais-Orléans",
+      "to": "Bourges",
+      "fromId": "SNCF:87543017",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3903",
+        "minutes": 56.0,
+        "tripId": "OCESN3903F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87547000:87576207:5:903:20261211"
+      },
+      "sourceTripCount": 14
+    },
+    {
+      "from": "Les Aubrais-Orléans",
+      "to": "Nevers",
+      "fromId": "SNCF:87543017",
+      "toId": "SNCF:87696005",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3923",
+        "minutes": 96.0,
+        "tripId": "OCESN3923F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87547000:87696005:6:2344:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "La Chapelle-St-Mesmin",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87543371",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 7.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chapelle-St-Mesmin",
+      "to": "Suèvres",
+      "fromId": "SNCF:87543371",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 32.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chapelle-St-Mesmin",
+      "to": "Menars",
+      "fromId": "SNCF:87543371",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 37.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chapelle-St-Mesmin",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87543371",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 42.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Voves",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87545707",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860610",
+        "minutes": 64.0,
+        "tripId": "OCESN860610F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87545756:87547000:6:1337:20261211"
+      },
+      "sourceTripCount": 14
+    },
+    {
+      "from": "Bonneval",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87545731",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860610",
+        "minutes": 78.0,
+        "tripId": "OCESN860610F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87545756:87547000:6:1337:20261211"
+      },
+      "sourceTripCount": 14
+    },
+    {
+      "from": "Châteaudun",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87545756",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860616",
+        "minutes": 87.0,
+        "tripId": "OCESN860616F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87574558:87547000:10:1836:20261211"
+      },
+      "sourceTripCount": 14
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Voves",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87545707",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 62.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 15
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Bonneval",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87545731",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 75.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 15
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Châteaudun",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87545756",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 85.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 15
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Cloyes",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87574509",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 97.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Fréteval-Morée",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87574533",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 108.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Pezou",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87574541",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 114.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Vendôme",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87574558",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860611",
+        "minutes": 123.0,
+        "tripId": "OCESN860611F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87547000:87574558:10:1559:20261210"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3903",
+        "minutes": 97.0,
+        "tripId": "OCESN3903F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87547000:87576207:5:903:20261211"
+      },
+      "sourceTripCount": 13
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Bourges",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3903",
+        "minutes": 116.0,
+        "tripId": "OCESN3903F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87547000:87576207:5:903:20261211"
+      },
+      "sourceTripCount": 13
+    },
+    {
+      "from": "Paris-Austerlitz",
+      "to": "Nevers",
+      "fromId": "SNCF:87547000",
+      "toId": "SNCF:87696005",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3923",
+        "minutes": 157.0,
+        "tripId": "OCESN3923F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87547000:87696005:6:2344:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Chaingy-Fourneaux-Plage",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87574111",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 12.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Chaingy-Fourneaux-Plage",
+      "to": "Suèvres",
+      "fromId": "SNCF:87574111",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 28.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Chaingy-Fourneaux-Plage",
+      "to": "Menars",
+      "fromId": "SNCF:87574111",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 33.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Chaingy-Fourneaux-Plage",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574111",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 38.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "St-Ay",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87574129",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 15.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "St-Ay",
+      "to": "Suèvres",
+      "fromId": "SNCF:87574129",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 24.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "St-Ay",
+      "to": "Menars",
+      "fromId": "SNCF:87574129",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 29.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "St-Ay",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574129",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 34.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Meung-sur-Loire",
+      "to": "Suèvres",
+      "fromId": "SNCF:87574137",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 19.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Meung-sur-Loire",
+      "to": "Menars",
+      "fromId": "SNCF:87574137",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 24.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Meung-sur-Loire",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574137",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 29.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Baule",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87574152",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 24.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Baule",
+      "to": "Suèvres",
+      "fromId": "SNCF:87574152",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 16.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Baule",
+      "to": "Menars",
+      "fromId": "SNCF:87574152",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 21.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Baule",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574152",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 26.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Beaugency",
+      "to": "Suèvres",
+      "fromId": "SNCF:87574160",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 11.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Beaugency",
+      "to": "Menars",
+      "fromId": "SNCF:87574160",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 16.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Beaugency",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574160",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 21.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Mer",
+      "to": "Suèvres",
+      "fromId": "SNCF:87574194",
+      "toId": "SNCF:87574236",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 3.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Mer",
+      "to": "Menars",
+      "fromId": "SNCF:87574194",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 8.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Mer",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574194",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 13.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Suèvres",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87574236",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 41.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Suèvres",
+      "to": "Tours",
+      "fromId": "SNCF:87574236",
+      "toId": "SNCF:87571000",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 55.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Suèvres",
+      "to": "St-Pierre-des-Corps",
+      "fromId": "SNCF:87574236",
+      "toId": "SNCF:87571240",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 47.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Suèvres",
+      "to": "Blois-Chambord",
+      "fromId": "SNCF:87574236",
+      "toId": "SNCF:87574004",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 14.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Suèvres",
+      "to": "Menars",
+      "fromId": "SNCF:87574236",
+      "toId": "SNCF:87574244",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 4.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Suèvres",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574236",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 9.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Menars",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87574244",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 46.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Menars",
+      "to": "Tours",
+      "fromId": "SNCF:87574244",
+      "toId": "SNCF:87571000",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 50.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Menars",
+      "to": "St-Pierre-des-Corps",
+      "fromId": "SNCF:87574244",
+      "toId": "SNCF:87571240",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 42.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Menars",
+      "to": "Blois-Chambord",
+      "fromId": "SNCF:87574244",
+      "toId": "SNCF:87574004",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 9.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Menars",
+      "to": "La Chaussée-St-Victor",
+      "fromId": "SNCF:87574244",
+      "toId": "SNCF:87574251",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 4.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chaussée-St-Victor",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87574251",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860296",
+        "minutes": 51.0,
+        "tripId": "OCESN860296F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87574004:87543017:12:1908:20261106"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chaussée-St-Victor",
+      "to": "Tours",
+      "fromId": "SNCF:87574251",
+      "toId": "SNCF:87571000",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 45.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chaussée-St-Victor",
+      "to": "St-Pierre-des-Corps",
+      "fromId": "SNCF:87574251",
+      "toId": "SNCF:87571240",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 37.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Chaussée-St-Victor",
+      "to": "Blois-Chambord",
+      "fromId": "SNCF:87574251",
+      "toId": "SNCF:87574004",
+      "sample": {
+        "line": "P16 — Orléans - Blois",
+        "train": "860289",
+        "minutes": 4.0,
+        "tripId": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Cloyes",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87574509",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860616",
+        "minutes": 100.0,
+        "tripId": "OCESN860616F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87574558:87547000:10:1836:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Fréteval-Morée",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87574533",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860616",
+        "minutes": 111.0,
+        "tripId": "OCESN860616F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87574558:87547000:10:1836:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Pezou",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87574541",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860616",
+        "minutes": 117.0,
+        "tripId": "OCESN860616F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87574558:87547000:10:1836:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Vendôme",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87574558",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "P10 — Paris - Châteaudun - Vendôme",
+        "train": "860616",
+        "minutes": 126.0,
+        "tripId": "OCESN860616F1187_F:TER:FR:Line::34629FAB-F594-4CB1-ACC4-BB0ACA01CA14::87574558:87547000:10:1836:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Vierzon-Ville",
+      "to": "Orléans",
+      "fromId": "SNCF:87576009",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861385",
+        "minutes": 42.0,
+        "tripId": "OCESN861385F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87576207:87543009:4:842:20261212"
+      },
+      "sourceTripCount": 26
+    },
+    {
+      "from": "Vierzon-Ville",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576009",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3924",
+        "minutes": 37.0,
+        "tripId": "OCESN3924F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87696005:87547000:6:2307:20261011"
+      },
+      "sourceTripCount": 17
+    },
+    {
+      "from": "Vierzon-Ville",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87576009",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3920",
+        "minutes": 98.0,
+        "tripId": "OCESN3920F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87576207:87547000:5:2053:20261119"
+      },
+      "sourceTripCount": 13
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "Orléans",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861385",
+        "minutes": 55.0,
+        "tripId": "OCESN861385F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87576207:87543009:4:842:20261212"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 69.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861302",
+        "minutes": 10.0,
+        "tripId": "OCESN861302F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87576207:87543009:8:750:20261211"
+      },
+      "sourceTripCount": 27
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 17.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "Bengy",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87576447",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 32.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "Nérondes",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87576454",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 38.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Mehun-sur-Yèvre",
+      "to": "La Guerche-sur-l'Aubois",
+      "fromId": "SNCF:87576116",
+      "toId": "SNCF:87576470",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861373",
+        "minutes": 47.0,
+        "tripId": "OCESN861373F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87543009:87696005:14:1809:20261206"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Bourges",
+      "to": "Orléans",
+      "fromId": "SNCF:87576207",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861385",
+        "minutes": 65.0,
+        "tripId": "OCESN861385F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87576207:87543009:4:842:20261212"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Bourges",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576207",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3904",
+        "minutes": 57.0,
+        "tripId": "OCESN3904F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87696005:87547000:6:855:20261010"
+      },
+      "sourceTripCount": 14
+    },
+    {
+      "from": "Bourges",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87576207",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3904",
+        "minutes": 118.0,
+        "tripId": "OCESN3904F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87696005:87547000:6:853:20261211"
+      },
+      "sourceTripCount": 13
+    },
+    {
+      "from": "Bourges",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87576207",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861302",
+        "minutes": 8.0,
+        "tripId": "OCESN861302F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87576207:87543009:8:750:20261211"
+      },
+      "sourceTripCount": 27
+    },
+    {
+      "from": "St-Germain-du-Puy",
+      "to": "Orléans",
+      "fromId": "SNCF:87576405",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 79.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "St-Germain-du-Puy",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576405",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 87.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "St-Germain-du-Puy",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87576405",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 27.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "St-Germain-du-Puy",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87576405",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 16.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "St-Germain-du-Puy",
+      "to": "Bourges",
+      "fromId": "SNCF:87576405",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 5.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Avord",
+      "to": "Orléans",
+      "fromId": "SNCF:87576439",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 89.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Avord",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576439",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 97.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Avord",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87576439",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 26.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Avord",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87576439",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 8.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Bengy",
+      "to": "Orléans",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 95.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Bengy",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 104.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Bengy",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 43.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Bengy",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 32.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Bengy",
+      "to": "Bourges",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 20.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Bengy",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 14.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Bengy",
+      "to": "Avord",
+      "fromId": "SNCF:87576447",
+      "toId": "SNCF:87576439",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861383",
+        "minutes": 5.0,
+        "tripId": "OCESN861383F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:852:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nérondes",
+      "to": "Orléans",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 101.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Nérondes",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 110.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "Nérondes",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 49.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Nérondes",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 38.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Nérondes",
+      "to": "Bourges",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 27.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nérondes",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 21.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nérondes",
+      "to": "Avord",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87576439",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 11.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nérondes",
+      "to": "Bengy",
+      "fromId": "SNCF:87576454",
+      "toId": "SNCF:87576447",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 5.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Orléans",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 110.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 119.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 1
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Vierzon-Ville",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 58.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 47.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Bourges",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576207",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861395",
+        "minutes": 35.0,
+        "tripId": "OCESN861395F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:1951:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861395",
+        "minutes": 29.0,
+        "tripId": "OCESN861395F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:1951:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Avord",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576439",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 20.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Bengy",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576447",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861395",
+        "minutes": 13.0,
+        "tripId": "OCESN861395F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:1951:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "La Guerche-sur-l'Aubois",
+      "to": "Nérondes",
+      "fromId": "SNCF:87576470",
+      "toId": "SNCF:87576454",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861395",
+        "minutes": 7.0,
+        "tripId": "OCESN861395F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:1951:20261211"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nevers",
+      "to": "Orléans",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87543009",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 124.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Nevers",
+      "to": "Les Aubrais-Orléans",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87543017",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3904",
+        "minutes": 100.0,
+        "tripId": "OCESN3904F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87696005:87547000:6:855:20261010"
+      },
+      "sourceTripCount": 6
+    },
+    {
+      "from": "Nevers",
+      "to": "Paris-Austerlitz",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87547000",
+      "sample": {
+        "line": "K5+ — Paris - Bourges - Nevers",
+        "train": "3904",
+        "minutes": 161.0,
+        "tripId": "OCESN3904F1187_F:TER:FR:Line::13DADBDA-4FB1-4AA3-8DAB-60E24EF4AAFF::87696005:87547000:6:853:20261211"
+      },
+      "sourceTripCount": 5
+    },
+    {
+      "from": "Nevers",
+      "to": "Mehun-sur-Yèvre",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87576116",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861387",
+        "minutes": 61.0,
+        "tripId": "OCESN861387F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543009:14:952:20261211"
+      },
+      "sourceTripCount": 7
+    },
+    {
+      "from": "Nevers",
+      "to": "St-Germain-du-Puy",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87576405",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861603",
+        "minutes": 43.0,
+        "tripId": "OCESN861603F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87576207:7:1337:20261212"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nevers",
+      "to": "Bengy",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87576447",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 27.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nevers",
+      "to": "Nérondes",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87576454",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 21.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 9
+    },
+    {
+      "from": "Nevers",
+      "to": "La Guerche-sur-l'Aubois",
+      "fromId": "SNCF:87696005",
+      "toId": "SNCF:87576470",
+      "sample": {
+        "line": "P14 — Orléans - Nevers",
+        "train": "861391",
+        "minutes": 12.0,
+        "tripId": "OCESN861391F1187_F:TER:FR:Line::5F71EC1D-5326-4515-A083-D211D668A970::87696005:87543017:16:1511:20261127"
+      },
+      "sourceTripCount": 9
+    }
+  ],
+  "sourceLinesWithAtLeastTwoLoadedStations": {
+    "A01 — Tours - Saint-Pierre NavettesTGV": {
+      "trips": 61,
+      "retainedTrips": 2,
+      "loadedStops": [
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "C13 — CAEN - LISIEUX (périurbain)": {
+      "trips": 29,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Caen",
+        "Mézidon"
+      ],
+      "outsideStops": [
+        "Beaumont-le-Roger",
+        "Bernay",
+        "Conches",
+        "Frénouville - Cagny",
+        "La Bonneville-sur-Iton",
+        "Lisieux",
+        "Moult - Argences",
+        "Romilly-la-Puthenaye",
+        "Serquigny",
+        "Évreux Normandie"
+      ]
+    },
+    "C2 — Nantes - Savenay": {
+      "trips": 25,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Nantes",
+        "Savenay"
+      ],
+      "outsideStops": [
+        "Chantenay",
+        "Cordemais",
+        "Couëron",
+        "La Basse Indre - Saint-Herblain",
+        "Saint-Étienne-de-Montluc"
+      ]
+    },
+    "C20 — Cholet Angers Saumur": {
+      "trips": 42,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Angers-St-Laud",
+        "La Bohalle",
+        "La Ménitré",
+        "La Possonnière",
+        "Les Rosiers-sur-Loire",
+        "Saumur",
+        "St-Mathurin",
+        "Trélazé"
+      ],
+      "outsideStops": [
+        "Chalonnes",
+        "Chemillé",
+        "Cholet",
+        "Savennières - Béhuard"
+      ]
+    },
+    "C4 — Nantes - Ancenis": {
+      "trips": 17,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Ancenis",
+        "Nantes"
+      ],
+      "outsideStops": [
+        "Le Cellier",
+        "Mauves-sur-Loire",
+        "Oudon",
+        "Thouaré"
+      ]
+    },
+    "C42 — Ancenis - Savenay": {
+      "trips": 4,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Ancenis",
+        "Nantes",
+        "Savenay"
+      ],
+      "outsideStops": [
+        "Ancenis Bis",
+        "Chantenay",
+        "Cordemais",
+        "Couëron",
+        "La Basse Indre - Saint-Herblain",
+        "Le Cellier",
+        "Mauves-sur-Loire",
+        "Oudon",
+        "Saint-Étienne-de-Montluc",
+        "Thouaré"
+      ]
+    },
+    "F11 — 11. Tours- Châtellerault - Poitiers": {
+      "trips": 15,
+      "retainedTrips": 2,
+      "loadedStops": [
+        "Chasseneuil (Vienne)",
+        "Châtellerault",
+        "Dissay",
+        "Futuroscope",
+        "Jaunay-Clan",
+        "La Tricherie",
+        "Naintré-les-Barres",
+        "Nerpuy",
+        "Poitiers"
+      ],
+      "outsideStops": []
+    },
+    "K1 — Orléans - Le Croisic": {
+      "trips": 8,
+      "retainedTrips": 3,
+      "loadedStops": [
+        "Amboise",
+        "Ancenis",
+        "Angers-St-Laud",
+        "Batz-sur-Mer",
+        "Beaugency",
+        "Blois-Chambord",
+        "La Baule-Escoublac",
+        "La Baule-les-Pins",
+        "Le Croisic",
+        "Le Pouliguen",
+        "Mer",
+        "Meung-sur-Loire",
+        "Nantes",
+        "Onzain-Chaumont-sur-Loire",
+        "Orléans",
+        "Pornichet",
+        "Saumur",
+        "Savenay",
+        "St-Nazaire",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "K1 — Orléans - Nantes - Le Croisic": {
+      "trips": 9,
+      "retainedTrips": 4,
+      "loadedStops": [
+        "Amboise",
+        "Ancenis",
+        "Angers-St-Laud",
+        "Batz-sur-Mer",
+        "Beaugency",
+        "Blois-Chambord",
+        "La Baule-Escoublac",
+        "La Baule-les-Pins",
+        "Le Croisic",
+        "Le Pouliguen",
+        "Mer",
+        "Meung-sur-Loire",
+        "Nantes",
+        "Onzain-Chaumont-sur-Loire",
+        "Orléans",
+        "Pornichet",
+        "Saumur",
+        "Savenay",
+        "St-Nazaire",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "K14 — Nantes - Quimper": {
+      "trips": 12,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Nantes",
+        "Savenay"
+      ],
+      "outsideStops": [
+        "Auray",
+        "Chantenay",
+        "Cordemais",
+        "Couëron",
+        "Drefféac",
+        "Hennebont",
+        "La Basse Indre - Saint-Herblain",
+        "Lorient",
+        "Pontchâteau",
+        "Questembert",
+        "Quimper",
+        "Quimperlé",
+        "Redon",
+        "Rosporden",
+        "Saint-Gildas-des-bois",
+        "Saint-Étienne-de-Montluc",
+        "Sévérac",
+        "Vannes"
+      ]
+    },
+    "K15 — Le Croisic - Nantes - Le Mans": {
+      "trips": 33,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Ancenis",
+        "Angers-St-Laud",
+        "Batz-sur-Mer",
+        "La Baule-Escoublac",
+        "La Baule-les-Pins",
+        "Le Croisic",
+        "Le Mans",
+        "Le Pouliguen",
+        "Nantes",
+        "Pornichet",
+        "Savenay",
+        "St-Nazaire"
+      ],
+      "outsideStops": [
+        "Angers Maître École",
+        "Donges",
+        "La Suze",
+        "Le Vieux Briollay",
+        "Morannes",
+        "Sablé-sur-Sarthe",
+        "Tiercé",
+        "Étriché - Châteauneuf"
+      ]
+    },
+    "K16 — Orléans - Tours": {
+      "trips": 68,
+      "retainedTrips": 11,
+      "loadedStops": [
+        "Amboise",
+        "Beaugency",
+        "Blois-Chambord",
+        "Les Aubrais-Orléans",
+        "Limeray",
+        "Mer",
+        "Meung-sur-Loire",
+        "Montlouis",
+        "Noizay",
+        "Onzain-Chaumont-sur-Loire",
+        "Orléans",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "K16+ — Tours-Blois-Orléans rapides": {
+      "trips": 7,
+      "retainedTrips": 4,
+      "loadedStops": [
+        "Blois-Chambord",
+        "Les Aubrais-Orléans",
+        "Orléans",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "K2 — Nantes - Le Croisic": {
+      "trips": 33,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Batz-sur-Mer",
+        "La Baule-Escoublac",
+        "La Baule-les-Pins",
+        "Le Croisic",
+        "Le Pouliguen",
+        "Nantes",
+        "Pornichet",
+        "Savenay",
+        "St-Nazaire"
+      ],
+      "outsideStops": [
+        "Couëron",
+        "Donges",
+        "La Basse Indre - Saint-Herblain",
+        "La Croix de Méan",
+        "Montoir-de-Bretagne",
+        "Penhoët",
+        "Saint-Étienne-de-Montluc"
+      ]
+    },
+    "K3 — Le Mans - Paris Montparnasse": {
+      "trips": 28,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Chartres",
+        "Le Mans"
+      ],
+      "outsideStops": [
+        "Connerré - Beillé",
+        "Courville-sur-Eure",
+        "La Ferté-Bernard",
+        "La Loupe",
+        "Maintenon",
+        "Nogent-le-Rotrou",
+        "Paris Montparnasse Hall 1 - 2",
+        "Rambouillet",
+        "Versailles Chantiers",
+        "Épernon"
+      ]
+    },
+    "K3 — Paris - Chartres - Le Mans": {
+      "trips": 27,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Chartres",
+        "Le Mans"
+      ],
+      "outsideStops": [
+        "Connerré - Beillé",
+        "Courville-sur-Eure",
+        "La Ferté-Bernard",
+        "La Loupe",
+        "Le Theil - La Rouge",
+        "Maintenon",
+        "Nogent-le-Rotrou",
+        "Paris Montparnasse Hall 1 - 2",
+        "Rambouillet",
+        "Versailles Chantiers",
+        "Épernon"
+      ]
+    },
+    "K30 — Le Mans - Tours": {
+      "trips": 8,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Château-du-Loir",
+        "Fondettes - Saint-Cyr-sur-Loire",
+        "Le Mans",
+        "Neuillé-Pont-Pierre",
+        "St-Antoine-du-Rocher",
+        "St-Paterne",
+        "Tours",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    },
+    "K30 — Tours - Le Mans - Alençon": {
+      "trips": 8,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Château-du-Loir",
+        "Le Mans",
+        "St-Paterne",
+        "Tours",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    },
+    "K39 — Caen - Le Mans - Tours": {
+      "trips": 45,
+      "retainedTrips": 18,
+      "loadedStops": [
+        "Alençon",
+        "Argentan",
+        "Arnage",
+        "Aubigné-Racan",
+        "Caen",
+        "Château-du-Loir",
+        "La Guierche",
+        "La Hutte-Coulombiers",
+        "Laigné-St-Gervais",
+        "Le Mans",
+        "Le Mans Hôpital-Université",
+        "Mayet",
+        "Montbizot",
+        "Mézidon",
+        "Neuville",
+        "St-Pierre-des-Corps",
+        "St-Pierre-sur-Dives",
+        "Surdon",
+        "Sées",
+        "Teillé",
+        "Tours",
+        "Vaas",
+        "Vivoin-Beaumont",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    },
+    "K39 — Tours - Le Mans - Caen": {
+      "trips": 1,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Alençon",
+        "Argentan",
+        "Caen",
+        "Château-du-Loir",
+        "Le Mans",
+        "Montbizot",
+        "Mézidon",
+        "St-Pierre-sur-Dives",
+        "Surdon",
+        "Sées",
+        "Tours",
+        "Vivoin-Beaumont",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    },
+    "K4 — Le Croisic - Nantes - Rennes Via Sablé": {
+      "trips": 14,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Ancenis",
+        "Angers-St-Laud",
+        "Nantes"
+      ],
+      "outsideStops": [
+        "Laval",
+        "Rennes",
+        "Sablé-sur-Sarthe",
+        "Vitré"
+      ]
+    },
+    "K4 — Nantes - Rennes": {
+      "trips": 18,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Ancenis",
+        "Angers-St-Laud",
+        "Nantes"
+      ],
+      "outsideStops": [
+        "Laval",
+        "Rennes",
+        "Sablé-sur-Sarthe",
+        "Vitré"
+      ]
+    },
+    "K4 — PARIS - ARGENTAN - GRANVILLE": {
+      "trips": 30,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Argentan",
+        "Surdon"
+      ],
+      "outsideStops": [
+        "Avranches",
+        "Briouze",
+        "Dreux",
+        "Flers",
+        "Folligny",
+        "Granville",
+        "L'Aigle",
+        "Nonancourt",
+        "Paris Montparnasse Hall 1 - 2",
+        "Paris Montparnasse Vaugirard",
+        "Pontorson - Mont-Saint-Michel",
+        "Sainte-Gauburge",
+        "Verneuil-sur-Avre",
+        "Versailles Chantiers",
+        "Villedieu-les-Poêles",
+        "Vire"
+      ]
+    },
+    "K5+ — Paris - Bourges - Nevers": {
+      "trips": 26,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Bourges",
+        "Les Aubrais-Orléans",
+        "Nevers",
+        "Paris-Austerlitz",
+        "Vierzon-Ville"
+      ],
+      "outsideStops": [
+        "Salbris"
+      ]
+    },
+    "K6+ — Paris - Orléans - Tours": {
+      "trips": 32,
+      "retainedTrips": 9,
+      "loadedStops": [
+        "Amboise",
+        "Beaugency",
+        "Blois-Chambord",
+        "Les Aubrais-Orléans",
+        "Mer",
+        "Meung-sur-Loire",
+        "Onzain-Chaumont-sur-Loire",
+        "Orléans",
+        "Paris-Austerlitz",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "K8 — Nantes - Les Sables D'Olonne": {
+      "trips": 55,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "La Roche-sur-Yon",
+        "Nantes"
+      ],
+      "outsideStops": [
+        "Belleville-Vendée",
+        "Clisson",
+        "L'Herbergement - Les Brouzils",
+        "La Mothe-Achard",
+        "Les Sables-d'Olonne",
+        "Montaigu",
+        "Olonne-sur-Mer"
+      ]
+    },
+    "K8+ — Paris - Orléans": {
+      "trips": 76,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Les Aubrais-Orléans",
+        "Orléans",
+        "Paris-Austerlitz"
+      ],
+      "outsideStops": []
+    },
+    "K9 — Nantes - La Rochelle": {
+      "trips": 2,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "La Roche-sur-Yon",
+        "Nantes"
+      ],
+      "outsideStops": [
+        "Belleville-Vendée",
+        "Clisson",
+        "L'Herbergement - Les Brouzils",
+        "La Rochelle",
+        "Luçon",
+        "Montaigu"
+      ]
+    },
+    "L12+ — 12+. Châtellerault - Poitiers - Angoulême": {
+      "trips": 14,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Chasseneuil (Vienne)",
+        "Châtellerault",
+        "Dissay",
+        "Futuroscope",
+        "Jaunay-Clan",
+        "La Tricherie",
+        "Naintré-les-Barres",
+        "Nerpuy",
+        "Poitiers"
+      ],
+      "outsideStops": [
+        "Anché - Voulon",
+        "Angoulême",
+        "Iteuil",
+        "Ligugé",
+        "Luxé",
+        "Ruffec",
+        "Saint-Saviol",
+        "Vivonne",
+        "Épanvilliers"
+      ]
+    },
+    "P1 — Tours - Le Croisic": {
+      "trips": 31,
+      "retainedTrips": 11,
+      "loadedStops": [
+        "Ancenis",
+        "Angers-St-Laud",
+        "Champtocé-sur-Loire",
+        "Cinq-Mars-la-Pile",
+        "Ingrandes",
+        "La Bohalle",
+        "La Chapelle-sur-Loire",
+        "La Ménitré",
+        "La Possonnière",
+        "Langeais",
+        "Les Rosiers-sur-Loire",
+        "Nantes",
+        "Port-Boulet",
+        "Saumur",
+        "Savonnières",
+        "St-Genouph",
+        "St-Mathurin",
+        "St-Patrice",
+        "Tours",
+        "Trélazé",
+        "Varades - Saint-Florent-le-Vieil"
+      ],
+      "outsideStops": []
+    },
+    "P1 — Tours - Saumur - Angers - Nantes": {
+      "trips": 14,
+      "retainedTrips": 6,
+      "loadedStops": [
+        "Ancenis",
+        "Angers-St-Laud",
+        "Batz-sur-Mer",
+        "Cinq-Mars-la-Pile",
+        "La Baule-Escoublac",
+        "La Baule-les-Pins",
+        "La Bohalle",
+        "La Chapelle-sur-Loire",
+        "La Ménitré",
+        "Langeais",
+        "Le Croisic",
+        "Le Pouliguen",
+        "Les Rosiers-sur-Loire",
+        "Nantes",
+        "Pornichet",
+        "Port-Boulet",
+        "Saumur",
+        "Savenay",
+        "Savonnières",
+        "St-Genouph",
+        "St-Mathurin",
+        "St-Nazaire",
+        "St-Patrice",
+        "Tours",
+        "Trélazé"
+      ],
+      "outsideStops": []
+    },
+    "P10 — CAEN - ROUEN": {
+      "trips": 47,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Caen",
+        "Mézidon"
+      ],
+      "outsideStops": [
+        "Bernay",
+        "Bourgtheroulde - Thuit-Hébert",
+        "Brionne",
+        "Elbeuf - Saint-Aubin",
+        "Lisieux",
+        "Rouen Rive Droite",
+        "Serquigny"
+      ]
+    },
+    "P10 — Paris - Châteaudun - Vendôme": {
+      "trips": 29,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Bonneval",
+        "Châteaudun",
+        "Cloyes",
+        "Fréteval-Morée",
+        "Paris-Austerlitz",
+        "Pezou",
+        "Vendôme",
+        "Voves"
+      ],
+      "outsideStops": [
+        "Auneau",
+        "Dourdan"
+      ]
+    },
+    "P101 — Tours - Saumur": {
+      "trips": 11,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Cinq-Mars-la-Pile",
+        "La Chapelle-sur-Loire",
+        "Langeais",
+        "Port-Boulet",
+        "Saumur",
+        "Savonnières",
+        "St-Genouph",
+        "St-Patrice",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "P104 — Orléans - Châteauroux - Saint-Sébastien": {
+      "trips": 28,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Les Aubrais-Orléans",
+        "Orléans",
+        "Vierzon-Ville"
+      ],
+      "outsideStops": [
+        "Argenton-sur-Creuse",
+        "Chabenet",
+        "Châteauroux",
+        "Issoudun",
+        "La Ferté-Saint-Aubin",
+        "Lamotte-Beuvron",
+        "Lothiers",
+        "Luant",
+        "Neuvy-Pailloux",
+        "Nouan-le-Fuzelier",
+        "Reuilly",
+        "Saint-Cyr-en-Val",
+        "Sainte-Lizaigne",
+        "Salbris",
+        "Theillay"
+      ]
+    },
+    "P11 — 11. Poitiers-Tours": {
+      "trips": 12,
+      "retainedTrips": 5,
+      "loadedStops": [
+        "Chasseneuil (Vienne)",
+        "Châtellerault",
+        "Dangé",
+        "Dissay",
+        "Futuroscope",
+        "Ingrandes-sur-Vienne",
+        "Jaunay-Clan",
+        "La Tricherie",
+        "Les Ormes-sur-Vienne",
+        "Maillé",
+        "Monts",
+        "Naintré-les-Barres",
+        "Nerpuy",
+        "Poitiers",
+        "Port-de-Piles",
+        "Ste-Maure-Noyant",
+        "Tours",
+        "Villeperdue"
+      ],
+      "outsideStops": []
+    },
+    "P11 — Tours - Poitiers": {
+      "trips": 15,
+      "retainedTrips": 6,
+      "loadedStops": [
+        "Chasseneuil (Vienne)",
+        "Châtellerault",
+        "Dangé",
+        "Dissay",
+        "Futuroscope",
+        "Ingrandes-sur-Vienne",
+        "Jaunay-Clan",
+        "La Tricherie",
+        "Les Ormes-sur-Vienne",
+        "Maillé",
+        "Monts",
+        "Naintré-les-Barres",
+        "Nerpuy",
+        "Poitiers",
+        "Port-de-Piles",
+        "Ste-Maure-Noyant",
+        "Tours",
+        "Villeperdue"
+      ],
+      "outsideStops": []
+    },
+    "P12 — Nantes - Redon": {
+      "trips": 28,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Nantes",
+        "Savenay"
+      ],
+      "outsideStops": [
+        "Chantenay",
+        "Cordemais",
+        "Couëron",
+        "Drefféac",
+        "La Basse Indre - Saint-Herblain",
+        "Pontchâteau",
+        "Redon",
+        "Saint-Gildas-des-bois",
+        "Saint-Étienne-de-Montluc",
+        "Sévérac"
+      ]
+    },
+    "P14 — Orléans - Nevers": {
+      "trips": 70,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Avord",
+        "Bengy",
+        "Bourges",
+        "La Guerche-sur-l'Aubois",
+        "Les Aubrais-Orléans",
+        "Mehun-sur-Yèvre",
+        "Nevers",
+        "Nérondes",
+        "Orléans",
+        "St-Germain-du-Puy",
+        "Vierzon-Ville"
+      ],
+      "outsideStops": [
+        "Foëcy",
+        "La Ferté-Saint-Aubin",
+        "Lamotte-Beuvron",
+        "Marmagne",
+        "Nouan-le-Fuzelier",
+        "Saint-Cyr-en-Val",
+        "Salbris",
+        "Theillay",
+        "Vierzon Forges"
+      ]
+    },
+    "P15 — Angers St Laud - Le Mans": {
+      "trips": 29,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Angers-St-Laud",
+        "Le Mans"
+      ],
+      "outsideStops": [
+        "Angers Maître École",
+        "La Suze",
+        "Le Vieux Briollay",
+        "Morannes",
+        "Noyen",
+        "Sablé-sur-Sarthe",
+        "Tiercé",
+        "Voivres",
+        "Étriché - Châteauneuf"
+      ]
+    },
+    "P16 — Orléans - Blois": {
+      "trips": 11,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Baule",
+        "Beaugency",
+        "Blois-Chambord",
+        "Chaingy-Fourneaux-Plage",
+        "La Chapelle-St-Mesmin",
+        "La Chaussée-St-Victor",
+        "Les Aubrais-Orléans",
+        "Menars",
+        "Mer",
+        "Meung-sur-Loire",
+        "Orléans",
+        "St-Ay",
+        "St-Pierre-des-Corps",
+        "Suèvres",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "P166 — Tours-Blois-Orléans (omnibus)": {
+      "trips": 6,
+      "retainedTrips": 4,
+      "loadedStops": [
+        "Amboise",
+        "Baule",
+        "Beaugency",
+        "Blois-Chambord",
+        "Chaingy-Fourneaux-Plage",
+        "Chouzy",
+        "La Chapelle-St-Mesmin",
+        "La Chaussée-St-Victor",
+        "Limeray",
+        "Menars",
+        "Mer",
+        "Meung-sur-Loire",
+        "Montlouis",
+        "Noizay",
+        "Onzain-Chaumont-sur-Loire",
+        "Orléans",
+        "St-Ay",
+        "St-Pierre-des-Corps",
+        "Suèvres",
+        "Tours",
+        "Veuves-Monteaux"
+      ],
+      "outsideStops": []
+    },
+    "P17 — Tours - Bléré - St-Aignan-Noyers - Vierzon": {
+      "trips": 35,
+      "retainedTrips": 4,
+      "loadedStops": [
+        "Azay-sur-Cher",
+        "Bléré-la-Croix",
+        "Chenonceaux-Chisseaux",
+        "Chissay-en-Touraine",
+        "Montrichard",
+        "St-Aignan-Noyers",
+        "St-Martin-le-Beau",
+        "St-Pierre-des-Corps",
+        "Thésée",
+        "Tours",
+        "Véretz-Montlouis"
+      ],
+      "outsideStops": []
+    },
+    "P2 — Lyon Perrache - Lyon Part Dieu - Paray - Nevers - Tours": {
+      "trips": 2,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Bléré-la-Croix",
+        "Bourges",
+        "Chenonceaux-Chisseaux",
+        "Gièvres",
+        "Montrichard",
+        "Nevers",
+        "Selles-sur-Cher",
+        "St-Aignan-Noyers",
+        "St-Pierre-des-Corps",
+        "Tours",
+        "Vierzon-Ville",
+        "Villefranche-sur-Cher"
+      ],
+      "outsideStops": []
+    },
+    "P2 — Nantes - St Nazaire - Le Croisic": {
+      "trips": 33,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Batz-sur-Mer",
+        "La Baule-Escoublac",
+        "La Baule-les-Pins",
+        "Le Croisic",
+        "Le Pouliguen",
+        "Nantes",
+        "Pornichet",
+        "Savenay",
+        "St-Nazaire"
+      ],
+      "outsideStops": [
+        "Chantenay",
+        "Cordemais",
+        "Couëron",
+        "Donges",
+        "La Basse Indre - Saint-Herblain",
+        "La Croix de Méan",
+        "Montoir-de-Bretagne",
+        "Penhoët",
+        "Saint-Étienne-de-Montluc"
+      ]
+    },
+    "P2 — Tours - Lyon": {
+      "trips": 3,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Bléré-la-Croix",
+        "Bourges",
+        "Chenonceaux-Chisseaux",
+        "Gièvres",
+        "Montrichard",
+        "Nevers",
+        "Selles-sur-Cher",
+        "St-Aignan-Noyers",
+        "St-Pierre-des-Corps",
+        "Tours",
+        "Vierzon-Ville",
+        "Villefranche-sur-Cher"
+      ],
+      "outsideStops": []
+    },
+    "P25 — Laval - Le Mans": {
+      "trips": 24,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Le Mans",
+        "Le Mans Hôpital-Université"
+      ],
+      "outsideStops": [
+        "Conlie",
+        "Domfront",
+        "Laval",
+        "Montsûrs",
+        "Neau",
+        "Sillé-le-Guillaume",
+        "Voutré",
+        "Évron"
+      ]
+    },
+    "P3 — Angers St Laud - Le Mans - Paris Montparnasse": {
+      "trips": 4,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Chartres",
+        "Le Mans"
+      ],
+      "outsideStops": [
+        "Amilly - Ouerray",
+        "Bretoncelles",
+        "Champagné",
+        "Condé-sur-Huisne",
+        "Connerré - Beillé",
+        "Courville-sur-Eure",
+        "La Ferté-Bernard",
+        "La Loupe",
+        "Le Theil - La Rouge",
+        "Maintenon",
+        "Montfort-le-Gesnois",
+        "Nogent-le-Rotrou",
+        "Paris Montparnasse Hall 1 - 2",
+        "Pontgouin",
+        "Rambouillet",
+        "Saint-Aubin - Saint-Luperce",
+        "Saint-Mars-la-Brière",
+        "Sceaux - Boëssé",
+        "Versailles Chantiers",
+        "Épernon"
+      ]
+    },
+    "P3 — Chartres - Le Mans - Angers": {
+      "trips": 7,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Angers-St-Laud",
+        "Chartres",
+        "Le Mans"
+      ],
+      "outsideStops": [
+        "Amilly - Ouerray",
+        "Angers Maître École",
+        "Bretoncelles",
+        "Champagné",
+        "Condé-sur-Huisne",
+        "Connerré - Beillé",
+        "Courville-sur-Eure",
+        "Gazeran",
+        "Jouy",
+        "La Ferté-Bernard",
+        "La Loupe",
+        "La Suze",
+        "La Villette Saint-Prest",
+        "Le Theil - La Rouge",
+        "Le Vieux Briollay",
+        "Maintenon",
+        "Montfort-le-Gesnois",
+        "Morannes",
+        "Nogent-le-Rotrou",
+        "Noyen",
+        "Paris Montparnasse Hall 1 - 2",
+        "Pontgouin",
+        "Rambouillet",
+        "Sablé-sur-Sarthe",
+        "Saint-Aubin - Saint-Luperce",
+        "Saint-Mars-la-Brière",
+        "Saint-Piat",
+        "Sceaux - Boëssé",
+        "Tiercé",
+        "Versailles Chantiers",
+        "Voivres",
+        "Épernon",
+        "Étriché - Châteauneuf"
+      ]
+    },
+    "P30 — Alençon - Le Mans - Tours": {
+      "trips": 8,
+      "retainedTrips": 6,
+      "loadedStops": [
+        "Alençon",
+        "Arnage",
+        "Aubigné-Racan",
+        "Château-du-Loir",
+        "Fondettes - Saint-Cyr-sur-Loire",
+        "La Guierche",
+        "La Hutte-Coulombiers",
+        "La Membrolle-sur-Choisille",
+        "Laigné-St-Gervais",
+        "Le Mans",
+        "Le Mans Hôpital-Université",
+        "Mayet",
+        "Montbizot",
+        "Neuillé-Pont-Pierre",
+        "Neuville",
+        "St-Antoine-du-Rocher",
+        "St-Paterne",
+        "Teillé",
+        "Tours",
+        "Vaas",
+        "Vivoin-Beaumont",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    },
+    "P30 — Tours - Château du Loir - Le Mans": {
+      "trips": 9,
+      "retainedTrips": 4,
+      "loadedStops": [
+        "Alençon",
+        "Arnage",
+        "Aubigné-Racan",
+        "Château-du-Loir",
+        "Fondettes - Saint-Cyr-sur-Loire",
+        "La Guierche",
+        "La Hutte-Coulombiers",
+        "La Membrolle-sur-Choisille",
+        "Laigné-St-Gervais",
+        "Le Mans",
+        "Le Mans Hôpital-Université",
+        "Mayet",
+        "Montbizot",
+        "Neuillé-Pont-Pierre",
+        "Neuville",
+        "St-Antoine-du-Rocher",
+        "St-Paterne",
+        "Teillé",
+        "Tours",
+        "Vaas",
+        "Vivoin-Beaumont",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    },
+    "P31 — Tours - Loches": {
+      "trips": 23,
+      "retainedTrips": 2,
+      "loadedStops": [
+        "Chambourg",
+        "Cormery",
+        "Courcay-Tauxigny",
+        "Esvres",
+        "Joué-lès-Tours",
+        "La Douzillère",
+        "Loches",
+        "Montbazon",
+        "Reignac",
+        "Tours",
+        "Veigné"
+      ],
+      "outsideStops": []
+    },
+    "P33 — Tours-Voves-Chartres": {
+      "trips": 16,
+      "retainedTrips": 6,
+      "loadedStops": [
+        "Bonneval",
+        "Chartres",
+        "Château-Renault",
+        "Châteaudun",
+        "Cloyes",
+        "Fondettes - Saint-Cyr-sur-Loire",
+        "Fréteval-Morée",
+        "Monnaie",
+        "Notre-Dame-d'Oé",
+        "Pezou",
+        "St-Amand-de-Vendôme",
+        "Tours",
+        "Vendôme",
+        "Voves"
+      ],
+      "outsideStops": []
+    },
+    "P34 — Tours-Vendôme-Châteaudun": {
+      "trips": 13,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Château-Renault",
+        "Châteaudun",
+        "Cloyes",
+        "Fondettes - Saint-Cyr-sur-Loire",
+        "Fréteval-Morée",
+        "Monnaie",
+        "Notre-Dame-d'Oé",
+        "Pezou",
+        "St-Amand-de-Vendôme",
+        "Tours",
+        "Vendôme"
+      ],
+      "outsideStops": []
+    },
+    "P4 — 21. Châteauroux - La Souterraine - Limoges": {
+      "trips": 1,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Les Aubrais-Orléans",
+        "Vierzon-Ville"
+      ],
+      "outsideStops": [
+        "Ambazac",
+        "Argenton-sur-Creuse",
+        "Bersac",
+        "Châteauroux",
+        "Fromental",
+        "Issoudun",
+        "La Ferté-Saint-Aubin",
+        "La Jonchère",
+        "La Souterraine",
+        "Lamotte-Beuvron",
+        "Les Bardys",
+        "Limoges Bénédictins",
+        "Neuvy-Pailloux",
+        "Nouan-le-Fuzelier",
+        "Reuilly",
+        "Saint-Cyr-en-Val",
+        "Saint-Sulpice-Laurière",
+        "Saint-Sébastien",
+        "Sainte-Lizaigne",
+        "Salbris",
+        "Theillay",
+        "Éguzon"
+      ]
+    },
+    "P4 — Orleans - Vierzon - Châteauroux - Argenton - Limoges": {
+      "trips": 6,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Les Aubrais-Orléans",
+        "Orléans",
+        "Vierzon-Ville"
+      ],
+      "outsideStops": [
+        "Ambazac",
+        "Argenton-sur-Creuse",
+        "Bersac",
+        "Chabenet",
+        "Châteauroux",
+        "Fromental",
+        "Issoudun",
+        "La Ferté-Saint-Aubin",
+        "La Jonchère",
+        "La Souterraine",
+        "Lamotte-Beuvron",
+        "Les Bardys",
+        "Limoges Bénédictins",
+        "Lothiers",
+        "Luant",
+        "Neuvy-Pailloux",
+        "Nouan-le-Fuzelier",
+        "Reuilly",
+        "Saint-Cyr-en-Val",
+        "Saint-Sulpice-Laurière",
+        "Saint-Sébastien",
+        "Salbris",
+        "Theillay",
+        "Éguzon"
+      ]
+    },
+    "P5 — Nantes - Angers St Laud - Le Mans": {
+      "trips": 36,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Ancenis",
+        "Angers-St-Laud",
+        "Champtocé-sur-Loire",
+        "Ingrandes",
+        "La Possonnière",
+        "Le Mans",
+        "Nantes",
+        "Varades - Saint-Florent-le-Vieil"
+      ],
+      "outsideStops": [
+        "La Suze",
+        "Le Cellier",
+        "Mauves-sur-Loire",
+        "Oudon",
+        "Sablé-sur-Sarthe",
+        "Savennières - Béhuard",
+        "Thouaré"
+      ]
+    },
+    "P6 — Blois - Tours": {
+      "trips": 3,
+      "retainedTrips": 1,
+      "loadedStops": [
+        "Amboise",
+        "Blois-Chambord",
+        "Limeray",
+        "Montlouis",
+        "Noizay",
+        "Onzain-Chaumont-sur-Loire",
+        "St-Pierre-des-Corps",
+        "Tours"
+      ],
+      "outsideStops": []
+    },
+    "P65 — La Roche Sur Yon - Saumur - Tours": {
+      "trips": 25,
+      "retainedTrips": 14,
+      "loadedStops": [
+        "Angers-St-Laud",
+        "Bournezeau",
+        "Bressuire",
+        "Cerizay",
+        "Chantonnay",
+        "Cinq-Mars-la-Pile",
+        "Fougeré",
+        "La Bohalle",
+        "La Chaize-le-Vicomte",
+        "La Ménitré",
+        "La Roche-sur-Yon",
+        "Langeais",
+        "Les Rosiers-sur-Loire",
+        "Montreuil-Bellay",
+        "Port-Boulet",
+        "Pouzauges",
+        "Saumur",
+        "Savonnières",
+        "St-Mathurin",
+        "St-Pierre-des-Corps",
+        "Thouars",
+        "Tours",
+        "Trélazé"
+      ],
+      "outsideStops": []
+    },
+    "P7 — Tours - Bourges - Nevers": {
+      "trips": 35,
+      "retainedTrips": 15,
+      "loadedStops": [
+        "Avord",
+        "Azay-sur-Cher",
+        "Bengy",
+        "Bléré-la-Croix",
+        "Bourges",
+        "Chenonceaux-Chisseaux",
+        "Chissay-en-Touraine",
+        "Gièvres",
+        "La Guerche-sur-l'Aubois",
+        "Mehun-sur-Yèvre",
+        "Mennetou-sur-Cher",
+        "Montrichard",
+        "Nevers",
+        "Nérondes",
+        "Selles-sur-Cher",
+        "St-Aignan-Noyers",
+        "St-Germain-du-Puy",
+        "St-Martin-le-Beau",
+        "St-Pierre-des-Corps",
+        "Thésée",
+        "Tours",
+        "Vierzon-Ville",
+        "Villefranche-sur-Cher",
+        "Véretz-Montlouis"
+      ],
+      "outsideStops": []
+    },
+    "P8 — Paris - Etampes - Orléans": {
+      "trips": 27,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Les Aubrais-Orléans",
+        "Orléans",
+        "Paris-Austerlitz"
+      ],
+      "outsideStops": [
+        "Angerville",
+        "Artenay",
+        "Boisseaux",
+        "Cercottes",
+        "Chevilly",
+        "Château-Gaillard",
+        "Guillerval",
+        "Monnerville",
+        "Toury",
+        "Étampes"
+      ]
+    },
+    "P9 — Alençon - Château Du Loir": {
+      "trips": 32,
+      "retainedTrips": 0,
+      "loadedStops": [
+        "Alençon",
+        "Arnage",
+        "Aubigné-Racan",
+        "Château-du-Loir",
+        "La Guierche",
+        "La Hutte-Coulombiers",
+        "Laigné-St-Gervais",
+        "Le Mans",
+        "Le Mans Hôpital-Université",
+        "Mayet",
+        "Montbizot",
+        "Neuville",
+        "Teillé",
+        "Vaas",
+        "Vivoin-Beaumont",
+        "Écommoy"
+      ],
+      "outsideStops": []
+    }
+  },
+  "railStationsWithoutScheduledBoarding": [
+    "Azay-le-Rideau",
+    "Ballan",
+    "Chinon",
+    "Druye",
+    "Rivarennes",
+    "Vendôme-Villiers-sur-Loir"
+  ],
+  "caveat": "Coverage of direct pairs is not a departure-time timetable audit; a missing direct pair may still be reachable with transfers. OutsideStops are outside current map station inventory, not necessarily errors.",
+  "coordinateAudit": {
+    "matchedStations": 155,
+    "over250m": [
+      {
+        "station": "Caen",
+        "distanceMetres": 414.3
+      },
+      {
+        "station": "Paris-Austerlitz",
+        "distanceMetres": 256.7
+      },
+      {
+        "station": "Vendôme-Villiers-sur-Loir",
+        "distanceMetres": 1464.5
+      }
+    ],
+    "maxMetres": 1464.5
+  },
+  "missingPairCountByExampleLine": {
+    "K3 — Paris - Chartres - Le Mans": 1,
+    "P3 — Chartres - Le Mans - Angers": 1,
+    "K3 — Le Mans - Paris Montparnasse": 1,
+    "K15 — Le Croisic - Nantes - Le Mans": 22,
+    "P5 — Nantes - Angers St Laud - Le Mans": 22,
+    "K8 — Nantes - Les Sables D'Olonne": 1,
+    "C20 — Cholet Angers Saumur": 6,
+    "K9 — Nantes - La Rochelle": 1,
+    "K8+ — Paris - Orléans": 1,
+    "P16 — Orléans - Blois": 43,
+    "P14 — Orléans - Nevers": 59,
+    "K5+ — Paris - Bourges - Nevers": 12,
+    "P10 — Paris - Châteaudun - Vendôme": 14
+  }
+}
