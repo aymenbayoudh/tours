@@ -484,8 +484,9 @@ def build_graph(stations, edges, route_waits, route_info):
 
     def transfer_key(state, station_index):
         route_id = state["routeId"]
-        if route_info.get(route_id, {}).get("mode") == "BUS":
-            return None
+        # Keep route identity for every public-transport mode. This prevents a
+        # generic bus/tram hub from manufacturing "get off / re-board the same
+        # line" loops while still allowing transfers between different lines.
         if station_index == saint_pierre_index and state.get("pattern") is not None:
             return (route_id, state["pattern"])
         return route_id
@@ -503,14 +504,17 @@ def build_graph(stations, edges, route_waits, route_info):
         first_mode = route_info.get(first_route, {}).get("mode") if first_route is not None else None
         second_mode = route_info.get(second_route, {}).get("mode") if second_route is not None else None
 
-        # Prefer a one-seat TER service whenever one exists. Every TER→TER
-        # interchange therefore adds one hidden preference unit, regardless of
-        # whether the codes are identical (P7→P7) or different (P33→P34,
-        # omnibus P→express K, etc.). The preference is finite in routing.mjs:
-        # these interchanges remain fully available when they are genuinely
-        # needed, while 0 changes beats 1 and 1 beats 2 in normal cases.
+        # Comfort preference applies to artificial TER stitching, not to every
+        # useful rail interchange. A P→K or K→P change (e.g. omnibus P1 feeding
+        # a faster K1 at Saumur) stays neutral. We only tag:
+        #   - another representative profile of the SAME TER route;
+        #   - P→P changes, such as P33→P34 at Châteaudun, which otherwise mimic
+        #     a through regional service by stitching two local profiles.
         if first_mode == "TER" and second_mode == "TER":
-            return 1
+            first_code = first_route.removeprefix("TER ")
+            second_code = second_route.removeprefix("TER ")
+            if first_route == second_route or (first_code.startswith("P") and second_code.startswith("P")):
+                return 1
 
         # Specific Tours / Saint-Pierre-des-Corps safeguard: if the incoming
         # train and the service one would board BOTH have Tours as their very
@@ -554,11 +558,18 @@ def build_graph(stations, edges, route_waits, route_info):
             for dst in targets:
                 add(hub, dst, route_waits[route_states[dst]["routeId"]])
 
-        # Every route can still interchange with every other route. Preference
-        # metadata only removes artificial profile stitching and the redundant
-        # Saint-Pierre→Tours one-stop interchange described above.
+        # Every DIFFERENT route can still interchange with every other route.
+        # For non-TER modes, changing from a line straight back onto the same
+        # line at the same physical stop is structurally useless and can create
+        # loops (e.g. TRAM A Tours→Palais Sports→Tours). Staying aboard is
+        # represented by the timetable pattern itself, so no valid through ride
+        # depends on this transfer edge.
         for first_key, first_hub in alight_hubs[i].items():
             for second_key, second_hub in board_hubs[i].items():
+                first_route, second_route = key_route(first_key), key_route(second_key)
+                first_mode = route_info.get(first_route, {}).get("mode") if first_route is not None else None
+                if first_route is not None and first_route == second_route and first_mode != "TER":
+                    continue
                 add(
                     first_hub,
                     second_hub,
