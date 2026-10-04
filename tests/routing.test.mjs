@@ -347,7 +347,18 @@ check(d.timetablePatterns.some(pattern=>{
 const chartres=station('Chartres');
 const chartresModel=buildTravelModel(d,chartres.point,true);
 const chartresTours=describeJourney(d,chartresModel,station('Tours').point);
-check(chartresTours.legs.length===1,'Chartres→Tours should prefer a one-seat train: '+JSON.stringify(chartresTours.legs.map(l=>({route:l.routeId,from:d.stations[l.from].name,to:d.stations[l.to].name,minutes:l.minutes}))))
+{
+  const directPattern=d.timetablePatterns.find(p=>p.routeId==='TER P33'&&p.stops[0]===d.stations.indexOf(chartres)&&p.stops.at(-1)===d.stations.indexOf(station('Tours')));
+  const directNode=directPattern?.arrivalNodes?.at(-1);
+  const diagnostic={
+    legs:chartresTours.legs.map(l=>({route:l.routeId,from:d.stations[l.from].name,to:d.stations[l.to].name,minutes:l.minutes})),
+    directTrain:directPattern?.train,
+    directMinutes:Number.isInteger(directNode)?chartresModel.comfortDistances[directNode]:null,
+    directScore:Number.isInteger(directNode)?chartresModel.comfortPreferenceScores[directNode]:null,
+    directWeight:Number.isInteger(directNode)?chartresModel.comfortTransferCounts[directNode]:null
+  };
+  check(chartresTours.legs.length===1,'Chartres→Tours should prefer a one-seat train: '+JSON.stringify(diagnostic));
+}
 check(chartresTours.legs[0].routeId==='TER P33','Chartres→Tours should use direct P33');
 check(chartresTours.legs[0].from===d.stations.indexOf(chartres),'Chartres→Tours direct leg should start at Chartres');
 check(d.stations[chartresTours.legs[0].to].name==='Tours','Chartres→Tours direct leg should end at Tours');
