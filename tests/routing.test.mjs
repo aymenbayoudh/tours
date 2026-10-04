@@ -108,9 +108,9 @@ for(let i=0;i<d.stations.length;i++){
       && nextStopFor(b,i)===toursIndex
     );
     let expected=0;
-    if(artificialTer) expected=2;
+    if(redundantSpTours) expected=2;
+    else if(artificialTer) expected=2;
     else if(pkNeutral) expected=0;
-    else if(redundantSpTours) expected=2;
     else if(a.routeId&&b.routeId&&a.routeId!==b.routeId) expected=1;
     check((Number(edge[3])||0)===expected,'Wrong weighted comfort-transfer metadata: '+JSON.stringify({station:d.stations[i].name,from:a.routeId,to:b.routeId,fromMode:firstMode,toMode:secondMode,fromPattern:a.pattern,toPattern:b.pattern,actual:Number(edge[3])||0,expected,redundantSpTours}));
     if(artificialTer)artificialTerPreferenceEdges++;
