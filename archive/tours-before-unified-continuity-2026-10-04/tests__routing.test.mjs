@@ -129,7 +129,7 @@ for(let i=0;i<d.stations.length;i++){
   }
 }
 check(artificialTerPreferenceEdges>0,'No artificial TER stitching preference edges found');
-check(sameTerContinuationEdges===0,'Free switching between TER profiles must be absent');
+check(sameTerContinuationEdges>0,'No zero-wait same-TER profile continuations found');
 check(sameRouteBlockedEdges>0,'No same-line reboarding candidates were checked');
 check(redundantSpToursPreferenceEdges>0,'No redundant Saint-Pierre→Tours cross-route preference edges found');
 
@@ -270,9 +270,8 @@ const refEdgeCost=(fromNode,toNode,storedCost,walkingMetres)=>{
   if(a.role==='departure'&&b.role==='arrival'&&a.routeId===b.routeId&&a.stationIndex!==b.stationIndex)return storedCost;
   if(a.role==='arrival'&&b.role==='departure'){
     const sameStation=a.stationIndex===b.stationIndex;
-    const samePattern=a.pattern!==null&&a.pattern===b.pattern;
-    const fallback=a.pattern===null&&b.pattern===null&&a.routeId===b.routeId&&storedCost===0;
-    if(sameStation&&(samePattern||fallback))return storedCost;
+    const sameRouteContinuation=a.routeId===b.routeId&&storedCost===0;
+    if(sameStation&&sameRouteContinuation)return storedCost;
     const wait=refWait(b.routeId);
     if(sameStation)return 3.5+wait;
     const aPoint=d.stations[a.stationIndex].point,bPoint=d.stations[b.stationIndex].point;
@@ -390,23 +389,4 @@ for (const [id, info] of Object.entries(d.routeInfo)) {
   check(routeWaitingMinutes(d,id,{[key]:0})===0, `Zero wait ${id}`);
   check(Math.abs(routeWaitingMinutes(d,id,{[key]:2})-2*base)<1e-9, `Double wait ${id}`);
   if (info.waitMinutes !== undefined) check(Math.abs(base-info.waitMinutes)<1e-9, `GTFS wait ${id}`);
-}
-
-// No free intermediate profile switches. A necessary same-code transfer must
-// occur at the incoming service terminal and cannot reverse over previous stops.
-for(let n=0;n<d.routeStates.length;n++)for(const edge of d.adjacency[n]){
- const a=d.routeStates[n],b=d.routeStates[edge[0]];
- if(a.role!=='arrival'||b.role!=='departure'||a.routeId!==b.routeId||a.pattern===b.pattern||!Number.isInteger(a.pattern)||!Number.isInteger(b.pattern))continue;
- const incoming=d.timetablePatterns[a.pattern],outgoing=d.timetablePatterns[b.pattern];
- assert.equal(incoming.stops.at(-1),a.stationIndex,'An in-service train must not switch profile');
- assert.ok(edge[1]>0,'A change of train must not be disguised as zero-time continuity');
- const onward=outgoing.stops.slice(outgoing.stops.indexOf(b.stationIndex)+1);
- assert.ok(!incoming.stops.slice(0,-1).some(s=>onward.includes(s)),'Terminal transfer backtracks');
-}
-for(const originName of ['Tours','La Bohalle','La Ménitré'])for(const factor of [0,1]){
- const origin=station(originName),target=station(originName==='Tours'?'Orléans':'Tours');
- const m=buildTravelModel(d,origin.point,true,{terWaitFactor:factor,navetteWaitFactor:factor,busWaitFactor:factor,tramWaitFactor:factor});
- const j=describeJourney(d,m,target.point);
- assert.ok(!j.legs.some(l=>l.routeId==='NAVETTE'),'Direct Tours-Orléans/feeder must not detour via the navette');
- if(originName!=='Tours' && factor===0)assert.deepEqual(j.legs.map(l=>l.routeId),['TER P1','TER K1'],'Preserve the P1 to K1 feeder');
 }

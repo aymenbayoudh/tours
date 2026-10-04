@@ -1,5 +1,7 @@
 # Continuité des trajets — audit du 4 octobre 2026
 
+Ce document conserve le diagnostic initial de `ab0029f`. La section finale décrit les corrections réalisées après les commits arrivés jusqu’à `3cb8f45`. Les constats initiaux ne décrivent donc plus tous la version corrigée.
+
 ## Version réellement auditée
 
 Reprise après `ab0029f`, récupération des commits distants. Le graphe JSON commité était ancien : hubs génériques, incompatibles avec les derniers tests. Reconstruction avec `build_data.py` : le résultat **est identique au graphe téléchargé sur GitHub Pages**. L’audit ci-dessous porte sur ce résultat, pas sur l’ancienne copie locale. La reconstruction remet le dépôt en cohérence sans changer le graphe actuellement publié.
@@ -73,3 +75,20 @@ Les prochains contrôles doivent vérifier les propriétés demandées : trajet 
 Le seuil de magnétisme accepte maintenant des pas de **10 000** au lieu de 50 000, dans les deux entrées HTML. Le graphe commité a été remis à jour pour correspondre au graphe déjà publié. **Les règles de routage n’ont pas encore été changées par cet audit.**
 
 Sources du diagnostic : `build_data.py`, `site/routing.mjs`, `site/walking-engine.mjs`, historique des commits ; script reproductible `scripts/audit_routing_continuity.mjs`, résultats `routing-continuity-audit-2026-10-04.json`. Les originaux sont conservés dans `archive/tours-before-routing-audit-2026-10-04/`.
+
+
+## Mise à jour : continuité unifiée après `3cb8f45`
+
+Les nouveaux passages arrivée→départ à coût zéro entre profils TER ne représentaient pas une continuité de train. Ils mélangeaient des vecteurs horaires et escamotaient leurs stationnements. Ils sont supprimés : un changement de profil du même code n’est permis qu’au terminus du profil entrant, sans retour sur ses gares précédentes, avec marge et attente d’un nouvel embarquement. La présentation ne fusionne plus deux profils distincts pour masquer ce changement.
+
+Le stationnement arrivée→départ du **même profil** conserve exactement sa durée GTFS, sans nouvel embarquement. Les liens de descente/remontée sur la même ligne via les hubs sont bloqués au même arrêt et entre arrêts reliés à pied. Le seuil de 60 minutes est supprimé dans le calcul du point, les valeurs aux stations et la surface sur voirie ; la sélection par préférence s’applique partout. P↔K reste neutre, et la durée affichée conserve seulement le temps physique, les attentes et les marges réelles du modèle.
+
+Contrôles : Tours→Orléans sans navette avec attente ×0 et ×1 ; La Bohalle/La Ménitré→Tours via P1→K1 à ×0 ; attente ×1 autorise P1 direct si l’attente K1 rend le rabattement moins favorable. Le stationnement d’un train continu, les prolongements au terminus, les contraintes structurelles et la règle identique sous 60 minutes ont leurs tests. L’échantillon identique de **26 848 trajets** ne contient plus de jambes consécutives du même TER. Ce contrôle est un échantillonnage, pas une preuve pour chaque point libre et chaque combinaison de paramètres.
+
+### Effet de la préférence, à distinguer d’une durée physique
+
+La sélection conserve le score de préférence déjà présent dans le projet : durée physique + 30 minutes par unité de changement (certaines correspondances pèsent deux unités). Ces unités **ne sont pas ajoutées au temps affiché**. La suppression du seuil étend cette préférence aux trajets courts. Les isochrones représentent donc les durées des trajets préférés, et non systématiquement les plus petites durées physiques possibles.
+
+Le test de surface vérifie maintenant la monotonie de l’objectif effectivement optimisé **et**, séparément, du minimum physique indépendant. Il ne prétend plus qu’un changement de paramètre doit diminuer la durée du trajet préféré : ce serait faux si le nouveau choix comporte moins de changements. Sur la grille de test de 7 999 cellules autour de Tours, passer de 4,8 à 6 km/h change ainsi de préférence avec une durée physique plus grande dans 17 cellules, jusqu’à 14,82 minutes. Cet effet est documenté dans l’aide, sans l’effacer par un lissage ni falsifier la durée. Pour garantir la monotonie de toutes les durées affichées, il faudrait une autre politique de sélection, fondée uniquement sur le temps minimal sous contraintes de validité.
+
+Les données restent représentatives, sans synchronisation des heures de départ. Une correspondance entre lignes distinctes n’est pas une garantie de service le même jour ou à la même heure. Originaux de ce lot : `archive/tours-before-unified-continuity-2026-10-04/`. Résultat de l’échantillonnage : `routing-continuity-after-unification-2026-10-04.json`.

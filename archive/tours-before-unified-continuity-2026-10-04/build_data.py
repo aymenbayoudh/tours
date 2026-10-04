@@ -472,9 +472,10 @@ def build_graph(stations, edges, route_waits, route_info):
             previous_stop_by_pattern[(number, stop_indexes[pos + 1])] = stop_indexes[pos]
         audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": stop_indexes, "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
 
-    # Preserve whole train profiles. Same-code interchange is only available
-    # when the incoming service ends; reject backtracking and account for the
-    # real boarding/wait instead of manufacturing a zero-time continuation.
+    # Same TER line = continuous line, not a correspondence. Representative
+    # timetable profiles may begin/end at different stations, so connect them
+    # directly with no second wait or transfer penalty. Reject immediate
+    # reversals (A→B then B→A): those are not a continuation.
     for station_index in range(len(stations)):
         arrivals_here = list(station_states[station_index])
         departures_here = list(boarding_states[station_index])
@@ -486,23 +487,11 @@ def build_graph(stations, edges, route_waits, route_info):
                 b = route_states[dst]
                 if b["routeId"] != a["routeId"] or b.get("pattern") is None or b["pattern"] == a["pattern"]:
                     continue
-                incoming = audit_patterns[a["pattern"]]["stops"]
-                outgoing = audit_patterns[b["pattern"]]["stops"]
-                # A train that can continue must keep its complete time vector.
-                # Only a terminating service can connect to another service of
-                # the same code; this is a real interchange, never free stitching.
-                if incoming[-1] != station_index:
-                    continue
-                pos = outgoing.index(station_index)
-                if pos == len(outgoing) - 1:
-                    continue
-                if set(incoming[:-1]) & set(outgoing[pos + 1:]):
-                    continue  # going back towards a previously traversed station
                 previous_stop = previous_stop_by_pattern.get((a["pattern"], station_index))
                 next_stop = next_stop_by_pattern.get((b["pattern"], station_index))
                 if previous_stop is not None and next_stop == previous_stop:
                     continue
-                add(src, dst, 3.5, same_route_changes=2)
+                add(src, dst, 0)
 
     # If a scheduled TER at Saint-Pierre has Tours as its final remaining stop,
     # it is not offered as a new boarding option for that one-stop hop. Through
@@ -577,8 +566,8 @@ def build_graph(stations, edges, route_waits, route_info):
         second_mode = route_info.get(second_route, {}).get("mode") if second_route is not None else None
 
         # The edge metadata is a COMFORT WEIGHT, not a hard prohibition.
-        # routing.mjs uses one unit of 30 preference minutes for all journeys.
-        # This selection score never changes the displayed physical duration.
+        # routing.mjs values one unit at 30 minutes for journeys whose fastest
+        # option already exceeds one hour.
         #
         # 2 units: especially artificial changes.
         # 0 units: useful omnibus↔Krono upgrade P↔K.
@@ -617,8 +606,9 @@ def build_graph(stations, edges, route_waits, route_info):
             return 0
         if first_route != second_route:
             return 1
-        # Same-line hub transfers, including walking between stops, are
-        # structurally removed below. Retain a safe value for other callers.
+        # Same non-TER line at the same stop is structurally removed below.
+        # If two distinct physical stops of the same line are linked by walking,
+        # retain it but make it unattractive as a comfort detour.
         if first_station != second_station:
             return 1
         return 0

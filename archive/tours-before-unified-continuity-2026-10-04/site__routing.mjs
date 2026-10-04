@@ -40,7 +40,8 @@ class MinHeap {
 }
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
-const TRANSFER_PREFERENCE_MINUTES = 30;
+const SHORT_TRIP_FASTEST_MINUTES = 60;
+const LONG_TRIP_TRANSFER_PREFERENCE_MINUTES = 30;
 function numeric(value, fallback, min = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? Math.max(min, number) : fallback;
@@ -125,12 +126,11 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingM
 
   if (a.role === "arrival" && b.role === "departure") {
     const sameStation = a.stationIndex === b.stationIndex;
-    const samePattern = Number.isInteger(a.pattern) && a.pattern === b.pattern;
-    const fallbackStayAboard = a.routeId === b.routeId && a.pattern === null && b.pattern === null && storedCost === 0;
+    const sameRouteContinuation = a.routeId === b.routeId && storedCost === 0;
 
-    // A real train dwell is in-vehicle time, never a second boarding.
-    // Different profiles are separate vehicles, including at a line terminus.
-    if (sameStation && (samePattern || fallbackStayAboard)) return storedCost;
+    // Dwell and a switch between representative timetable profiles of the
+    // SAME TER line are line continuity, not a correspondence: no second wait.
+    if (sameStation && sameRouteContinuation) return storedCost;
 
     const wait = waitForRoute(data, b.routeId, settings);
     if (sameStation) return transferMargin(data, settings, a.stationIndex, b.stationIndex) + wait;
@@ -423,7 +423,7 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   });
 
   const pure = runRoutingVariant(data, allowed, accessMinutes, settings, 0);
-  const comfort = runRoutingVariant(data, allowed, accessMinutes, settings, TRANSFER_PREFERENCE_MINUTES);
+  const comfort = runRoutingVariant(data, allowed, accessMinutes, settings, LONG_TRIP_TRANSFER_PREFERENCE_MINUTES);
   let pureWalkingField = null, comfortWalkingField = null;
   if (road) {
     const pureSeeds = sourceSnap ? [[sourceSnap, 0, -1]] : [];
@@ -440,12 +440,15 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
       }
     });
     pureWalkingField = road.search(pureSeeds, true, limit);
-    const comfortLimit = Number.isFinite(limit) ? limit + 4 * TRANSFER_PREFERENCE_MINUTES * speedCm : Infinity;
+    const comfortLimit = Number.isFinite(limit) ? limit + 4 * LONG_TRIP_TRANSFER_PREFERENCE_MINUTES * speedCm : Infinity;
     comfortWalkingField = road.search(comfortSeeds, true, comfortLimit);
   }
 
   const activeStations = data.boardingStates.map((nodes) => nodes.some((n) => allowed[n]));
-  const stationArrivals = comfort.stationArrivals;
+  const stationArrivals = pure.stationArrivals.map((arrival, i) => {
+    const pureTotal = arrival.minutes + exitMargin(data, settings, i);
+    return pureTotal < SHORT_TRIP_FASTEST_MINUTES ? arrival : comfort.stationArrivals[i];
+  });
   return {
     origin, includeProjects, settings, allowed, accessMinutes, activeStations,
     pureDistances:pure.distances, purePrevious:pure.previous, pureTransferCounts:pure.transferCounts, purePreferenceScores:pure.preferenceScores,
@@ -465,12 +468,14 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     walkingField:comfortWalkingField,
     sourceCovered, sourceSnap,
     walkingLimitMinutes:customSettings.walkingLimitMinutes ?? Infinity,
-    shortTripFastestMinutes:0, // compatibility for diagnostic consumers; no threshold
-    comfortTransferPreferenceMinutes:TRANSFER_PREFERENCE_MINUTES,
+    shortTripFastestMinutes:SHORT_TRIP_FASTEST_MINUTES,
+    comfortTransferPreferenceMinutes:LONG_TRIP_TRANSFER_PREFERENCE_MINUTES,
   };
 }
 
 export function estimateTravel(data, model, destination, details = false) {
+  const pure = variantEstimate(data, model, destination, "pure", details);
+  if (pure.minutes < SHORT_TRIP_FASTEST_MINUTES) return details ? pure : pure.minutes;
   const comfort = variantEstimate(data, model, destination, "comfort", details);
   return details ? comfort : comfort.minutes;
 }
@@ -508,7 +513,7 @@ export function describeJourney(data, model, destination) {
     const b = data.routeStates[nodes[i]];
     if (a.role !== "departure" || b.role !== "arrival" || a.stationIndex === b.stationIndex) continue;
     const last = legs.at(-1);
-    if (last && last.pattern === a.pattern && last.routeId === a.routeId && last.to === a.stationIndex) {
+    if (last && last.routeId === a.routeId && last.to === a.stationIndex) {
       last.to = b.stationIndex;
       last.end = distances[nodes[i]];
       last.minutes = last.end - last.start;

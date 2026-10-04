@@ -1,5 +1,5 @@
 import { WalkingNetwork } from './walking.mjs';
-import { buildTravelModel, estimateTravel, describeJourney, reachability } from './routing.mjs?v=2026-10-04p';
+import { buildTravelModel, estimateTravel, describeJourney, reachability } from './routing.mjs?v=2026-10-04n';
 
 function inRing([x, y], ring) {
   let inside = false;
@@ -25,7 +25,7 @@ export function surfaceValue(network, model, point, snap, ceiling) {
   const pure = network.at(model.pureWalkingField, snap);
   const pureMinutes = pure.cost / speedCm;
   if (!Number.isFinite(pureMinutes)) return ceiling;
-  if (!model.comfortWalkingField) return Math.min(ceiling, pureMinutes);
+  if (pureMinutes < model.shortTripFastestMinutes || !model.comfortWalkingField) return Math.min(ceiling, pureMinutes);
 
   const comfort = network.at(model.comfortWalkingField, snap);
   if (!Number.isFinite(comfort.cost)) return Math.min(ceiling, pureMinutes);

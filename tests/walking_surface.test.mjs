@@ -52,9 +52,23 @@ const preview=engine.calculate({...base,key:'preview',preview:true});
 for(let r=0;r<spec.rows;r++) for(let c=0;c<spec.cols;c++) if(first.warp.validMask[r][c]) {
   assert(Math.abs(first.warp.minutes[r][c]-preview.warp.minutes[r][c])<1e-6,'Drag bounds must preserve the entire displayed surface');
 }
+const initialModel=engine.model;
 const faster=engine.calculate({...base,settings:{...base.settings,walkSpeedKmh:6},key:'speed',preview:false});
+let preferenceRouteSwitches=0,largestPhysicalIncrease=0;
 for(let r=0;r<spec.rows;r++) for(let c=0;c<spec.cols;c++) if(first.warp.validMask[r][c]) {
-  assert(faster.warp.minutes[r][c]<=first.warp.minutes[r][c]+1e-6,'Increasing walk speed must not slow down a displayed trip');
+  const snap=grid.snaps[r*spec.cols+c];
+  if(!snap)continue;
+  // Route selection now always minimizes the comfort score. Faster walking
+  // must improve that objective AND the independent fastest physical time.
+  // A switch to a fewer-transfer route can increase its physical duration;
+  // testing that as though the objective were pure time concealed the policy.
+  for(const field of ['pureWalkingField','comfortWalkingField']) {
+    const oldCost=engine.network.at(initialModel[field],snap).cost/(initialModel.settings.walkMetersPerMinute*100);
+    const newCost=engine.network.at(engine.model[field],snap).cost/(engine.model.settings.walkMetersPerMinute*100);
+    assert(newCost<=oldCost+1e-6,`Increasing walking speed must improve ${field}`);
+  }
+  const increase=faster.warp.minutes[r][c]-first.warp.minutes[r][c];
+  if(increase>1e-6){preferenceRouteSwitches++;largestPhysicalIncrease=Math.max(largestPhysicalIncrease,increase);}
 }
 const warm=[];
 for(let i=0;i<5;i++) {
@@ -67,4 +81,4 @@ assert(walking.journey.walking>6,'Selected points must preserve the Jumeaux stre
 assert.equal(walking.journey.walkingApproximation,false,'Surface extension must never replace the exact selected-point calculation');
 const unavailable=engine.calculate({...base,origin:[origin[0]+500000,origin[1]+500000],key:'outside',preview:false});
 assert.equal(unavailable.sourceCovered,false);
-console.log(JSON.stringify({finiteSurfaceChecks:checks,interiorContourEnds:interiorEnds,coldTotalMs:Math.round(first.totalMs),warm,selectedPointDetourMinutes:walking.journey.walking},null,2));
+console.log(JSON.stringify({finiteSurfaceChecks:checks,interiorContourEnds:interiorEnds,coldTotalMs:Math.round(first.totalMs),preferenceRouteSwitches,largestPhysicalIncrease,warm,selectedPointDetourMinutes:walking.journey.walking},null,2));

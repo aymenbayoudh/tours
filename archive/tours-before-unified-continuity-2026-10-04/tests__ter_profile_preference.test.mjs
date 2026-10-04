@@ -35,20 +35,21 @@ function edge(d,a,b,minutes,weight=0){
 
 {
   const d=baseData();
-  // Staying on a real P7 keeps its station dwell, with no new boarding.
+  // Two representative P7 profiles form one continuous P7 line. Switching
+  // profile at B is zero-cost line continuity, not a correspondence/re-boarding.
   const a=node(d,0,'TER P7','departure',0);
   const bArr=node(d,1,'TER P7','arrival',0);
-  const bDep=node(d,1,'TER P7','departure',0);
-  const dArr=node(d,3,'TER P7','arrival',0);
-  edge(d,a,bArr,35); edge(d,bArr,bDep,4); edge(d,bDep,dArr,40);
+  const bDep=node(d,1,'TER P7','departure',1);
+  const dArr=node(d,3,'TER P7','arrival',1);
+  edge(d,a,bArr,35); edge(d,bArr,bDep,0); edge(d,bDep,dArr,40);
   d.boardingStates[0].push(a); d.stationStates[1].push(bArr);
   d.boardingStates[1].push(bDep); d.stationStates[3].push(dArr);
 
   const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
   const journey=describeJourney(d,model,d.stations[3].point);
   assert.equal(journey.preference,'comfort');
-  assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7'],'a single train profile must render as one continuous leg');
-  assert.equal(journey.minutes,79);
+  assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7'],'same TER profiles must render as one continuous line');
+  assert.equal(journey.minutes,75);
   assert.equal(model.comfortStationArrivals[3].transferCount,0,'same-line profile continuity must not consume comfort weight');
 }
 
@@ -104,17 +105,3 @@ function edge(d,a,b,minutes,weight=0){
 }
 
 console.log('TER profile preference tests: ok');
-
-// The same continuity preference applies below one hour. No 60-minute switch.
-{
- const d=baseData();
- const dep=node(d,0,'TER P7','departure',0),arr=node(d,3,'TER P7','arrival',0);
- edge(d,dep,arr,50);d.boardingStates[0].push(dep);d.stationStates[3].push(arr);
- const a=node(d,0,'TER P7','departure',1),b=node(d,1,'TER P7','arrival',1);
- const al=node(d,1,'TER P7','alight'),bo=node(d,1,'TER P8','board');
- const c=node(d,1,'TER P8','departure',2),e=node(d,3,'TER P8','arrival',2);
- edge(d,a,b,10);edge(d,b,al,0);edge(d,al,bo,3.5,2);edge(d,bo,c,0);edge(d,c,e,10);
- d.boardingStates[0].push(a);d.boardingStates[1].push(c);d.stationStates[1].push(b);d.stationStates[3].push(e);
- const m=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:.5});
- const j=describeJourney(d,m,d.stations[3].point);assert.equal(j.minutes,50);assert.equal(j.legs.length,1);
-}
