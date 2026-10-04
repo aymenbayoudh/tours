@@ -172,8 +172,9 @@ for(let i=0;i<d.stations.length;i++)for(let j=i+1;j<d.stations.length;j++){
   if(Math.hypot(...d.stations[i].point.map((x,k)=>x-d.stations[j].point[k]))>650)continue;
   const bothInSerm=d.stations[i].inSerm&&d.stations[j].inSerm;
   if(!roadWalking||!bothInSerm){
-    if(alightHub[i].length&&boardHub[j].length)check(transferEdges(i,j).length>0,'Missing nearby fallback transfer');
-    if(alightHub[j].length&&boardHub[i].length)check(transferEdges(j,i).length>0,'Missing reverse nearby fallback transfer');
+    const distinctRoutePair=(from,to)=>alightHub[from].some(a=>boardHub[to].some(b=>d.routeStates[a].routeId!==d.routeStates[b].routeId));
+    if(alightHub[i].length&&boardHub[j].length&&distinctRoutePair(i,j))check(transferEdges(i,j).length>0,'Missing nearby fallback transfer');
+    if(alightHub[j].length&&boardHub[i].length&&distinctRoutePair(j,i))check(transferEdges(j,i).length>0,'Missing reverse nearby fallback transfer');
   }
   if(d.stations[i].mode!==d.stations[j].mode)crossMode++;
 }
@@ -183,9 +184,20 @@ if(roadWalking){
   const j1=byId('FILBLEU:TTR:JUMEB-1'),j2=byId('FILBLEU:TTR:JUMEB-2');
   check(j1>=0&&j2>=0,'Missing Jumeaux physical stop fixtures');
   const jumeauxDirect=Math.hypot(d.stations[j1].point[0]-d.stations[j2].point[0],d.stations[j1].point[1]-d.stations[j2].point[1]);
-  const jumeauxEdge=transferEdge(j1,j2);
   check(jumeauxDirect<50,'Jumeaux fixture is no longer geometrically close');
-  check(Boolean(jumeauxEdge)&&Number.isFinite(jumeauxEdge[2])&&jumeauxEdge[2]>500,'BD TOPO detour between Jumeaux stops was lost');
+  const walkingSource=JSON.parse(fs.readFileSync(new URL('../data/tours/walking_transfers.json',import.meta.url)));
+  const jumeauxPair=[...(walkingSource.pairs||[]),...(walkingSource.manualPairs||[])].find(pair=>
+    (pair[0]==='FILBLEU:TTR:JUMEB-1'&&pair[1]==='FILBLEU:TTR:JUMEB-2')||
+    (pair[1]==='FILBLEU:TTR:JUMEB-1'&&pair[0]==='FILBLEU:TTR:JUMEB-2')
+  );
+  check(Boolean(jumeauxPair)&&Number(jumeauxPair[2])>500,'BD TOPO detour between Jumeaux physical stops was lost from the prepared walking source');
+  // The road detour is retained as topology knowledge, but if both physical
+  // stops only offer the same bus line it must NOT create a get-off/re-board
+  // shortcut in the public-transport graph.
+  for(const edge of transferEdges(j1,j2)){
+    const from=alightHub[j1].find(h=>d.adjacency[h].includes(edge));
+    if(from!==undefined)check(d.routeStates[from].routeId!==d.routeStates[edge[0]].routeId,'Jumeaux same-line reboarding edge survived');
+  }
 
   const island=byId('FILBLEU:TTR:ILAUB-1'),loire=byId('FILBLEU:TTR:LOIRB-1');
   check(island>=0&&loire>=0,'Missing Loire barrier fixtures');
