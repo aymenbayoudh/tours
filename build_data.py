@@ -442,6 +442,7 @@ def build_graph(stations, edges, route_waits, route_info):
             edge.append(int(same_route_changes))
         adjacency[a].append(edge)
     audit_patterns = []
+    next_stop_by_pattern = {}
     for number, pattern in enumerate(patterns):
         arrivals, departures = [], []
         for pos, sid in enumerate(pattern["stops"]):
@@ -454,7 +455,10 @@ def build_graph(stations, edges, route_waits, route_info):
             if pattern["pickup"][pos]: boarding_states[station].append(dep)
         for pos in range(len(arrivals)-1):
             add(departures[pos], arrivals[pos+1], pattern["arrivals"][pos+1]-pattern["departures"][pos])
-        audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": [by_id[s] for s in pattern["stops"]], "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
+        stop_indexes = [by_id[s] for s in pattern["stops"]]
+        for pos in range(len(stop_indexes) - 1):
+            next_stop_by_pattern[(number, stop_indexes[pos])] = stop_indexes[pos + 1]
+        audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": stop_indexes, "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
     # Only routes without an observed schedule retain a geometric estimate.
     # This intentionally keeps P21 available when a temporary closure removes
     # all trains from the selected GTFS week. KML-only rail halts still have no
@@ -471,19 +475,60 @@ def build_graph(stations, edges, route_waits, route_info):
                 fallback_nodes[(station, route)] = (arr, dep)
         aa, ad = fallback_nodes[(a, route)]; ba, bd = fallback_nodes[(b, route)]
         add(ad, ba, minutes); add(bd, aa, minutes)
-    # Keep bus transfers compact through one generic hub, but preserve the
-    # incoming/outgoing route identity for rail/tram/project services. This lets
-    # the router distinguish a real P→K interchange from an artificial
-    # P7-profile→P7-profile change without materialising every pattern pair.
-    def transfer_key(route_id):
-        return None if route_info.get(route_id, {}).get("mode") == "BUS" else route_id
+    # Keep bus transfers compact through one generic hub. Rail services keep
+    # their route identity everywhere; at Saint-Pierre-des-Corps they also keep
+    # the representative pattern identity so we can distinguish a train that
+    # continues to Tours from one that terminates or heads elsewhere.
+    saint_pierre_index = by_id.get("SNCF:87571240")
+    tours_index = by_id.get("SNCF:87571000")
 
-    def artificial_same_route_change(first_key, second_key):
-        return int(
-            first_key is not None
-            and first_key == second_key
-            and route_info.get(first_key, {}).get("mode") == "TER"
-        )
+    def transfer_key(state, station_index):
+        route_id = state["routeId"]
+        if route_info.get(route_id, {}).get("mode") == "BUS":
+            return None
+        if station_index == saint_pierre_index and state.get("pattern") is not None:
+            return (route_id, state["pattern"])
+        return route_id
+
+    def key_route(key):
+        if key is None:
+            return None
+        return key[0] if isinstance(key, tuple) else key
+
+    def key_pattern(key):
+        return key[1] if isinstance(key, tuple) else None
+
+    def artificial_transfer_change(first_key, second_key, first_station, second_station):
+        first_route, second_route = key_route(first_key), key_route(second_key)
+        # Switching between representative profiles of the same TER remains
+        # possible, but is always less plausible than staying on one direct
+        # representative service.
+        if (
+            first_route is not None
+            and first_route == second_route
+            and route_info.get(first_route, {}).get("mode") == "TER"
+        ):
+            return 1
+
+        # Specific Tours / Saint-Pierre-des-Corps safeguard: if the incoming
+        # train and the service one would board BOTH have Tours as their very
+        # next stop, getting off at Saint-Pierre just to re-board for Tours is
+        # an artificial interchange. If the incoming train does not continue to
+        # Tours, the NAVETTE or another TER remains an ordinary transfer.
+        if (
+            saint_pierre_index is not None
+            and tours_index is not None
+            and first_station == second_station == saint_pierre_index
+        ):
+            first_pattern, second_pattern = key_pattern(first_key), key_pattern(second_key)
+            if (
+                first_pattern is not None
+                and second_pattern is not None
+                and next_stop_by_pattern.get((first_pattern, saint_pierre_index)) == tours_index
+                and next_stop_by_pattern.get((second_pattern, saint_pierre_index)) == tours_index
+            ):
+                return 1
+        return 0
 
     alight_hubs = [dict() for _ in stations]
     board_hubs = [dict() for _ in stations]
@@ -491,32 +536,32 @@ def build_graph(stations, edges, route_waits, route_info):
         arrivals_by_key = defaultdict(list)
         departures_by_key = defaultdict(list)
         for src in station_states[i]:
-            arrivals_by_key[transfer_key(route_states[src]["routeId"])].append(src)
+            arrivals_by_key[transfer_key(route_states[src], i)].append(src)
         for dst in boarding_states[i]:
-            departures_by_key[transfer_key(route_states[dst]["routeId"])].append(dst)
+            departures_by_key[transfer_key(route_states[dst], i)].append(dst)
 
         for key, sources in arrivals_by_key.items():
-            hub = node(i, key, "alight")
+            hub = node(i, key_route(key), "alight", key_pattern(key))
             alight_hubs[i][key] = hub
             for src in sources:
                 add(src, hub, 0)
 
         for key, targets in departures_by_key.items():
-            hub = node(i, key, "board")
+            hub = node(i, key_route(key), "board", key_pattern(key))
             board_hubs[i][key] = hub
             for dst in targets:
                 add(hub, dst, route_waits[route_states[dst]["routeId"]])
 
-        # Every route can still interchange with every other route at the same
-        # physical stop. Only changing between two representative profiles of
-        # the SAME TER route is tagged as artificial preference cost.
+        # Every route can still interchange with every other route. Preference
+        # metadata only removes artificial profile stitching and the redundant
+        # Saint-Pierre→Tours one-stop interchange described above.
         for first_key, first_hub in alight_hubs[i].items():
             for second_key, second_hub in board_hubs[i].items():
                 add(
                     first_hub,
                     second_hub,
                     3.5,
-                    same_route_changes=artificial_same_route_change(first_key, second_key),
+                    same_route_changes=artificial_transfer_change(first_key, second_key, i, i),
                 )
 
     def connect_transfer_hubs(first_index, second_index, minutes, walk_distance):
@@ -527,7 +572,7 @@ def build_graph(stations, edges, route_waits, route_info):
                     second_hub,
                     minutes,
                     walk_distance,
-                    artificial_same_route_change(first_key, second_key),
+                    artificial_transfer_change(first_key, second_key, first_index, second_index),
                 )
 
     # Within the SERM, use the sparse BD TOPO walking table when available.
