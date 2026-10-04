@@ -1945,7 +1945,7 @@ function hitPin(screen) {
 }
 
 function placePoint(world, magnet) {
-  const scaleAllowsMagnetism = mapScaleDenominator() <= displaySettings.railMagnetMaxScale;
+  const scaleAllowsMagnetism = mapScaleDenominator() >= displaySettings.railMagnetMaxScale;
   const point = magnet && pointInLand(world) && displaySettings.railMagnetism && scaleAllowsMagnetism
     ? snapToRailStation(world, state.data.stations, state.data.routeInfo, travelSettings.railMagnetRadiusKm * 1000) : world;
   return nearestLandPoint(point);
