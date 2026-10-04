@@ -50,7 +50,7 @@ const nextStopFor=(state,stationIndex)=>{
   return pos>=0&&pos+1<pattern.stops.length?pattern.stops[pos+1]:-1;
 };
 const matchesHub=(serviceState,hubState,stationIndex)=>{
-  if(['TER','NAVETTE'].includes(d.routeInfo[serviceState.routeId]?.mode)&&Number.isInteger(serviceState.pattern)){
+  if(stationIndex===spdcIndex&&Number.isInteger(serviceState.pattern)){
     return hubState.routeId===serviceState.routeId&&hubState.pattern===serviceState.pattern;
   }
   return hubState.routeId===serviceState.routeId;
@@ -87,11 +87,6 @@ for(let i=0;i<d.stations.length;i++){
       sameRouteBlockedEdges++;
       continue;
     }
-    const targetPattern=Number.isInteger(b.pattern)?d.timetablePatterns[b.pattern]:null;
-    const sourcePattern=Number.isInteger(a.pattern)?d.timetablePatterns[a.pattern]:null;
-    const previous=sourcePattern?.stops[sourcePattern.stops.indexOf(i)-1];
-    const redundantRail=previous!==undefined&&targetPattern?.stops.slice(0,targetPattern.stops.indexOf(i)).includes(previous);
-    if(redundantRail){check(!edge,'Do not catch a rail service already boardable at the preceding stop');continue;}
     check(Boolean(edge),'Missing same-stop route interchange');
     const firstCode=(a.routeId||'').replace(/^TER /,'');
     const secondCode=(b.routeId||'').replace(/^TER /,'');
@@ -374,7 +369,7 @@ const saumurIndex=d.stations.indexOf(saumur);
 const p1Alight=alightHub[saumurIndex].find(h=>d.routeStates[h].routeId==='TER P1');
 const k1Board=boardHub[saumurIndex].find(h=>d.routeStates[h].routeId==='TER K1');
 check(Number.isInteger(p1Alight)&&Number.isInteger(k1Board),'Saumur P1→K1 transfer hubs missing');
-const p1k1=alightHub[saumurIndex].filter(h=>d.routeStates[h].routeId==='TER P1').flatMap(h=>d.adjacency[h]).find(([n])=>d.routeStates[n].role==='board'&&d.routeStates[n].routeId==='TER K1');
+const p1k1=d.adjacency[p1Alight].find(([n])=>n===k1Board);
 check(Boolean(p1k1),'Saumur P1→K1 transfer missing');
 check((Number(p1k1[3])||0)===0,'Saumur P1→K1 must stay neutral in comfort routing');
 
@@ -414,31 +409,4 @@ for(const originName of ['Tours','La Bohalle','La Ménitré'])for(const factor o
  const j=describeJourney(d,m,target.point);
  assert.ok(!j.legs.some(l=>l.routeId==='NAVETTE'),'Direct Tours-Orléans/feeder must not detour via the navette');
  if(originName!=='Tours' && factor===0)assert.deepEqual(j.legs.map(l=>l.routeId),['TER P1','TER K1'],'Preserve the P1 to K1 feeder');
-}
-
-// Regression: coming from another line must not evade the direct K16 rule.
-for(const name of ['Écommoy','Château-du-Loir','Le Mans','Tours'])for(const wait of [0,0.5,1]){
- const m=buildTravelModel(d,station(name).point,true,{terWaitFactor:wait,busWaitFactor:wait,tramWaitFactor:wait,navetteWaitFactor:wait});
- const j=describeJourney(d,m,station('Lamotte-Beuvron').point);
- const k16=j.legs.find(l=>l.routeId==='TER K16');
- const reachesTours=name==='Tours'||j.legs.some(l=>l.to===toursIndex);
- if(reachesTours){
-  assert.ok(k16,`Missing direct K16 after Tours from ${name} at wait ${wait}`);
-  assert.equal(k16.from,toursIndex,`Board K16 at Tours from ${name} at wait ${wait}`);
- }
- // Some K39 profiles reach Saint-Pierre BEFORE Tours; changing there is
- // legitimate and must not be forced to detour via Tours for this assertion.
- assert.ok(!j.legs.some(l=>l.from===toursIndex&&l.to===spdcIndex),'Redundant rail hop before K16');
-}
-for(const wait of [0,1]){
- const m=buildTravelModel(d,station('Tours').point,true,{terWaitFactor:wait,navetteWaitFactor:wait});
- const j=describeJourney(d,m,station('St-Pierre-des-Corps').point);
- assert.deepEqual(j.legs.map(l=>l.routeId),['NAVETTE'],'Local Tours-Saint-Pierre must use NAVETTE');
- const through=describeJourney(d,m,station('Nevers').point);
- assert.ok(through.legs.some(l=>l.routeId==='TER P2'&&l.from===toursIndex&&l.to!==spdcIndex),'Through P2 must remain available');
-}
-for(const n of d.stationStates[spdcIndex]){
- const state=d.routeStates[n],p=d.timetablePatterns[state.pattern];
- if(state.routeId==='NAVETTE'||d.routeInfo[state.routeId]?.mode!=='TER'||!p)continue;
- assert.notEqual(p.stops[p.stops.indexOf(spdcIndex)-1],toursIndex,'Other TER must not impersonate the local navette');
 }

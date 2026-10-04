@@ -92,3 +92,16 @@ La sélection conserve le score de préférence déjà présent dans le projet :
 Le test de surface vérifie maintenant la monotonie de l’objectif effectivement optimisé **et**, séparément, du minimum physique indépendant. Il ne prétend plus qu’un changement de paramètre doit diminuer la durée du trajet préféré : ce serait faux si le nouveau choix comporte moins de changements. Sur la grille de test de 7 999 cellules autour de Tours, passer de 4,8 à 6 km/h change ainsi de préférence avec une durée physique plus grande dans 17 cellules, jusqu’à 14,82 minutes. Cet effet est documenté dans l’aide, sans l’effacer par un lissage ni falsifier la durée. Pour garantir la monotonie de toutes les durées affichées, il faudrait une autre politique de sélection, fondée uniquement sur le temps minimal sous contraintes de validité.
 
 Les données restent représentatives, sans synchronisation des heures de départ. Une correspondance entre lignes distinctes n’est pas une garantie de service le même jour ou à la même heure. Originaux de ce lot : `archive/tours-before-unified-continuity-2026-10-04/`. Résultat de l’échantillonnage : `routing-continuity-after-unification-2026-10-04.json`.
+
+
+## Régression Écommoy–Lamotte-Beuvron : correction du rattrapage
+
+Le contrôle précédent Tours→Orléans ne couvrait pas l'arrivée par un autre train. Une correspondance K→K porte une unité de préférence, alors que K→P→K peut contourner ce score. Reproduction : K39 jusqu’à Tours, P2 Tours→Saint-Pierre, puis K16 vers Orléans, attente ×0.
+
+Les hubs ferroviaires conservent désormais l’identité des profils partout. Une correspondance arrivée→nouveau train au même endroit est absente si le train cible desservait déjà la gare précédente du train entrant dans ce sens : prendre A→B uniquement pour y rattraper une desserte disponible à A est exclu. Il s’agit d’une convention cohérente avec le modèle sans heure de départ, pas d’une affirmation qu’un changement de train est impossible dans la réalité. Les rabattements vers un Krono qui ne dessert pas la gare précédente restent possibles.
+
+La liaison locale Tours→Saint-Pierre est canonisée comme la direction inverse : NAVETTE pour le trajet limité à cette liaison. Les profils d’autres TER venant de Tours gardent leurs arêtes de stationnement et de circulation vers Orléans/Nevers, mais ne servent pas à créer un débarquement local à Saint-Pierre. Un train arrivant à Saint-Pierre **avant Tours**, depuis Château-du-Loir par exemple, conserve son accès aux correspondances. Prendre la navette pour y rattraper un train déjà disponible à Tours est bloqué.
+
+Contrôles ajoutés pour Écommoy, Château-du-Loir, Le Mans et Tours, attente ×0/×0,5/×1, liaison locale dans les deux sens, maintien du P2 direct vers Nevers, des temps embarqués et du rabattement P1→K1. La régression exige que les parcours qui passent par Tours embarquent K16 à Tours ; elle ne force pas à passer par Tours si un profil K39 arrive d’abord à Saint-Pierre et y permet une correspondance valable.
+
+Originaux conservés dans `archive/tours-before-saint-pierre-continuity-2026-10-04/`.

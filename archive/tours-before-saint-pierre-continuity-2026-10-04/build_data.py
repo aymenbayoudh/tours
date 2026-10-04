@@ -531,29 +531,6 @@ def build_graph(stations, edges, route_waits, route_info):
             filtered.append(dst)
         boarding_states[saint_pierre_scheduled] = filtered
 
-        # Canonical local Tours→Saint-Pierre link: a newly chosen rail leg
-        # ending after that hop is represented by NAVETTE, never by borrowing
-        # the first segment of P2/K16/etc. Keep each through train's dwell and
-        # onward edges untouched: Tours→Orléans/Nevers remains a direct ride.
-        # This is a modelling convention, not a real-world alighting ban.
-        withdrawn_arrivals = set()
-        for src in station_states[saint_pierre_scheduled]:
-            state = route_states[src]
-            if state["routeId"] == "NAVETTE" or route_info.get(state["routeId"], {}).get("mode") != "TER":
-                continue
-            if previous_stop_by_pattern.get((state.get("pattern"), saint_pierre_scheduled)) == tours_scheduled:
-                withdrawn_arrivals.add(src)
-        station_states[saint_pierre_scheduled] = [src for src in station_states[saint_pierre_scheduled] if src not in withdrawn_arrivals]
-        for src in withdrawn_arrivals:
-            adjacency[src] = [edge for edge in adjacency[src] if route_states[edge[0]].get("pattern") == route_states[src].get("pattern")]
-
-        # Apply the existing one-hop boarding convention in both directions.
-        boarding_states[tours_scheduled] = [dst for dst in boarding_states[tours_scheduled]
-            if route_states[dst]["routeId"] == "NAVETTE"
-            or route_info.get(route_states[dst]["routeId"], {}).get("mode") != "TER"
-            or route_states[dst].get("pattern") is None
-            or audit_patterns[route_states[dst]["pattern"]]["stops"][-2:] != [tours_scheduled, saint_pierre_scheduled]]
-
     # Only routes without an observed schedule retain a geometric estimate.
     # This intentionally keeps P21 available when a temporary closure removes
     # all trains from the selected GTFS week. KML-only rail halts still have no
@@ -571,8 +548,8 @@ def build_graph(stations, edges, route_waits, route_info):
         aa, ad = fallback_nodes[(a, route)]; ba, bd = fallback_nodes[(b, route)]
         add(ad, ba, minutes); add(bd, aa, minutes)
     # Keep bus transfers compact through one generic hub. Rail services keep
-    # their route and representative pattern identity everywhere, so we can
-    # prevent redundant catch-up transfers and distinguish a train that
+    # their route identity everywhere; at Saint-Pierre-des-Corps they also keep
+    # the representative pattern identity so we can distinguish a train that
     # continues to Tours from one that terminates or heads elsewhere.
     saint_pierre_index = by_id.get("SNCF:87571240")
     tours_index = by_id.get("SNCF:87571000")
@@ -582,7 +559,7 @@ def build_graph(stations, edges, route_waits, route_info):
         # Keep route identity for every public-transport mode. This prevents a
         # generic bus/tram hub from manufacturing "get off / re-board the same
         # line" loops while still allowing transfers between different lines.
-        if route_info.get(route_id, {}).get("mode") in ("TER", "NAVETTE") and state.get("pattern") is not None:
+        if station_index == saint_pierre_index and state.get("pattern") is not None:
             return (route_id, state["pattern"])
         return route_id
 
@@ -646,20 +623,6 @@ def build_graph(stations, edges, route_waits, route_info):
             return 1
         return 0
 
-    def redundant_rail_catch(first_key, second_key, station_index):
-        # Do not ride A→B merely to board at B a service already available at
-        # A in that direction. Whole profiles identify this shared corridor;
-        # P→K feeders remain possible when K does not serve the previous stop.
-        first_pattern, second_pattern = key_pattern(first_key), key_pattern(second_key)
-        if first_pattern is None or second_pattern is None:
-            return False
-        incoming = audit_patterns[first_pattern]["stops"]
-        outgoing = audit_patterns[second_pattern]["stops"]
-        pos = incoming.index(station_index)
-        if pos == 0:
-            return False
-        return incoming[pos - 1] in outgoing[:outgoing.index(station_index)]
-
     alight_hubs = [dict() for _ in stations]
     board_hubs = [dict() for _ in stations]
     for i in range(len(stations)):
@@ -692,8 +655,6 @@ def build_graph(stations, edges, route_waits, route_info):
             for second_key, second_hub in board_hubs[i].items():
                 first_route, second_route = key_route(first_key), key_route(second_key)
                 if first_route is not None and first_route == second_route:
-                    continue
-                if redundant_rail_catch(first_key, second_key, i):
                     continue
                 add(
                     first_hub,
