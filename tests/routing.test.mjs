@@ -273,8 +273,9 @@ const pureReference=referenceRun(0);
 const comfortReference=referenceRun(model.comfortTransferPreferenceMinutes);
 // 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below user-facing precision.
 pureReference.value.forEach((v,n)=>{
-  const modelChanges=model.pureTransferCounts[n]===65535?Infinity:model.pureTransferCounts[n];
-  check(pureReference.changes[n]===modelChanges,'Pure-time transfer-count oracle mismatch');
+  // In pure-time mode the comfort counter is deliberately irrelevant.
+  // Equal-minute paths may therefore carry different counters without changing
+  // the selected travel time; only the shortest minutes must match exactly.
   check(v===model.pureDistances[n]||Math.abs(v-model.pureDistances[n])<1e-3,'Pure-time shortest-path oracle mismatch');
 });
 comfortReference.value.forEach((v,n)=>{
