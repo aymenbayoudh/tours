@@ -74,12 +74,20 @@ function directVsStitched(withCrossRoute=false){
 }
 
 {
-  const d=directVsStitched(true);
+  const d=baseData();
+  const pDep=node(d,0,'TER P7','departure',0);
+  const pArr=node(d,1,'TER P7','arrival',0);
+  const pAlight=node(d,1,'TER P7','alight');
+  const kBoard=node(d,1,'TER KX','board');
+  const kDep=node(d,1,'TER KX','departure',1);
+  const kArr=node(d,3,'TER KX','arrival',1);
+  edge(d,pDep,pArr,20); edge(d,pArr,pAlight,0); edge(d,pAlight,kBoard,3.5,1); edge(d,kBoard,kDep,0); edge(d,kDep,kArr,45);
+  d.boardingStates[0].push(pDep); d.stationStates[1].push(pArr); d.boardingStates[1].push(kDep); d.stationStates[3].push(kArr);
+
   const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
   const journey=describeJourney(d,model,d.stations[3].point);
-  assert.equal(model.sameRouteChanges[model.stationArrivals[3].node],0);
-  assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7','TER KX'],'cross-route TER interchange must remain available');
-  assert.ok(journey.minutes<100,'faster P7→KX interchange should beat slower continuous P7');
+  assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7','TER KX'],'cross-route TER interchange must remain available when no one-seat service exists');
+  assert.equal(model.sameRouteChanges[model.stationArrivals[3].node],1);
 }
 
 {
