@@ -1,0 +1,9 @@
+{
+  "id": "63b5402bf7fee11e3a3daa4c",
+  "slug": "gtfs-move-vendome",
+  "title": " GTFS -  MOVE Vendôme",
+  "license": "lov2",
+  "last_modified": "2026-09-24T12:38:20.645000+00:00",
+  "organization": "Alliance Atlantique",
+  "staticResourceUrl": "https://api.pysae.com/api/v4/groups/vendome/gtfs/pub"
+}

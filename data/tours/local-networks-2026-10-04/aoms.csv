@@ -1,0 +1,1157 @@
+nom,departement,region,published,in_aggregate,up_to_date,has_realtime,nom_commune,insee_commune_principale,nombre_communes,population,nb_gtfs,nb_gtfs_rt,nb_netex,nb_siri,nb_siri_lite
+Agglobus,18,Centre-Val de Loire,true,true,true,true,Bourges,18033,20,114594,2,2,1,0,0
+Ardenne Métropole,08,Grand Est,true,true,true,true,Charleville-Mézières,08105,58,123142,2,1,1,0,0
+Bordeaux Métropole,33,Nouvelle-Aquitaine,true,true,true,true,Bordeaux,33063,28,854949,2,3,3,0,6
+Brest Métropole,29,Bretagne,true,true,true,true,Brest,29019,8,217444,2,3,1,1,0
+CA Agglo du Pays de Dreux,28,Centre-Val de Loire,true,true,true,true,Dreux,28134,81,118593,2,1,1,0,0
+CA Agglomération d'Agen,47,Nouvelle-Aquitaine,true,false,true,true,Agen,47001,44,104047,3,2,0,0,0
+CA Agglomération du Choletais,49,Pays de la Loire,true,true,true,true,Cholet,49099,26,107845,2,2,2,1,0
+CA Agglo Pays d'Issoire,63,Auvergne-Rhône-Alpes,true,false,true,true,Issoire,63178,88,58109,1,1,0,0,0
+CA Amiens Métropole,80,Hauts-de-France,true,false,true,true,Amiens,80021,39,186188,2,4,0,0,0
+CA Annonay Rhône Agglo,07,Auvergne-Rhône-Alpes,true,true,true,false,Annonay,07010,29,51689,4,0,0,0,0
+CA Arche Agglo,07,Auvergne-Rhône-Alpes,true,true,true,false,Tournon-sur-Rhône,07324,41,60730,2,0,0,0,0
+CA Arlysère,73,Auvergne-Rhône-Alpes,true,true,true,false,Albertville,73011,39,63550,2,0,0,0,0
+CA Bassin d'Arcachon Sud (COBAS),33,Nouvelle-Aquitaine,true,false,true,false,La Teste-de-Buch,33529,4,71165,1,0,1,0,0
+"CA Beaune, Côte et Sud - Communauté Beaune-Chagny-Nolay",21,Bourgogne-Franche-Comté,true,false,true,true,Beaune,21054,53,52024,1,2,0,0,0
+CA Bergeracoise,24,Nouvelle-Aquitaine,true,true,true,false,Bergerac,24037,38,63239,2,0,3,0,0
+CA Cannes Pays de Lérins,06,Provence-Alpes-Côte d’Azur,true,false,true,true,Cannes,06029,5,158143,1,3,1,0,0
+CA Carcassonne Agglo,11,Occitanie,true,false,true,true,Carcassonne,11069,83,117094,1,3,0,0,0
+CA Caux Seine Agglo,76,Normandie,true,true,true,true,Bolbec,76114,50,79328,2,3,1,0,0
+CA Chartres Métropole,28,Centre-Val de Loire,true,true,true,true,Chartres,28085,66,140292,2,1,1,1,0
+CA Châteauroux Métropole,36,Centre-Val de Loire,true,true,true,false,Châteauroux,36044,14,74939,3,0,1,0,0
+CA Chauny Tergnier La Fère,02,Hauts-de-France,true,false,true,false,Tergnier,02738,48,55567,1,0,0,0,0
+CA CIVIS (Communauté Intercommunale des Villes Solidaires),974,La Réunion,true,false,true,true,Saint-Pierre,97416,6,185848,1,3,0,0,0
+CA Clisson Sèvre et Maine Agglo,44,Pays de la Loire,true,true,true,true,Clisson,44043,16,58933,2,0,2,1,0
+CA Coeur de Flandre,59,Hauts-de-France,true,false,true,true,,,50,104360,1,1,0,0,0
+CA Colmar Agglomération,68,Grand Est,true,true,true,false,Colmar,68066,20,115750,2,0,1,0,0
+CA Concarneau Cornouaille Agglomération,29,Bretagne,true,true,true,false,Concarneau,29039,9,53613,2,0,2,0,0
+CA Creil Sud Oise,60,Hauts-de-France,true,false,true,true,Creil,60175,11,90956,2,2,1,2,0
+CA d'Arles-Crau-Camargue-Montagnette,13,Provence-Alpes-Côte d’Azur,true,false,true,true,Arles,13004,6,85861,1,3,0,0,0
+CA de Bar-le-Duc - Sud Meuse,55,Grand Est,true,true,true,true,Bar-le-Duc,55029,33,34557,2,1,1,0,0
+CA de Bastia,2B,Corse,true,false,true,false,Bastia,2B033,5,62806,1,0,0,0,0
+CA de Béziers-Méditerranée,34,Occitanie,true,false,true,true,Béziers,34032,17,133342,1,2,0,0,0
+CA de Blois ''Agglopolys'',41,Centre-Val de Loire,true,true,true,true,Blois,41018,43,109624,2,2,1,1,0
+CA de Cambrai,59,Hauts-de-France,true,false,true,false,Cambrai,59122,55,81764,1,0,0,0,0
+CA de Castres Mazamet,81,Occitanie,true,false,true,false,Castres,81065,14,81354,1,0,0,0,0
+CA de Châlons-en-Champagne,51,Grand Est,true,true,true,true,Châlons-en-Champagne,51108,46,79947,2,1,1,0,0
+CA de Chaumont,52,Grand Est,true,true,true,false,Chaumont,52121,63,45434,2,0,1,0,0
+CA de Dembeni / Mamoudzou,976,Mayotte,false,false,false,false,Mamoudzou,97611,2,89090,0,0,0,0,0
+CA de Forbach Porte de France,57,Grand Est,true,true,true,true,Forbach,57227,21,76341,2,2,1,0,0
+CA de Haguenau,67,Grand Est,true,true,true,true,Haguenau,67180,36,100343,3,1,1,0,0
+CA de la Baie de Somme,80,Hauts-de-France,true,false,true,false,Abbeville,80001,43,48643,1,0,0,0,0
+CA de l'Albigeois (C2A),81,Occitanie,true,false,true,false,Albi,81004,16,86445,3,0,0,0,0
+CA de la Presqu'île de Guérande Atlantique (CAP ATLANTIQUE),44,Pays de la Loire,true,true,true,true,La Baule-Escoublac,44055,15,79743,2,4,2,1,0
+CA de la Provence Verte,83,Provence-Alpes-Côte d’Azur,true,false,true,false,Brignoles,83023,28,105309,1,0,0,0,0
+CA de la Région de Château-Thierry,02,Hauts-de-France,true,false,true,false,Château-Thierry,02168,87,55209,1,0,0,0,0
+CA de la Région de Compiègne et de la Basse Automne,60,Hauts-de-France,true,false,true,true,Compiègne,60159,22,85745,3,4,3,4,0
+CA de la Région Dieppoise,76,Normandie,true,true,true,true,Dieppe,76217,16,47324,2,4,1,0,0
+CA de la Région Nazairienne et de l'Estuaire (CARENE),44,Pays de la Loire,true,true,true,true,Saint-Nazaire,44184,10,133980,2,0,2,1,0
+CA de la Riviera Française,06,Provence-Alpes-Côte d’Azur,true,false,true,true,Menton,06083,15,73331,1,2,0,0,0
+CA de La Rochelle,17,Nouvelle-Aquitaine,true,true,true,true,La Rochelle,17300,28,185015,2,1,3,1,0
+CA de l'Auxerrois,89,Bourgogne-Franche-Comté,true,false,true,true,Auxerre,89024,29,70145,1,3,0,0,0
+CA de Nevers,58,Bourgogne-Franche-Comté,true,false,true,false,Nevers,58194,13,69173,1,0,0,0,0
+CA de Nîmes Métropole,30,Occitanie,true,false,true,true,Nîmes,30189,39,265741,1,5,0,0,0
+CA d'Epinal,88,Grand Est,true,true,true,true,Épinal,88160,78,113191,2,1,1,0,0
+CA de Saint-Dié-des-Vosges,88,Grand Est,true,true,true,true,Saint-Dié-des-Vosges,88413,77,74586,2,2,1,0,0
+CA de Saint-Dizier Der et Blaise,52,Grand Est,true,true,true,false,Saint-Dizier,52448,60,56708,2,0,1,0,0
+CA de Saintes,17,Nouvelle-Aquitaine,true,true,true,true,Saintes,17415,36,63044,3,1,3,0,0
+CA des Deux Baies en Montreuillois,62,Hauts-de-France,true,false,true,false,Berck,62108,46,66682,1,0,0,0,0
+CA de Sophia Antipolis,06,Provence-Alpes-Côte d’Azur,true,false,true,false,Antibes,06004,24,187088,1,0,0,0,0
+CA des Sorgues du Comtat,84,Provence-Alpes-Côte d’Azur,true,false,true,false,Sorgues,84129,5,51863,2,0,0,0,0
+CA de Vesoul,70,Bourgogne-Franche-Comté,true,false,true,true,Vesoul,70550,20,33526,1,2,0,0,0
+CA Dinan Agglomération,22,Bretagne,true,true,true,false,Dinan,22050,64,107190,2,0,1,0,0
+CA du Bassin d'Arcachon Nord,33,Nouvelle-Aquitaine,true,false,true,false,Andernos-les-Bains,33005,8,73982,1,0,1,0,0
+CA du Bassin d'Aurillac,15,Auvergne-Rhône-Alpes,true,true,true,false,Aurillac,15014,25,56315,2,0,0,0,0
+CA du Bassin de Bourg-en-Bresse,01,Auvergne-Rhône-Alpes,true,true,true,true,Bourg-en-Bresse,01053,74,139518,4,2,0,0,0
+CA du Bassin de Brive,19,Nouvelle-Aquitaine,true,true,true,false,Brive-la-Gaillarde,19031,48,111380,2,0,3,0,0
+CA du Beauvaisis,60,Hauts-de-France,true,false,true,true,Beauvais,60057,53,105791,3,4,2,4,0
+CA du Bocage Bressuirais,79,Nouvelle-Aquitaine,true,true,true,true,Bressuire,79049,33,76438,2,0,3,1,0
+CA du Boulonnais,62,Hauts-de-France,true,false,true,true,Boulogne-sur-Mer,62160,22,113911,1,2,0,1,0
+CA du Caudrésis et du Catésis,59,Hauts-de-France,true,false,true,false,Caudry,59139,46,64025,1,0,0,0,0
+CA du Centre Littoral,973,Guyane,true,false,true,true,Cayenne,97302,6,153249,3,2,0,0,0
+CA du Cotentin,50,Normandie,true,true,true,true,Cherbourg-en-Cotentin,50129,129,183267,2,3,1,0,0
+CA du Gard Rhodanien,30,Occitanie,true,false,true,true,Bagnols-sur-Cèze,30028,44,77457,1,1,0,0,0
+CA du Grand Angoulême,16,Nouvelle-Aquitaine,true,true,true,true,Angoulême,16015,38,146400,2,1,4,0,0
+CA du Grand Annecy,74,Auvergne-Rhône-Alpes,true,true,true,false,Annecy,74010,34,216729,2,0,0,0,0
+CA du Grand Avignon (COGA),84,Provence-Alpes-Côte d’Azur,true,false,true,true,Avignon,84007,16,201600,1,2,0,0,0
+CA du Grand Cahors,46,Occitanie,true,false,true,false,Cahors,46042,36,43571,1,0,0,0,0
+CA du Grand Chambéry,73,Auvergne-Rhône-Alpes,true,true,true,true,Chambéry,73065,38,145388,2,2,0,0,0
+CA du Grand Cognac,16,Nouvelle-Aquitaine,true,true,true,false,Cognac,16102,55,70675,2,0,3,0,0
+CA du Grand Dax,40,Nouvelle-Aquitaine,true,true,true,false,Dax,40088,20,60161,2,0,3,0,0
+CA du Grand Dole,39,Bourgogne-Franche-Comté,true,false,true,true,Dole,39198,47,56322,1,2,0,0,0
+CA du Grand Guéret,23,Nouvelle-Aquitaine,true,true,true,false,Guéret,23096,25,29508,2,0,2,0,0
+CA du Grand Nord de Mayotte,976,Mayotte,false,false,false,false,Koungou,97610,4,60372,0,0,0,0,0
+CA du Grand Sénonais,89,Bourgogne-Franche-Comté,true,false,true,false,Sens,89387,27,61253,1,0,0,0,0
+CA du Grand Verdun,55,Grand Est,true,true,true,true,Verdun,55545,25,28318,2,1,1,0,0
+CA du Grand Villeneuvois,47,Nouvelle-Aquitaine,true,false,true,false,Villeneuve-sur-Lot,47323,19,49185,1,0,0,0,0
+CA du Libournais,33,Nouvelle-Aquitaine,true,true,true,true,Libourne,33243,45,94984,2,0,3,1,0
+CA du Niortais,79,Nouvelle-Aquitaine,true,true,true,true,Niort,79191,40,126867,2,0,3,1,0
+CA du Nord Basse-Terre,971,Guadeloupe,false,false,false,false,Petit-Bourg,97118,6,78456,0,0,0,0,0
+CA du Nord Grande Terre,971,Guadeloupe,true,false,true,false,Le Moule,97117,5,57518,1,0,0,0,0
+CA du Pays Ajaccien,2A,Corse,true,false,true,false,Ajaccio,2A004,10,93902,1,0,0,0,0
+CA du Pays de Gex,01,Auvergne-Rhône-Alpes,true,false,true,false,Saint-Genis-Pouilly,01354,27,106924,1,0,0,0,0
+CA du Pays de Grasse,06,Provence-Alpes-Côte d’Azur,true,false,true,false,Grasse,06069,23,103770,2,0,0,0,0
+CA du Pays de Landerneau-Daoulas,29,Bretagne,true,true,true,true,Landerneau,29103,22,51264,2,1,2,0,0
+CA du Pays de Laon,02,Hauts-de-France,true,false,true,false,Laon,02408,38,42770,1,0,0,0,0
+CA du Pays de l'Or,34,Occitanie,true,false,true,true,Mauguio,34154,8,46100,2,2,0,0,0
+CA du Pays de Saint-Gilles-Croix-de-Vie,85,Pays de la Loire,true,false,true,false,Saint-Hilaire-de-Riez,85226,14,54244,1,0,0,0,0
+CA du Pays de Saint Malo Agglomération,35,Bretagne,true,true,true,true,Saint-Malo,35288,18,88667,2,1,1,0,0
+CA du Pays de Saint-Omer,62,Hauts-de-France,true,false,true,true,Saint-Omer,62765,53,106903,2,2,0,0,0
+CA du Puy-en-Velay,43,Auvergne-Rhône-Alpes,true,true,true,false,Le Puy-en-Velay,43157,72,85454,4,0,0,0,0
+CA Durance-Lubéron-Verdon Agglomération,04,Provence-Alpes-Côte d’Azur,true,false,true,false,Manosque,04112,25,65141,2,0,0,0,0
+CA du Saint-Quentinois,02,Hauts-de-France,true,false,true,false,Saint-Quentin,02691,39,81012,1,0,0,0,0
+CA du Sud,974,La Réunion,true,false,true,true,Le Tampon,97422,4,134764,1,1,0,0,0
+CA ECLA  (Espace Communautaire Lons Agglomération),39,Bourgogne-Franche-Comté,true,false,true,false,Lons-le-Saunier,39300,32,35895,1,0,0,0,0
+"CA Epernay, Coteaux et Plaine de Champagne",51,Grand Est,true,true,true,true,Épernay,51230,47,47930,2,1,1,0,0
+CA Evreux Portes de Normandie,27,Normandie,true,true,true,true,Évreux,27229,74,114953,2,5,1,0,0
+CA Fécamp Caux Littoral Agglomération,76,Normandie,true,true,true,true,Fécamp,76259,33,38894,2,6,1,0,0
+CA Flers Agglo,61,Normandie,true,true,true,true,Flers,61169,42,53918,3,6,1,0,0
+CA Fougères Agglomération,35,Bretagne,true,true,true,true,Fougères,35115,29,57659,2,2,1,0,0
+CA Gaillac-Graulhet,81,Occitanie,true,false,true,false,Gaillac,81099,59,77839,4,0,0,0,0
+CA Gap-Tallard-Durance,05,Provence-Alpes-Côte d’Azur,true,false,true,true,Gap,05061,17,52389,1,1,0,0,0
+CA Golfe du Morbihan - Vannes Agglomération,56,Bretagne,true,true,true,true,Vannes,56260,34,182628,2,4,1,0,0
+CA Grand Auch Coeur de Gascogne,32,Occitanie,true,false,true,true,Auch,32013,34,41041,1,1,0,0,0
+CA Grand Châtellerault,86,Nouvelle-Aquitaine,true,true,true,true,Châtellerault,86066,47,84806,2,1,3,0,0
+CA Grand Lac,73,Auvergne-Rhône-Alpes,true,true,true,true,Aix-les-Bains,73008,28,81427,2,2,0,0,0
+CA Grand Montauban,82,Occitanie,true,false,true,false,Montauban,82121,11,83421,1,0,0,0,0
+CA Grand Sud Caraïbe,971,Guadeloupe,true,false,true,false,Capesterre-Belle-Eau,97107,11,76343,1,0,0,0,0
+CA Guingamp-Paimpol Agglomération de l'Armor à l'Argoat,22,Bretagne,true,true,true,true,Paimpol,22162,57,76229,2,2,1,0,0
+CA Hérault-Méditerranée,34,Occitanie,true,false,true,true,Agde,34003,20,83500,1,1,0,0,0
+CA Intercommunale de la Réunion Est (CIREST),974,La Réunion,true,false,true,false,Saint-André,97409,6,130245,1,0,0,0,0
+CA Intercommunale du Nord de la Réunion (CINOR),974,La Réunion,true,false,true,false,Saint-Denis,97411,3,218801,2,0,0,0,0
+CA Lamballe Terre et Mer,22,Bretagne,true,true,true,true,Lamballe-Armor,22093,38,70807,2,2,1,0,0
+CA Lannion-Trégor Communauté,22,Bretagne,true,true,true,true,Lannion,22113,57,104398,2,1,2,0,0
+CA La Roche sur Yon - Agglomération,85,Pays de la Loire,true,true,true,true,La Roche-sur-Yon,85191,13,102445,2,1,2,1,0
+CA Le Grand Chalon,71,Bourgogne-Franche-Comté,true,false,true,false,Chalon-sur-Saône,71076,51,116981,1,0,0,0,0
+CA Le Grand Narbonne,11,Occitanie,true,false,true,true,Narbonne,11262,37,135323,1,2,0,0,0
+CA Le Grand Périgueux,24,Nouvelle-Aquitaine,true,true,true,false,Périgueux,24322,43,108161,2,0,3,0,0
+CA Les Sables d'Olonne Agglomération,85,Pays de la Loire,true,true,true,true,Les Sables-d'Olonne,85194,5,59944,2,0,4,1,0
+CA Lisieux Normandie,14,Normandie,true,true,true,true,Lisieux,14366,53,74504,2,4,1,0,0
+CA Lorient Agglomération,56,Bretagne,true,true,true,true,Lorient,56121,25,213310,2,2,1,0,0
+CA Luberon Monts de Vaucluse,84,Provence-Alpes-Côte d’Azur,true,false,true,true,Cavaillon,84035,16,56096,1,1,0,0,0
+CA Lunel Agglo,34,Occitanie,true,false,true,true,,,14,52563,1,2,0,0,0
+CA Mâconnais Beaujolais Agglomération,71,Bourgogne-Franche-Comté,true,false,true,false,Mâcon,71270,39,81632,1,0,0,0,0
+CA Mauges Communauté,49,Pays de la Loire,false,false,false,false,Sèvremoine,49301,6,125488,0,0,0,0,0
+CA Montargoise et Rives du Loing (AME),45,Centre-Val de Loire,true,true,true,false,Montargis,45208,15,64882,2,0,1,0,0
+CA Mont de Marsan Agglomération,40,Nouvelle-Aquitaine,true,true,true,false,Mont-de-Marsan,40192,18,58157,2,0,3,0,0
+CA Montélimar Agglomération,26,Auvergne-Rhône-Alpes,true,true,true,true,Montélimar,26198,27,70557,2,2,0,0,0
+CA Montluçon Communauté,03,Auvergne-Rhône-Alpes,true,true,true,true,Montluçon,03185,21,60964,3,2,0,0,0
+CA Mont-Saint-Michel-Normandie,50,Normandie,true,true,true,true,Avranches,50025,95,90253,1,2,1,0,0
+CA Morlaix Communauté,29,Bretagne,true,true,true,false,Morlaix,29151,26,67515,2,0,2,0,0
+CA Moulins Communauté,03,Auvergne-Rhône-Alpes,true,true,true,true,Moulins,03190,44,66443,2,1,0,0,0
+CA Mulhouse Alsace Agglomération,68,Grand Est,true,true,true,true,Mulhouse,68224,39,276825,3,2,1,0,0
+CA Pays de Montbéliard Agglomération,25,Bourgogne-Franche-Comté,true,false,true,true,Montbéliard,25388,72,141876,1,0,0,1,0
+CA Pays Foix-Varilhes,09,Occitanie,true,false,true,false,Foix,09122,42,33459,1,0,0,0,0
+CA Pornic Agglo Pays de Retz,44,Pays de la Loire,true,true,true,false,Pornic,44131,15,70582,2,0,0,0,0
+CA Porte de l'Isère (CAPI),38,Auvergne-Rhône-Alpes,true,true,true,true,Bourgoin-Jallieu,38053,22,113430,2,1,0,0,0
+CA Privas Centre Ardèche,07,Auvergne-Rhône-Alpes,true,true,true,false,Privas,07186,42,45233,4,0,0,0,0
+CA Provence-Alpes-Agglomération,04,Provence-Alpes-Côte d’Azur,true,false,true,false,Digne-les-Bains,04070,46,50305,2,0,0,0,0
+CA Quimper Bretagne Occidentale,29,Bretagne,true,true,true,true,Quimper,29232,14,105707,2,3,1,0,0
+CA Quimperlé Communauté,29,Bretagne,true,true,true,true,Quimperlé,29233,16,58531,2,2,1,0,0
+CA Redon Agglomération,35,Bretagne,true,false,true,false,Redon,35236,31,69264,2,0,0,0,0
+CA Riom Limagne et Volcans,63,Auvergne-Rhône-Alpes,true,true,true,true,Riom,63300,31,70011,2,2,0,0,0
+CA Roannais Agglomération,42,Auvergne-Rhône-Alpes,true,true,true,true,Roanne,42187,40,104170,2,1,0,0,0
+CA Rochefort Océan,17,Nouvelle-Aquitaine,true,true,true,true,Rochefort,17299,25,66296,2,0,3,1,0
+CA Rodez Agglomération,12,Occitanie,true,false,true,false,Rodez,12202,8,59246,1,0,0,0,0
+CA Royan Atlantique,17,Nouvelle-Aquitaine,true,true,true,false,Royan,17306,33,87913,3,0,3,0,0
+CA Saint-Avold Synergie,57,Grand Est,true,true,true,true,Saint-Avold,57606,41,52638,2,1,1,0,0
+CA Saint-Brieuc Armor Agglomération,22,Bretagne,true,true,true,true,Saint-Brieuc,22278,32,158353,2,0,1,1,0
+CA Saint-Lô Agglo,50,Normandie,true,true,true,true,Saint-Lô,50502,61,79288,2,2,1,0,0
+CA Saint-Louis Agglomération,68,Grand Est,true,true,true,true,Saint-Louis,68297,40,85533,2,1,1,0,0
+CA Sarreguemines Confluences,57,Grand Est,true,true,true,false,Sarreguemines,57631,38,64384,2,0,1,0,0
+CA Saumur Val de Loire,49,Pays de la Loire,true,true,true,true,Saumur,49328,45,100565,2,0,4,1,0
+CA Seine-Eure,27,Normandie,true,true,true,true,Louviers,27375,60,104950,2,5,1,0,0
+CA Seine Normandie Agglomération,27,Normandie,true,true,true,true,Vernon,27681,61,84938,3,5,1,0,0
+CA Sète Agglopôle Méditerranée,34,Occitanie,true,false,true,true,Sète,34301,14,131622,1,3,1,0,0
+CA Sud Sainte Baume,83,Provence-Alpes-Côte d’Azur,true,false,true,false,Sanary-sur-Mer,83123,9,66148,1,0,0,0,0
+CA Tarbes-Lourdes-Pyrénées,65,Occitanie,true,false,true,true,Tarbes,65440,86,130358,1,1,0,0,0
+CA Terre de Provence,13,Provence-Alpes-Côte d’Azur,true,false,true,false,Châteaurenard,13027,13,61432,1,0,0,0,0
+CA Terres de Montaigu,85,Pays de la Loire,false,false,false,false,Montaigu-Vendée,85146,10,51811,0,0,0,0,0
+CA Territoire de la Côte Ouest (TCO),974,La Réunion,true,false,true,false,Saint-Paul,97415,5,221532,1,0,0,0,0
+CA Territoires Vendômois,41,Centre-Val de Loire,true,true,true,true,Vendôme,41269,65,54010,2,1,1,0,0
+CA Thonon Agglomération,74,Auvergne-Rhône-Alpes,true,true,true,false,Thonon-les-Bains,74281,25,97077,3,0,0,0,0
+CA Troyes Champagne Métropole,10,Grand Est,true,true,true,true,Troyes,10387,81,179435,2,3,0,0,0
+CA Tulle Agglo,19,Nouvelle-Aquitaine,true,true,true,true,Tulle,19272,43,45048,2,0,3,1,0
+CA Val de Garonne Agglomération,47,Nouvelle-Aquitaine,true,true,true,true,Marmande,47157,43,62194,2,0,3,1,0
+CA Ventoux-Comtat-Venaissin (COVE),84,Provence-Alpes-Côte d’Azur,true,false,true,false,Carpentras,84031,25,73683,1,0,0,0,0
+CA Vichy Communauté,03,Auvergne-Rhône-Alpes,true,true,true,true,Vichy,03310,39,86487,2,2,0,0,0
+CA Vienne Condrieu,38,Auvergne-Rhône-Alpes,true,true,true,true,Vienne,38544,30,96450,2,2,0,0,0
+CA Vitré Communauté,35,Bretagne,true,true,true,false,Vitré,35360,46,84936,4,0,1,0,0
+CC Airvaudais-Val du Thouet,79,Nouvelle-Aquitaine,false,false,false,false,Airvault,79005,9,7090,0,0,0,0,0
+CC Albret Communauté,47,Nouvelle-Aquitaine,false,false,false,false,Nérac,47195,33,26730,0,0,0,0,0
+CC Alpes d'Azur,06,Provence-Alpes-Côte d’Azur,false,false,false,false,Puget-Théniers,06099,34,10191,0,0,0,0,0
+CC Alsace Rhin Brisach,68,Grand Est,false,false,false,false,Volgelsheim,68352,29,34600,0,0,0,0,0
+CC Altitude 800,25,Bourgogne-Franche-Comté,false,false,false,false,Levier,25334,11,7037,0,0,0,0,0
+CC Amognes Coeur du Nivernais,58,Bourgogne-Franche-Comté,false,false,false,false,Saint-Benin-d'Azy,58232,28,8695,0,0,0,0,0
+CC Andaine - Passais,61,Normandie,false,false,false,false,Rives d'Andaine,61096,12,13087,0,0,0,0,0
+CC Anjou Bleu Communauté,49,Pays de la Loire,false,false,false,false,Segré-en-Anjou Bleu,49331,11,35601,0,0,0,0,0
+CC Anjou Loir et Sarthe,49,Pays de la Loire,false,false,false,false,Tiercé,49347,17,28727,0,0,0,0,0
+"CC Arbois, Poligny, Salins, Coeur du Jura",39,Bourgogne-Franche-Comté,false,false,false,false,Poligny,39434,66,22426,0,0,0,0,0
+CC Arc Sud Bretagne,56,Bretagne,false,false,false,false,Muzillac,56143,12,29691,0,0,0,0,0
+CC Ardèche Rhône Coiron,07,Auvergne-Rhône-Alpes,false,false,false,false,Le Teil,07319,15,23598,0,0,0,0,0
+CC Ardennes Thiérache,08,Grand Est,false,false,false,false,Signy-le-Petit,08420,37,9670,0,0,0,0,0
+CC Argentan Intercom,61,Normandie,true,true,true,true,Argentan,61006,49,34236,2,2,1,0,0
+CC Argonne-Meuse,55,Grand Est,false,false,false,false,Clermont-en-Argonne,55117,38,7032,0,0,0,0,0
+CC Aunis Atlantique,17,Nouvelle-Aquitaine,true,false,true,false,Marans,17218,20,32814,1,0,1,0,0
+CC Auray Quiberon Terre Atlantique,56,Bretagne,true,true,true,true,Auray,56007,24,93474,2,1,1,0,0
+"CC Avallon, Vézelay, Morvan",89,Bourgogne-Franche-Comté,false,false,false,false,Avallon,89025,48,18971,0,0,0,0,0
+CC Avre Luce Noye,80,Hauts-de-France,false,false,false,false,Moreuil,80570,47,22013,0,0,0,0,0
+CC Baud Communauté,56,Bretagne,false,false,false,false,Baud,56010,6,16794,0,0,0,0,0
+CC Baugeois Vallée,49,Pays de la Loire,false,false,false,false,Baugé-en-Anjou,49018,7,35297,0,0,0,0,0
+CC Bazois Loire Morvan,58,Bourgogne-Franche-Comté,false,false,false,false,Luzy,58149,46,15265,0,0,0,0,0
+CC Blavet Bellevue Océan,56,Bretagne,false,false,false,false,Kervignac,56094,5,19037,0,0,0,0,0
+CC Bouzonvillois-Trois Frontières,57,Grand Est,false,false,false,false,Bouzonville,57106,40,24585,0,0,0,0,0
+CC Bresse Haute Seille,39,Bourgogne-Franche-Comté,false,false,false,false,Bletterans,39056,54,19627,0,0,0,0,0
+CC Bresse Louhannaise Intercom',71,Bourgogne-Franche-Comté,false,false,false,false,Louhans,71263,30,28991,0,0,0,0,0
+CC Bresse Nord Intercom',71,Bourgogne-Franche-Comté,false,false,false,false,Pierre-de-Bresse,71351,16,6623,0,0,0,0,0
+CC Bresse Revermont 71,71,Bourgogne-Franche-Comté,false,false,false,false,Saint-Germain-du-Bois,71419,17,10185,0,0,0,0,0
+CC Bretagne Porte de Loire Communauté,35,Bretagne,false,false,false,false,Bain-de-Bretagne,35012,20,33480,0,0,0,0,0
+CC Bretagne Romantique,35,Bretagne,false,false,false,false,Combourg,35085,25,37362,0,0,0,0,0
+CC Brionnais Sud Bourgogne,71,Bourgogne-Franche-Comté,false,false,false,false,Chauffailles,71120,29,15331,0,0,0,0,0
+CC Brocéliande Communauté,35,Bretagne,false,false,false,false,Bréal-sous-Montfort,35037,8,19353,0,0,0,0,0
+CC Buëch-Dévoluy,05,Provence-Alpes-Côte d’Azur,false,false,false,false,Veynes,05179,20,9893,0,0,0,0,0
+CC Campagne-de-Caux,76,Normandie,false,false,false,false,Goderville,76302,22,15254,0,0,0,0,0
+CC Canaux et Forêts en Gâtinais,45,Centre-Val de Loire,false,false,false,false,Lorris,45187,38,27928,0,0,0,0,0
+CC Cap Sizun - Pointe du Raz,29,Bretagne,false,false,false,false,Plouhinec,29197,10,15592,0,0,0,0,0
+CC Caux - Austreberthe,76,Normandie,true,false,true,true,Barentin,76057,9,25536,1,4,0,0,0
+CC Centre Morbihan Communauté,56,Bretagne,false,false,false,false,Locminé,56117,12,27812,0,0,0,0,0
+CC Chablis Villages et Terroirs,89,Bourgogne-Franche-Comté,false,false,false,false,Chablis,89068,36,14993,0,0,0,0,0
+CC Challans-Gois Communauté,85,Pays de la Loire,true,false,false,false,Challans,85047,11,51873,1,0,0,0,0
+CC Champagnole Nozeroy Jura,39,Bourgogne-Franche-Comté,false,false,false,false,Champagnole,39097,66,23841,0,0,0,0,0
+CC Châteaubriant-Derval,44,Pays de la Loire,true,true,true,false,Châteaubriant,44036,26,46077,2,0,0,0,0
+CC Chavanon Combrailles et Volcans,63,Auvergne-Rhône-Alpes,false,false,false,false,Chapdes-Beaufort,63085,36,12974,0,0,0,0,0
+"CC Chinon, Vienne et Loire",37,Centre-Val de Loire,true,false,true,true,Chinon,37072,19,24365,2,3,0,0,0
+CC Cingal-Suisse Normande,14,Normandie,false,false,false,false,Thury-Harcourt-le-Hom,14689,42,23852,0,0,0,0,0
+CC Cluses-Arve et Montagnes,74,Auvergne-Rhône-Alpes,true,false,true,true,Cluses,74081,10,47951,2,0,0,1,0
+CC Coeur Côte Fleurie,14,Normandie,false,false,false,false,Trouville-sur-Mer,14715,12,21024,0,0,0,0,0
+CC Coeur de Loire,58,Bourgogne-Franche-Comté,true,false,true,true,Cosne-Cours-sur-Loire,58086,30,25754,1,1,0,0,0
+CC Coeur de Nacre,14,Normandie,false,false,false,false,Douvres-la-Délivrande,14228,12,24638,0,0,0,0,0
+CC Coeur de Savoie,73,Auvergne-Rhône-Alpes,false,false,false,false,Valgelon-La Rochette,73215,41,38632,0,0,0,0,0
+CC Coeur du Perche,61,Normandie,false,false,false,false,Perche en Nocé,61309,12,11285,0,0,0,0,0
+CC Communauté Lesneven Côte des Légendes,29,Bretagne,false,false,false,false,Lesneven,29124,14,28317,0,0,0,0,0
+CC Côte d'Emeraude,35,Bretagne,false,false,false,false,Dinard,35093,9,29813,0,0,0,0,0
+CC Côte Landes Nature,40,Nouvelle-Aquitaine,true,false,false,false,Castets,40075,10,12956,2,0,2,0,0
+CC Côte Ouest Centre Manche,50,Normandie,false,false,false,false,La Haye,50236,30,22674,0,0,0,0,0
+CC Côtes de Meuse Woëvre,55,Grand Est,false,false,false,false,Vigneulles-lès-Hattonchâtel,55551,25,6190,0,0,0,0,0
+CC Couesnon Marches de Bretagne,35,Bretagne,false,false,false,false,Maen Roch,35257,15,22386,0,0,0,0,0
+CC Coutances Mer et Bocage,50,Normandie,true,true,true,true,Coutances,50147,48,49869,2,2,1,0,0
+CC Creuse Sud Ouest,23,Nouvelle-Aquitaine,false,false,false,false,Bourganeuf,23030,43,14095,0,0,0,0,0
+"CC d'Arcis, Mailly, Ramerupt",10,Grand Est,false,false,false,false,Arcis-sur-Aube,10006,39,12042,0,0,0,0,0
+CC de Bayeux Intercom,14,Normandie,true,true,true,true,Bayeux,14047,36,30602,1,2,1,0,0
+CC de Bénévent Grand Bourg,23,Nouvelle-Aquitaine,false,false,false,false,Fursac,23192,16,6930,0,0,0,0,0
+CC de Calvi Balagne,2B,Corse,false,false,false,false,Calvi,2B050,14,12842,0,0,0,0,0
+CC Decazeville Communauté,12,Occitanie,true,false,true,false,Decazeville,12089,12,18533,3,0,0,0,0
+CC de Commercy - Void - Vaucouleurs,55,Grand Est,false,false,false,false,Commercy,55122,54,22495,0,0,0,0,0
+CC de Damvillers Spincourt,55,Grand Est,false,false,false,false,Spincourt,55500,41,8244,0,0,0,0,0
+CC de Desvres-Samer,62,Hauts-de-France,false,false,false,false,Desvres,62268,31,23728,0,0,0,0,0
+CC de Fium'Orbu Castellu,2B,Corse,false,false,false,false,Ghisonaccia,2B123,13,13450,0,0,0,0,0
+CC de Flandre Intérieure,59,Hauts-de-France,false,false,false,false,Hazebrouck,59295,50,104778,0,0,0,0,0
+CC de Freyming-Merlebach,57,Grand Est,false,false,false,false,Freyming-Merlebach,57240,11,31740,0,0,0,0,0
+CC de Gevrey-Chambertin et de Nuits-Saint-Georges,21,Bourgogne-Franche-Comté,false,false,false,false,Nuits-Saint-Georges,21464,55,30339,0,0,0,0,0
+"CC de Granville, Terre et Mer",50,Normandie,true,false,true,true,Granville,50218,32,46959,1,3,0,0,0
+CC de Hanau-La Petite Pierre,67,Grand Est,false,false,false,false,Ingwiller,67222,38,26577,0,0,0,0,0
+CC de Haute Cornouaille,29,Bretagne,false,false,false,false,Châteauneuf-du-Faou,29027,11,15206,0,0,0,0,0
+CC de la Baie du Cotentin,50,Normandie,true,true,true,true,Carentan-les-Marais,50099,23,23329,1,2,1,0,0
+CC de la Basse-Zorn,67,Grand Est,false,false,false,false,Hœrdt,67205,7,17991,0,0,0,0,0
+CC de la Beauce Loirétaine,45,Centre-Val de Loire,false,false,false,false,Chevilly,45093,23,17251,0,0,0,0,0
+CC de la Brie Champenoise,51,Grand Est,false,false,false,false,Montmirail,51380,20,7652,0,0,0,0,0
+CC de la Champagne Picarde,02,Hauts-de-France,false,false,false,false,Villeneuve-sur-Aisne,02360,46,21354,0,0,0,0,0
+CC de la Costa Verde,2B,Corse,false,false,false,false,Cervione,2B087,23,11057,0,0,0,0,0
+CC de la Côte d'Albâtre,76,Normandie,false,false,false,false,Saint-Valery-en-Caux,76655,63,28130,0,0,0,0,0
+CC de la Côtière à Montluel,01,Auvergne-Rhône-Alpes,true,true,true,false,Montluel,01262,9,25906,2,0,0,0,0
+CC de la Grande Vallée de la Marne,51,Grand Est,false,false,false,false,Aÿ-Champagne,51030,14,14482,0,0,0,0,0
+CC de la Haute Somme (Combles - Péronne - Roisel),80,Hauts-de-France,false,false,false,false,Péronne,80620,60,26950,0,0,0,0,0
+CC de l'Aillantais en Bourgogne,89,Bourgogne-Franche-Comté,false,false,false,false,Montholon,89003,13,10382,0,0,0,0,0
+CC de l'Aire à l'Argonne,55,Grand Est,false,false,false,false,Les Hauts-de-Chée,55123,47,6533,0,0,0,0,0
+CC de l'Aire Cantilienne,60,Hauts-de-France,true,false,true,true,Chantilly,60141,11,46188,1,2,1,2,0
+CC de l'Alsace Bossue,67,Grand Est,false,false,false,false,Sarre-Union,67434,45,24376,0,0,0,0,0
+CC de l'Alta Rocca,2A,Corse,false,false,false,false,Zonza,2A362,18,8927,0,0,0,0,0
+CC de la Mossig et du Vignoble,67,Grand Est,false,false,false,false,Wasselonne,67520,24,25202,0,0,0,0,0
+CC de la Picardie Verte,60,Hauts-de-France,false,false,false,false,Grandvilliers,60286,88,32777,0,0,0,0,0
+CC de la Pieve de l'Ornano et du Taravo,2A,Corse,false,false,false,false,Grosseto-Prugna,2A130,28,13488,0,0,0,0,0
+CC de la Plaine d'Estrées,60,Hauts-de-France,true,false,true,true,Estrées-Saint-Denis,60223,19,18629,2,2,1,2,0
+CC de la Plaine Dijonnaise,21,Bourgogne-Franche-Comté,false,false,false,false,Genlis,21292,22,22568,0,0,0,0,0
+CC de la Plaine du Rhin,67,Grand Est,false,false,false,false,Seltz,67463,19,18628,0,0,0,0,0
+CC de la Plaine Jurassienne,39,Bourgogne-Franche-Comté,false,false,false,false,Chaussin,39128,21,9249,0,0,0,0,0
+CC de la Porte des Vosges Méridionales,88,Grand Est,false,false,false,false,Remiremont,88383,10,29869,0,0,0,0,0
+CC de la Région d'Audruicq,62,Hauts-de-France,false,false,false,false,Oye-Plage,62645,15,28539,0,0,0,0,0
+CC de la Région de Bar sur Aube,10,Grand Est,false,false,false,false,Bar-sur-Aube,10033,27,10864,0,0,0,0,0
+CC de la Région de Guebwiller,68,Grand Est,false,false,false,false,Guebwiller,68112,19,38916,0,0,0,0,0
+CC de la Région de Molsheim-Mutzig,67,Grand Est,false,false,false,false,Molsheim,67300,18,41432,0,0,0,0,0
+CC de la Région de Rambervillers,88,Grand Est,false,false,false,false,Rambervillers,88367,30,13184,0,0,0,0,0
+CC de la Région de Suippes,51,Grand Est,false,false,false,false,Suippes,51559,16,8028,0,0,0,0,0
+CC de l'Argonne Ardennaise,08,Grand Est,false,false,false,false,Vouziers,08490,95,16977,0,0,0,0,0
+CC de l'Argonne Champenoise,51,Grand Est,true,true,true,false,Sainte-Menehould,51507,60,11986,2,0,1,0,0
+CC de la Station des Rousses-Haut Jura,39,Bourgogne-Franche-Comté,false,false,false,false,Les Rousses,39470,4,7487,0,0,0,0,0
+CC de la Terre des Deux Caps,62,Hauts-de-France,false,false,false,false,Marquise,62560,21,22727,0,0,0,0,0
+CC de la Vallée de Chamonix-Mont-Blanc,74,Auvergne-Rhône-Alpes,true,true,true,true,Chamonix-Mont-Blanc,74056,4,14209,2,1,0,0,0
+CC de la Vallée de Kaysersberg,68,Grand Est,false,false,false,false,Kaysersberg Vignoble,68162,8,16373,0,0,0,0,0
+CC de la Vallée de la Bruche,67,Grand Est,false,false,false,false,La Broque,67066,26,20913,0,0,0,0,0
+CC de la Vallée de la Doller et du Soultzbach,68,Grand Est,false,false,false,false,Masevaux-Niederbruck,68201,15,16267,0,0,0,0,0
+CC de la Vallée de la Haute Sarthe,61,Normandie,false,false,false,false,Courtomer,61133,31,7682,0,0,0,0,0
+CC de la Vallée de l'Homme,24,Nouvelle-Aquitaine,false,false,false,false,Montignac-Lascaux,24291,26,16295,0,0,0,0,0
+CC de la Vallée de Munster,68,Grand Est,false,false,false,false,Munster,68226,16,16560,0,0,0,0,0
+CC de la Vallée de Saint-Amarin,68,Grand Est,false,false,false,false,Saint-Amarin,68292,15,12168,0,0,0,0,0
+CC de l'Ernée,53,Pays de la Loire,false,false,false,false,Ernée,53096,15,20772,0,0,0,0,0
+CC de l'Ile de Noirmoutier,85,Pays de la Loire,true,false,false,true,Noirmoutier-en-l'Île,85163,4,9473,1,1,0,0,0
+CC de l'Ile d'Oléron,17,Nouvelle-Aquitaine,false,false,false,false,Saint-Pierre-d'Oléron,17385,8,22890,0,0,0,0,0
+CC de l'Ile-Rousse - Balagne,2B,Corse,true,false,true,false,L'Île-Rousse,2B134,22,11195,1,0,0,0,0
+CC de l'Oise Picarde,60,Hauts-de-France,false,false,false,false,Breteuil,60104,52,21320,0,0,0,0,0
+CC de Londinières,76,Normandie,false,false,false,false,Londinières,76392,16,5271,0,0,0,0,0
+CC de l'Orvin et de l'Ardusson,10,Grand Est,false,false,false,false,Marigny-le-Châtel,10224,25,8633,0,0,0,0,0
+CC de l'Ouest Vosgien,88,Grand Est,true,false,true,false,Neufchâteau,88321,70,23605,1,0,0,0,0
+CC de l'Oust à Brocéliande,56,Bretagne,true,false,true,false,Guer,56075,26,40933,1,0,0,0,0
+CC de l'Outre-Forêt,67,Grand Est,false,false,false,false,Betschdorf,67339,13,16427,0,0,0,0,0
+CC de Marana-Golo,2B,Corse,false,false,false,false,Borgo,2B042,10,25879,0,0,0,0,0
+CC de Marcigny,71,Bourgogne-Franche-Comté,false,false,false,false,Marcigny,71275,12,6199,0,0,0,0,0
+CC de Marie-Galante,971,Guadeloupe,false,false,false,false,Grand-Bourg,97112,3,10556,0,0,0,0,0
+CC de Millau Grands Causses,12,Occitanie,true,false,true,false,Millau,12145,15,30249,1,0,0,0,0
+CC de Mirecourt Dompaire,88,Grand Est,false,false,false,false,Mirecourt,88304,76,19278,0,0,0,0,0
+CC de Miribel et du Plateau,01,Auvergne-Rhône-Alpes,true,true,true,true,Miribel,01249,6,25583,2,1,0,0,0
+CC de Montbenoit,25,Bourgogne-Franche-Comté,false,false,false,false,Gilley,25271,16,8438,0,0,0,0,0
+CC de Montesquieu,33,Nouvelle-Aquitaine,true,false,true,false,Léognan,33238,13,48419,1,0,1,0,0
+CC de Nozay,44,Pays de la Loire,false,false,false,false,Nozay,44113,7,16681,0,0,0,0,0
+CC de Pont-Audemer / Val de Risle,27,Normandie,true,true,true,true,Pont-Audemer,27467,32,33489,2,2,1,0,0
+CC de Pouilly en Auxois/Bligny sur Ouche,21,Bourgogne-Franche-Comté,false,false,false,false,Pouilly-en-Auxois,21501,47,9101,0,0,0,0,0
+CC de Puisaye-Forterre,89,Bourgogne-Franche-Comté,false,false,false,false,Charny Orée de Puisaye,89086,57,34267,0,0,0,0,0
+CC d'Erdre et Gesvres,44,Pays de la Loire,true,true,true,false,Treillières,44209,12,69332,1,0,0,0,0
+CC des 4 rivières,76,Normandie,false,false,false,false,Gournay-en-Bray,76312,53,29340,0,0,0,0,0
+CC des 7 Vallées,62,Hauts-de-France,false,false,false,false,Hesdin-la-Forêt,62447,69,29947,0,0,0,0,0
+CC de Saint-Méen Montauban,35,Bretagne,false,false,false,false,Montauban-de-Bretagne,35184,17,28016,0,0,0,0,0
+CC de Saulieu,21,Bourgogne-Franche-Comté,false,false,false,false,Saulieu,21584,12,5354,0,0,0,0,0
+CC des Ballons des Hautes-Vosges,88,Grand Est,false,false,false,false,Rupt-sur-Moselle,88408,8,14878,0,0,0,0,0
+CC des Bastides en Haut Agenais Périgord,47,Nouvelle-Aquitaine,false,false,false,false,Monflanquin,47175,43,17358,0,0,0,0,0
+CC des Campagnes de l'Artois,62,Hauts-de-France,false,false,false,false,Avesnes-le-Comte,62063,96,34158,0,0,0,0,0
+CC des Coëvrons,53,Pays de la Loire,true,true,true,false,Évron,53097,29,27280,1,0,0,0,0
+CC des Collines du Perche Normand,61,Normandie,false,false,false,false,Val-au-Perche,61484,16,12146,0,0,0,0,0
+CC des Combes,70,Bourgogne-Franche-Comté,false,false,false,false,Scey-sur-Saône-et-Saint-Albin,70482,27,7679,0,0,0,0,0
+CC des Coteaux et Landes de Gascogne,47,Nouvelle-Aquitaine,false,false,false,false,Casteljaloux,47052,27,12810,0,0,0,0,0
+CC des Crêtes Préardennaises,08,Grand Est,false,false,false,false,Signy-l'Abbaye,08419,94,22112,0,0,0,0,0
+CC des Deux Vallées,60,Hauts-de-France,false,false,false,false,Thourotte,60636,16,23125,0,0,0,0,0
+CC de Seille et Grand Couronné,54,Grand Est,false,false,false,false,Champenoux,54113,42,19214,0,0,0,0,0
+CC de Semur en Brionnais,71,Bourgogne-Franche-Comté,false,false,false,false,Iguerande,71238,14,5336,0,0,0,0,0
+CC de Sézanne-Sud Ouest Marnais,51,Grand Est,false,false,false,false,Sézanne,51535,62,21383,0,0,0,0,0
+CC des Forêts du Perche,28,Centre-Val de Loire,false,false,false,false,Senonches,28373,15,7825,0,0,0,0,0
+CC des Hautes Vosges,88,Grand Est,false,false,false,false,La Bresse,88075,14,21380,0,0,0,0,0
+CC des Hauts de Flandre,59,Hauts-de-France,false,false,false,false,Wormhout,59663,40,54603,0,0,0,0,0
+CC des Hauts du Perche,61,Normandie,false,false,false,false,Tourouvre au Perche,61491,10,8004,0,0,0,0,0
+CC des Hauts du Val de Saône,70,Bourgogne-Franche-Comté,false,false,false,false,Jussey,70292,48,8551,0,0,0,0,0
+CC des Lacs de Champagne,10,Grand Est,false,false,false,false,Brienne-le-Château,10064,43,9130,0,0,0,0,0
+CC des Lacs et Montagnes du Haut-Doubs,25,Bourgogne-Franche-Comté,false,false,false,false,Jougne,25318,32,17188,0,0,0,0,0
+CC des Lisières de l'Oise,60,Hauts-de-France,false,false,false,false,Cuise-la-Motte,60188,20,16457,0,0,0,0,0
+CC des Monts de Gy,70,Bourgogne-Franche-Comté,false,false,false,false,Gy,70282,25,6301,0,0,0,0,0
+CC des Paysages de la Champagne,51,Grand Est,false,false,false,false,Dormans,51217,51,21083,0,0,0,0,0
+CC des Pays de L'Aigle,61,Normandie,false,false,false,false,L'Aigle,61214,32,25632,0,0,0,0,0
+CC des Pays d'Oise et d'Halatte,60,Hauts-de-France,true,false,true,true,Pont-Sainte-Maxence,60509,17,35061,1,2,1,2,0
+CC des Pays du Sel et du Vermois,54,Grand Est,true,true,true,true,Dombasle-sur-Meurthe,54159,16,29091,3,3,2,0,0
+CC des Portes de Meuse,55,Grand Est,false,false,false,false,Ancerville,55010,51,16370,0,0,0,0,0
+CC des Portes de Romilly sur Seine,10,Grand Est,false,false,false,false,Romilly-sur-Seine,10323,6,19206,0,0,0,0,0
+CC des Portes de Rosheim,67,Grand Est,false,false,false,false,Rosheim,67411,9,18716,0,0,0,0,0
+CC des Portes de Sologne,45,Centre-Val de Loire,false,false,false,false,La Ferté-Saint-Aubin,45146,7,15994,0,0,0,0,0
+CC des Portes du Haut-Doubs,25,Bourgogne-Franche-Comté,false,false,false,false,Valdahon,25578,47,27549,0,0,0,0,0
+CC des Portes du Luxembourg,08,Grand Est,false,false,false,false,Carignan,08090,50,19821,0,0,0,0,0
+CC des Portes Euréliennes d'Ile de France,28,Centre-Val de Loire,true,false,true,false,Auneau-Bleury-Saint-Symphorien,28015,39,49593,1,0,0,0,0
+CC des Quatre Rivières,70,Bourgogne-Franche-Comté,false,false,false,false,Champlitte,70122,41,9678,0,0,0,0,0
+CC des Quatre Vallées,45,Centre-Val de Loire,false,false,false,false,Ferrières-en-Gâtinais,45145,19,17596,0,0,0,0,0
+CC des Sablons,60,Hauts-de-France,true,false,true,true,Méru,60395,20,39042,2,2,1,2,0
+CC des Sources de l'Orne,61,Normandie,false,false,false,false,Sées,61464,23,12557,0,0,0,0,0
+CC des Terres d'Auxois,21,Bourgogne-Franche-Comté,false,false,false,false,Semur-en-Auxois,21603,76,16146,0,0,0,0,0
+CC des Terres du Val de Loire,45,Centre-Val de Loire,false,false,false,false,Beaugency,45028,25,51156,0,0,0,0,0
+CC des Trois Forêts,52,Grand Est,false,false,false,false,Châteauvillain,52114,29,7443,0,0,0,0,0
+CC des Vallées d'Auge et du Merlerault,61,Normandie,false,false,false,false,Vimoutiers,61508,46,14514,0,0,0,0,0
+CC des Vallées de la Braye et de l'Anille,72,Pays de la Loire,false,false,false,false,Saint-Calais,72269,19,15207,0,0,0,0,0
+CC des Vallées de la Tille et de l'Ignon,21,Bourgogne-Franche-Comté,false,false,false,false,Is-sur-Tille,21317,23,13890,0,0,0,0,0
+CC des Vallées du Clain,86,Nouvelle-Aquitaine,false,false,false,false,Vivonne,86293,16,27653,0,0,0,0,0
+CC des Vallées du Haut-Anjou,49,Pays de la Loire,false,false,false,false,Les Hauts-d'Anjou,49080,16,37088,0,0,0,0,0
+CC des Villes Soeurs,76,Normandie,false,false,false,false,Eu,76255,28,36437,0,0,0,0,0
+CC des Vosges côté Sud Ouest,88,Grand Est,false,false,false,false,Darney,88124,60,11906,0,0,0,0,0
+CC de Thann-Cernay,68,Grand Est,false,false,false,false,Cernay,68063,16,38341,0,0,0,0,0
+CC de Ventadour - Egletons - Monédières,19,Nouvelle-Aquitaine,false,false,false,false,Égletons,19073,19,11127,0,0,0,0,0
+CC de Vie et Boulogne,85,Pays de la Loire,false,false,false,false,Aizenay,85003,15,47302,0,0,0,0,0
+CC de Villedieu Intercom,50,Normandie,false,false,false,false,Villedieu-les-Poêles-Rouffigny,50639,27,15995,0,0,0,0,0
+"CC de Vitry, Champagne et Der",51,Grand Est,false,false,false,false,Vitry-le-François,51649,35,23851,0,0,0,0,0
+CC Dombes Saône Vallée,01,Auvergne-Rhône-Alpes,true,true,true,true,Trévoux,01427,19,41975,2,1,0,0,0
+CC Dômes Sancy Artense,63,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Sauves-d'Auvergne,63397,27,13046,0,0,0,0,0
+CC Domfront Tinchebray Interco,61,Normandie,false,false,false,false,Tinchebray-Bocage,61486,15,16125,0,0,0,0,0
+CC Douarnenez Communauté,29,Bretagne,true,true,true,false,Douarnenez,29046,5,18950,2,0,2,0,0
+CC du Barséquanais en Champagne,10,Grand Est,false,false,false,false,Bar-sur-Seine,10034,53,18828,0,0,0,0,0
+CC du Bassin de Pompey,54,Grand Est,true,true,true,true,Champigneulles,54115,13,40059,3,1,2,0,0
+CC du Bassin de Pont-à-Mousson,54,Grand Est,true,true,true,true,Pont-à-Mousson,54431,31,40744,2,1,1,0,0
+CC du Bocage Mayennais,53,Pays de la Loire,true,true,true,false,Ambrières-les-Vallées,53003,27,18658,1,0,0,0,0
+CC du Briançonnais,05,Provence-Alpes-Côte d’Azur,true,false,true,false,Briançon,05023,13,19490,1,0,0,0,0
+CC du Canton de Charly sur Marne,02,Hauts-de-France,false,false,false,false,Charly-sur-Marne,02163,21,15617,0,0,0,0,0
+CC du Canton d'Erstein,67,Grand Est,false,false,false,false,Erstein,67130,28,49842,0,0,0,0,0
+CC du Canton d'Oulchy le Château,02,Hauts-de-France,false,false,false,false,Oulchy-le-Château,02580,26,5638,0,0,0,0,0
+CC du Centre du Haut-Rhin,68,Grand Est,false,false,false,false,Ensisheim,68082,9,16549,0,0,0,0,0
+CC du Centre-Ouest,976,Mayotte,true,false,true,false,Tsingoni,97617,5,51449,1,0,0,0,0
+CC du Chaourçois et du Val d'Armance,10,Grand Est,false,false,false,false,Ervy-le-Châtel,10140,42,10538,0,0,0,0,0
+CC du Chemin des Dames,02,Hauts-de-France,false,false,false,false,Corbeny,02215,30,5596,0,0,0,0,0
+CC du Clermontois,60,Hauts-de-France,true,false,true,true,Clermont,60157,18,38584,2,2,1,2,0
+CC du Clunisois,71,Bourgogne-Franche-Comté,false,false,false,false,Cluny,71137,41,14522,0,0,0,0,0
+CC du Gévaudan,48,Occitanie,false,false,false,false,Marvejols,48092,12,10039,0,0,0,0,0
+CC du Golfe de Saint-Tropez,83,Provence-Alpes-Côte d’Azur,true,false,false,true,Sainte-Maxime,83115,12,58798,8,8,0,0,0
+CC du Grand Autunois Morvan,71,Bourgogne-Franche-Comté,true,false,true,false,Autun,71014,55,36643,1,0,0,0,0
+CC du Grand Pontarlier,25,Bourgogne-Franche-Comté,false,false,false,false,Pontarlier,25462,10,29696,0,0,0,0,0
+CC du Guillestrois et du Queyras,05,Provence-Alpes-Côte d’Azur,true,false,false,false,Guillestre,05065,15,8170,1,0,0,0,0
+CC du Haut Béarn,64,Nouvelle-Aquitaine,true,false,true,true,Oloron-Sainte-Marie,64422,48,33243,1,1,0,0,0
+CC du Haut Pays Bigouden,29,Bretagne,false,false,false,false,Plonéour-Lanvern,29174,10,19075,0,0,0,0,0
+CC du Haut Pays du Montreuillois,62,Hauts-de-France,false,false,false,false,Fruges,62364,49,16501,0,0,0,0,0
+CC du Haut-Poitou,86,Nouvelle-Aquitaine,false,false,false,false,Saint-Martin-la-Pallu,86281,27,42689,0,0,0,0,0
+CC du Jovinien,89,Bourgogne-Franche-Comté,false,false,false,false,Joigny,89206,19,21143,0,0,0,0,0
+CC du Kochersberg,67,Grand Est,false,false,false,false,Truchtersheim,67495,23,27086,0,0,0,0,0
+CC du Kreiz-Breizh (CCKB),22,Bretagne,false,false,false,false,Rostrenen,22266,23,19055,0,0,0,0,0
+CC du Liancourtois,60,Hauts-de-France,true,false,true,true,Liancourt,60360,10,24218,2,2,0,2,0
+CC du Massif du Sancy,63,Auvergne-Rhône-Alpes,false,false,false,false,La Bourboule,63047,20,9789,0,0,0,0,0
+CC du Massif du Vercors,38,Auvergne-Rhône-Alpes,false,false,false,false,Villard-de-Lans,38548,6,12482,0,0,0,0,0
+CC du Mont des Avaloirs,53,Pays de la Loire,true,true,true,false,Villaines-la-Juhel,53271,26,15888,1,0,0,0,0
+CC du Nivernais Bourbonnais,58,Bourgogne-Franche-Comté,false,false,false,false,Saint-Pierre-le-Moûtier,58264,9,5266,0,0,0,0,0
+CC du Nogentais,10,Grand Est,false,false,false,false,Nogent-sur-Seine,10268,23,16675,0,0,0,0,0
+CC du Pays Arnay Liernais,21,Bourgogne-Franche-Comté,false,false,false,false,Arnay-le-Duc,21023,34,7119,0,0,0,0,0
+CC du Pays Bigouden Sud,29,Bretagne,false,false,false,false,Pont-l'Abbé,29220,12,39392,0,0,0,0,0
+CC du Pays d'Alésia et de la Seine,21,Bourgogne-Franche-Comté,false,false,false,false,Venarey-les-Laumes,21663,24,7479,0,0,0,0,0
+CC du Pays d'Ancenis,44,Pays de la Loire,true,true,true,false,Ancenis-Saint-Géréon,44003,20,71163,1,0,0,0,0
+CC du Pays de Barr,67,Grand Est,false,false,false,false,Barr,67021,20,24437,0,0,0,0,0
+CC du Pays de Bitche,57,Grand Est,false,false,false,false,Bitche,57089,46,34020,0,0,0,0,0
+CC du Pays de Bray,60,Hauts-de-France,false,false,false,false,Sérifontaine,60616,23,18495,0,0,0,0,0
+CC du Pays de Château-Gontier,53,Pays de la Loire,true,true,true,false,Château-Gontier-sur-Mayenne,53062,16,30898,1,0,0,0,0
+CC du Pays de Colombey et du Sud Toulois,54,Grand Est,false,false,false,false,Colombey-les-Belles,54135,38,11414,0,0,0,0,0
+CC du Pays de Conches,27,Normandie,false,false,false,false,Conches-en-Ouche,27165,25,18522,0,0,0,0,0
+CC du Pays de Craon,53,Pays de la Loire,true,true,true,false,Craon,53084,37,29276,1,0,0,0,0
+CC du Pays de Cruseilles,74,Auvergne-Rhône-Alpes,false,false,false,false,Cruseilles,74096,13,17734,0,0,0,0,0
+CC du Pays de Dol et de la Baie du Mont Saint-Michel,35,Bretagne,false,false,false,false,Dol-de-Bretagne,35095,19,24531,0,0,0,0,0
+CC du Pays de Duras,47,Nouvelle-Aquitaine,false,false,false,false,Duras,47086,17,5838,0,0,0,0,0
+CC du Pays de Falaise,14,Normandie,false,false,false,false,Falaise,14258,58,27957,0,0,0,0,0
+CC du Pays de Fayence,83,Provence-Alpes-Côte d’Azur,false,false,false,false,Montauroux,83081,9,30281,0,0,0,0,0
+CC du Pays de Fontenay-Vendée,85,Pays de la Loire,false,false,false,false,Fontenay-le-Comte,85092,25,36960,0,0,0,0,0
+CC du Pays de Honfleur-Beuzeville,14,Normandie,true,true,true,true,Honfleur,14333,23,27653,2,5,1,0,0
+CC du Pays de la Châtaigneraie,85,Pays de la Loire,false,false,false,false,La Châtaigneraie,85059,16,15943,0,0,0,0,0
+CC du Pays de Lauzun,47,Nouvelle-Aquitaine,false,false,false,false,Miramont-de-Guyenne,47168,20,10659,0,0,0,0,0
+CC du Pays de la Zorn,67,Grand Est,false,false,false,false,Hochfelden,67202,20,16404,0,0,0,0,0
+CC du Pays de l'Huisne Sarthoise,72,Pays de la Loire,false,false,false,false,La Ferté-Bernard,72132,33,28999,0,0,0,0,0
+CC du Pays de Lumbres,62,Hauts-de-France,false,false,false,false,Lumbres,62534,36,24581,0,0,0,0,0
+CC du Pays de Maîche,25,Bourgogne-Franche-Comté,false,false,false,false,Maîche,25356,43,19027,0,0,0,0,0
+CC du Pays de Meslay-Grez,53,Pays de la Loire,true,true,true,false,Meslay-du-Maine,53152,22,14142,1,0,0,0,0
+CC du Pays de Montbozon et du Chanois,70,Bourgogne-Franche-Comté,false,false,false,false,Dampierre-sur-Linotte,70197,27,6885,0,0,0,0,0
+CC du Pays de Mormal,59,Hauts-de-France,false,false,false,false,Le Quesnoy,59481,53,48976,0,0,0,0,0
+CC du Pays de Mortagne,85,Pays de la Loire,false,false,false,false,Mortagne-sur-Sèvre,85151,11,29163,0,0,0,0,0
+CC du Pays de Mortagne au Perche,61,Normandie,false,false,false,false,Mortagne-au-Perche,61293,33,13988,0,0,0,0,0
+CC du Pays de Niederbronn-les-Bains,67,Grand Est,false,false,false,false,Reichshoffen,67388,13,23614,0,0,0,0,0
+CC du Pays de Phalsbourg,57,Grand Est,false,false,false,false,Phalsbourg,57540,26,17614,0,0,0,0,0
+CC du Pays de Pontchâteau St-Gildas-des-Bois,44,Pays de la Loire,true,true,true,false,Pontchâteau,44129,9,37415,1,0,0,0,0
+CC du Pays de Pouzauges,85,Pays de la Loire,false,false,false,false,Sèvremont,85090,10,23943,0,0,0,0,0
+CC du Pays de Revigny sur Ornain,55,Grand Est,false,false,false,false,Revigny-sur-Ornain,55427,16,6971,0,0,0,0,0
+CC du Pays de Ribeauvillé,68,Grand Est,false,false,false,false,Ribeauvillé,68269,16,18554,0,0,0,0,0
+"CC du Pays de Rouffach, Vignobles et Châteaux",68,Grand Est,false,false,false,false,Rouffach,68287,11,13346,0,0,0,0,0
+CC du Pays des Abers,29,Bretagne,false,false,false,false,Plabennec,29160,13,42926,0,0,0,0,0
+CC du Pays des Achards,85,Pays de la Loire,false,false,false,false,Les Achards,85152,9,20494,0,0,0,0,0
+CC du Pays de Saint-Eloy,63,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Éloy-les-Mines,63338,34,16010,0,0,0,0,0
+CC du Pays de Sainte-Odile,67,Grand Est,true,true,true,true,Obernai,67348,6,20082,2,1,1,0,0
+CC du Pays de Saverne,67,Grand Est,false,false,false,false,Saverne,67437,35,36319,0,0,0,0,0
+CC du Pays des Ecrins,05,Provence-Alpes-Côte d’Azur,true,false,true,true,L'Argentière-la-Bessée,05006,8,6771,1,1,0,0,0
+CC du Pays des Herbiers,85,Pays de la Loire,false,false,false,false,Les Herbiers,85109,8,31638,0,0,0,0,0
+CC du Pays des Sorgues et des Monts de Vaucluse,84,Provence-Alpes-Côte d’Azur,false,false,false,false,L'Isle-sur-la-Sorgue,84054,5,34942,0,0,0,0,0
+CC du Pays de Stenay et du Val Dunois,55,Grand Est,false,false,false,false,Stenay,55502,41,9686,0,0,0,0,0
+CC du Pays d'Etain,55,Grand Est,false,false,false,false,Étain,55181,26,7569,0,0,0,0,0
+CC du Pays de Valois,60,Hauts-de-France,true,false,true,true,Crépy-en-Valois,60176,62,56485,1,2,1,2,0
+CC du Pays de Wissembourg,67,Grand Est,false,false,false,false,Wissembourg,67544,12,16097,0,0,0,0,0
+CC du Pays d'Héricourt,70,Bourgogne-Franche-Comté,false,false,false,false,Héricourt,70285,23,21426,0,0,0,0,0
+CC du Pays d'Iroise,29,Bretagne,false,false,false,false,Saint-Renan,29260,19,51126,0,0,0,0,0
+CC du Pays d'Othe,10,Grand Est,false,false,false,false,Aix-Villemaur-Pâlis,10003,14,7666,0,0,0,0,0
+CC du Pays du Coquelicot,80,Hauts-de-France,false,false,false,false,Albert,80016,65,28330,0,0,0,0,0
+CC du Pays du Neubourg,27,Normandie,false,false,false,false,Le Neubourg,27428,41,23134,0,0,0,0,0
+CC du Pays Dunois,23,Nouvelle-Aquitaine,false,false,false,false,Dun-le-Palestel,23075,17,7152,0,0,0,0,0
+CC du Pays du Saintois,54,Grand Est,false,false,false,false,Vézelise,54563,55,14474,0,0,0,0,0
+CC du Pays du Vermandois,02,Hauts-de-France,false,false,false,false,Bohain-en-Vermandois,02095,54,31401,0,0,0,0,0
+CC du Pays Fléchois,72,Pays de la Loire,false,false,false,false,La Flèche,72154,14,28288,0,0,0,0,0
+CC du Pays Fouesnantais,29,Bretagne,false,false,false,false,Fouesnant,29058,7,30276,0,0,0,0,0
+CC du Pays Noyonnais,60,Hauts-de-France,true,false,true,true,Noyon,60471,42,32520,1,2,1,2,0
+CC du Pays Orne Moselle,57,Grand Est,false,false,false,false,Amnéville,57019,12,53248,0,0,0,0,0
+CC du Pays Réthelois,08,Grand Est,false,false,false,false,Rethel,08362,65,30645,0,0,0,0,0
+CC du Pays Rhénan,67,Grand Est,false,false,false,false,Drusenheim,67106,17,37690,0,0,0,0,0
+CC du Pays Sabolien,72,Pays de la Loire,true,true,true,true,Sablé-sur-Sarthe,72264,17,29237,2,1,2,1,0
+CC du Pays Solesmois,59,Hauts-de-France,false,false,false,false,Solesmes,59571,15,14871,0,0,0,0,0
+CC du Plateau de Frasne et du Val de Drugeon (CFD),25,Bourgogne-Franche-Comté,false,false,false,false,Frasne,25259,10,6475,0,0,0,0,0
+CC du Plateau de Russey,25,Bourgogne-Franche-Comté,false,false,false,false,Le Russey,25512,17,7285,0,0,0,0,0
+CC du Plateau Picard,60,Hauts-de-France,false,false,false,false,Saint-Just-en-Chaussée,60581,52,30293,0,0,0,0,0
+CC du Romorantinais et du Monestois,41,Centre-Val de Loire,false,false,false,false,Romorantin-Lanthenay,41194,16,34667,0,0,0,0,0
+CC du Sammiellois,55,Grand Est,false,false,false,false,Saint-Mihiel,55463,19,8344,0,0,0,0,0
+CC du Sartenais Valinco Taravo,2A,Corse,false,false,false,false,Propriano,2A249,18,12550,0,0,0,0,0
+CC du Saulnois,57,Grand Est,false,false,false,false,Dieuze,57177,128,28933,0,0,0,0,0
+CC du Serein,89,Bourgogne-Franche-Comté,false,false,false,false,Joux-la-Ville,89208,35,7222,0,0,0,0,0
+CC du Sud,976,Mayotte,false,false,false,false,Bandrele,97603,4,31945,0,0,0,0,0
+CC du Sud-Artois,62,Hauts-de-France,false,false,false,false,Bapaume,62080,64,27666,0,0,0,0,0
+CC du Sud Avesnois,59,Hauts-de-France,false,false,false,false,Fourmies,59249,12,24797,0,0,0,0,0
+CC du Sud Corse,2A,Corse,true,false,true,true,Porto-Vecchio,2A247,7,22133,3,1,0,0,0
+CC du Sud Estuaire,44,Pays de la Loire,true,false,true,true,Saint-Brevin-les-Pins,44154,6,31905,1,1,0,0,0
+CC du Sud Marnais,51,Grand Est,false,false,false,false,Fère-Champenoise,51248,14,5948,0,0,0,0,0
+CC du Sud Messin,57,Grand Est,false,false,false,false,Rémilly,57572,34,17408,0,0,0,0,0
+CC du Ternois,62,Hauts-de-France,false,false,false,false,Saint-Pol-sur-Ternoise,62767,103,37786,0,0,0,0,0
+CC du Territoire de Fresnes en Woëvre,55,Grand Est,false,false,false,false,Fresnes-en-Woëvre,55198,32,4881,0,0,0,0,0
+CC du Territoire Nord Picardie,80,Hauts-de-France,false,false,false,false,Doullens,80253,65,31392,0,0,0,0,0
+CC du Thouarsais,79,Nouvelle-Aquitaine,true,false,true,false,Thouars,79329,24,36186,1,0,1,0,0
+CC du Val d'Amour,39,Bourgogne-Franche-Comté,false,false,false,false,Mont-sous-Vaudrey,39365,24,9503,0,0,0,0,0
+CC du Val de Drôme en Biovallée,26,Auvergne-Rhône-Alpes,false,false,false,false,Livron-sur-Drôme,26165,29,31699,0,0,0,0,0
+CC du Val de l'Oise,02,Hauts-de-France,false,false,false,false,Ribemont,02648,32,16106,0,0,0,0,0
+CC du Val de Morteau,25,Bourgogne-Franche-Comté,false,false,false,false,Morteau,25411,8,21721,0,0,0,0,0
+CC du Val de Somme,80,Hauts-de-France,false,false,false,false,Corbie,80212,33,26826,0,0,0,0,0
+CC du Val d'Orne,61,Normandie,false,false,false,false,Putanges-le-Lac,61339,17,5922,0,0,0,0,0
+CC du Vexin Normand,27,Normandie,false,false,false,false,Gisors,27284,39,33772,0,0,0,0,0
+CC du Vexin-Thelle,60,Hauts-de-France,false,false,false,false,Chaumont-en-Vexin,60143,37,20931,0,0,0,0,0
+CC du Vimeu,80,Hauts-de-France,false,false,false,false,Friville-Escarbotin,80368,25,22701,0,0,0,0,0
+CC du Warndt,57,Grand Est,false,false,false,false,Creutzwald,57160,5,17610,0,0,0,0,0
+"CC Entre Arroux, Loire et Somme",71,Bourgogne-Franche-Comté,false,false,false,false,Gueugnon,71230,30,22061,0,0,0,0,0
+CC entre Beauce et Perche,28,Centre-Val de Loire,false,false,false,false,Illiers-Combray,28196,33,21889,0,0,0,0,0
+CC Entre Saône et Grosne,71,Bourgogne-Franche-Comté,false,false,false,false,Sennecey-le-Grand,71512,23,11358,0,0,0,0,0
+CC Estuaire et Sillon,44,Pays de la Loire,true,true,true,false,Savenay,44195,11,41873,1,0,0,0,0
+CC Falaises du Talou,76,Normandie,false,false,false,false,Petit-Caux,76618,24,24109,0,0,0,0,0
+CC Fier et Usses,74,Auvergne-Rhône-Alpes,false,false,false,false,Sillingy,74272,7,16676,0,0,0,0,0
+CC Flandre Lys,59,Hauts-de-France,false,false,false,false,Merville,59400,8,40743,0,0,0,0,0
+"CC Forêts, Lacs, Terres en Champagne",10,Grand Est,false,false,false,false,Piney,10287,15,6960,0,0,0,0,0
+"CC Forêts, Seine et Suzon",21,Bourgogne-Franche-Comté,false,false,false,false,Messigny-et-Vantoux,21408,25,7189,0,0,0,0,0
+CC Fumel Vallée du Lot,47,Nouvelle-Aquitaine,false,false,false,false,Fumel,47106,27,25080,0,0,0,0,0
+CC Gérardmer Hautes Vosges,88,Grand Est,false,false,false,false,Gérardmer,88196,8,14723,0,0,0,0,0
+CC Giennoises,45,Centre-Val de Loire,false,false,false,false,Gien,45155,11,24762,0,0,0,0,0
+CC Haut Chemin-Pays de Pange,57,Grand Est,false,false,false,false,Courcelles-Chaussy,57155,28,19883,0,0,0,0,0
+CC Haute-Corrèze Communauté,19,Nouvelle-Aquitaine,false,false,false,false,Ussel,19275,71,33204,0,0,0,0,0
+CC Haute Sarthe Alpes Mancelles,72,Pays de la Loire,false,false,false,false,Fresnay-sur-Sarthe,72138,38,23010,0,0,0,0,0
+CC Haut-Jura Arcade Communauté,39,Bourgogne-Franche-Comté,false,false,false,false,Hauts de Bienne,39368,4,9466,0,0,0,0,0
+CC Haut-Jura Saint-Claude,39,Bourgogne-Franche-Comté,false,false,false,false,Saint-Claude,39478,22,20005,0,0,0,0,0
+CC Haut-Léon Communauté,29,Bretagne,false,false,false,false,Saint-Pol-de-Léon,29259,14,32574,0,0,0,0,0
+CC Haut Val de Sèvre,79,Nouvelle-Aquitaine,false,false,false,false,Saint-Maixent-l'École,79270,19,31352,0,0,0,0,0
+CC Houve-Pays Boulageois,57,Grand Est,false,false,false,false,Boulay-Moselle,57097,37,23114,0,0,0,0,0
+CC inter-Caux-Vexin,76,Normandie,false,false,false,false,Montville,76452,64,56819,0,0,0,0,0
+CC Intercom Bernay Terres de Normandie,27,Normandie,true,true,true,true,Bernay,27056,75,55636,3,3,1,0,0
+CC Intercom de la Vire au Noireau,14,Normandie,true,false,true,false,Vire Normandie,14762,17,47690,3,0,0,0,0
+CC Interco Normandie Sud Eure,27,Normandie,false,false,false,false,Verneuil d'Avre et d'Iton,27679,41,38759,0,0,0,0,0
+CC interrégionale Aumale - Blangy-sur-Bresle,76,Normandie,false,false,false,false,Blangy-sur-Bresle,76101,44,21595,0,0,0,0,0
+CC Isle Vern Salembre en Périgord,24,Nouvelle-Aquitaine,false,false,false,false,Saint-Astier,24372,16,19216,0,0,0,0,0
+CC Jalle-Eau-Bourde,33,Nouvelle-Aquitaine,true,false,true,false,Cestas,33122,3,32840,1,0,1,0,0
+CC Lacs et Gorges du Verdon,83,Provence-Alpes-Côte d’Azur,false,false,false,false,Régusse,83102,16,9130,0,0,0,0,0
+CC la Grandvallière,39,Bourgogne-Franche-Comté,false,false,false,false,Saint-Laurent-en-Grandvaux,39487,8,5571,0,0,0,0,0
+CC Le Grand Charolais,71,Bourgogne-Franche-Comté,true,false,true,false,Paray-le-Monial,71342,44,40919,1,0,0,0,0
+CC Les Balcons du Dauphiné,38,Auvergne-Rhône-Alpes,false,false,false,false,Tignieu-Jameyzieu,38507,47,80464,0,0,0,0,0
+CC Les Bertranges,58,Bourgogne-Franche-Comté,false,false,false,false,La Charité-sur-Loire,58059,32,19933,0,0,0,0,0
+CC Le Tonnerrois en Bourgogne,89,Bourgogne-Franche-Comté,false,false,false,false,Tonnerre,89418,52,15581,0,0,0,0,0
+CC Lieuvin Pays d'Auge,27,Normandie,false,false,false,false,Thiberville,27629,51,20664,0,0,0,0,0
+CC Liffré-Cormier Communauté,35,Bretagne,false,false,false,false,Liffré,35152,9,28876,0,0,0,0,0
+CC Loire et Allier,58,Bourgogne-Franche-Comté,false,false,false,false,Saint-Éloi,58238,6,5076,0,0,0,0,0
+CC Loire Layon Aubance,49,Pays de la Loire,false,false,false,false,Brissac Loire Aubance,49050,19,58395,0,0,0,0,0
+CC Loir-Lucé-Bercé,72,Pays de la Loire,true,true,true,false,Montval-sur-Loir,72071,24,23757,1,0,0,0,0
+CC Lot et Tolzac,47,Nouvelle-Aquitaine,false,false,false,false,Castelmoron-sur-Lot,47054,15,7555,0,0,0,0,0
+CC Loue-Lison,25,Bourgogne-Franche-Comté,false,false,false,false,Ornans,25434,72,25811,0,0,0,0,0
+CC Lyons Andelle,27,Normandie,false,false,false,false,Romilly-sur-Andelle,27493,30,20882,0,0,0,0,0
+CC Mad et Moselle,54,Grand Est,false,false,false,false,Corny-sur-Moselle,57153,48,19434,0,0,0,0,0
+CC Marche et Combraille en Aquitaine,23,Nouvelle-Aquitaine,false,false,false,false,Auzances,23013,50,13239,0,0,0,0,0
+CC Marche Occitane - Val d'Anglin,36,Centre-Val de Loire,false,false,false,false,Chaillac,36035,17,6631,0,0,0,0,0
+CC Maremne Adour Côte Sud,40,Nouvelle-Aquitaine,true,true,true,false,Capbreton,40065,23,72997,2,0,3,0,0
+CC Mayenne Communauté,53,Pays de la Loire,true,true,true,true,Mayenne,53147,33,37914,2,1,0,0,0
+CC Meuse Rognon,52,Grand Est,false,false,false,false,Andelot-Blancheville,52008,59,10628,0,0,0,0,0
+CC Mirebellois et Fontenois,21,Bourgogne-Franche-Comté,false,false,false,false,Mirebeau-sur-Bèze,21416,32,12784,0,0,0,0,0
+CC Mond'Arverne Communauté,63,Auvergne-Rhône-Alpes,false,false,false,false,Vic-le-Comte,63457,27,41797,0,0,0,0,0
+CC Montfort Communauté,35,Bretagne,false,false,false,false,Montfort-sur-Meu,35188,8,26991,0,0,0,0,0
+CC Monts d'Arrée Communauté,29,Bretagne,false,false,false,false,Huelgoat,29081,12,8072,0,0,0,0,0
+CC Morvan Sommets et Grands Lacs,58,Bourgogne-Franche-Comté,false,false,false,false,Château-Chinon (Ville),58062,34,12590,0,0,0,0,0
+CC Moselle et Madon,54,Grand Est,true,true,true,true,Neuves-Maisons,54397,19,28577,3,1,2,0,0
+CC Nièvre et Somme,80,Hauts-de-France,false,false,false,false,Flixecourt,80318,36,28077,0,0,0,0,0
+CC Norge et Tille,21,Bourgogne-Franche-Comté,false,false,false,false,Arc-sur-Tille,21021,14,16955,0,0,0,0,0
+CC Normandie-Cabourg-Pays d'Auge,14,Normandie,false,false,false,false,Dives-sur-Mer,14225,39,32106,0,0,0,0,0
+CC Océan Marais de Monts,85,Pays de la Loire,false,false,false,false,Saint-Jean-de-Monts,85234,5,20600,0,0,0,0,0
+CC Osartis Marquion,62,Hauts-de-France,false,false,false,false,Brebières,62173,49,43353,0,0,0,0,0
+CC Pays de Blain communauté,44,Pays de la Loire,false,false,false,false,Blain,44015,4,17133,0,0,0,0,0
+CC Pays de Chantonnay,85,Pays de la Loire,false,false,false,false,Chantonnay,85051,10,24088,0,0,0,0,0
+CC Pays de Châteaugiron Communauté,35,Bretagne,false,false,false,false,Châteaugiron,35069,5,28598,0,0,0,0,0
+CC Pays d'Evian Vallée d'Abondance,74,Auvergne-Rhône-Alpes,true,true,true,true,Évian-les-Bains,74119,22,44100,3,1,0,0,0
+CC Pays d'Opale,62,Hauts-de-France,false,false,false,false,Ardres,62038,22,25544,0,0,0,0,0
+CC Pévèle-Carembault,59,Hauts-de-France,false,false,false,false,Orchies,59449,38,101111,0,0,0,0,0
+CC Plateau de Caux,76,Normandie,false,false,false,false,Yerville,76752,40,21642,0,0,0,0,0
+CC Pleyben-Châteaulin-Porzay,29,Bretagne,false,false,false,false,Châteaulin,29026,17,23877,0,0,0,0,0
+CC Poher Communauté,29,Bretagne,false,false,false,false,Carhaix-Plouguer,29024,11,16100,0,0,0,0,0
+CC Pontivy Communauté,56,Bretagne,true,true,true,true,Pontivy,56178,24,47626,2,1,1,0,0
+CC Porte du Jura,39,Bourgogne-Franche-Comté,false,false,false,false,Saint-Amour,39475,22,10790,0,0,0,0,0
+CC Portes de la Creuse en Marche,23,Nouvelle-Aquitaine,false,false,false,false,Bonnat,23025,16,6736,0,0,0,0,0
+CC Pré-Bocage Intercom,14,Normandie,false,false,false,false,Les Monts d'Aunay,14027,27,25343,0,0,0,0,0
+CC Presqu'île de Crozon-Aulne maritime,29,Bretagne,false,false,false,false,Crozon,29042,10,23212,0,0,0,0,0
+CC Provence Verdon,83,Provence-Alpes-Côte d’Azur,false,false,false,false,Rians,83104,15,23269,0,0,0,0,0
+CC Questembert Communauté,56,Bretagne,false,false,false,false,Questembert,56184,13,25010,0,0,0,0,0
+CC Retz en Valois,02,Hauts-de-France,true,false,true,false,Villers-Cotterêts,02810,54,29815,1,0,0,0,0
+CC Rhône Lez Provence,84,Provence-Alpes-Côte d’Azur,false,false,false,false,Bollène,84019,5,24753,0,0,0,0,0
+CC Rives de Moselle,57,Grand Est,true,true,true,true,Maizières-lès-Metz,57433,19,53865,2,1,1,0,0
+CC Rives de Saône,21,Bourgogne-Franche-Comté,false,false,false,false,Brazey-en-Plaine,21103,38,20922,0,0,0,0,0
+CC Roi Morvan Communauté,56,Bretagne,false,false,false,false,Gourin,56066,21,25899,0,0,0,0,0
+CC Roumois Seine,27,Normandie,false,false,false,false,Grand Bourgtheroulde,27105,40,42582,0,0,0,0,0
+CC Rumilly Terre de Savoie,74,Auvergne-Rhône-Alpes,true,true,true,true,Rumilly,74225,17,34080,2,3,0,0,0
+CC Saône Doubs Bresse,71,Bourgogne-Franche-Comté,false,false,false,false,Saint-Martin-en-Bresse,71456,27,12347,0,0,0,0,0
+CC Sarlat-Périgord Noir,24,Nouvelle-Aquitaine,true,false,true,true,Sarlat-la-Canéda,24520,13,16690,1,1,0,0,0
+CC Sarrebourg Moselle Sud,57,Grand Est,true,true,true,false,Sarrebourg,57630,76,46111,2,0,1,0,0
+CC Sauer-Pechelbronn,67,Grand Est,false,false,false,false,Wœrth,67550,24,17755,0,0,0,0,0
+CC Seine et Aube,10,Grand Est,false,false,false,false,Méry-sur-Seine,10233,25,10387,0,0,0,0,0
+CC Serein et Armance,89,Bourgogne-Franche-Comté,false,false,false,false,Saint-Florentin,89345,29,23898,0,0,0,0,0
+CC Serre-Ponçon,05,Provence-Alpes-Côte d’Azur,true,false,true,false,Embrun,05046,17,17548,2,0,0,0,0
+CC Serre-Ponçon Val d'Avance,05,Provence-Alpes-Côte d’Azur,true,false,false,false,La Bâtie-Neuve,05017,16,8042,1,0,0,0,0
+CC Sèvre et Loire,44,Pays de la Loire,false,false,false,false,Vallet,44212,11,51148,0,0,0,0,0
+CC Somme Sud-Ouest,80,Hauts-de-France,false,false,false,false,Poix-de-Picardie,80630,119,38709,0,0,0,0,0
+CC Spelunca-Liamone,2A,Corse,true,false,true,true,Cargèse,2A065,33,7927,1,1,0,0,0
+CC Sud Alsace Largue,68,Grand Est,false,false,false,false,Dannemarie,68068,44,22777,0,0,0,0,0
+CC  Sud Côte Chalonnaise,71,Bourgogne-Franche-Comté,false,false,false,false,Buxy,71070,36,11836,0,0,0,0,0
+CC Sud Retz Atlantique,44,Pays de la Loire,true,true,true,false,Machecoul-Saint-Même,44087,8,26145,1,0,0,0,0
+CC Sud Sarthe,72,Pays de la Loire,false,false,false,false,Le Lude,72176,19,22970,0,0,0,0,0
+CC Sud Vendée Littoral,85,Pays de la Loire,false,false,false,false,Luçon,85128,43,57007,0,0,0,0,0
+CC Sumène - Artense,15,Auvergne-Rhône-Alpes,false,false,false,false,Ydes,15265,16,8342,0,0,0,0,0
+CC Sundgau,68,Grand Est,false,false,false,false,Altkirch,68004,64,48713,0,0,0,0,0
+CC Tannay-Brinon-Corbigny,58,Bourgogne-Franche-Comté,false,false,false,false,Corbigny,58083,58,9651,0,0,0,0,0
+CC Terrassonnais Haut Périgord Noir,24,Nouvelle-Aquitaine,false,false,false,false,Terrasson-Lavilledieu,24547,37,22587,0,0,0,0,0
+CC Terre d'Eau,88,Grand Est,false,false,false,false,Vittel,88516,45,17781,0,0,0,0,0
+CC Terre d'Émeraude Communauté,39,Bourgogne-Franche-Comté,false,false,false,false,Moirans-en-Montagne,39333,92,25120,0,0,0,0,0
+CC Terre Lorraine du Longuyonnais,54,Grand Est,false,false,false,false,Longuyon,54322,27,15595,0,0,0,0,0
+CC Terres de Bresse,71,Bourgogne-Franche-Comté,false,false,false,false,Ouroux-sur-Saône,71336,25,23186,0,0,0,0,0
+CC Terres de Perche,28,Centre-Val de Loire,false,false,false,false,La Loupe,28214,22,14520,0,0,0,0,0
+CC Terres de Saône,70,Bourgogne-Franche-Comté,false,false,false,false,Port-sur-Saône,70421,39,13329,0,0,0,0,0
+CC Terres Touloises,54,Grand Est,true,true,true,true,Toul,54528,41,44996,2,1,1,0,0
+CC Territoriale Sud-Luberon,84,Provence-Alpes-Côte d’Azur,false,false,false,false,La Tour-d'Aigues,84133,16,26348,0,0,0,0,0
+CC Terroir de Caux,76,Normandie,false,false,false,false,Val-de-Scie,76034,79,38527,0,0,0,0,0
+CC Thelloise,60,Hauts-de-France,true,false,true,true,Chambly,60139,41,62826,2,2,1,2,0
+CC Tille et Venelle,21,Bourgogne-Franche-Comté,false,false,false,false,Selongey,21599,18,5012,0,0,0,0,0
+CC Vaison Ventoux,84,Provence-Alpes-Côte d’Azur,false,false,false,false,Vaison-la-Romaine,84137,19,17156,0,0,0,0,0
+CC Val de Gray,70,Bourgogne-Franche-Comté,false,false,false,false,Gray,70279,48,20866,0,0,0,0,0
+CC Val d'Ille-Aubigné,35,Bretagne,false,false,false,false,Melesse,35173,19,39715,0,0,0,0,0
+CC Val ès Dunes,14,Normandie,false,false,false,false,Argences,14020,18,20799,0,0,0,0,0
+CC  Vallée des Baux-Alpilles (CC VBA),13,Provence-Alpes-Côte d’Azur,false,false,false,false,Saint-Rémy-de-Provence,13100,10,28241,0,0,0,0,0
+CC Vallées de l'Orne et de l'Odon,14,Normandie,false,false,false,false,Fontaine-Étoupefour,14274,23,26867,0,0,0,0,0
+CC Vallées et Plateau d'Ardenne,08,Grand Est,false,false,false,false,Bogny-sur-Meuse,08081,31,24430,0,0,0,0,0
+CC Vallons de Haute-Bretagne Communauté,35,Bretagne,false,false,false,false,Guichen,35126,18,45997,0,0,0,0,0
+CC Vendée Grand Littoral,85,Pays de la Loire,false,false,false,false,Talmont-Saint-Hilaire,85288,20,36890,0,0,0,0,0
+"CC Vendée, Sèvre, Autise",85,Pays de la Loire,false,false,false,false,Benet,85020,15,16553,0,0,0,0,0
+CC Xaintrie Val'Dordogne,19,Nouvelle-Aquitaine,false,false,false,false,Argentat-sur-Dordogne,19010,30,11431,0,0,0,0,0
+CC Yvetot Normandie,76,Normandie,true,true,true,true,Yvetot,76758,19,27152,2,5,1,0,0
+Communauté Bray-Eawy,76,Normandie,false,false,false,false,Neufchâtel-en-Bray,76462,46,25689,0,0,0,0,0
+Creuse Confluence,23,Nouvelle-Aquitaine,false,false,false,false,Gouzon,23093,42,16710,0,0,0,0,0
+CU Angers Loire Métropole,49,Pays de la Loire,true,true,true,true,Angers,49007,29,315893,3,3,2,2,0
+CU Caen la Mer,14,Normandie,true,true,true,true,Caen,14118,48,281939,2,3,1,1,0
+CU d'Alençon,61,Normandie,true,true,true,true,Alençon,61001,31,57183,1,2,1,0,0
+CU d'Arras,62,Hauts-de-France,true,false,true,false,Arras,62041,46,111820,1,0,0,0,0
+CU de Dunkerque,59,Hauts-de-France,true,false,true,true,Dunkerque,59183,17,195297,1,1,0,1,0
+CU du Grand Poitiers,86,Nouvelle-Aquitaine,true,true,true,true,Poitiers,86194,40,201413,2,1,2,0,0
+CU du Grand Reims,51,Grand Est,true,true,true,true,Reims,51454,143,302446,2,1,1,0,0
+CU Grand Besançon Métropole,25,Bourgogne-Franche-Comté,true,false,true,true,Besançon,25056,68,203293,1,0,0,1,0
+CU Le Creusot Montceau-les-Mines,71,Bourgogne-Franche-Comté,true,false,true,false,Le Creusot,71153,34,92045,1,0,0,0,0
+CU Le Mans Métropole,72,Pays de la Loire,true,true,true,true,Le Mans,72181,19,213722,4,3,2,1,0
+CU Limoges Métropole,87,Nouvelle-Aquitaine,true,true,true,false,Limoges,87085,20,210327,2,0,3,0,0
+CU Perpignan Méditerranée Métropole,66,Occitanie,true,false,true,true,Perpignan,66136,36,281973,3,2,0,0,0
+Dijon Métropole,21,Bourgogne-Franche-Comté,true,false,true,true,Dijon,21231,23,263672,1,2,0,0,0
+Dracénie Provence Verdon Agglomération,83,Provence-Alpes-Côte d’Azur,true,false,true,true,Draguignan,83050,23,115767,2,1,0,0,0
+Estérel Côte d'Azur Agglomération,83,Provence-Alpes-Côte d’Azur,true,false,true,true,Fréjus,83061,5,123220,1,1,0,0,0
+Eurométropole de Strasbourg,67,Grand Est,true,true,true,true,Strasbourg,67482,33,522670,2,0,0,0,5
+Grand Lieu Communauté,44,Pays de la Loire,true,true,true,false,Saint-Philbert-de-Grand-Lieu,44188,9,42810,1,0,0,0,0
+Haut - Bugey Agglomération,01,Auvergne-Rhône-Alpes,true,true,true,false,Oyonnax,01283,42,65428,2,0,0,0,0
+Île-de-France Mobilités,75,Île-de-France,true,false,true,true,Paris,75056,1268,12385093,5,1,2,0,3
+Laval Agglomération,53,Pays de la Loire,true,true,true,true,Laval,53130,34,118953,2,0,2,1,0
+LBN Communauté,72,Pays de la Loire,false,false,false,false,Noyen-sur-Sarthe,72223,29,18226,0,0,0,0,0
+Le Havre Seine Métropole,76,Normandie,true,true,true,true,Le Havre,76351,54,270407,2,7,1,1,0
+L'Île-d'Yeu,85,Pays de la Loire,true,true,true,true,L'Île-d'Yeu,85113,1,4887,2,0,2,1,0
+Loire Forez Agglomération (LFA),42,Auvergne-Rhône-Alpes,true,false,true,false,Montbrison,42147,87,115200,1,0,0,0,0
+Martinique Transport,972,Martinique,true,false,true,true,Fort-de-France,97209,34,361019,7,7,0,0,0
+Métropole d'Aix-Marseille-Provence,13,Provence-Alpes-Côte d’Azur,true,false,true,true,Marseille,13055,92,1944405,15,1,0,30,0
+Métropole du Grand Nancy,54,Grand Est,true,true,true,true,Nancy,54395,20,262233,3,2,2,0,0
+Métropole Européenne de Lille,59,Hauts-de-France,true,false,true,true,Lille,59350,95,1204796,1,1,0,1,0
+Métropole Nice Côte d'Azur,06,Provence-Alpes-Côte d’Azur,true,false,true,true,Nice,06088,51,574284,1,2,1,1,0
+Métropole Rouen Normandie,76,Normandie,true,true,true,true,Rouen,76540,71,507654,3,10,1,0,0
+Métropole Toulon-Provence-Méditerranée,83,Provence-Alpes-Côte d’Azur,true,false,true,true,Toulon,83137,12,455118,2,3,0,1,0
+Metz Métropole,57,Grand Est,true,true,true,true,Metz,57463,45,234112,2,3,0,0,0
+Montpellier Méditerranée Métropole,34,Occitanie,true,false,true,true,Montpellier,34172,31,523109,1,3,0,0,0
+Nantes Métropole,44,Pays de la Loire,true,true,true,true,Nantes,44109,24,695303,2,2,4,2,1
+Orléans Métropole,45,Centre-Val de Loire,true,true,true,true,Orléans,45234,22,299552,4,1,2,0,0
+Pays d'Orange en Provence,84,Provence-Alpes-Côte d’Azur,true,false,true,true,Orange,84087,5,46272,1,2,0,0,0
+PETR du Doubs Central,25,Bourgogne-Franche-Comté,false,false,false,false,Baume-les-Dames,25047,139,38119,0,0,0,0,0
+PETR du Pays de Langres,52,Grand Est,true,true,true,false,Langres,52269,168,45098,2,0,1,0,0
+PETR du Pays de Thiérache,02,Hauts-de-France,false,false,false,false,Hirson,02381,160,71025,0,0,0,0,0
+PETR du Pays du Lunévillois,54,Grand Est,true,true,true,true,Lunéville,54329,159,75519,2,1,0,0,0
+PETR Sélestat Alsace Centrale,67,Grand Est,true,true,true,true,,,52,79239,2,1,1,0,0
+Ploërmel Communauté,56,Bretagne,true,true,true,false,Ploërmel,56165,30,44240,1,0,1,0,0
+Pôle Métropolitain du Genevois français,74,Auvergne-Rhône-Alpes,true,false,true,true,,,,0,1,2,0,0,0
+Pôle Métropolitain Mobilités Le Mans – Sarthe,72,Pays de la Loire,true,false,true,true,Changé,72058,88,354276,1,1,0,0,0
+Région Auvergne-Rhône-Alpes (CC Ambert Livradois Forez),63,Auvergne-Rhône-Alpes,false,false,false,false,Ambert,63003,58,28346,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Ardèche des Sources et Volcans),07,Auvergne-Rhône-Alpes,false,false,false,false,Jaujac,07107,16,9963,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Auzon Communauté),43,Auvergne-Rhône-Alpes,false,false,false,false,Sainte-Florine,43185,12,9592,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Berg et Coiron),07,Auvergne-Rhône-Alpes,false,false,false,false,Villeneuve-de-Berg,07341,13,8179,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Bièvre Isère),38,Auvergne-Rhône-Alpes,false,false,false,false,La Côte-Saint-André,38130,50,57452,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Billom Communauté),63,Auvergne-Rhône-Alpes,false,false,false,false,Billom,63040,23,26578,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Bresse et Saône),01,Auvergne-Rhône-Alpes,false,false,false,false,Bâgé-Dommartin,01025,20,26294,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Brioude Sud Auvergne),43,Auvergne-Rhône-Alpes,false,false,false,false,Brioude,43040,27,17488,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Bugey Sud),01,Auvergne-Rhône-Alpes,false,false,false,false,Belley,01034,42,34938,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Cère et Goul en Carladès),15,Auvergne-Rhône-Alpes,false,false,false,false,Vic-sur-Cère,15258,11,5111,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Charlieu-Belmont),42,Auvergne-Rhône-Alpes,false,false,false,false,Charlieu,42052,25,24282,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Coeur de Chartreuse),38,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Laurent-du-Pont,38412,17,17550,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Coeur de Maurienne Arvan),73,Auvergne-Rhône-Alpes,true,false,true,false,,,14,14803,1,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Coeur de Tarentaise),73,Auvergne-Rhône-Alpes,false,false,false,false,Moûtiers,73181,6,9619,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Collines Isère Nord Communauté),38,Auvergne-Rhône-Alpes,false,false,false,false,Heyrieux,38189,10,25906,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Combrailles Sioule et Morge),63,Auvergne-Rhône-Alpes,false,false,false,false,Combronde,63116,29,20274,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Commentry Montmarault Néris Communauté),03,Auvergne-Rhône-Alpes,false,false,false,false,Commentry,03082,33,26051,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de Bièvre Est),38,Auvergne-Rhône-Alpes,false,false,false,false,Apprieu,38013,14,23462,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de Forez-Est),42,Auvergne-Rhône-Alpes,false,false,false,false,Veauche,42323,42,66011,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de Haute-Tarentaise),73,Auvergne-Rhône-Alpes,true,false,true,true,Bourg-Saint-Maurice,73054,8,16132,5,2,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Châtaigneraie Cantalienne),15,Auvergne-Rhône-Alpes,false,false,false,false,Maurs,15122,50,21726,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Dombes),01,Auvergne-Rhône-Alpes,false,false,false,false,Châtillon-sur-Chalaronne,01093,36,41461,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Matheysine),38,Auvergne-Rhône-Alpes,false,false,false,false,La Mure,38269,43,19513,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Montagne d'Ardèche),07,Auvergne-Rhône-Alpes,false,false,false,false,Coucouron,07071,28,4911,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Plaine de l'Ain),01,Auvergne-Rhône-Alpes,true,false,true,false,Ambérieu-en-Bugey,01004,53,84625,1,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Vallée Verte),74,Auvergne-Rhône-Alpes,false,false,false,false,Boëge,74037,8,8633,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de la Veyle),01,Auvergne-Rhône-Alpes,false,false,false,false,Vonnas,01457,18,23753,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de l'Oisans),38,Auvergne-Rhône-Alpes,true,false,false,true,Le Bourg-d'Oisans,38052,19,10368,1,1,0,0,0
+Région Auvergne-Rhône-Alpes (CC de Saint-Flour),15,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Flour,15187,53,24190,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Baronnies en Drôme Provençale),26,Auvergne-Rhône-Alpes,false,false,false,false,Nyons,26220,67,21221,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Gorges de l'Ardèche),07,Auvergne-Rhône-Alpes,false,false,false,false,Vallon-Pont-d'Arc,07330,20,15978,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Montagnes du Giffre),74,Auvergne-Rhône-Alpes,true,false,true,false,Taninges,74276,8,12446,1,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Monts du Pilat),42,Auvergne-Rhône-Alpes,false,false,false,false,Bourg-Argental,42023,16,15877,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Pays de Cayres et de Pradelles),43,Auvergne-Rhône-Alpes,false,false,false,false,Landos,43111,20,5262,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Rives du Haut Allier),43,Auvergne-Rhône-Alpes,false,false,false,false,Langeac,43112,60,16901,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des sources du lac d'Annecy),74,Auvergne-Rhône-Alpes,false,false,false,false,Faverges-Seythenex,74123,7,15731,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Sucs),43,Auvergne-Rhône-Alpes,false,false,false,false,Yssingeaux,43268,9,18997,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Vallées d'Aigueblanche),73,Auvergne-Rhône-Alpes,true,false,false,true,Grand-Aigueblanche,73003,3,7233,1,1,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Vallées de Thônes),74,Auvergne-Rhône-Alpes,true,false,false,false,Thônes,74280,12,19370,2,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC des Vals d'Aix et Isable),42,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Germain-Laval,42230,12,6103,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC de Yenne),73,Auvergne-Rhône-Alpes,false,false,false,false,Yenne,73330,13,7535,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Dieulefit-Bourdeaux),26,Auvergne-Rhône-Alpes,false,false,false,false,Dieulefit,26114,21,9899,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Drôme Sud Provence),26,Auvergne-Rhône-Alpes,false,false,false,false,Pierrelatte,26235,14,44267,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Bassin d'Aubenas),07,Auvergne-Rhône-Alpes,true,false,true,true,Saint-Sernin,07296,28,42107,1,1,1,0,0
+Région Auvergne-Rhône-Alpes (CC du Bocage Bourbonnais),03,Auvergne-Rhône-Alpes,false,false,false,false,Bourbon-l'Archambault,03036,25,13941,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Canton de La Chambre),73,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Rémy-de-Maurienne,73278,12,7549,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Crestois et de Pays de Saillans Coeur de Drôme),26,Auvergne-Rhône-Alpes,false,false,false,false,Crest,26108,15,16502,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Diois),26,Auvergne-Rhône-Alpes,false,false,false,false,Die,26113,50,12478,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Haut-Chablais),74,Auvergne-Rhône-Alpes,false,false,false,false,Morzine,74191,15,13112,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Haut Lignon),43,Auvergne-Rhône-Alpes,false,false,false,false,Tence,43244,6,8342,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Lac d'Aiguebelette (CCLA)),73,Auvergne-Rhône-Alpes,false,false,false,false,Novalaise,73191,10,6464,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays Beaume-Drobie),07,Auvergne-Rhône-Alpes,false,false,false,false,Lablachère,07117,19,9325,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays Bellegardien (CCPB)),01,Auvergne-Rhône-Alpes,true,false,true,false,Valserhône,01033,12,22090,1,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays de Lamastre),07,Auvergne-Rhône-Alpes,false,false,false,false,Lamastre,07129,11,6805,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays de Lapalisse),03,Auvergne-Rhône-Alpes,false,false,false,false,Lapalisse,03138,14,8639,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays de Mauriac),15,Auvergne-Rhône-Alpes,false,false,false,false,Mauriac,15120,11,6826,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays de Montfaucon),43,Auvergne-Rhône-Alpes,false,false,false,false,Dunières,43087,8,8189,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays de Salers),15,Auvergne-Rhône-Alpes,false,false,false,false,Pleaux,15153,27,8601,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays de Tronçais),03,Auvergne-Rhône-Alpes,false,false,false,false,Cérilly,03048,15,7537,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays d'Huriel),03,Auvergne-Rhône-Alpes,false,false,false,false,Huriel,03128,14,7458,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays d'Urfé),42,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Just-en-Chevalet,42248,11,5245,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays Entre Loire et Rhône),42,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Symphorien-de-Lay,42289,16,14403,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pays Gentiane),15,Auvergne-Rhône-Alpes,false,false,false,false,Riom-ès-Montagnes,15162,17,6664,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Pilat Rhodanien),42,Auvergne-Rhône-Alpes,false,false,false,false,Pélussin,42168,14,17398,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Rhône aux Gorges de l'Ardèche),07,Auvergne-Rhône-Alpes,false,false,false,false,Bourg-Saint-Andéol,07042,9,19584,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Royans-Vercors),26,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Jean-en-Royans,26307,18,10004,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Trièves),38,Auvergne-Rhône-Alpes,false,false,false,false,Monestier-de-Clermont,38242,27,10593,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Val d'Ay),07,Auvergne-Rhône-Alpes,false,false,false,false,Satillieu,07309,8,6014,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC du Val de Cher),03,Auvergne-Rhône-Alpes,false,false,false,false,Vallon-en-Sully,03297,7,5568,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Entr'Allier Besbre et Loire),03,Auvergne-Rhône-Alpes,false,false,false,false,Varennes-sur-Allier,03298,44,24849,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Entre Bièvre et Rhône),38,Auvergne-Rhône-Alpes,true,false,true,false,Roussillon,38344,37,71155,1,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Entre Dore et Allier),63,Auvergne-Rhône-Alpes,false,false,false,false,Orléat,63265,14,20003,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Haute Maurienne Vanoise),73,Auvergne-Rhône-Alpes,false,false,false,false,Modane,73157,10,8695,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Hautes Terres),15,Auvergne-Rhône-Alpes,false,false,false,false,Massiac,15119,35,11435,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Les Vals du Dauphiné),38,Auvergne-Rhône-Alpes,false,false,false,false,La Tour-du-Pin,38509,36,66070,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Les Versants d'Aime),73,Auvergne-Rhône-Alpes,false,false,false,false,Aime-la-Plagne,73006,4,9942,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Loire et Semène),43,Auvergne-Rhône-Alpes,false,false,false,false,Aurec-sur-Loire,43012,7,20766,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Lyon-Saint-Exupéry en Dauphiné),38,Auvergne-Rhône-Alpes,false,false,false,false,Charvieu-Chavagneux,38085,6,30237,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Marches du Velay-Rochebaron),43,Auvergne-Rhône-Alpes,false,false,false,false,Monistrol-sur-Loire,43137,14,32221,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Maurienne Galibier),73,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Michel-de-Maurienne,73261,6,5708,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Mézenc-Loire-Meygal),43,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Julien-Chapteuil,43200,22,11709,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Pays des Vans en Cévennes),07,Auvergne-Rhône-Alpes,false,false,false,false,Les Vans,07334,15,9729,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Pays du Mont-Blanc),74,Auvergne-Rhône-Alpes,false,false,false,false,Sallanches,74256,10,46381,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Plaine Limagne),63,Auvergne-Rhône-Alpes,false,false,false,false,Maringues,63210,25,21795,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Porte de Dromardèche),26,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Rambert-d'Albon,26325,34,49577,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Porte de Maurienne),73,Auvergne-Rhône-Alpes,false,false,false,false,Val-d'Arc,73212,11,7210,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Rives de l'Ain - Pays du Cerdon),01,Auvergne-Rhône-Alpes,false,false,false,false,Pont-d'Ain,01304,14,15156,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Saint-Marcellin Vercors Isère Communauté),38,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Marcellin,38416,47,46165,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Saint-Pourçain Sioule Limagne),03,Auvergne-Rhône-Alpes,false,false,false,false,Gannat,03118,60,34537,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Usses et Rhône),74,Auvergne-Rhône-Alpes,false,false,false,false,Seyssel,74269,26,21965,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Val de Ligne),07,Auvergne-Rhône-Alpes,false,false,false,false,Largentière,07132,11,6212,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Val de Saône Centre),01,Auvergne-Rhône-Alpes,false,false,false,false,Montmerle-sur-Saône,01263,15,21470,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Val Eyrieux),07,Auvergne-Rhône-Alpes,false,false,false,false,Le Cheylard,07064,29,12686,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Val Guiers),73,Auvergne-Rhône-Alpes,false,false,false,false,Saint-Genix-les-Villages,73236,11,12719,0,0,0,0,0
+Région Auvergne-Rhône-Alpes (CC Val Vanoise),73,Auvergne-Rhône-Alpes,true,false,false,false,Courchevel,73227,9,9307,1,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Auxonne Pontailler Val de Saône),21,Bourgogne-Franche-Comté,false,false,false,false,Auxonne,21038,35,23756,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC de l'Agglomération Migennoise),89,Bourgogne-Franche-Comté,false,false,false,false,Migennes,89257,8,14599,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC de la Haute Comté),70,Bourgogne-Franche-Comté,false,false,false,false,Fougerolles-Saint-Valbert,70245,37,17224,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC de la Vanne et du Pays d'Othe),89,Bourgogne-Franche-Comté,false,false,false,false,Villeneuve-l'Archevêque,89461,22,8774,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC des 1000 étangs),70,Bourgogne-Franche-Comté,false,false,false,false,Mélisey,70339,26,8628,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Gâtinais en Bourgogne),89,Bourgogne-Franche-Comté,false,false,false,false,Saint-Valérien,89370,26,17948,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Montbardois),21,Bourgogne-Franche-Comté,false,false,false,false,Montbard,21425,33,10389,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Pays Châtillonnais),21,Bourgogne-Franche-Comté,false,false,false,false,Châtillon-sur-Seine,21154,107,20183,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Pays de Lure),70,Bourgogne-Franche-Comté,false,false,false,false,Lure,70310,23,19553,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Pays de Luxeuil),70,Bourgogne-Franche-Comté,false,false,false,false,Luxeuil-les-Bains,70311,15,15285,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Pays de Villersexel),70,Bourgogne-Franche-Comté,false,false,false,false,Villersexel,70561,34,7943,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Pays Riolais),70,Bourgogne-Franche-Comté,false,false,false,false,Rioz,70447,33,13531,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Triangle Vert),70,Bourgogne-Franche-Comté,false,false,false,false,Saulx,70478,42,11180,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC du Val Marnaysien),70,Bourgogne-Franche-Comté,false,false,false,false,Marnay,70334,45,14879,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Haut Nivernais-Val d'Yonne),58,Bourgogne-Franche-Comté,false,false,false,false,Clamecy,58079,30,12335,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Jura Nord),39,Bourgogne-Franche-Comté,false,false,false,false,Dampierre,39190,32,11993,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Mâconnais - Tournugeois),71,Bourgogne-Franche-Comté,false,false,false,false,Tournus,71543,24,16434,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Ouche et Montagne),21,Bourgogne-Franche-Comté,false,false,false,false,Velars-sur-Ouche,21661,32,11473,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Rahin et Chérimont),70,Bourgogne-Franche-Comté,false,false,false,false,Champagney,70120,9,11855,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Saint Cyr Mère Boitier entre Charolais et Mâconnais),71,Bourgogne-Franche-Comté,false,false,false,false,Matour,71289,16,8264,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Sud Nivernais),58,Bourgogne-Franche-Comté,false,false,false,false,Decize,58095,20,20200,0,0,0,0,0
+Région Bourgogne-Franche-Comté (CC Yonne Nord),89,Bourgogne-Franche-Comté,false,false,false,false,Villeneuve-la-Guyard,89460,23,24896,0,0,0,0,0
+Région Bretagne (CC de Belle Ile en Mer),56,Bretagne,true,true,true,false,Le Palais,56152,4,5727,1,0,1,0,0
+Région Bretagne (CC du Pays de Landivisiau),29,Bretagne,false,false,false,false,Landivisiau,29105,19,34536,0,0,0,0,0
+Région Bretagne (CC Leff Armor Communauté),22,Bretagne,false,false,false,false,Plouha,22222,27,32670,0,0,0,0,0
+Région Bretagne (CC Loudéac Communauté - Bretagne Centre),22,Bretagne,false,false,false,false,Loudéac,22136,41,53254,0,0,0,0,0
+Région Centre-Val de Loire (CC Arnon Boischaut Cher),18,Centre-Val de Loire,false,false,false,false,Châteauneuf-sur-Cher,18058,18,8009,0,0,0,0,0
+Région Centre-Val de Loire (CC Autour de Chenonceaux Bléré-Val de Cher),37,Centre-Val de Loire,false,false,false,false,Bléré,37027,15,22353,0,0,0,0,0
+Région Centre-Val de Loire (CC Beauce Val de Loire),41,Centre-Val de Loire,false,false,false,false,Mer,41136,30,20050,0,0,0,0,0
+Région Centre-Val de Loire (CC Berry Grand Sud),18,Centre-Val de Loire,false,false,false,false,Châteaumeillant,18057,32,11626,0,0,0,0,0
+Région Centre-Val de Loire (CC Berry Loire Puisaye),45,Centre-Val de Loire,false,false,false,false,Briare,45053,20,17796,0,0,0,0,0
+Région Centre-Val de Loire (CC Berry-Loire-Vauvise),18,Centre-Val de Loire,false,false,false,false,Herry,18110,14,5528,0,0,0,0,0
+Région Centre-Val de Loire (CC Brenne - Val de Creuse),36,Centre-Val de Loire,false,false,false,false,Le Blanc,36018,28,18037,0,0,0,0,0
+Région Centre-Val de Loire (CC Chabris - Pays de Bazelle),36,Centre-Val de Loire,false,false,false,false,Chabris,36034,10,6294,0,0,0,0,0
+Région Centre-Val de Loire (CC Champagne Boischauts),36,Centre-Val de Loire,false,false,false,false,Vatan,36230,30,9881,0,0,0,0,0
+Région Centre-Val de Loire (CC Coeur de Beauce),28,Centre-Val de Loire,false,false,false,false,Les Villages Vovéens,28422,48,24814,0,0,0,0,0
+Région Centre-Val de Loire (CC Coeur de Berry),18,Centre-Val de Loire,false,false,false,false,Méreau,18148,11,7017,0,0,0,0,0
+Région Centre-Val de Loire (CC Coeur de Brenne),36,Centre-Val de Loire,false,false,false,false,Mézières-en-Brenne,36123,11,4735,0,0,0,0,0
+Région Centre-Val de Loire (CC Coeur de France),18,Centre-Val de Loire,false,false,false,false,Saint-Amand-Montrond,18197,19,18691,0,0,0,0,0
+Région Centre-Val de Loire (CC Coeur de Sologne),41,Centre-Val de Loire,false,false,false,false,Lamotte-Beuvron,41106,6,10410,0,0,0,0,0
+Région Centre-Val de Loire (CC de Gâtine-Racan),37,Centre-Val de Loire,false,false,false,false,Neuillé-Pont-Pierre,37167,19,22898,0,0,0,0,0
+Région Centre-Val de Loire (CC de la Châtre et Sainte-Sévère),36,Centre-Val de Loire,false,false,false,false,La Châtre,36046,30,16485,0,0,0,0,0
+"Région Centre-Val de Loire (CC de la Cléry, du Betz et de l'Ouanne)",45,Centre-Val de Loire,false,false,false,false,Courtenay,45115,23,20405,0,0,0,0,0
+Région Centre-Val de Loire (CC de la Forêt),45,Centre-Val de Loire,false,false,false,false,Neuville-aux-Bois,45224,10,17933,0,0,0,0,0
+Région Centre-Val de Loire (CC de la Marche Berrichonne),36,Centre-Val de Loire,false,false,false,false,Aigurande,36001,9,5591,0,0,0,0,0
+Région Centre-Val de Loire (CC de la Plaine du Nord Loiret),45,Centre-Val de Loire,false,false,false,false,Bazoches-les-Gallerandes,45025,15,6853,0,0,0,0,0
+Région Centre-Val de Loire (CC de la Sologne des Etangs),41,Centre-Val de Loire,false,false,false,false,Neung-sur-Beuvron,41159,12,8798,0,0,0,0,0
+Région Centre-Val de Loire (CC de la Sologne des Rivières),41,Centre-Val de Loire,false,false,false,false,Salbris,41232,7,10587,0,0,0,0,0
+Région Centre-Val de Loire (CC des Collines du Perche),41,Centre-Val de Loire,false,false,false,false,Mondoubleau,41143,12,6002,0,0,0,0,0
+Région Centre-Val de Loire (CC des Loges),45,Centre-Val de Loire,false,false,false,false,Châteauneuf-sur-Loire,45082,20,44121,0,0,0,0,0
+Région Centre-Val de Loire (CC du Bonnevalais),28,Centre-Val de Loire,false,false,false,false,Bonneval,28051,19,12509,0,0,0,0,0
+Région Centre-Val de Loire (CC du Castelrenaudais),37,Centre-Val de Loire,false,false,false,false,Château-Renault,37063,16,16340,0,0,0,0,0
+Région Centre-Val de Loire (CC du Châtillonnais en Berry),36,Centre-Val de Loire,false,false,false,false,Châtillon-sur-Indre,36045,10,5872,0,0,0,0,0
+Région Centre-Val de Loire (CC du Grand Chambord),41,Centre-Val de Loire,false,false,false,false,Saint-Laurent-Nouan,41220,16,21050,0,0,0,0,0
+Région Centre-Val de Loire (CC du Grand Châteaudun),28,Centre-Val de Loire,false,false,false,false,Châteaudun,28088,23,40648,0,0,0,0,0
+Région Centre-Val de Loire (CC du Pays d'Issoudun),36,Centre-Val de Loire,true,true,true,false,Issoudun,36088,12,19186,2,0,1,0,0
+Région Centre-Val de Loire (CC du Perche),28,Centre-Val de Loire,true,true,true,true,Nogent-le-Rotrou,28280,20,18644,2,1,1,0,0
+Région Centre-Val de Loire (CC du Perche et Haut Vendômois),41,Centre-Val de Loire,false,false,false,false,Pezou,41175,23,9317,0,0,0,0,0
+Région Centre-Val de Loire (CC du Pithiverais),45,Centre-Val de Loire,false,false,false,false,Pithiviers,45252,31,29692,0,0,0,0,0
+Région Centre-Val de Loire (CC du Pithiverais-Gâtinais),45,Centre-Val de Loire,false,false,false,false,Le Malesherbois,45191,32,26157,0,0,0,0,0
+Région Centre-Val de Loire (CC du Val d Amboise),37,Centre-Val de Loire,true,true,true,false,Amboise,37003,14,29286,2,0,1,0,0
+Région Centre-Val de Loire (CC du Val de Bouzanne),36,Centre-Val de Loire,false,false,false,false,Neuvy-Saint-Sépulchre,36141,12,6091,0,0,0,0,0
+Région Centre-Val de Loire (CC du Val de Sully),45,Centre-Val de Loire,false,false,false,false,Sully-sur-Loire,45315,19,24555,0,0,0,0,0
+Région Centre-Val de Loire (CC Ecueillé-Valençay),36,Centre-Val de Loire,false,false,false,false,Valençay,36228,18,11164,0,0,0,0,0
+Région Centre-Val de Loire (CC Eguzon - Argenton - Vallée de la Creuse),36,Centre-Val de Loire,false,false,false,false,Argenton-sur-Creuse,36006,21,19822,0,0,0,0,0
+Région Centre-Val de Loire (CC FerCher),18,Centre-Val de Loire,false,false,false,false,Lunery,18133,9,11472,0,0,0,0,0
+Région Centre-Val de Loire (CC la Septaine),18,Centre-Val de Loire,false,false,false,false,Avord,18018,15,11043,0,0,0,0,0
+Région Centre-Val de Loire (CC le Dunois),18,Centre-Val de Loire,false,false,false,false,Dun-sur-Auron,18087,17,7253,0,0,0,0,0
+Région Centre-Val de Loire (CC les Trois Provinces),18,Centre-Val de Loire,false,false,false,false,Sancoins,18242,11,5089,0,0,0,0,0
+Région Centre-Val de Loire (CC Levroux Boischaut Champagne),36,Centre-Val de Loire,false,false,false,false,Levroux,36093,10,6249,0,0,0,0,0
+Région Centre-Val de Loire (CC Loches Sud Touraine),37,Centre-Val de Loire,false,false,false,false,Loches,37132,67,52206,0,0,0,0,0
+Région Centre-Val de Loire (CC Pays de Nérondes),18,Centre-Val de Loire,false,false,false,false,Nérondes,18160,12,4773,0,0,0,0,0
+Région Centre-Val de Loire (CC Pays Fort Sancerrois Val de Loire),18,Centre-Val de Loire,false,false,false,false,Saint-Satur,18233,36,18537,0,0,0,0,0
+Région Centre-Val de Loire (CC Portes du Berry entre Loire et Val d'Aubois),18,Centre-Val de Loire,false,false,false,false,La Guerche-sur-l'Aubois,18108,12,9649,0,0,0,0,0
+Région Centre-Val de Loire (CC Sauldre et Sologne),18,Centre-Val de Loire,false,false,false,false,Aubigny-sur-Nère,18015,14,14561,0,0,0,0,0
+Région Centre-Val de Loire (CC Terres du Haut Berry),18,Centre-Val de Loire,false,false,false,false,Saint-Martin-d'Auxigny,18223,30,26461,0,0,0,0,0
+Région Centre-Val de Loire (CC Touraine-Est Vallées),37,Centre-Val de Loire,false,false,false,false,Montlouis-sur-Loire,37156,7,41868,0,0,0,0,0
+Région Centre-Val de Loire (CC Touraine Ouest Val de Loire),37,Centre-Val de Loire,false,false,false,false,Langeais,37123,28,33827,0,0,0,0,0
+Région Centre-Val de Loire (CC Touraine Val de Vienne),37,Centre-Val de Loire,false,false,false,false,Sainte-Maure-de-Touraine,37226,40,25105,0,0,0,0,0
+Région Centre-Val de Loire (CC Touraine Vallée de l'Indre),37,Centre-Val de Loire,false,false,false,false,Monts,37159,22,55689,0,0,0,0,0
+Région Centre-Val de Loire (CC Val-de-Cher-Controis),41,Centre-Val de Loire,false,false,false,false,Le Controis-en-Sologne,41059,33,48083,0,0,0,0,0
+Région Centre-Val de Loire (CC Val de l'Indre - Brenne),36,Centre-Val de Loire,false,false,false,false,Buzançais,36031,12,13503,0,0,0,0,0
+Région Centre-Val de Loire (CC Vierzon-Sologne-Berry),18,Centre-Val de Loire,true,true,true,true,Vierzon,18279,16,38812,2,3,1,0,0
+Région Corse (CC Celavu-Prunelli),2A,Corse,false,false,false,false,Bastelicaccia,2A032,10,9449,0,0,0,0,0
+Région Corse (CC de la Castagniccia-Casinca),2B,Corse,false,false,false,false,Penta-di-Casinca,2B207,42,13444,0,0,0,0,0
+Région Corse (CC de l'Oriente),2B,Corse,false,false,false,false,Aléria,2B009,22,6237,0,0,0,0,0
+Région Corse (CC du Cap Corse),2B,Corse,false,false,false,false,Brando,2B043,18,6709,0,0,0,0,0
+Région Corse (CC du Centre Corse),2B,Corse,false,false,false,false,Corte,2B096,10,10151,0,0,0,0,0
+Région Corse (CC Nebbiu - Conca d'Oro),2B,Corse,false,false,false,false,Oletta,2B185,15,7880,0,0,0,0,0
+Région Corse (CC Pasquale Paoli),2B,Corse,false,false,false,false,Morosaglia,2B169,42,6193,0,0,0,0,0
+"Région Grand Est (CC Ardenne, Rives de Meuse)",08,Grand Est,false,false,false,false,Givet,08190,19,26312,0,0,0,0,0
+Région Grand Est (CC Bruyères-Vallons des Vosges),88,Grand Est,false,false,false,false,Bruyères,88078,34,15112,0,0,0,0,0
+Région Grand Est (CC Côtes de Champagne et Val de Saulx),51,Grand Est,false,false,false,false,Sermaize-les-Bains,51531,40,11595,0,0,0,0,0
+Région Grand Est (CC de la Moivre à la Coole),51,Grand Est,false,false,false,false,Courtisols,51193,28,9883,0,0,0,0,0
+Région Grand Est (CC de l'Arc Mosellan),57,Grand Est,false,false,false,false,Bousse,57102,26,36470,0,0,0,0,0
+Région Grand Est (CC de Vendeuvre-Soulaines),10,Grand Est,false,false,false,false,Vendeuvre-sur-Barse,10401,38,7524,0,0,0,0,0
+Région Grand Est (CC du Bassin de Joinville en Champagne),52,Grand Est,false,false,false,false,Joinville,52250,59,12468,0,0,0,0,0
+Région Grand Est (CC du District Urbain de Faulquemont (DUF)),57,Grand Est,false,false,false,false,Faulquemont,57209,33,24422,0,0,0,0,0
+Région Grand Est (CC du Pays de Montmédy),55,Grand Est,false,false,false,false,Montmédy,55351,25,7047,0,0,0,0,0
+Région Grand Est (CC Perthois-Bocage et Der),51,Grand Est,false,false,false,false,Thiéblemont-Farémont,51567,25,5641,0,0,0,0,0
+Région Grand Est (CC Val de Meuse - Voie Sacrée),55,Grand Est,false,false,false,false,Dieue-sur-Meuse,55154,25,9049,0,0,0,0,0
+Région Guyane (CC de l'Est Guyanais),973,Guyane,false,false,false,false,Saint-Georges,97308,4,8895,0,0,0,0,0
+Région Guyane (CC de l'Ouest Guyanais),973,Guyane,false,false,false,false,Saint-Laurent-du-Maroni,97311,8,98941,0,0,0,0,0
+Région Guyane (CC des Savanes),973,Guyane,false,false,false,false,Kourou,97304,4,29391,0,0,0,0,0
+Région Hauts-de-France (CC Coeur de l'Avesnois),59,Hauts-de-France,false,false,false,false,Avesnes-sur-Helpe,59036,43,29390,0,0,0,0,0
+Région Hauts-de-France (CC de l'Est de la Somme),80,Hauts-de-France,false,false,false,false,Ham,80410,41,19998,0,0,0,0,0
+Région Hauts-de-France (CC du Grand Roye),80,Hauts-de-France,false,false,false,false,Montdidier,80561,62,25661,0,0,0,0,0
+Région Hauts-de-France (CC du Pays de la Serre),02,Hauts-de-France,false,false,false,false,Marle,02468,42,14608,0,0,0,0,0
+Région Hauts-de-France (CC du Pays des Sources),60,Hauts-de-France,false,false,false,false,Ressons-sur-Matz,60533,48,22640,0,0,0,0,0
+Région Hauts-de-France (CC du Val de l'Aisne),02,Hauts-de-France,false,false,false,false,Braine,02110,57,20629,0,0,0,0,0
+Région Hauts-de-France (CC Picardie des Châteaux),02,Hauts-de-France,false,false,false,false,Anizy-le-Grand,02018,36,17033,0,0,0,0,0
+Région Hauts-de-France (CC Ponthieu-Marquenterre),80,Hauts-de-France,false,false,false,false,Rue,80688,71,33287,0,0,0,0,0
+Région Hauts-de-France (CC Senlis Sud Oise),60,Hauts-de-France,false,false,false,false,Senlis,60612,17,25927,0,0,0,0,0
+Région Hauts-de-France (CC Terre de Picardie),80,Hauts-de-France,false,false,false,false,Rosières-en-Santerre,80680,43,18227,0,0,0,0,0
+Région Mayotte (CC de Petite-Terre),976,Mayotte,false,false,false,false,Dzaoudzi,97608,2,30039,0,0,0,0,0
+Région Normandie (CC du Pays Fertois et du Bocage Carrougien),61,Normandie,false,false,false,false,Magny-le-Désert,61243,19,4914,0,0,0,0,0
+Région Normandie (CC Isigny-Omaha Intercom),14,Normandie,false,false,false,false,Isigny-sur-Mer,14342,59,26872,0,0,0,0,0
+Région Normandie (CC Seulles Terre et Mer),14,Normandie,false,false,false,false,Creully sur Seulles,14200,28,17854,0,0,0,0,0
+Région Normandie (CC Terre d'Auge),14,Normandie,false,false,false,false,Pont-l'Évêque,14514,44,20277,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Aunis Sud),17,Nouvelle-Aquitaine,false,false,false,false,Surgères,17434,24,33849,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Briance-Combade),87,Nouvelle-Aquitaine,false,false,false,false,Châteauneuf-la-Forêt,87040,10,5457,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Briance Sud Haute Vienne),87,Nouvelle-Aquitaine,false,false,false,false,Vicq-sur-Breuilh,87203,11,9320,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Castillon/Pujols),33,Nouvelle-Aquitaine,false,false,false,false,Castillon-la-Bataille,33108,31,19347,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Chalosse Tursan),40,Nouvelle-Aquitaine,false,false,false,false,Saint-Sever,40282,50,26798,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Coeur de Charente),16,Nouvelle-Aquitaine,false,false,false,false,La Boixe,16393,50,22362,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Coeur de Saintonge),17,Nouvelle-Aquitaine,false,false,false,false,Saint-Porchaire,17387,18,18321,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Coeur Haute Lande),40,Nouvelle-Aquitaine,false,false,false,false,Labouheyre,40134,26,16702,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Coteaux et Vallées des Luys),40,Nouvelle-Aquitaine,false,false,false,false,Pomarez,40228,16,7827,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Creuse Grand Sud),23,Nouvelle-Aquitaine,false,false,false,false,Aubusson,23008,26,11957,0,0,0,0,0
+Région Nouvelle Aquitaine (CC d'Aire-sur-l'Adour),40,Nouvelle-Aquitaine,false,false,false,false,Aire-sur-l'Adour,40001,22,13554,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Blaye),33,Nouvelle-Aquitaine,false,false,false,false,Blaye,33058,20,20915,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Charente Limousine),16,Nouvelle-Aquitaine,false,false,false,false,Terres-de-Haute-Charente,16192,58,36167,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Domme- Villefranche du Périgord),24,Nouvelle-Aquitaine,false,false,false,false,Cénac-et-Saint-Julien,24091,23,8732,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Gémozac et de la Saintonge Viticole),17,Nouvelle-Aquitaine,false,false,false,false,Gémozac,17172,16,15100,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Lacq-Orthez),64,Nouvelle-Aquitaine,false,false,false,false,Orthez,64430,61,54690,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de la Haute Saintonge),17,Nouvelle-Aquitaine,false,false,false,false,Pons,17283,129,70645,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de la Vallée d'Ossau),64,Nouvelle-Aquitaine,false,false,false,false,Arudy,64062,18,9942,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de l'Estuaire),33,Nouvelle-Aquitaine,false,false,false,false,Saint-Ciers-sur-Gironde,33389,14,16326,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de l'Ile de Ré),17,Nouvelle-Aquitaine,true,false,true,true,Sainte-Marie-de-Ré,17360,10,18202,1,1,0,0,0
+Région Nouvelle Aquitaine (CC de Mimizan),40,Nouvelle-Aquitaine,false,false,false,false,Mimizan,40184,6,13216,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Montaigne Montravel et Gurson),24,Nouvelle-Aquitaine,false,false,false,false,Saint-Antoine-de-Breuilh,24370,18,12049,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Noblat),87,Nouvelle-Aquitaine,false,false,false,false,Saint-Léonard-de-Noblat,87161,12,11981,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Parthenay-Gâtine),79,Nouvelle-Aquitaine,false,false,false,false,Parthenay,79202,38,38041,0,0,0,0,0
+Région Nouvelle Aquitaine (CC de Portes Sud Périgord),24,Nouvelle-Aquitaine,false,false,false,false,Eymet,24167,25,8586,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des 4B Sud Charente),16,Nouvelle-Aquitaine,false,false,false,false,Barbezieux-Saint-Hilaire,16028,40,20472,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des Bastides Dordogne-Périgord),24,Nouvelle-Aquitaine,false,false,false,false,Lalinde,24223,47,18935,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des Grands Lacs),40,Nouvelle-Aquitaine,false,false,false,false,Biscarrosse,40046,7,33646,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des Landes d'Armagnac),40,Nouvelle-Aquitaine,false,false,false,false,Roquefort,40245,27,11110,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des Luys en Béarn),64,Nouvelle-Aquitaine,false,false,false,false,Garlin,64233,66,30223,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des Portes de l'Entre-Deux-Mers),33,Nouvelle-Aquitaine,false,false,false,false,Latresne,33234,11,22944,0,0,0,0,0
+Région Nouvelle Aquitaine (CC des Portes de Vassivière),87,Nouvelle-Aquitaine,false,false,false,false,Eymoutiers,87064,12,5768,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Dronne et Belle),24,Nouvelle-Aquitaine,false,false,false,false,Brantôme en Périgord,24064,16,11607,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Bassin de Marennes),17,Nouvelle-Aquitaine,false,false,false,false,Marennes-Hiers-Brouage,17219,6,15847,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Bazadais),33,Nouvelle-Aquitaine,false,false,false,false,Bazas,33036,31,16504,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Béarn des Gaves),64,Nouvelle-Aquitaine,false,false,false,false,Salies-de-Béarn,64499,53,18024,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Civraisien en Poitou),86,Nouvelle-Aquitaine,false,false,false,false,Valence-en-Poitou,86082,36,27496,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Confluent et des Coteaux de Prayssas),47,Nouvelle-Aquitaine,false,false,false,false,Aiguillon,47004,29,18167,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Créonnais),33,Nouvelle-Aquitaine,false,false,false,false,Créon,33140,15,18613,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Fronsadais),33,Nouvelle-Aquitaine,false,false,false,false,Galgon,33179,18,18014,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Grand Cubzaguais),33,Nouvelle-Aquitaine,false,false,false,false,Saint-André-de-Cubzac,33366,16,38074,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Grand Saint Emilionnais),33,Nouvelle-Aquitaine,false,false,false,false,Sainte-Terre,33485,22,14413,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Nord Est Béarn),64,Nouvelle-Aquitaine,false,false,false,false,Pontacq,64453,73,35734,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays de Fénelon),24,Nouvelle-Aquitaine,false,false,false,false,Carsac-Aillac,24082,17,9994,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays de Lubersac-Pompadour),19,Nouvelle-Aquitaine,false,false,false,false,Lubersac,19121,12,6919,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays de Saint Aulaye),24,Nouvelle-Aquitaine,false,false,false,false,La Roche-Chalais,24354,6,6790,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays de Saint Yrieix),87,Nouvelle-Aquitaine,false,false,false,false,Saint-Yrieix-la-Perche,87187,9,12586,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays de Villeneuve en Armagnac Landais),40,Nouvelle-Aquitaine,false,false,false,false,Villeneuve-de-Marsan,40331,12,6395,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays d'Uzerche),19,Nouvelle-Aquitaine,false,false,false,false,Uzerche,19276,12,10818,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays Foyen),33,Nouvelle-Aquitaine,false,false,false,false,Pineuilh,33324,20,16860,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays Grenadois),40,Nouvelle-Aquitaine,false,false,false,false,Grenade-sur-l'Adour,40117,11,7911,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays Loudunais),86,Nouvelle-Aquitaine,false,false,false,false,Loudun,86137,45,25000,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays Morcenais),40,Nouvelle-Aquitaine,false,false,false,false,Morcenx-la-Nouvelle,40197,6,9654,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays Sostranien),23,Nouvelle-Aquitaine,false,false,false,false,La Souterraine,23176,10,10546,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Pays Tarusate),40,Nouvelle-Aquitaine,false,false,false,false,Tartas,40313,17,18469,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Périgord Nontronnais),24,Nouvelle-Aquitaine,false,false,false,false,Nontron,24311,28,15514,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Périgord Ribéracois),24,Nouvelle-Aquitaine,false,false,false,false,Ribérac,24352,44,19986,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Rouillacais),16,Nouvelle-Aquitaine,false,false,false,false,Rouillac,16286,13,9967,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Seignanx),40,Nouvelle-Aquitaine,false,false,false,false,Saint-Martin-de-Seignanx,40273,8,30312,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Val de l'Eyre),33,Nouvelle-Aquitaine,false,false,false,false,Salles,33498,5,22767,0,0,0,0,0
+Région Nouvelle Aquitaine (CC du Val de Vienne),87,Nouvelle-Aquitaine,false,false,false,false,Aixe-sur-Vienne,87001,9,16563,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Elan Limousin Avenir Nature),87,Nouvelle-Aquitaine,false,false,false,false,Ambazac,87002,24,27848,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Gartempe - Saint Pardoux),87,Nouvelle-Aquitaine,false,false,false,false,Châteauponsac,87041,6,5182,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Haut Limousin en Marche),87,Nouvelle-Aquitaine,false,false,false,false,Bellac,87011,40,23007,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Isle Double Landais),24,Nouvelle-Aquitaine,false,false,false,false,Montpon-Ménestérol,24294,9,12704,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Isle et Crempse en Périgord),24,Nouvelle-Aquitaine,false,false,false,false,Mussidan,24299,25,14726,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Isle-Loue-Auvézère en Périgord),24,Nouvelle-Aquitaine,false,false,false,false,Excideuil,24164,28,14124,0,0,0,0,0
+Région Nouvelle Aquitaine (CC La Rochefoucauld porte du Périgord),16,Nouvelle-Aquitaine,false,false,false,false,La Rochefoucauld-en-Angoumois,16281,27,22261,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Latitude Nord Gironde),33,Nouvelle-Aquitaine,false,false,false,false,Saint-Savin,33473,12,21898,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Lavalette Tude Dronne),16,Nouvelle-Aquitaine,false,false,false,false,Montmoreau,16230,50,17810,0,0,0,0,0
+Région Nouvelle Aquitaine (CC les Coteaux Bordelais),33,Nouvelle-Aquitaine,false,false,false,false,Tresses,33535,8,22338,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Les rives de la Laurence),33,Nouvelle-Aquitaine,false,false,false,false,Saint-Loubès,33433,6,29249,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Médoc Atlantique),33,Nouvelle-Aquitaine,false,false,false,false,Lacanau,33214,14,28756,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Médoc Coeur de Presqu'île),33,Nouvelle-Aquitaine,false,false,false,false,Lesparre-Médoc,33240,18,31429,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Médoc Estuaire),33,Nouvelle-Aquitaine,false,false,false,false,Le Pian-Médoc,33322,10,31070,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Médullienne),33,Nouvelle-Aquitaine,false,false,false,false,Castelnau-de-Médoc,33104,10,22820,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Mellois en Poitou),79,Nouvelle-Aquitaine,false,false,false,false,Melle,79174,62,47731,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Midi Corrézien),19,Nouvelle-Aquitaine,false,false,false,false,Beaulieu-sur-Dordogne,19019,34,13512,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Ouest Limousin),87,Nouvelle-Aquitaine,false,false,false,false,Oradour-sur-Vayres,87111,16,11505,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Pays de Nay),64,Nouvelle-Aquitaine,false,false,false,false,Nay,64417,29,29929,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Pays de Nexon Monts de Chalus),87,Nouvelle-Aquitaine,false,false,false,false,Nexon,87106,15,13338,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Pays d'Orthe et Arrigans),40,Nouvelle-Aquitaine,false,false,false,false,Peyrehorade,40224,24,25034,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Périgord-Limousin),24,Nouvelle-Aquitaine,false,false,false,false,Thiviers,24551,22,14478,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Porte Océane du Limousin),87,Nouvelle-Aquitaine,false,false,false,false,Saint-Junien,87154,13,26187,0,0,0,0,0
+Région Nouvelle Aquitaine (CC rurales de l'Entre-Deux-Mers),33,Nouvelle-Aquitaine,false,false,false,false,Targon,33523,50,16896,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Terres de Chalosse),40,Nouvelle-Aquitaine,false,false,false,false,Hinx,40126,34,18769,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Val de Charente),16,Nouvelle-Aquitaine,false,false,false,false,Ruffec,16292,32,14145,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Val de Gâtine),79,Nouvelle-Aquitaine,false,false,false,false,Coulonges-sur-l'Autize,79101,31,22032,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Vallée de la Dordogne et Forêt Bessède),24,Nouvelle-Aquitaine,false,false,false,false,Saint-Cyprien,24396,20,9147,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Vézère-Monédières-Millesources),19,Nouvelle-Aquitaine,false,false,false,false,Chamberet,19036,20,5866,0,0,0,0,0
+Région Nouvelle Aquitaine (CC Vienne et Gartempe),86,Nouvelle-Aquitaine,false,false,false,false,Montmorillon,86165,55,39809,0,0,0,0,0
+Région Nouvelle Aquitaine (Vals de Saintonge Communauté),17,Nouvelle-Aquitaine,false,false,false,false,Saint-Jean-d'Angély,17347,110,53774,0,0,0,0,0
+Région Occitanie (CC Adour Madiran),65,Occitanie,false,false,false,false,Vic-en-Bigorre,65460,72,24614,0,0,0,0,0
+Région Occitanie (CC Agly Fenouillèdes),66,Occitanie,false,false,false,false,Saint-Paul-de-Fenouillet,66187,24,6367,0,0,0,0,0
+Région Occitanie (CC Arize Lèze),09,Occitanie,false,false,false,false,Lézat-sur-Lèze,09167,27,11228,0,0,0,0,0
+Région Occitanie (CC Armagnac Adour),32,Occitanie,false,false,false,false,Riscle,32344,24,6831,0,0,0,0,0
+Région Occitanie (CC Artagnan de Fezensac),32,Occitanie,false,false,false,false,Vic-Fezensac,32462,25,7087,0,0,0,0,0
+Région Occitanie (CC Astarac Arros en Gascogne),32,Occitanie,false,false,false,false,Villecomtal-sur-Arros,32464,37,7358,0,0,0,0,0
+"Région Occitanie (CC Aubrac, Carladez et Viadène)",12,Occitanie,false,false,false,false,Argences en Aubrac,12223,21,10142,0,0,0,0,0
+Région Occitanie (CC Aubrac Lot Causses Tarn),48,Occitanie,false,false,false,false,La Canourgue,48034,15,8147,0,0,0,0,0
+Région Occitanie (CC Aure Louron),65,Occitanie,false,false,false,false,Saint-Lary-Soulan,65388,46,7127,0,0,0,0,0
+Région Occitanie (CC Aveyron Bas Ségala Viaur),12,Occitanie,false,false,false,false,Rieupeyroux,12198,7,5735,0,0,0,0,0
+Région Occitanie (CC Bastides de Lomagne),32,Occitanie,false,false,false,false,Mauvezin,32249,41,11726,0,0,0,0,0
+Région Occitanie (CC Bastides et Vallons du Gers),32,Occitanie,false,false,false,false,Plaisance,32319,30,7201,0,0,0,0,0
+Région Occitanie (CC Beaucaire Terre d'Argence),30,Occitanie,false,false,false,false,Beaucaire,30032,5,31942,0,0,0,0,0
+Région Occitanie (CC Cagire Garonne Salat),31,Occitanie,false,false,false,false,Salies-du-Salat,31523,55,18336,0,0,0,0,0
+Région Occitanie (CC Carmausin-Ségala),81,Occitanie,false,false,false,false,Carmaux,81060,31,30762,0,0,0,0,0
+Région Occitanie (CC Castelnaudary Lauragais Audois),11,Occitanie,false,false,false,false,Castelnaudary,11076,43,28647,0,0,0,0,0
+Région Occitanie (CC Causses Aigoual Cévennes),30,Occitanie,false,false,false,false,Val-d'Aigoual,30339,15,5514,0,0,0,0,0
+Région Occitanie (CC Causses et Vallée de la Dordogne),46,Occitanie,false,false,false,false,Gramat,46128,77,46700,0,0,0,0,0
+Région Occitanie (CC Cazals-Salviac),46,Occitanie,false,false,false,false,Salviac,46297,15,5539,0,0,0,0,0
+Région Occitanie (CC Centre Tarn),81,Occitanie,false,false,false,false,Réalmont,81222,11,11495,0,0,0,0,0
+Région Occitanie (CC Coeur d'Astarac en Gascogne),32,Occitanie,false,false,false,false,Mirande,32256,19,8095,0,0,0,0,0
+Région Occitanie (CC Coeur de Garonne),31,Occitanie,false,false,false,false,Cazères,31135,48,35769,0,0,0,0,0
+Région Occitanie (CC Coeur de Lozère),48,Occitanie,true,false,true,true,Mende,48095,7,16534,1,1,0,0,0
+Région Occitanie (CC Coeur et Coteaux du Comminges),31,Occitanie,false,false,false,false,Saint-Gaudens,31483,104,45363,0,0,0,0,0
+Région Occitanie (CC Comtal Lot et Truyère),12,Occitanie,false,false,false,false,Espalion,12096,21,20503,0,0,0,0,0
+Région Occitanie (CC Conflent-Canigó),66,Occitanie,false,false,false,false,Prades,66149,45,21433,0,0,0,0,0
+Région Occitanie (CC Conques-Marcillac),12,Occitanie,false,false,false,false,Salles-la-Source,12254,12,12497,0,0,0,0,0
+Région Occitanie (CC Corbières Salanque Méditerranée),66,Occitanie,false,false,false,false,Pia,66141,21,25473,0,0,0,0,0
+Région Occitanie (CC Couserans-Pyrénées),09,Occitanie,false,false,false,false,Saint-Girons,09261,94,30880,0,0,0,0,0
+Région Occitanie (CC de Cèze Cévennes),30,Occitanie,false,false,false,false,Saint-Ambroix,30227,23,19404,0,0,0,0,0
+Région Occitanie (CC de la Gascogne Toulousaine),32,Occitanie,false,false,false,false,L'Isle-Jourdain,32160,14,17477,0,0,0,0,0
+Région Occitanie (CC de la Haute Ariège),09,Occitanie,false,false,false,false,Ax-les-Thermes,09032,52,7384,0,0,0,0,0
+Région Occitanie (CC de la Haute-Bigorre),65,Occitanie,true,false,false,true,Bagnères-de-Bigorre,65059,25,16995,1,1,0,0,0
+Région Occitanie (CC de la Lomagne Gersoise),32,Occitanie,false,false,false,false,Fleurance,32132,43,20007,0,0,0,0,0
+Région Occitanie (CC de la Lomagne Tarn-et-Garonnaise),82,Occitanie,false,false,false,false,Beaumont-de-Lomagne,82013,31,10279,0,0,0,0,0
+Région Occitanie (CC de la Montagne Noire),11,Occitanie,false,false,false,false,Cuxac-Cabardès,11115,22,6124,0,0,0,0,0
+Région Occitanie (CC de la Muse et des Raspes du Tarn),12,Occitanie,false,false,false,false,Saint-Rome-de-Tarn,12244,13,5508,0,0,0,0,0
+Région Occitanie (CC de la Tenarèze),32,Occitanie,false,false,false,false,Condom,32107,26,14683,0,0,0,0,0
+Région Occitanie (CC de la Vallée du Lot et du Vignoble),46,Occitanie,false,false,false,false,Prayssac,46225,27,14798,0,0,0,0,0
+Région Occitanie (CC de Lévézou Pareloup),12,Occitanie,false,false,false,false,Salles-Curan,12253,10,5481,0,0,0,0,0
+Région Occitanie (CC de Petite Camargue),30,Occitanie,false,false,false,false,Vauvert,30341,5,28528,0,0,0,0,0
+"Région Occitanie (CC des Albères, de la Côte Vermeille et de l'Illibéris)",66,Occitanie,false,false,false,false,Argelès-sur-Mer,66008,15,58594,0,0,0,0,0
+Région Occitanie (CC des Aspres),66,Occitanie,false,false,false,false,Thuir,66210,19,23333,0,0,0,0,0
+Région Occitanie (CC des Causses à l'Aubrac),12,Occitanie,false,false,false,false,Sévérac d'Aveyron,12270,17,14895,0,0,0,0,0
+Région Occitanie (CC des Cévennes au Mont Lozère),48,Occitanie,false,false,false,false,Le Collet-de-Dèze,48051,19,5278,0,0,0,0,0
+Région Occitanie (CC des Cévennes Gangeoises et Suménoises),34,Occitanie,false,false,false,false,Ganges,34111,13,13050,0,0,0,0,0
+Région Occitanie (CC des Coteaux Arrats Gimone),32,Occitanie,false,false,false,false,Gimont,32147,30,11031,0,0,0,0,0
+Région Occitanie (CC des Coteaux Bellevue),31,Occitanie,false,false,false,false,Labastide-Saint-Sernin,31252,7,21343,0,0,0,0,0
+Région Occitanie (CC des Coteaux du Girou),31,Occitanie,false,false,false,false,Verfeil,31573,18,23744,0,0,0,0,0
+Région Occitanie (CC des Coteaux du Val d'Arros),65,Occitanie,false,false,false,false,Tournay,65447,53,11427,0,0,0,0,0
+Région Occitanie (CC des Deux Rives),82,Occitanie,false,false,false,false,Valence,82186,28,19442,0,0,0,0,0
+Région Occitanie (CC des Hautes Terres de l'Aubrac),48,Occitanie,false,false,false,false,Peyre en Aubrac,48009,17,5176,0,0,0,0,0
+Région Occitanie (CC des Hauts-Tolosans),31,Occitanie,false,false,false,false,Grenade,31232,29,36801,0,0,0,0,0
+Région Occitanie (CC des Monts d'Alban et du Villefranchois),81,Occitanie,false,false,false,false,Villefranche-d'Albigeois,81317,14,6470,0,0,0,0,0
+Région Occitanie (CC des Monts de Lacaune et de la Montagne du Haut Languedoc),81,Occitanie,false,false,false,false,Lacaune,81124,20,8136,0,0,0,0,0
+Région Occitanie (CC des Portes d'Ariège Pyrénées),09,Occitanie,false,false,false,false,Pamiers,09225,34,41725,0,0,0,0,0
+Région Occitanie (CC des Terres d'Apcher-Margeride-Aubrac),48,Occitanie,false,false,false,false,Saint-Chély-d'Apcher,48140,20,11244,0,0,0,0,0
+Région Occitanie (CC des Terres du Lauragais),31,Occitanie,false,false,false,false,Villefranche-de-Lauragais,31582,58,43060,0,0,0,0,0
+Région Occitanie (CC du Bas Armagnac),32,Occitanie,false,false,false,false,Nogaro,32296,26,9020,0,0,0,0,0
+Région Occitanie (CC du Bassin Auterivain Haut-Garonnais),31,Occitanie,false,false,false,false,Auterive,31033,19,34810,0,0,0,0,0
+Région Occitanie (CC du Causse de Labastide Murat),46,Occitanie,false,false,false,false,Cœur de Causse,46138,17,3986,0,0,0,0,0
+Région Occitanie (CC du Clermontais),34,Occitanie,false,false,false,false,Clermont-l'Hérault,34079,21,29497,0,0,0,0,0
+Région Occitanie (CC du Cordais et du Causse (4 C)),81,Occitanie,false,false,false,false,Cordes-sur-Ciel,81069,22,5500,0,0,0,0,0
+Région Occitanie (CC du Frontonnais),31,Occitanie,false,false,false,false,Castelnau-d'Estrétefonds,31118,10,29239,0,0,0,0,0
+Région Occitanie (CC du Grand Armagnac),32,Occitanie,false,false,false,false,Eauze,32119,25,13689,0,0,0,0,0
+Région Occitanie (CC du Grand Pic Saint-Loup),34,Occitanie,false,false,false,false,Saint-Gély-du-Fesc,34255,36,52384,0,0,0,0,0
+Région Occitanie (CC du Haut Allier),48,Occitanie,false,false,false,false,Langogne,48080,10,5422,0,0,0,0,0
+Région Occitanie (CC du Haut Vallespir),66,Occitanie,false,false,false,false,Amélie-les-Bains-Palalda,66003,14,9956,0,0,0,0,0
+Région Occitanie (CC du Lautrécois et du Pays d'Agout),81,Occitanie,false,false,false,false,Lautrec,81139,28,14671,0,0,0,0,0
+Région Occitanie (CC du Limouxin),11,Occitanie,false,false,false,false,Limoux,11206,76,28595,0,0,0,0,0
+Région Occitanie (CC du Minervois au Caroux),34,Occitanie,false,false,false,false,Saint-Pons-de-Thomières,34284,36,14791,0,0,0,0,0
+Région Occitanie (CC du Pays de Lafrançaise),82,Occitanie,false,false,false,false,Lafrançaise,82087,11,11483,0,0,0,0,0
+Région Occitanie (CC du Pays de Lalbenque-Limogne),46,Occitanie,false,false,false,false,Lalbenque,46148,23,9099,0,0,0,0,0
+Région Occitanie (CC du Pays de Lunel),34,Occitanie,false,false,false,false,Lunel,34145,14,51849,0,0,0,0,0
+Région Occitanie (CC du Pays de Mirepoix),09,Occitanie,false,false,false,false,Mirepoix,09194,33,10878,0,0,0,0,0
+Région Occitanie (CC du Pays de Salars),12,Occitanie,false,false,false,false,Flavin,12102,9,8272,0,0,0,0,0
+Région Occitanie (CC du Pays de Serres en Quercy),82,Occitanie,false,false,false,false,Lauzerte,82094,22,8498,0,0,0,0,0
+Région Occitanie (CC du Pays de Sommières),30,Occitanie,false,false,false,false,Calvisson,30062,18,25196,0,0,0,0,0
+Région Occitanie (CC du Pays de Tarascon),09,Occitanie,false,false,false,false,Tarascon-sur-Ariège,09306,20,8711,0,0,0,0,0
+Région Occitanie (CC du Pays de Trie et du Magnoac),65,Occitanie,false,false,false,false,Trie-sur-Baïse,65452,50,7113,0,0,0,0,0
+Région Occitanie (CC du Pays d'Olmes),09,Occitanie,false,false,false,false,Lavelanet,09160,24,15044,0,0,0,0,0
+Région Occitanie (CC du Pays Rignacois),12,Occitanie,false,false,false,false,Rignac,12199,8,5816,0,0,0,0,0
+Région Occitanie (CC du Pays Viganais),30,Occitanie,false,false,false,false,Le Vigan,30350,21,10274,0,0,0,0,0
+Région Occitanie (CC du Piémont Cévenol),30,Occitanie,false,false,false,false,Saint-Hippolyte-du-Fort,30263,34,22957,0,0,0,0,0
+Région Occitanie (CC du Plateau de Lannemezan),65,Occitanie,false,false,false,false,Lannemezan,65258,57,18127,0,0,0,0,0
+Région Occitanie (CC du Plateau de Montbazens),12,Occitanie,false,false,false,false,Montbazens,12148,13,6388,0,0,0,0,0
+Région Occitanie (CC du Pont du Gard),30,Occitanie,false,false,false,false,Aramon,30012,16,24114,0,0,0,0,0
+Région Occitanie (CC du Quercy Blanc),46,Occitanie,false,false,false,false,Castelnau-Montratier,46063,10,7891,0,0,0,0,0
+Région Occitanie (CC du Quercy Caussadais),82,Occitanie,false,false,false,false,Caussade,82037,19,20991,0,0,0,0,0
+Région Occitanie (CC du Quercy Rouergue et des Gorges de l'Aveyron),82,Occitanie,false,false,false,false,Saint-Antonin-Noble-Val,82155,17,7987,0,0,0,0,0
+Région Occitanie (CC du Réquistanais),12,Occitanie,false,false,false,false,Réquista,12197,11,5344,0,0,0,0,0
+Région Occitanie (CC du Saves),32,Occitanie,false,false,false,false,Samatan,32410,32,10113,0,0,0,0,0
+Région Occitanie (CC du Sor et de l'Agout),81,Occitanie,false,false,false,false,Saïx,81273,26,23850,0,0,0,0,0
+Région Occitanie (CC du Vallespir),66,Occitanie,false,false,false,false,Céret,66049,10,20876,0,0,0,0,0
+Région Occitanie (CC du Volvestre),31,Occitanie,false,false,false,false,Carbonne,31107,32,31439,0,0,0,0,0
+Région Occitanie (CC Gorges Causses Cévennes),48,Occitanie,false,false,false,false,Florac Trois Rivières,48061,17,7223,0,0,0,0,0
+Région Occitanie (CC Grand-Figeac),46,Occitanie,true,false,true,true,Figeac,46102,92,45489,1,1,0,0,0
+Région Occitanie (CC Grand Orb communauté de communes en Languedoc),34,Occitanie,false,false,false,false,Bédarieux,34028,24,20415,0,0,0,0,0
+Région Occitanie (CC Grand Sud Tarn et Garonne),82,Occitanie,false,false,false,false,Montech,82125,25,44059,0,0,0,0,0
+Région Occitanie (CC la Domitienne),34,Occitanie,false,false,false,false,Cazouls-lès-Béziers,34069,8,29758,0,0,0,0,0
+Région Occitanie (CC Larzac et Vallées),12,Occitanie,false,false,false,false,La Cavalerie,12063,16,6833,0,0,0,0,0
+Région Occitanie (CC Lauragais Revel Sorezois),31,Occitanie,false,false,false,false,Revel,31451,28,22336,0,0,0,0,0
+Région Occitanie (CC Les Avant-Monts),34,Occitanie,false,false,false,false,Magalas,34147,25,28483,0,0,0,0,0
+Région Occitanie (CC Lodévois et Larzac),34,Occitanie,false,false,false,false,Lodève,34142,28,15238,0,0,0,0,0
+Région Occitanie (CC Mont Lozère),48,Occitanie,false,false,false,false,Mont Lozère et Goulet,48027,21,6012,0,0,0,0,0
+"Région Occitanie (CC Monts, Rance et Rougier)",12,Occitanie,false,false,false,false,Camarès,12044,23,6579,0,0,0,0,0
+Région Occitanie (CC Neste Barousse),65,Occitanie,false,false,false,false,Saint-Laurent-de-Neste,65389,43,7507,0,0,0,0,0
+Région Occitanie (CC Pays d'Uzès),30,Occitanie,false,false,false,false,Uzès,30334,34,31790,0,0,0,0,0
+Région Occitanie (CC Piège Lauragais Malepère),11,Occitanie,false,false,false,false,Bram,11049,38,16902,0,0,0,0,0
+Région Occitanie (CC Pyrénées audoises),11,Occitanie,false,false,false,false,Quillan,11304,61,13809,0,0,0,0,0
+Région Occitanie (CC Pyrénées Catalanes),66,Occitanie,false,false,false,false,Font-Romeu-Odeillo-Via,66124,19,6238,0,0,0,0,0
+Région Occitanie (CC Pyrénées Cerdagne),66,Occitanie,false,false,false,false,Osséja,66130,19,9063,0,0,0,0,0
+Région Occitanie (CC Pyrénées Haut Garonnaises),31,Occitanie,false,false,false,false,Bagnères-de-Luchon,31042,76,15972,0,0,0,0,0
+Région Occitanie (CC Pyrénées Vallées des Gaves),65,Occitanie,true,false,false,false,Argelès-Gazost,65025,46,15616,1,0,0,0,0
+Région Occitanie (CC Quercy - Bouriane),46,Occitanie,false,false,false,false,Gourdon,46127,20,10531,0,0,0,0,0
+Région Occitanie (CC Quercy Vert-Aveyron),82,Occitanie,false,false,false,false,Nègrepelisse,82134,13,22114,0,0,0,0,0
+Région Occitanie (CC Randon - Margeride),48,Occitanie,false,false,false,false,Monts-de-Randon,48127,15,5337,0,0,0,0,0
+"Région Occitanie (CC Région Lézignanaise, Corbières et Minervois)",11,Occitanie,false,false,false,false,Lézignan-Corbières,11203,54,33887,0,0,0,0,0
+"Région Occitanie (CC Rhony, Vistre, Vidourle)",30,Occitanie,false,false,false,false,Vergèze,30344,10,29206,0,0,0,0,0
+Région Occitanie (CC Roussillon-Conflent),66,Occitanie,false,false,false,false,Ille-sur-Têt,66088,16,17313,0,0,0,0,0
+"Région Occitanie (CC Saint Affricain, Roquefort, Sept Vallons)",12,Occitanie,false,false,false,false,Saint-Affrique,12208,14,14169,0,0,0,0,0
+Région Occitanie (CC Sidobre Vals et Plateaux),81,Occitanie,false,false,false,false,Roquecourbe,81227,16,12691,0,0,0,0,0
+Région Occitanie (CC Sud-Hérault),34,Occitanie,false,false,false,false,Capestang,34052,17,18705,0,0,0,0,0
+Région Occitanie (CC Sud-Roussillon),66,Occitanie,false,false,false,false,Saint-Cyprien,66171,6,25798,0,0,0,0,0
+Région Occitanie (CC Tarn-Agout),81,Occitanie,true,false,true,true,Lavaur,81140,21,30805,2,2,0,0,0
+Région Occitanie (CC Terre de Camargue),30,Occitanie,false,false,false,false,Aigues-Mortes,30003,3,21075,0,0,0,0,0
+Région Occitanie (CC Terres des Confluences),82,Occitanie,false,false,false,false,Castelsarrasin,82033,22,43182,0,0,0,0,0
+Région Occitanie (CC Thoré Montagne Noire),81,Occitanie,false,false,false,false,Labastide-Rouairoux,81115,9,5128,0,0,0,0,0
+Région Occitanie (CC Val 81),81,Occitanie,false,false,false,false,Valence-d'Albigeois,81308,19,5662,0,0,0,0,0
+Région Occitanie (CC Val'Aïgo),31,Occitanie,false,false,false,false,Villemur-sur-Tarn,31584,9,18828,0,0,0,0,0
+Région Occitanie (CC Val de Gers),32,Occitanie,false,false,false,false,Masseube,32242,45,10380,0,0,0,0,0
+Région Occitanie (CC Vallée de l'Hérault),34,Occitanie,false,false,false,false,Gignac,34114,28,42520,0,0,0,0,0
+Région Occitanie (Le Grand Ouest Toulousain),31,Occitanie,false,false,false,false,Léguevin,31291,7,42896,0,0,0,0,0
+Région Occitanie (Ouest Aveyron Communauté),12,Occitanie,true,false,false,false,Villefranche-de-Rouergue,12300,29,28233,1,0,0,0,0
+Région Occitanie (Pays Ségali Communauté),12,Occitanie,false,false,false,false,Baraqueville,12056,23,18911,0,0,0,0,0
+Région Pays de la Loire (CC du Pays de Saint-Fulgent - Les Essarts),85,Pays de la Loire,false,false,false,false,Essarts-en-Bocage,85084,10,29666,0,0,0,0,0
+Région Pays de la Loire (CC Maine Saosnois),72,Pays de la Loire,false,false,false,false,Mamers,72180,51,28014,0,0,0,0,0
+"Région Provence-Alpes-Côte d'Azur (CC Alpes-Provence-Verdon ""Sources de lumière"")",04,Provence-Alpes-Côte d’Azur,false,false,false,false,Castellane,04039,41,11661,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Aygues-Ouvèze en Provence (CCAOP)),84,Provence-Alpes-Côte d’Azur,false,false,false,false,Piolenc,84091,8,20691,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Champsaur-Valgaudemar),05,Provence-Alpes-Côte d’Azur,false,false,false,false,Saint-Bonnet-en-Champsaur,05132,25,11867,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Coeur du Var),83,Provence-Alpes-Côte d’Azur,true,false,true,true,Le Luc,83073,11,46439,2,2,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC de la Vallée du Gapeau),83,Provence-Alpes-Côte d’Azur,false,false,false,false,Solliès-Pont,83130,5,33426,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC du Pays des Paillons),06,Provence-Alpes-Côte d’Azur,false,false,false,false,Contes,06048,11,21648,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC du Sisteronais-Buëch),04,Provence-Alpes-Côte d’Azur,false,false,false,false,Sisteron,04209,60,26166,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Enclave des Papes-Pays de Grignan),84,Provence-Alpes-Côte d’Azur,false,false,false,false,Valréas,84138,19,23243,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Haute-Provence-Pays de Banon),04,Provence-Alpes-Côte d’Azur,false,false,false,false,Reillanne,04160,21,10226,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Jabron-Lure-Vançon-Durance),04,Provence-Alpes-Côte d’Azur,false,false,false,false,Peipin,04145,14,5571,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Méditerranée Porte des Maures),83,Provence-Alpes-Côte d’Azur,false,false,false,false,Cuers,83049,6,47145,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Pays d'Apt-Luberon),84,Provence-Alpes-Côte d’Azur,false,false,false,false,Apt,84003,25,28914,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Pays Forcalquier et Montagne de Lure),04,Provence-Alpes-Côte d’Azur,false,false,false,false,Forcalquier,04088,13,10194,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Vallée de l'Ubaye - Serre-Ponçon),04,Provence-Alpes-Côte d’Azur,false,false,false,false,Barcelonnette,04019,13,7913,0,0,0,0,0
+Région Provence-Alpes-Côte d'Azur (CC Ventoux Sud),84,Provence-Alpes-Côte d’Azur,false,false,false,false,Malemort-du-Comtat,84070,11,9788,0,0,0,0,0
+Rennes Métropole,35,Bretagne,true,true,true,true,Rennes,35238,43,483199,3,3,3,0,0
+Roche aux Fées Communauté,35,Bretagne,false,false,false,false,Janzé,35136,16,27573,0,0,0,0,0
+Saint-Etienne Métropole,42,Auvergne-Rhône-Alpes,true,true,true,true,Saint-Étienne,42218,53,412411,2,1,2,0,0
+SI de mobilité et d'organisation urbaine du Valenciennois,59,Hauts-de-France,true,false,true,true,Valenciennes,59606,82,353379,1,1,0,1,0
+SI des transports urbains de l'agglomération du Calaisis (SITAC),62,Hauts-de-France,true,false,true,false,Calais,62193,15,105792,2,0,0,0,0
+SI des transports urbains soissonnais (SITUS),02,Hauts-de-France,true,false,true,false,Soissons,02722,51,63403,3,0,0,0,0
+SM4CC,74,Auvergne-Rhône-Alpes,false,false,false,false,Bonneville,74042,35,100953,0,0,0,0,0
+SM Artois Mobilités,62,Hauts-de-France,true,false,true,true,Lens,62498,150,650339,1,1,1,0,0
+SM des transports du bassin de Briey,54,Grand Est,true,true,true,false,Jarny,54273,66,77441,2,0,1,0,0
+SM des transports du Douaisis (SMTD),59,Hauts-de-France,true,false,true,false,Douai,59178,55,221911,1,0,0,0,0
+SM des transports du Petit cul de sac marin,971,Guadeloupe,true,false,true,false,Les Abymes,97101,7,165324,1,0,0,0,0
+SM des transports en commun de l'agglomération clermontoise (SMTC),63,Auvergne-Rhône-Alpes,true,true,true,true,Clermont-Ferrand,63113,23,306936,2,1,0,0,0
+SM des transports en commun de l'agglomération toulousaine,31,Occitanie,true,false,true,true,Toulouse,31555,108,1131486,1,1,1,0,0
+SM des transports en commun du Territoire-de-Belfort,90,Bourgogne-Franche-Comté,true,false,true,false,Belfort,90010,101,142989,1,0,0,0,0
+SM des transports urbains du Grand Noumea,988,Nouvelle-Calédonie,true,false,true,false,Nouméa,98818,4,182341,1,0,0,0,0
+SM des transports urbains Thionville Fensch,57,Grand Est,true,true,true,true,Thionville,57672,35,190525,2,1,1,0,0
+SM de transports urbains de la Sambre,59,Hauts-de-France,true,false,true,false,Maubeuge,59392,45,126906,1,0,0,0,0
+SM intercommunal des transports de l'agglomération de Longwy,57,Grand Est,true,true,true,true,Longwy,54323,28,77581,2,2,0,0,0
+"SM ""Pau Béarn Pyrénées mobilités""",64,Nouvelle-Aquitaine,true,false,true,true,Pau,64445,37,188337,2,0,0,1,0
+SM transports publics du bassin d'Alès,30,Occitanie,true,false,true,true,Alès,30007,72,138176,1,2,0,0,0
+Sud Gironde Mobilités,33,Nouvelle-Aquitaine,true,false,true,true,,,105,98420,1,0,1,1,0
+Syndicat des Mobilités de Touraine,37,Centre-Val de Loire,true,true,true,true,Tours,37261,25,316459,2,3,1,0,0
+Syndicat des mobilités Pays Basque - Adour,64,Nouvelle-Aquitaine,true,true,true,true,Bayonne,64102,161,360086,2,2,3,0,0
+Syndicat Mixte des Mobilités de l'Aire Grenobloise,38,Auvergne-Rhône-Alpes,true,true,true,true,Grenoble,38185,123,661124,6,1,0,0,0
+Syndicat mixte des transports urbains du bassin thiernois,63,Auvergne-Rhône-Alpes,true,true,true,false,Thiers,63430,33,47063,2,0,0,0,0
+SYTRAL Mobilités,69,Auvergne-Rhône-Alpes,true,false,false,true,,,263,1898605,2,0,1,0,3
+TEMO Territoires et Mobilités Moselle Nord,57,Grand Est,false,false,false,false,,,31,215964,0,0,0,0,0
+Valence-Romans déplacements,26,Auvergne-Rhône-Alpes,true,false,false,true,Valence,26362,67,265152,1,3,0,0,0

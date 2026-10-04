@@ -1,0 +1,62 @@
+[
+  {
+    "file": "aoms.csv",
+    "url": "https://transport.data.gouv.fr/aoms.csv",
+    "bytes": 135707,
+    "sha256": "d248680233d1e2aef08cd4c7ea3db25f64cce9198b7f35162722483fafdd86a3"
+  },
+  {
+    "file": "blere-horaires.png",
+    "url": "https://www.cc-autourdechenonceaux.fr/wp-content/uploads/2026/06/CARTE-HORAIRES-BLERE-IMPRESSION-2-768x1090.png",
+    "bytes": 127333,
+    "sha256": "19fb89324d0682d6cd17879df359d6bf31f4513ac3fc60c942228a753ba78743"
+  },
+  {
+    "file": "loches-plan.png",
+    "url": "https://static.loches-valdeloire.com/wp-content/uploads/2026/06/carto-le-lien-2026-2-1120x0.png",
+    "bytes": 381247,
+    "sha256": "7e8057ff67b6507e6a425dae94661ae8a7d7ffc09d76cc0e55f7c14ed9de8637"
+  },
+  {
+    "file": "move-tgv.pdf",
+    "url": "https://move-vendomois.fr/wp-content/uploads/2026/08/NAVETTE-TGV-rentree-2026.pdf",
+    "bytes": 246190,
+    "sha256": "40a04d8fe73ae85f94c0ad471359ee01508bc06c52328fec14bf9129e6d30c9f"
+  },
+  {
+    "file": "move-a.pdf",
+    "url": "https://move-vendomois.fr/wp-content/uploads/2024/07/LIGNE-A-rentree-2026.pdf",
+    "bytes": 632831,
+    "sha256": "8e7117518a7a59001db739025469d62f53897884362b31f3c9adff33a404e093"
+  },
+  {
+    "file": "move-b.pdf",
+    "url": "https://move-vendomois.fr/wp-content/uploads/2026/06/LIGNE-B-rentree-2026.pdf",
+    "bytes": 164270,
+    "sha256": "5641f8be63475d717aa82004b1cdf8902e49bfb6705e9ef691d2a76eed48c3fc"
+  },
+  {
+    "file": "move-c.pdf",
+    "url": "https://move-vendomois.fr/wp-content/uploads/2026/09/LIGNE-C-rentree-2026.pdf",
+    "bytes": 149698,
+    "sha256": "8b054480f8d90e516d4900e9633cd8d80b3561872327247e7faa896259b5b52d"
+  },
+  {
+    "file": "move-m.pdf",
+    "url": "https://move-vendomois.fr/wp-content/uploads/2026/09/LIGNE-M-a-compter-du-09-09-2026.pdf",
+    "bytes": 137660,
+    "sha256": "7ceeced83457ffcfc536fbdff7d51079e9f3eb6317757383e3f94170b30da287"
+  },
+  {
+    "file": "fil-rouge-actuel.pdf",
+    "url": "https://www.ville-chateau-renault.fr/wp-content/uploads/2024/12/horaires-Transport-Urbain-5-janvier-2025.pdf",
+    "bytes": 641689,
+    "sha256": "9ab412056787f7ccf60715085a47e7d1eeef2d3c0146b1da26664f6fe6c153e7"
+  },
+  {
+    "file": "fil-rouge-2026-11-02.pdf",
+    "url": "https://www.ville-chateau-renault.fr/wp-content/uploads/2026/09/Fil-Rouge-Horaires-a-partir-du-2-nov.-2026.modifie.pdf",
+    "bytes": 1544957,
+    "sha256": "8b00d4065dc57b52ce8f130a856b0bb95ad5f5441bae19627073a8fc7d194e3e"
+  }
+]

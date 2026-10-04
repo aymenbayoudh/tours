@@ -1,77 +1,93 @@
-# Inventaire des sources de transport — SERM de Touraine
+# Mobilités locales — inventaire des 14 EPCI du SERM de Touraine
 
-État vérifié le 3 octobre 2026. Ce fichier distingue les données déjà intégrées des sources candidates : un jeu de données listé ici n'est pas automatiquement pris en compte dans le calcul.
+Recherche et téléchargements du **4 octobre 2026**. Périmètre de ce lot : services locaux réguliers de journée. Les cars interurbains de la Région Centre-Val de Loire seront traités ensuite. Les fichiers collectés ici **ne sont pas encore intégrés au site ni aux isochrones** ; Fil Bleu reste déjà intégré.
 
-## Intégré
+## Résultat EPCI par EPCI
 
-### Fil Bleu — Syndicat des Mobilités de Touraine
+Le [référentiel national des AOM](https://transport.data.gouv.fr/aoms) est conservé dans `local-networks-2026-10-04/aoms.csv`. Une AOM ne se déduit pas du seul nom du réseau : une commune ou un EPCI peut organiser une navette alors que la Région exerce le rôle d’AOM par substitution.
 
-- Statut : **intégré** (bus ; tram A reste géré par la couche tram existante).
-- Source officielle : Tours Métropole Val de Loire / Syndicat des Mobilités de Touraine.
-- Catalogue PAN : https://transport.data.gouv.fr/datasets/fil-bleu-syndicat-des-mobilites-gtfs-gtfs-rt
-- GTFS courant observé : validité 30/09/2026 → 01/01/2027.
-- Licence : Licence Ouverte 2.0.
-- Le fichier distingue arrêts physiques et zones/stations commerciales ; les arrêts physiques sont conservés séparément dans le moteur.
-- Réduction utilisée par le site : semaine de référence du 5 au 11 octobre 2026, motifs représentatifs, permissions de montée/descente conservées, attente par ligne dérivée des intervalles observés.
+| EPCI | AOM / périmètre | Offre locale identifiée et données |
+|---|---|---|
+| Tours Métropole Val de Loire — 243700754 | Syndicat des Mobilités de Touraine (SMT), 25 communes au total | **Fil Bleu déjà intégré**. [GTFS officiel](https://transport.data.gouv.fr/datasets/fil-bleu-syndicat-des-mobilites-gtfs-gtfs-rt). Les services scolaires et nocturnes sont exclus dans le site. |
+| Touraine-Est Vallées — 200073161 | SMT pour Vouvray, Vernou-sur-Brenne et La Ville-aux-Dames ; Région par substitution pour les autres communes | Fil Bleu dans ces trois communes. [Guide local des mobilités](https://www.touraineestvallees.fr/guide-des-mobilites-a-touraine-est-vallees/) : TAD et services spécifiques à distinguer du réseau général. Pas de nouveau GTFS local régulier identifié pour les autres communes. |
+| CA de Blois « Agglopolys » — 200030385 | CA de Blois Agglopolys | **Azalys**, GTFS actuel téléchargé ; lignes urbaines A–H, navettes N1/N2 et lignes périurbaines L. [Horaires officiels](https://bus.azalys.agglopolys.fr/lignes-et-horaires). |
+| CA Territoires Vendômois — 200072072 | CA Territoires Vendômois | **MOVE**, GTFS actuel téléchargé. A et TGV sont annuelles ; M demande un filtrage des courses. [Fiches horaires](https://move-vendomois.fr/ligne/) également disponibles pour les lignes non urbaines absentes du GTFS. |
+| CC Chinon, Vienne et Loire — 200043081 | CC Chinon, Vienne et Loire | **CVL Mobilité**, ligne A, GTFS actuel téléchargé. [Jeu officiel](https://transport.data.gouv.fr/datasets/reseau-cvlmobilite-plan-de-transport-theorique-ligne-a-format-gtfs). |
+| CC Touraine Ouest Val de Loire — 200072981 | Région par substitution | **CVL Mobilité A** dessert aussi Bourgueil / Port-Boulet, au-delà de l’EPCI de son AOM : réutiliser la même ligne, pas créer un second réseau. [Présentation locale](https://cctoval.fr/mobilite/). Pas de GTFS supplémentaire local régulier identifié. |
+| CC du Val d’Amboise — 200043065 | Région par substitution ; service municipal d’Amboise | **Le Bus**, GTFS actuel téléchargé, Nav1 Gare SNCF – Pôle Emploi – Nazelles. [Jeu officiel](https://transport.data.gouv.fr/datasets/ville-damboise-offre-theorique-mobilite-reseau-urbain). |
+| CA Saumur Val de Loire — 200071876 | CA Saumur Val de Loire | **Ogalo** : GTFS dédié téléchargé mais périmé. [Fiches urbaines](https://ogalo-saumurvaldeloire.fr/fiches_horaires/fiches-horaires-du-reseau-urbain/) et [périurbaines actuelles](https://ogalo-saumurvaldeloire.fr/fiches_horaires/fiches-horaires-du-reseau-periurbain/) disponibles ; reconstruction nécessaire. Navettes de zones industrielles également identifiées. |
+| CC du Castelrenaudais — 243700499 | Région par substitution ; CC AO2 pour les scolaires | **Fil Rouge**, service municipal de Château-Renault. [Horaires officiels](https://www.ville-chateau-renault.fr/mon-quotidien/se-deplacer/bus-urbain-municipal/) téléchargés, versions actuelle et 2 novembre 2026 séparées. Pas de GTFS identifié. |
+| CC Autour de Chenonceaux Bléré-Val de Cher — 243700820 | Région par substitution ; navette organisée par la CC | **Le Lien – Bléré**, navette annuelle sans réservation, lundi–vendredi, cinq rotations quotidiennes. [Source CC](https://www.cc-autourdechenonceaux.fr/actualites/navette-le-lien/), [annonce municipale avec desserte](https://www.dierre37.fr/actualites/892443). Carte/horaires téléchargés en image ; pas de GTFS identifié. |
+| CC Loches Sud Touraine — 200071587 | Région par substitution ; navette locale | **Le Lien**, deux boucles gratuites lundi–vendredi entre Loches, Beaulieu-lès-Loches et Perrusson. [Présentation de l’office de tourisme](https://loches-valdeloire.com/patrimoine/a-plus-dans-lbus/). Plan téléchargé ; horaires complets encore à récupérer et transcrire. Pas de GTFS identifié. |
+| CC de Gâtine-Racan — 200073237 | Région par substitution | [Rémi à la demande](https://www.gatine-racan.fr/transport/service-remi-a-la-demande-en-gatine-racan/) et mobilités solidaires identifiés ; pas de nouveau service local fixe avec GTFS identifié. Le TAD avec réservation ne doit pas être simulé comme un bus permanent. |
+| CC Touraine Vallée de l’Indre — 200072650 | Région par substitution | [Transport scolaire organisé localement](https://tourainevalleedelindre.fr/services/famille/transport-scolaire/) exclu. Pas de nouveau GTFS local régulier identifié. Les services Rémi restent pour le lot régional. |
+| CC Touraine Val de Vienne — 200072668 | Région par substitution | [Sources de la communauté de communes](https://www.cc-tvv.fr/) : TAD et transport régional ; pas de nouveau GTFS local régulier identifié. Les documents anciens de TAD ne constituent pas des horaires actuels de ligne fixe. |
 
-## Sources actuelles à intégrer dans un lot ultérieur
+« Pas identifié » décrit le résultat de la recherche dans le PAN et les publications locales ; cela ne prouve pas l’absence de transport. Les limites AOM du référentiel ne remplacent pas les limites IGN 2026 de la carte.
 
-### Rémi — Région Centre-Val de Loire
+## GTFS originaux récupérés
 
-- Rôle : réseau interurbain, notamment Rémi 37 et Rémi 41 pour la majorité des EPCI du SERM hors Tours Métropole.
-- Ressource PAN : https://transport.data.gouv.fr/resources/83530
-- GTFS observé le 03/10/2026 : validité générale à partir du 29/09/2026 ; couverture Rémi 37 jusqu'au 01/11/2026 et Rémi 41 jusqu'au 28/02/2027.
-- Ne pas importer tout le réseau régional sans filtrage spatial et de services : sélectionner les lignes réellement utiles au périmètre et aux connexions du SERM.
+| Réseau | Lignes dans le fichier brut | Enregistrements stops.txt | Étendue des calendriers | Licence du jeu |
+|---|---:|---:|---|---|
+| Azalys | 73 | 1 165 | 29/09/2026 – 18/10/2026 | ODbL |
+| MOVE | 11 | 166 | 01/09/2026 – 31/08/2033 | Licence Ouverte 2.0 |
+| CVL Mobilité | 1 | 92 | 31/08/2026 – 31/08/2028 | Licence Ouverte 2.0 |
+| Le Bus Amboise | 1 | 47 | 12/09/2026 – 31/12/2026 | ODbL |
+| Ogalo dédié | 20 | 1 080 | 05/04/2026 – 31/08/2026 | ODbL ; conditions particulières signalées par le PAN |
 
-### Azalys — CA de Blois « Agglopolys »
+Les nombres d’arrêts comptent les entrées GTFS (quais, sens et parents), pas uniquement les arrêts commerciaux. Les dates sont l’étendue des calendriers du fichier, pas la garantie que chaque ligne circule chaque jour. Le calendrier MOVE jusqu’en 2033 est une valeur technique : les fiches de rentrée 2026 ont une échéance au 4 juillet 2027.
 
-- Statut : source GTFS actuelle, **non intégrée**.
-- Jeu : https://transport.data.gouv.fr/datasets/agglopolys-offre-theorique-mobilite-reseau-urbain-azalys-de-blois
-- Ressource : https://transport.data.gouv.fr/resources/83526
-- Validité observée : jusqu'au 18/10/2026 ; environ 73 lignes, 758 points d'arrêt sur la ressource courante.
+Les archives `.zip` sont conservées intactes, avec URL, empreinte SHA-256 et audit descriptif dans le dossier `local-networks-2026-10-04/`. Les métadonnées conservées sont limitées aux sources statiques. Aucun flux temps réel n’est utilisé.
 
-### MOVE — CA Territoires Vendômois
+## Sélection et exclusions préparées
 
-- Statut : source GTFS actuelle, **non intégrée**.
-- Jeu : https://transport.data.gouv.fr/datasets/gtfs-move-vendome
-- Ressource : https://transport.data.gouv.fr/resources/82832
-- Validité observée : 01/09/2026 → 31/08/2033 ; 11 lignes et 166 points d'arrêt.
+`local-networks-2026-10-04/inventory.json` contient les décisions **par identifiant de ligne**, avec motif et statut. Ce manifeste n’est pas encore un GTFS filtré ni un fichier consommé par le moteur. Les statuts `review-*` imposent une vérification avant import.
 
-### CVL Mobilité — CC Chinon, Vienne et Loire
+### Azalys
 
-- Statut : source GTFS actuelle, **non intégrée**.
-- Jeu : https://transport.data.gouv.fr/datasets/reseau-cvlmobilite-plan-de-transport-theorique-ligne-a-format-gtfs
-- Une ligne régulière relie notamment Saint-Benoît-la-Forêt, Chinon, Beaumont-en-Véron, Avoine, Port-Boulet et Bourgueil.
-- Validité observée : 31/08/2026 → 31/08/2028.
-- Cette source est importante pour ne pas confondre la suspension ferroviaire P21 avec une absence générale de transports dans le secteur.
+- Candidats : A–H, **N1 et N2**, et lignes périurbaines L15 à L32 présentes dans le fichier (avec variantes L16-1/2 et L23-1/2).
+- N1/N2 sont des **navettes de centre-ville de journée**, à conserver. [Source officielle](https://bus.azalys.agglopolys.fr/lignes-et-horaires/lignes-urbaines/navettes-centre-ville).
+- Exclure les lignes S, Flexo SOIR et les navettes touristiques Châteaux NCH1/NCH2 du lot régulier annuel.
+- Rémi16, bien que présent dans le fichier, est reporté au lot régional.
+- Pour les lignes mixtes L, préserver les courses générales et vérifier les renforts scolaires au niveau des voyages. Un terminus près d’un lycée ne suffit pas à exclure toute une ligne.
 
-### Le Bus — Ville d'Amboise
+### MOVE
 
-- Statut : source GTFS actuelle, **non intégrée**.
-- Jeu : https://transport.data.gouv.fr/datasets/ville-damboise-offre-theorique-mobilite-reseau-urbain
-- Ressource : https://transport.data.gouv.fr/resources/83528
-- Validité observée sur la ressource courante : 12/09/2026 → 31/12/2026 ; 1 ligne, 24 points d'arrêt.
+- A et navette TGV : candidates annuelles. Les calendriers nommés `SCOLAIRE_*` et `VACANCES_*` sont ici des variantes normales de période : **ne pas supprimer tous les services portant le mot SCOLAIRE**.
+- B–H : sélection générale les écarte provisoirement comme dessertes limitées à la période scolaire. Les PDF B/C et les descriptions GTFS confirment cette restriction. Ce sont des lignes présentées dans l’offre urbaine, pas toutes des circuits réservés aux élèves ; conserver cette distinction dans l’audit.
+- M : ligne mixte, à filtrer **course par course**. Sa fiche distingue notamment des courses sur réservation pendant les vacances et des services qui ne fonctionnent pas pendant les vacances. Ne pas l’importer comme une ligne permanente sans conditions.
+- ESAT : le GTFS indique PMR ; conditions d’accès à vérifier avant de traiter la ligne comme ouverte à tous.
+- La page de fiches comprend également 7, 8, 9, 13-440, 14 et 492, **absentes de ce GTFS**. La [FAQ MOVE](https://move-vendomois.fr/foire-aux-questions-rentree-2026-2027/) distingue ses lignes interurbaines 7/8/9/13/14/M du transport régional. Ne pas reporter automatiquement toutes ces lignes au lot Rémi : vérifier organisateur, conditions et partie locale à partir des PDF référencés dans `official-timetable-links.json`. La FAQ cite aussi J/N non présents dans le GTFS : leur existence actuelle n’est pas confirmée par les fichiers téléchargés.
 
-## Source à ne pas intégrer telle quelle actuellement
+### CVL Mobilité / Amboise
 
-### Ogalo — CA Saumur Val de Loire
+- CVL A et Amboise Nav1 : candidates régulières, horaires structurés présents.
+- CVL a regroupé les anciennes lignes A/B : ne pas ajouter une ancienne ligne B en doublon.
+- Exclure la navette estivale de Chinon du lot annuel et distinguer le service Sitradem sur réservation de la ligne A.
 
-- Jeu : https://transport.data.gouv.fr/datasets/lignes-arrets-et-horaires-theorique-du-reseau-de-transport-gtfs-netex-saumur-val-de-loire-agglomeration
-- Ressource GTFS directe : https://transport.data.gouv.fr/resources/81416
-- Le GTFS publié directement au PAN est indiqué **périmé** et s'arrête au 31/08/2026.
-- Ne pas utiliser silencieusement ce fichier pour la semaine du 5 au 11 octobre 2026. Chercher une ressource actuelle (producteur, agrégat régional ou autre source officielle) avant intégration.
+### Ogalo
 
-## EPCI sans réseau local identifié ici
+- **Ne pas importer le GTFS dédié expiré** comme offre actuelle. Le [PAN](https://transport.data.gouv.fr/datasets/lignes-arrets-et-horaires-theorique-du-reseau-de-transport-gtfs-netex-saumur-val-de-loire-agglomeration) confirme son échéance au 31 août 2026.
+- Les fiches actuelles concernent A/B/C/D et les lignes périurbaines ; les nouvelles dessertes ne se déduisent pas des anciennes coordonnées sans contrôle.
+- Écarter circuits scolaires, navettes gare–établissements et lignes estivales. Les courses à réservation dans les lignes mixtes demandent un traitement distinct.
+- Les [navettes de zones industrielles](https://ogalo-saumurvaldeloire.fr/fiches_horaires/horaires-des-navettes-zones-industrielles/) Clos Bonnet / La Ronde sont des candidates de mobilité quotidienne, absentes de l’ancien inventaire. Vérifier leurs fiches et conditions, sans les assimiler à du transport scolaire à cause d’une période de circulation.
+- Certaines fiches partagent une ligne avec Aléop, et L8 cite désormais Rémi SO14 : vérifier l’opérateur et éviter les doublons régionaux.
+- Le référentiel AOM marque Saumur « à jour » via des données agrégées : cela **ne rend pas le GTFS dédié actuel**. Le contrôle de l’agrégat Pays de la Loire est enregistré dans `ogalo-aggregate-check.json` : aucune agence Ogalo/Saumur n’y est présente ; les correspondances trouvées vers Saumur relèvent notamment d’Aléop/SNCF, et ne remplacent pas les lignes urbaines Ogalo.
 
-Pour Val d'Amboise hors service municipal d'Amboise, Loches Sud Touraine, Touraine Val de Vienne, Touraine Vallée de l'Indre, Touraine Ouest Val de Loire, Touraine-Est Vallées, Gâtine-Racan, Castelrenaudais et Autour de Chenonceaux Bléré-Val de Cher :
+### Navettes sans GTFS
 
-- Rémi 37 / Rémi 41 est la première source structurée à examiner ;
-- vérifier ensuite les navettes locales, TAD et éventuels services propres avant de conclure à une absence d'offre ;
-- ne pas supposer qu'un GTFS unique couvre tous les 14 EPCI.
+- Fil Rouge : séparer l’horaire actuel (jusqu’au 30 octobre) et le nouveau du 2 novembre ; ne pas fusionner leurs temps de trajet.
+- Le Lien – Bléré : lancement en juin **ne signifie pas saisonnier** ; l’annonce précise un fonctionnement toute l’année sans réservation.
+- Le Lien – Loches : deux boucles actuelles, ne pas réutiliser comme référence le vieux minibus social décrit dans les publications antérieures.
+- Les PDF et images sont librement consultables ; aucune licence ouverte explicite n’a été identifiée pour ces documents. Les sources GTFS ont, elles, des licences déclarées. Les transcriptions doivent rester accompagnées de leur provenance.
 
-## Ordre d'intégration proposé
+## Suite de l’import
 
-1. Stabiliser Fil Bleu et la marche sur voirie.
-2. Ajouter Rémi 37/41 avec filtrage spatial et contrôle des doublons avec le rail.
-3. Ajouter les réseaux locaux actuels : Amboise, CVL Mobilité, Azalys et MOVE.
-4. Traiter Saumur seulement avec une source valide pour octobre 2026.
+1. Actualiser Azalys au moment de l’import (le fichier collecté expire le 18 octobre).
+2. Valider les courses générales des réseaux mixtes ; récupérer les horaires complets du Lien à Loches.
+3. Transcrire les petites navettes et reconstruire Ogalo à partir des sources actuelles.
+4. Importer par réseau avec identifiants préfixés, sens et permissions de montée/descente, temps entre arrêts tirés des horaires et calendriers cohérents.
+5. Adapter les paramètres de bus, les étiquettes et le multiplicateur d’attente aux réseaux ajoutés ; contrôler les correspondances à pied et la taille des données avant publication.
+6. Puis traiter les cars régionaux Centre-Val de Loire, avec dédoublonnage des lignes déjà présentes dans les fichiers locaux.
+
+L’ancien inventaire est conservé dans `archive/tours-before-local-networks-inventory-2026-10-04/`.

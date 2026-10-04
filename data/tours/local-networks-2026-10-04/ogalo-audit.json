@@ -1,0 +1,4083 @@
+{
+  "network": "ogalo",
+  "url": "https://mobi-iti-pdl.okina.fr/static/mobiiti_saumur_val_de_loire/gtfs_imported-id_saumur.zip",
+  "license": "odc-odbl",
+  "sha256": "15c234364c88343ddf27dc20813c7dddbccfbcb5149eafd5b2f2a937ab084229",
+  "bytes": 727697,
+  "routes": [
+    {
+      "route_id": "111",
+      "agency_id": "1",
+      "route_short_name": "L11",
+      "route_long_name": "ALLONNES - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "000000",
+      "route_text_color": "ffffff",
+      "route_sort_order": "2"
+    },
+    {
+      "route_id": "60",
+      "agency_id": "1",
+      "route_short_name": "L3A",
+      "route_long_name": "ANTOIGNE - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "57c035",
+      "route_text_color": "ffffff",
+      "route_sort_order": "3"
+    },
+    {
+      "route_id": "41",
+      "agency_id": "1",
+      "route_short_name": "L12",
+      "route_long_name": "BRAIN SUR ALLONNES - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "542791",
+      "route_text_color": "ffffff",
+      "route_sort_order": "4"
+    },
+    {
+      "route_id": "148",
+      "agency_id": "1",
+      "route_short_name": "L15(416/436)",
+      "route_long_name": "COURLEON - SAUMUR / ALEOP 416-436 NOYANT - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "6dcd25",
+      "route_text_color": "ffffff",
+      "route_sort_order": "5"
+    },
+    {
+      "route_id": "46",
+      "agency_id": "1",
+      "route_short_name": "L16(406)",
+      "route_long_name": "DOUE LA FONTAINE - SAUMUR / ALEOP 406 CHOLET - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "168a9c",
+      "route_text_color": "ffffff",
+      "route_sort_order": "6"
+    },
+    {
+      "route_id": "201",
+      "agency_id": "1",
+      "route_short_name": "B",
+      "route_long_name": "ECOPARC - GARE - CHAMP BLANCHARD",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "aae34b",
+      "route_text_color": "000000",
+      "route_sort_order": "7"
+    },
+    {
+      "route_id": "200",
+      "agency_id": "1",
+      "route_short_name": "A",
+      "route_long_name": "ECOPARC - GARE - HOPITAL - MARECHAUX",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "4d5c9c",
+      "route_text_color": "ffffff",
+      "route_sort_order": "8"
+    },
+    {
+      "route_id": "37",
+      "agency_id": "1",
+      "route_short_name": "L1",
+      "route_long_name": "FONTEVRAUD L ABBAYE - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "f51eb1",
+      "route_text_color": "000000",
+      "route_sort_order": "9"
+    },
+    {
+      "route_id": "71",
+      "agency_id": "1",
+      "route_short_name": "L9",
+      "route_long_name": "LA BREILLE LES PINS - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "fff200",
+      "route_text_color": "000000",
+      "route_sort_order": "10"
+    },
+    {
+      "route_id": "43",
+      "agency_id": "1",
+      "route_short_name": "L14(404)",
+      "route_long_name": "LES ROSIERS - SAUMUR / ALEOP 404 ANGERS ST MARTIN GENNES SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "6f4223",
+      "route_text_color": "ffffff",
+      "route_sort_order": "11"
+    },
+    {
+      "route_id": "38",
+      "agency_id": "1",
+      "route_short_name": "L10(415)",
+      "route_long_name": "LONGUE_VIVY_ NEUILLE_SAUMUR/ALEOP 415",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "9ed51e",
+      "route_text_color": "000000",
+      "route_sort_order": "12"
+    },
+    {
+      "route_id": "48",
+      "agency_id": "1",
+      "route_short_name": "L2",
+      "route_long_name": "LOUDUN - ÉPIEDS - SAUMUR",
+      "route_desc": "titulaire SPL et audouardaudouard sous traite à archambault",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "e28e0d",
+      "route_text_color": "000000",
+      "route_sort_order": "13"
+    },
+    {
+      "route_id": "202",
+      "agency_id": "1",
+      "route_short_name": "C",
+      "route_long_name": "LOUIS BLERIOT - CENTRE-VILLE",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "1e27f9",
+      "route_text_color": "ffffff",
+      "route_sort_order": "14"
+    },
+    {
+      "route_id": "203",
+      "agency_id": "1",
+      "route_short_name": "D",
+      "route_long_name": "OFFARD - MILLOCHEAU - CHATEAU DE POCE",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "a2d787",
+      "route_text_color": "000000",
+      "route_sort_order": "15"
+    },
+    {
+      "route_id": "69",
+      "agency_id": "1",
+      "route_short_name": "L7",
+      "route_long_name": "ROU MARSON - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "00a5e5",
+      "route_text_color": "ffffff",
+      "route_sort_order": "16"
+    },
+    {
+      "route_id": "2",
+      "agency_id": "1",
+      "route_short_name": "L17(417)",
+      "route_long_name": "ST GEORGES - GENNES - SAUMUR / ALEOP 417 ANGERS SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "b55d3a",
+      "route_text_color": "000000",
+      "route_sort_order": "17"
+    },
+    {
+      "route_id": "62",
+      "agency_id": "1",
+      "route_short_name": "L4",
+      "route_long_name": "ST MACAIRE-DU-BOIS - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "e31a22",
+      "route_text_color": "000000",
+      "route_sort_order": "18"
+    },
+    {
+      "route_id": "70",
+      "agency_id": "1",
+      "route_short_name": "L8",
+      "route_long_name": "VARENNES SUR LOIRE - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "f033a3",
+      "route_text_color": "000000",
+      "route_sort_order": "19"
+    },
+    {
+      "route_id": "67",
+      "agency_id": "1",
+      "route_short_name": "L6",
+      "route_long_name": "VAUDELNAY - BROSSAY - CIZAY - COURCHAMPS -SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "a89056",
+      "route_text_color": "000000",
+      "route_sort_order": "20"
+    },
+    {
+      "route_id": "65",
+      "agency_id": "1",
+      "route_short_name": "L5",
+      "route_long_name": "VERRIE - SAUMUR",
+      "route_desc": "",
+      "route_type": "3",
+      "route_url": "",
+      "route_color": "e174b4",
+      "route_text_color": "000000",
+      "route_sort_order": "21"
+    }
+  ],
+  "calendar": [
+    {
+      "service_id": "A21",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "A22",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "A44",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A45",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A46",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C23",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C26",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "D24",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C25",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "1",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C27",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "0",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C29",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "0",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C1",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A2",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C5",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "1",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A3",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C6",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "0",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A4",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C8",
+      "monday": "1",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C31",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "0",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C30",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "0",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "A12",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "0",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C10",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "C32",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A14",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A15",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "0",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A16",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "D13",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260831"
+    },
+    {
+      "service_id": "A18",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "1",
+      "thursday": "0",
+      "friday": "0",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "C17",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "A19",
+      "monday": "1",
+      "tuesday": "1",
+      "wednesday": "1",
+      "thursday": "1",
+      "friday": "0",
+      "saturday": "1",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    },
+    {
+      "service_id": "A20",
+      "monday": "0",
+      "tuesday": "0",
+      "wednesday": "0",
+      "thursday": "0",
+      "friday": "1",
+      "saturday": "0",
+      "sunday": "0",
+      "start_date": "20260405",
+      "end_date": "20260703"
+    }
+  ],
+  "calendarDates": [
+    {
+      "service_id": "A21",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A21",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A21",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A21",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A21",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A21",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A21",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A22",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A44",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A45",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A46",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C23",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C26",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260405",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260407",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260408",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260409",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260410",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260427",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260428",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260429",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260430",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260502",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260503",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260504",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260505",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260506",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260507",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260509",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260510",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260511",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260512",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260513",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260515",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260516",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260517",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260518",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260519",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260520",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260521",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260522",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260523",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260524",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260526",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260527",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260528",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260529",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260530",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260531",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260601",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260602",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260603",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260604",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260605",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260606",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260607",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260608",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260609",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260610",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260611",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260612",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260613",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260614",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260615",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260616",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260617",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260618",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260619",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260620",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260621",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260622",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260623",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260624",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260625",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260626",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260627",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260628",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260629",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260630",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260701",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260702",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260703",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260704",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260705",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260706",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260707",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260708",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260709",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260710",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260711",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260712",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260713",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260715",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260716",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260717",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260718",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260719",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260720",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260721",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260722",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260723",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260724",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260725",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260726",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260727",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260728",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260729",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260730",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260731",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260801",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260802",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260803",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260804",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260805",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260806",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260807",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260808",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260809",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260810",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260811",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260812",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260813",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260814",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260816",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260817",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260818",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260819",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260820",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260821",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260822",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260823",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260824",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260825",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260826",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260827",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260828",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260829",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D24",
+      "date": "20260830",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C25",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C27",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C29",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C1",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A2",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C5",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A3",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C6",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A4",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C8",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C31",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C30",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A12",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C10",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C32",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A14",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A15",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A16",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260405",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260407",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260408",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260409",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260410",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260427",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260428",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260429",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260430",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260502",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260503",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260504",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260505",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260506",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260507",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260509",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260510",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260511",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260512",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260513",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260515",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260516",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260517",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260518",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260519",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260520",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260521",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260522",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260523",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260524",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260526",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260527",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260528",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260529",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260530",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260531",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260601",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260602",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260603",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260604",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260605",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260606",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260607",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260608",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260609",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260610",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260611",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260612",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260613",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260614",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260615",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260616",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260617",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260618",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260619",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260620",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260621",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260622",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260623",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260624",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260625",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260626",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260627",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260628",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260629",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260630",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260701",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260702",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260703",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260704",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260705",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260706",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260707",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260708",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260709",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260710",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260711",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260712",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260713",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260715",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260716",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260717",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260718",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260719",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260720",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260721",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260722",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260723",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260724",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260725",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260726",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260727",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260728",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260729",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260730",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260731",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260801",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260802",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260803",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260804",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260805",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260806",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260807",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260808",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260809",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260810",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260811",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260812",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260813",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260814",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260816",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260817",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260818",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260819",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260820",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260821",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260822",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260823",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260824",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260825",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260826",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260827",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260828",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260829",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "D13",
+      "date": "20260830",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A18",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260411",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260412",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260413",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260414",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260415",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260416",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260417",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260418",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260419",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260420",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260421",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260422",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260423",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260424",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260425",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260426",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "C17",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A19",
+      "date": "20260815",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260406",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260501",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260508",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260514",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260525",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260714",
+      "exception_type": "2"
+    },
+    {
+      "service_id": "A20",
+      "date": "20260815",
+      "exception_type": "2"
+    }
+  ],
+  "tripCount": 507,
+  "stopCount": 1080,
+  "shapeAvailable": true
+}

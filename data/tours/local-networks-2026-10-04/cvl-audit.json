@@ -1,0 +1,154 @@
+{
+  "network": "cvl",
+  "url": "https://static.data.gouv.fr/resources/reseau-cvlmobilite-plan-de-transport-theorique-ligne-a-format-gtfs/20260830-074645/cvlm-lignea-31082026.zip",
+  "license": "lov2",
+  "sha256": "0c5b34b0328b79bcde33c2078d641324afda730bd1e44fa2db842029f89399dd",
+  "bytes": 56200,
+  "routes": [
+    {
+      "agency_id": "000001",
+      "route_color": "E71C54",
+      "route_id": "A",
+      "route_long_name": "Sitravel Ligne A",
+      "route_short_name": "A",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    }
+  ],
+  "calendar": [
+    {
+      "end_date": "20280831",
+      "friday": "1",
+      "monday": "1",
+      "saturday": "0",
+      "service_id": "CVLMobilité_31082026/31082028",
+      "start_date": "20260831",
+      "sunday": "0",
+      "thursday": "1",
+      "tuesday": "1",
+      "wednesday": "1"
+    },
+    {
+      "end_date": "20280831",
+      "friday": "0",
+      "monday": "0",
+      "saturday": "1",
+      "service_id": "CVLMobilité_Sa_31082026/31082028",
+      "start_date": "20260831",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    }
+  ],
+  "calendarDates": [
+    {
+      "date": "20261111",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20261225",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270101",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270329",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270503",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270506",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270517",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270714",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20271101",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20271111",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280417",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280501",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280508",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280525",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280605",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280714",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20280815",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_31082026/31082028"
+    },
+    {
+      "date": "20270501",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_Sa_31082026/31082028"
+    },
+    {
+      "date": "20270508",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_Sa_31082026/31082028"
+    },
+    {
+      "date": "20271225",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_Sa_31082026/31082028"
+    },
+    {
+      "date": "20280101",
+      "exception_type": "2",
+      "service_id": "CVLMobilité_Sa_31082026/31082028"
+    }
+  ],
+  "tripCount": 64,
+  "stopCount": 92,
+  "shapeAvailable": true
+}

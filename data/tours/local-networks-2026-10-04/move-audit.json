@@ -1,0 +1,1709 @@
+{
+  "network": "move",
+  "url": "https://api.pysae.com/api/v4/groups/vendome/gtfs/pub",
+  "license": "lov2",
+  "sha256": "f6cc1862e60301822c396e7a3a702aff3e0cecf9b227b9ccaf0bb0eb7014208e",
+  "bytes": 304917,
+  "routes": [
+    {
+      "agency_id": "MOVE",
+      "route_color": "CB4335",
+      "route_desc": "fonctionne toute l'année du lundi au samedi, sauf jours fériés",
+      "route_id": "LIGNE A",
+      "route_long_name": "LIGNE A",
+      "route_short_name": "A",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "0CB22A",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE B",
+      "route_long_name": "LIGNE B",
+      "route_short_name": "B",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "D5E41E",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE C",
+      "route_long_name": "LIGNE C",
+      "route_short_name": "C",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "3498D8",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE D",
+      "route_long_name": "LIGNE D",
+      "route_short_name": "D",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "F39C12",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE E",
+      "route_long_name": "LIGNE E",
+      "route_short_name": "E",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "34CDB4",
+      "route_desc": "ligne PMR fonctionne du lundi au vendredi",
+      "route_id": "LIGNE ESAT",
+      "route_long_name": "LIGNE ESAT",
+      "route_short_name": "ESAT",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "F590DE",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE F",
+      "route_long_name": "LIGNE F",
+      "route_short_name": "F",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "5B2C6F",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE G",
+      "route_long_name": "LIGNE G",
+      "route_short_name": "G",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "8A7101",
+      "route_desc": "fonctionne du lundi au vendredi hors vacances scolaires et jours fériés",
+      "route_id": "LIGNE H",
+      "route_long_name": "LIGNE H",
+      "route_short_name": "H",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "2C2B2D",
+      "route_desc": "fonctionne du lundi au vendredi, sauf jours fériés",
+      "route_id": "LIGNE M",
+      "route_long_name": "LIGNE M",
+      "route_short_name": "M",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    },
+    {
+      "agency_id": "MOVE",
+      "route_color": "1B4F72",
+      "route_desc": "fonctionne toute l'année du lundi au dimanche",
+      "route_id": "NAVETTE TGV",
+      "route_long_name": "NAVETTE TGV",
+      "route_short_name": "TGV",
+      "route_text_color": "FFFFFF",
+      "route_type": "3"
+    }
+  ],
+  "calendar": [
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "0",
+      "saturday": "0",
+      "service_id": "ANNUEL_D",
+      "start_date": "20260901",
+      "sunday": "1",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "0",
+      "saturday": "0",
+      "service_id": "SCOLAIRE_C",
+      "start_date": "20260901",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "1"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "1",
+      "saturday": "0",
+      "service_id": "SCOLAIRE_L",
+      "start_date": "20260901",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "0",
+      "saturday": "0",
+      "service_id": "SCOLAIRE_MJ",
+      "start_date": "20260901",
+      "sunday": "0",
+      "thursday": "1",
+      "tuesday": "1",
+      "wednesday": "0"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "0",
+      "saturday": "1",
+      "service_id": "SCOLAIRE_S",
+      "start_date": "20260901",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "1",
+      "monday": "0",
+      "saturday": "0",
+      "service_id": "SCOLAIRE_V",
+      "start_date": "20260901",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "1",
+      "saturday": "0",
+      "service_id": "VACANCES_LMCJ",
+      "start_date": "20261018",
+      "sunday": "0",
+      "thursday": "1",
+      "tuesday": "1",
+      "wednesday": "1"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "0",
+      "monday": "0",
+      "saturday": "1",
+      "service_id": "VACANCES_S",
+      "start_date": "20261018",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    },
+    {
+      "end_date": "20330831",
+      "friday": "1",
+      "monday": "0",
+      "saturday": "0",
+      "service_id": "VACANCES_V",
+      "start_date": "20261018",
+      "sunday": "0",
+      "thursday": "0",
+      "tuesday": "0",
+      "wednesday": "0"
+    }
+  ],
+  "calendarDates": [
+    {
+      "date": "20261101",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20261111",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20261225",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270101",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270329",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270501",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270506",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270508",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270517",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270714",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270815",
+      "exception_type": "1",
+      "service_id": "FERIE"
+    },
+    {
+      "date": "20270217",
+      "exception_type": "1",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270306",
+      "exception_type": "1",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261101",
+      "exception_type": "2",
+      "service_id": "ANNUEL_D"
+    },
+    {
+      "date": "20270815",
+      "exception_type": "2",
+      "service_id": "ANNUEL_D"
+    },
+    {
+      "date": "20261021",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20261028",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20261111",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20261223",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20261230",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270224",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270303",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270421",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270428",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270707",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270714",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270721",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270728",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270804",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270811",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270818",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20270825",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_C"
+    },
+    {
+      "date": "20261019",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20261026",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20261221",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20261228",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270222",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270301",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270419",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270426",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270517",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270705",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270712",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270719",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270726",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270802",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270809",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270816",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270823",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20270830",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_L"
+    },
+    {
+      "date": "20261020",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261022",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261027",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261029",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261222",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261224",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261229",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261231",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270223",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270225",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270302",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270304",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270420",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270422",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270427",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270429",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270506",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270706",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270708",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270713",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270715",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270720",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270722",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270727",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270729",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270803",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270805",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270810",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270812",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270817",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270819",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270824",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270826",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20270831",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_MJ"
+    },
+    {
+      "date": "20261024",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20261031",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20261226",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270102",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270227",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270306",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270424",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270501",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270508",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270710",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270717",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270724",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270731",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270807",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270814",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270821",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20270828",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_S"
+    },
+    {
+      "date": "20261023",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20261030",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20261225",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270101",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270226",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270305",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270423",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270430",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270709",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270716",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270723",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270730",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270806",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270813",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270820",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20270827",
+      "exception_type": "2",
+      "service_id": "SCOLAIRE_V"
+    },
+    {
+      "date": "20261102",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261103",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261104",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261105",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261109",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261110",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261111",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261112",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261116",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261117",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261118",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261119",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261123",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261124",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261125",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261126",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261130",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261201",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261202",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261203",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261207",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261208",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261209",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261210",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261214",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261215",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261216",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261217",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270104",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270105",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270106",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270107",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270111",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270112",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270113",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270114",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270118",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270119",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270120",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270121",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270125",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270126",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270127",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270128",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270201",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270202",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270203",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270204",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270208",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270209",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270210",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270211",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270215",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270216",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270217",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270218",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270308",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270309",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270310",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270311",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270315",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270316",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270317",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270318",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270322",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270323",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270324",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270325",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270329",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270330",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270331",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270401",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270405",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270406",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270407",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270408",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270412",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270413",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270414",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270415",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270503",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270504",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270505",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270506",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270510",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270511",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270512",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270513",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270517",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270518",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270519",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270520",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270524",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270525",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270526",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270527",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270531",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270601",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270602",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270603",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270607",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270608",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270609",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270610",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270614",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270615",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270616",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270617",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270621",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270622",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270623",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270624",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270628",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270629",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270630",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270701",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20270714",
+      "exception_type": "2",
+      "service_id": "VACANCES_LMCJ"
+    },
+    {
+      "date": "20261107",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261114",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261121",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261128",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261205",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261212",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261219",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270109",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270116",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270123",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270130",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270206",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270213",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270220",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270313",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270320",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270327",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270403",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270410",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270417",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270501",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270508",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270515",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270522",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270529",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270605",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270612",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270619",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270626",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20270703",
+      "exception_type": "2",
+      "service_id": "VACANCES_S"
+    },
+    {
+      "date": "20261106",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261113",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261120",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261127",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261204",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261211",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261218",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20261225",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270101",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270108",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270115",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270122",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270129",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270205",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270212",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270219",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270312",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270319",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270326",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270402",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270409",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270416",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270507",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270514",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270521",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270528",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270604",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270611",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270618",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270625",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    },
+    {
+      "date": "20270702",
+      "exception_type": "2",
+      "service_id": "VACANCES_V"
+    }
+  ],
+  "tripCount": 640,
+  "stopCount": 166,
+  "shapeAvailable": true
+}

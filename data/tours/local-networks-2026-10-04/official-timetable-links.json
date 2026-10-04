@@ -1,0 +1,68 @@
+[
+  {
+    "network": "move",
+    "page": "https://move-vendomois.fr/ligne/",
+    "pdfs": [
+      "https://move-vendomois.fr/wp-content/uploads/2026/08/NAVETTE-TGV-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/07/LIGNE-A-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/06/LIGNE-B-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/09/LIGNE-C-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/06/LIGNE-D-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/07/LIGNE-E-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/07/LIGNE-F-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/06/LIGNE-G-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/07/LIGNE-H-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/09/LIGNE-M-a-compter-du-09-09-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2026/09/LIGNE-ESAT-du-0109-au-111026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/03/LIGNE-7-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/03/LIGNE_8.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/03/LRS-09-VENDOME-BLOIS-a-compter-du-5-juillet-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/03/LRS-13-440-CHOUE-VENDOME-a-compter-du-1e-septembre-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/03/LIGNE-14-rentree-2026.pdf",
+      "https://move-vendomois.fr/wp-content/uploads/2024/03/LRC-492-CHATEAU-RENAULT-VENDOME-a-compter-du-1e-septembre-2026.pdf"
+    ]
+  },
+  {
+    "network": "fil-rouge",
+    "page": "https://www.ville-chateau-renault.fr/mon-quotidien/se-deplacer/bus-urbain-municipal/",
+    "pdfs": [
+      "https://www.ville-chateau-renault.fr/wp-content/uploads/2024/12/horaires-Transport-Urbain-5-janvier-2025.pdf",
+      "https://www.ville-chateau-renault.fr/wp-content/uploads/2026/09/Fil-Rouge-Horaires-a-partir-du-2-nov.-2026.modifie.pdf"
+    ]
+  },
+  {
+    "network": "blere",
+    "page": "https://www.cc-autourdechenonceaux.fr/actualites/navette-le-lien/",
+    "pdfs": [
+      "https://www.cc-autourdechenonceaux.fr/wp-content/uploads/2021/12/inforgraphie-urbanisme-CC-AutourdeChenonceaux-BAT-final-1.pdf",
+      "https://www.cc-autourdechenonceaux.fr/wp-content/uploads/2026/01/WEB_CALENDRIER-communes-2026_211025-1.pdf"
+    ]
+  },
+  {
+    "network": "loches",
+    "page": "https://www.lochessudtouraine.com/les-solutions-pour-se-deplacer-en-sud-touraine",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "network": "ogalo",
+    "page": "https://ogalo-saumurvaldeloire.fr/fiches_horaires/fiches-horaires-du-reseau-periurbain/",
+    "pdfs": [
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L1_horaires_hiver_2026-2408.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L2_horaires_hiver_2026-01-10-26v2.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L3_horaires_hiver_2026_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L4_horaires_hiver_2026-1009.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/07/L5_horaires_hiver_2026_Aleop417_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/07/L6_horaires_hiver_2026_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/07/L7_horaires_hiver_2026_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/08/L8_horaires_hiver_2026_RemiSO14-2408.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/07/L9_horaires_hiver_2026_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L10_horaires_hiver_2026_Aleop415-17-09-26.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/09/L11_horaires_hiver_2026-210926.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L12_horaires_hiver_2026-140926.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/07/L14_horaires_hiver_2026_Aleop404_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2026/07/L15_horaires_hiver_2026_Aleop416_BD.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L16_horaires_hiver_2026_Aleop406-2408.pdf",
+      "https://ogalo-saumurvaldeloire.fr/wp-content/uploads/2023/05/L17_horaires_hiver_2026_Aleop417_BD.pdf"
+    ]
+  }
+]

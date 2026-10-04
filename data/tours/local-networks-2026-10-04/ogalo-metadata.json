@@ -1,0 +1,9 @@
+{
+  "id": "6570a9e69397be0c85147efe",
+  "slug": "lignes-arrets-et-horaires-theorique-du-reseau-de-transport-gtfs-netex-saumur-val-de-loire-agglomeration",
+  "title": "Lignes, arrêts et horaires théorique du réseau de transport ( GTFS - Netex - Saumur Val de Loire Agglomération )",
+  "license": "odc-odbl",
+  "last_modified": "2023-12-07T16:21:50.639000+00:00",
+  "organization": "Région des Pays de la Loire",
+  "staticResourceUrl": "https://mobi-iti-pdl.okina.fr/static/mobiiti_saumur_val_de_loire/gtfs_imported-id_saumur.zip"
+}

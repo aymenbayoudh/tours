@@ -1,0 +1,486 @@
+[
+  {
+    "network": "move",
+    "routes": [
+      [
+        "A",
+        "LIGNE A"
+      ],
+      [
+        "B",
+        "LIGNE B"
+      ],
+      [
+        "C",
+        "LIGNE C"
+      ],
+      [
+        "D",
+        "LIGNE D"
+      ],
+      [
+        "E",
+        "LIGNE E"
+      ],
+      [
+        "ESAT",
+        "LIGNE ESAT"
+      ],
+      [
+        "F",
+        "LIGNE F"
+      ],
+      [
+        "G",
+        "LIGNE G"
+      ],
+      [
+        "H",
+        "LIGNE H"
+      ],
+      [
+        "M",
+        "LIGNE M"
+      ],
+      [
+        "TGV",
+        "NAVETTE TGV"
+      ]
+    ],
+    "stops": 166,
+    "license": "lov2",
+    "calendarRange": [
+      "20260901",
+      "20330831"
+    ],
+    "url": "https://api.pysae.com/api/v4/groups/vendome/gtfs/pub"
+  },
+  {
+    "network": "azalys",
+    "routes": [
+      [
+        "L18",
+        "Averdon - Blois"
+      ],
+      [
+        "D",
+        "Blois 2 - Béjun"
+      ],
+      [
+        "F",
+        "Blois 2 - Pinçonnière"
+      ],
+      [
+        "E",
+        "Blois Gare Routière - Gérard Dubois"
+      ],
+      [
+        "S14",
+        "Béjun - Pôle d'Echanges Scolaire"
+      ],
+      [
+        "S57",
+        "Candé-sur-Beuvron - Onzain Collège"
+      ],
+      [
+        "S58",
+        "Candé-sur-Beuvron - Onzain Collège"
+      ],
+      [
+        "L30",
+        "Cellettes - Blois"
+      ],
+      [
+        "S70",
+        "Cellettes - Blois Collège Vienne"
+      ],
+      [
+        "S71",
+        "Cellettes - Blois Collège Vienne"
+      ],
+      [
+        "S74",
+        "Chailles - Blois Collège Vienne"
+      ],
+      [
+        "S55",
+        "Chambon-sur-Cisse - Onzain Collège"
+      ],
+      [
+        "S60-1",
+        "Champigny - Averdon - Ecole Marolles"
+      ],
+      [
+        "H",
+        "Champlouet - Marivaux"
+      ],
+      [
+        "S59",
+        "Chaumont-sur-Loire > Onzain Collège"
+      ],
+      [
+        "L28",
+        "Cheverny - Blois"
+      ],
+      [
+        "S64",
+        "Circuit Primaire - Mesland-Veuves-Monteaux"
+      ],
+      [
+        "S61",
+        "Circuit Primaire - SIVOS - Landes-le-Gaulois"
+      ],
+      [
+        "S62",
+        "Circuit Primaire - Santenay - Herbault"
+      ],
+      [
+        "S63",
+        "Circuit Primaire - Villerbon - Ménars"
+      ],
+      [
+        "S67-1",
+        "Circuit Primaire 1 - Veuzain-sur-Loire"
+      ],
+      [
+        "S68-1",
+        "Circuit Primaire 1 - Vineuil"
+      ],
+      [
+        "S67-2",
+        "Circuit Primaire 2 - Veuzain-sur-Loire"
+      ],
+      [
+        "S68-2",
+        "Circuit Primaire 2 - Vineuil"
+      ],
+      [
+        "S69",
+        "Circuit Primaire Cour-Cheverny"
+      ],
+      [
+        "S65",
+        "Circuit Primaire St-Bohaire - St-Lubin"
+      ],
+      [
+        "S66",
+        "Circuit Primaire Valencisse"
+      ],
+      [
+        "L29",
+        "Cormeray - Cellettes"
+      ],
+      [
+        "S56",
+        "Coulanges - Onzain Collège"
+      ],
+      [
+        "SOIR",
+        "Flexo Soir - Blois PS 2026-09"
+      ],
+      [
+        "S52",
+        "Herbault - Onzain Collège"
+      ],
+      [
+        "S12",
+        "Hôtel Pasquier - Leclerc"
+      ],
+      [
+        "S10",
+        "Kennedy - Taille aux Moines"
+      ],
+      [
+        "L23-2",
+        "Lancôme - Blois"
+      ],
+      [
+        "S13",
+        "Les Grouëts - Gare Parvis"
+      ],
+      [
+        "L32",
+        "Les Montils - Blois"
+      ],
+      [
+        "S73",
+        "Les Montils - Blois Collège Vienne"
+      ],
+      [
+        "S75",
+        "Les Montils - Blois Collège Vienne"
+      ],
+      [
+        "Rém16",
+        "Ligne Rémi 16 - Ménars - Blois"
+      ],
+      [
+        "S60-2",
+        "Marolles - Averdon - Champigny Bourg"
+      ],
+      [
+        "S51",
+        "Mesland - Onzain Collège"
+      ],
+      [
+        "L31",
+        "Monthou-sur-Bièvre - Blois"
+      ],
+      [
+        "NCH2",
+        "Navette Châteaux - Blois - Beauregard - Cheverny"
+      ],
+      [
+        "NCH1",
+        "Navette Châteaux - Blois - Onzain Gare - Chaumont"
+      ],
+      [
+        "N2",
+        "Navette centre-ville via Foix"
+      ],
+      [
+        "N1",
+        "Navette centre-ville via Parc Expo"
+      ],
+      [
+        "S54",
+        "Orchaise - Onzain Collège"
+      ],
+      [
+        "S11",
+        "Pinçonnière - Limousin"
+      ],
+      [
+        "A",
+        "Polyclinique - Gâts de Coeur"
+      ],
+      [
+        "S2",
+        "Pôle d'échanges scolaires - Collége Vienne"
+      ],
+      [
+        "S1",
+        "Pôle d'échanges scolaires - Lycée  Claudel"
+      ],
+      [
+        "L24",
+        "Rilly-sur-Loire - Blois"
+      ],
+      [
+        "L19",
+        "Saint-Bohaire - Blois"
+      ],
+      [
+        "L22",
+        "Saint-Cyr-du-Gault - Blois"
+      ],
+      [
+        "S53",
+        "Saint-Etienne-des-Guérêts - Onzain Collège"
+      ],
+      [
+        "S40",
+        "Saint-Gervais-la-F. - Collège M. Carné"
+      ],
+      [
+        "L15",
+        "Saint-Gervais-la-Forêt - Blois"
+      ],
+      [
+        "S43",
+        "Saint-Gervais-la-Forêt - Collège M. Carné"
+      ],
+      [
+        "S44",
+        "Saint-Gervais-la-Forêt - Collège M. Carné"
+      ],
+      [
+        "L23-1",
+        "Saint-Lubin-en-Vergonnois - Blois"
+      ],
+      [
+        "B",
+        "Sauvageau - Hôpital"
+      ],
+      [
+        "S72",
+        "Seur - Blois Collège Vienne"
+      ],
+      [
+        "C",
+        "Taille aux Moines - Grain d'Or"
+      ],
+      [
+        "L25",
+        "Veuves - Blois Lycée Claudel"
+      ],
+      [
+        "L21",
+        "Villefrancoeur - Blois"
+      ],
+      [
+        "L20",
+        "Villefrancoeur - Marolles - Blois"
+      ],
+      [
+        "L26",
+        "Villerbon - Blois"
+      ],
+      [
+        "L16-1",
+        "Vineuil - Blois"
+      ],
+      [
+        "L16-2",
+        "Vineuil - Blois"
+      ],
+      [
+        "L17",
+        "Vineuil - Blois"
+      ],
+      [
+        "S41",
+        "Vineuil - Collège Blois Vienne"
+      ],
+      [
+        "S42",
+        "Vineuil - Collège Notre Dame Vineuil"
+      ],
+      [
+        "G",
+        "Émile Roux - Blois Gare Routière"
+      ]
+    ],
+    "stops": 1165,
+    "license": "odc-odbl",
+    "calendarRange": [
+      "20260929",
+      "20261018"
+    ],
+    "url": "https://fr.ftp.opendatasoft.com/centrevaldeloire/OKINAGTFS/GTFS_AO/BLOIS.zip"
+  },
+  {
+    "network": "cvl",
+    "routes": [
+      [
+        "A",
+        "Sitravel Ligne A"
+      ]
+    ],
+    "stops": 92,
+    "license": "lov2",
+    "calendarRange": [
+      "20260831",
+      "20280831"
+    ],
+    "url": "https://static.data.gouv.fr/resources/reseau-cvlmobilite-plan-de-transport-theorique-ligne-a-format-gtfs/20260830-074645/cvlm-lignea-31082026.zip"
+  },
+  {
+    "network": "amboise",
+    "routes": [
+      [
+        "Nav1",
+        "Gare SNCF <> Pôle Emploi <> Nazelles"
+      ]
+    ],
+    "stops": 47,
+    "license": "odc-odbl",
+    "calendarRange": [
+      "20260912",
+      "20261231"
+    ],
+    "url": "https://fr.ftp.opendatasoft.com/centrevaldeloire/OKINAGTFS/GTFS_AO/AMBOISE.zip"
+  },
+  {
+    "network": "ogalo",
+    "routes": [
+      [
+        "L11",
+        "ALLONNES - SAUMUR"
+      ],
+      [
+        "L3A",
+        "ANTOIGNE - SAUMUR"
+      ],
+      [
+        "L12",
+        "BRAIN SUR ALLONNES - SAUMUR"
+      ],
+      [
+        "L15(416/436)",
+        "COURLEON - SAUMUR / ALEOP 416-436 NOYANT - SAUMUR"
+      ],
+      [
+        "L16(406)",
+        "DOUE LA FONTAINE - SAUMUR / ALEOP 406 CHOLET - SAUMUR"
+      ],
+      [
+        "B",
+        "ECOPARC - GARE - CHAMP BLANCHARD"
+      ],
+      [
+        "A",
+        "ECOPARC - GARE - HOPITAL - MARECHAUX"
+      ],
+      [
+        "L1",
+        "FONTEVRAUD L ABBAYE - SAUMUR"
+      ],
+      [
+        "L9",
+        "LA BREILLE LES PINS - SAUMUR"
+      ],
+      [
+        "L14(404)",
+        "LES ROSIERS - SAUMUR / ALEOP 404 ANGERS ST MARTIN GENNES SAUMUR"
+      ],
+      [
+        "L10(415)",
+        "LONGUE_VIVY_ NEUILLE_SAUMUR/ALEOP 415"
+      ],
+      [
+        "L2",
+        "LOUDUN - ÉPIEDS - SAUMUR"
+      ],
+      [
+        "C",
+        "LOUIS BLERIOT - CENTRE-VILLE"
+      ],
+      [
+        "D",
+        "OFFARD - MILLOCHEAU - CHATEAU DE POCE"
+      ],
+      [
+        "L7",
+        "ROU MARSON - SAUMUR"
+      ],
+      [
+        "L17(417)",
+        "ST GEORGES - GENNES - SAUMUR / ALEOP 417 ANGERS SAUMUR"
+      ],
+      [
+        "L4",
+        "ST MACAIRE-DU-BOIS - SAUMUR"
+      ],
+      [
+        "L8",
+        "VARENNES SUR LOIRE - SAUMUR"
+      ],
+      [
+        "L6",
+        "VAUDELNAY - BROSSAY - CIZAY - COURCHAMPS -SAUMUR"
+      ],
+      [
+        "L5",
+        "VERRIE - SAUMUR"
+      ]
+    ],
+    "stops": 1080,
+    "license": "odc-odbl",
+    "calendarRange": [
+      "20260405",
+      "20260831"
+    ],
+    "url": "https://mobi-iti-pdl.okina.fr/static/mobiiti_saumur_val_de_loire/gtfs_imported-id_saumur.zip"
+  }
+]

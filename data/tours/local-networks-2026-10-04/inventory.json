@@ -1,0 +1,962 @@
+{
+  "surveyDate": "2026-10-04",
+  "scope": "Services locaux réguliers ; cars régionaux Centre-Val de Loire reportés",
+  "runtimeIntegration": false,
+  "aomReference": "https://transport.data.gouv.fr/aoms",
+  "epcis": [
+    {
+      "code": "200030385",
+      "name": "CA de Blois « Agglopolys »",
+      "aom": "CA de Blois Agglopolys",
+      "networks": [
+        "azalys"
+      ]
+    },
+    {
+      "code": "200043065",
+      "name": "CC du Val d’Amboise",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": [
+        "amboise"
+      ]
+    },
+    {
+      "code": "200043081",
+      "name": "CC Chinon, Vienne et Loire",
+      "aom": "CC Chinon, Vienne et Loire",
+      "networks": [
+        "cvl"
+      ]
+    },
+    {
+      "code": "200071587",
+      "name": "CC Loches Sud Touraine",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": [
+        "le-lien-loches"
+      ]
+    },
+    {
+      "code": "200071876",
+      "name": "CA Saumur Val de Loire",
+      "aom": "CA Saumur Val de Loire",
+      "networks": [
+        "ogalo"
+      ]
+    },
+    {
+      "code": "200072072",
+      "name": "CA Territoires Vendômois",
+      "aom": "CA Territoires Vendômois",
+      "networks": [
+        "move"
+      ]
+    },
+    {
+      "code": "200072668",
+      "name": "CC Touraine Val de Vienne",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": []
+    },
+    {
+      "code": "200072650",
+      "name": "CC Touraine Vallée de l’Indre",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": []
+    },
+    {
+      "code": "200072981",
+      "name": "CC Touraine Ouest Val de Loire",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": [
+        "cvl"
+      ]
+    },
+    {
+      "code": "200073161",
+      "name": "CC Touraine-Est Vallées",
+      "aom": "SMT dans trois communes ; Région Centre-Val de Loire dans les autres",
+      "networks": [
+        "fil-bleu"
+      ]
+    },
+    {
+      "code": "200073237",
+      "name": "CC de Gâtine-Racan",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": []
+    },
+    {
+      "code": "243700499",
+      "name": "CC du Castelrenaudais",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": [
+        "fil-rouge"
+      ]
+    },
+    {
+      "code": "243700754",
+      "name": "Tours Métropole Val de Loire",
+      "aom": "Syndicat des Mobilités de Touraine",
+      "networks": [
+        "fil-bleu"
+      ]
+    },
+    {
+      "code": "243700820",
+      "name": "CC Autour de Chenonceaux Bléré-Val de Cher",
+      "aom": "Région Centre-Val de Loire par substitution",
+      "networks": [
+        "le-lien-blere"
+      ]
+    }
+  ],
+  "networks": [
+    {
+      "id": "move",
+      "originalFile": "move.zip",
+      "url": "https://api.pysae.com/api/v4/groups/vendome/gtfs/pub",
+      "sha256": "f6cc1862e60301822c396e7a3a702aff3e0cecf9b227b9ccaf0bb0eb7014208e",
+      "bytes": 304917,
+      "license": "lov2",
+      "calendarRange": [
+        "20260901",
+        "20330831"
+      ],
+      "stopRecords": 166,
+      "routeDecisions": [
+        {
+          "routeId": "LIGNE A",
+          "code": "A",
+          "name": "LIGNE A",
+          "decision": "candidate",
+          "reason": "Ligne régulière toute l’année ; ne pas supprimer ses calendriers SCOLAIRE, variantes normales de période."
+        },
+        {
+          "routeId": "LIGNE B",
+          "code": "B",
+          "name": "LIGNE B",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE C",
+          "code": "C",
+          "name": "LIGNE C",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE D",
+          "code": "D",
+          "name": "LIGNE D",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE E",
+          "code": "E",
+          "name": "LIGNE E",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE ESAT",
+          "code": "ESAT",
+          "name": "LIGNE ESAT",
+          "decision": "review-access",
+          "reason": "Mention PMR dans le GTFS ; ne pas supposer une desserte générale sans vérifier les conditions."
+        },
+        {
+          "routeId": "LIGNE F",
+          "code": "F",
+          "name": "LIGNE F",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE G",
+          "code": "G",
+          "name": "LIGNE G",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE H",
+          "code": "H",
+          "name": "LIGNE H",
+          "decision": "exclude-school-period-only",
+          "reason": "Desserte limitée à la période scolaire, exclue de la sélection générale ; B/C corroborées par PDF, autres par route_desc GTFS."
+        },
+        {
+          "routeId": "LIGNE M",
+          "code": "M",
+          "name": "LIGNE M",
+          "decision": "review-courses",
+          "reason": "Ligne mixte : distinguer courses régulières, scolaires et sur réservation en vacances dans le PDF."
+        },
+        {
+          "routeId": "NAVETTE TGV",
+          "code": "TGV",
+          "name": "NAVETTE TGV",
+          "decision": "candidate",
+          "reason": "Ligne régulière toute l’année ; ne pas supprimer ses calendriers SCOLAIRE, variantes normales de période."
+        }
+      ]
+    },
+    {
+      "id": "azalys",
+      "originalFile": "azalys.zip",
+      "url": "https://fr.ftp.opendatasoft.com/centrevaldeloire/OKINAGTFS/GTFS_AO/BLOIS.zip",
+      "sha256": "4324f391f02d00f0f0a901b9c850f73e9b376e94465d21c09df5ffb9ca08a26c",
+      "bytes": 1246142,
+      "license": "odc-odbl",
+      "calendarRange": [
+        "20260929",
+        "20261018"
+      ],
+      "stopRecords": 1165,
+      "routeDecisions": [
+        {
+          "routeId": "L18",
+          "code": "L18",
+          "name": "Averdon - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "D",
+          "code": "D",
+          "name": "Blois 2 - Béjun",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "F",
+          "code": "F",
+          "name": "Blois 2 - Pinçonnière",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "E",
+          "code": "E",
+          "name": "Blois Gare Routière - Gérard Dubois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S14",
+          "code": "S14",
+          "name": "Béjun - Pôle d'Echanges Scolaire",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S57",
+          "code": "S57",
+          "name": "Candé-sur-Beuvron - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S58",
+          "code": "S58",
+          "name": "Candé-sur-Beuvron - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L30",
+          "code": "L30",
+          "name": "Cellettes - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S70",
+          "code": "S70",
+          "name": "Cellettes - Blois Collège Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S71",
+          "code": "S71",
+          "name": "Cellettes - Blois Collège Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S74",
+          "code": "S74",
+          "name": "Chailles - Blois Collège Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S55",
+          "code": "S55",
+          "name": "Chambon-sur-Cisse - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S601",
+          "code": "S60-1",
+          "name": "Champigny - Averdon - Ecole Marolles",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "H",
+          "code": "H",
+          "name": "Champlouet - Marivaux",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S59",
+          "code": "S59",
+          "name": "Chaumont-sur-Loire > Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L28",
+          "code": "L28",
+          "name": "Cheverny - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S64",
+          "code": "S64",
+          "name": "Circuit Primaire - Mesland-Veuves-Monteaux",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S61",
+          "code": "S61",
+          "name": "Circuit Primaire - SIVOS - Landes-le-Gaulois",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S62",
+          "code": "S62",
+          "name": "Circuit Primaire - Santenay - Herbault",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S63",
+          "code": "S63",
+          "name": "Circuit Primaire - Villerbon - Ménars",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S671",
+          "code": "S67-1",
+          "name": "Circuit Primaire 1 - Veuzain-sur-Loire",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S681",
+          "code": "S68-1",
+          "name": "Circuit Primaire 1 - Vineuil",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S672",
+          "code": "S67-2",
+          "name": "Circuit Primaire 2 - Veuzain-sur-Loire",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S682",
+          "code": "S68-2",
+          "name": "Circuit Primaire 2 - Vineuil",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S69",
+          "code": "S69",
+          "name": "Circuit Primaire Cour-Cheverny",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S65",
+          "code": "S65",
+          "name": "Circuit Primaire St-Bohaire - St-Lubin",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S66",
+          "code": "S66",
+          "name": "Circuit Primaire Valencisse",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L29",
+          "code": "L29",
+          "name": "Cormeray - Cellettes",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S56",
+          "code": "S56",
+          "name": "Coulanges - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "SOIR",
+          "code": "SOIR",
+          "name": "Flexo Soir - Blois PS 2026-09",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S52",
+          "code": "S52",
+          "name": "Herbault - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S12",
+          "code": "S12",
+          "name": "Hôtel Pasquier - Leclerc",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S10",
+          "code": "S10",
+          "name": "Kennedy - Taille aux Moines",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L232",
+          "code": "L23-2",
+          "name": "Lancôme - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S13",
+          "code": "S13",
+          "name": "Les Grouëts - Gare Parvis",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L32",
+          "code": "L32",
+          "name": "Les Montils - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S73",
+          "code": "S73",
+          "name": "Les Montils - Blois Collège Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S75",
+          "code": "S75",
+          "name": "Les Montils - Blois Collège Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "RE16",
+          "code": "Rém16",
+          "name": "Ligne Rémi 16 - Ménars - Blois",
+          "decision": "defer-regional",
+          "reason": "Rémi régional traité au prochain lot."
+        },
+        {
+          "routeId": "S602",
+          "code": "S60-2",
+          "name": "Marolles - Averdon - Champigny Bourg",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S51",
+          "code": "S51",
+          "name": "Mesland - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L31",
+          "code": "L31",
+          "name": "Monthou-sur-Bièvre - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "NCH2",
+          "code": "NCH2",
+          "name": "Navette Châteaux - Blois - Beauregard - Cheverny",
+          "decision": "exclude",
+          "reason": "Navette touristique saisonnière hors lot régulier."
+        },
+        {
+          "routeId": "NCH1",
+          "code": "NCH1",
+          "name": "Navette Châteaux - Blois - Onzain Gare - Chaumont",
+          "decision": "exclude",
+          "reason": "Navette touristique saisonnière hors lot régulier."
+        },
+        {
+          "routeId": "N2",
+          "code": "N2",
+          "name": "Navette centre-ville via Foix",
+          "decision": "candidate",
+          "reason": "Navette de centre-ville de journée : conserver malgré le préfixe N."
+        },
+        {
+          "routeId": "N1",
+          "code": "N1",
+          "name": "Navette centre-ville via Parc Expo",
+          "decision": "candidate",
+          "reason": "Navette de centre-ville de journée : conserver malgré le préfixe N."
+        },
+        {
+          "routeId": "S54",
+          "code": "S54",
+          "name": "Orchaise - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S11",
+          "code": "S11",
+          "name": "Pinçonnière - Limousin",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "A",
+          "code": "A",
+          "name": "Polyclinique - Gâts de Coeur",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S2",
+          "code": "S2",
+          "name": "Pôle d'échanges scolaires - Collége Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S1",
+          "code": "S1",
+          "name": "Pôle d'échanges scolaires - Lycée  Claudel",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L24",
+          "code": "L24",
+          "name": "Rilly-sur-Loire - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L19",
+          "code": "L19",
+          "name": "Saint-Bohaire - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L22",
+          "code": "L22",
+          "name": "Saint-Cyr-du-Gault - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S53",
+          "code": "S53",
+          "name": "Saint-Etienne-des-Guérêts - Onzain Collège",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S40",
+          "code": "S40",
+          "name": "Saint-Gervais-la-F. - Collège M. Carné",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L15",
+          "code": "L15",
+          "name": "Saint-Gervais-la-Forêt - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S43",
+          "code": "S43",
+          "name": "Saint-Gervais-la-Forêt - Collège M. Carné",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S44",
+          "code": "S44",
+          "name": "Saint-Gervais-la-Forêt - Collège M. Carné",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "L231",
+          "code": "L23-1",
+          "name": "Saint-Lubin-en-Vergonnois - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "B",
+          "code": "B",
+          "name": "Sauvageau - Hôpital",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S72",
+          "code": "S72",
+          "name": "Seur - Blois Collège Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "C",
+          "code": "C",
+          "name": "Taille aux Moines - Grain d'Or",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L25",
+          "code": "L25",
+          "name": "Veuves - Blois Lycée Claudel",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L21",
+          "code": "L21",
+          "name": "Villefrancoeur - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L20",
+          "code": "L20",
+          "name": "Villefrancoeur - Marolles - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L26",
+          "code": "L26",
+          "name": "Villerbon - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L161",
+          "code": "L16-1",
+          "name": "Vineuil - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L162",
+          "code": "L16-2",
+          "name": "Vineuil - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "L17",
+          "code": "L17",
+          "name": "Vineuil - Blois",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        },
+        {
+          "routeId": "S41",
+          "code": "S41",
+          "name": "Vineuil - Collège Blois Vienne",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "S42",
+          "code": "S42",
+          "name": "Vineuil - Collège Notre Dame Vineuil",
+          "decision": "exclude",
+          "reason": "Circuit scolaire ou Flexo Soir."
+        },
+        {
+          "routeId": "G",
+          "code": "G",
+          "name": "Émile Roux - Blois Gare Routière",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        }
+      ]
+    },
+    {
+      "id": "cvl",
+      "originalFile": "cvl.zip",
+      "url": "https://static.data.gouv.fr/resources/reseau-cvlmobilite-plan-de-transport-theorique-ligne-a-format-gtfs/20260830-074645/cvlm-lignea-31082026.zip",
+      "sha256": "0c5b34b0328b79bcde33c2078d641324afda730bd1e44fa2db842029f89399dd",
+      "bytes": 56200,
+      "license": "lov2",
+      "calendarRange": [
+        "20260831",
+        "20280831"
+      ],
+      "stopRecords": 92,
+      "routeDecisions": [
+        {
+          "routeId": "A",
+          "code": "A",
+          "name": "Sitravel Ligne A",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        }
+      ]
+    },
+    {
+      "id": "amboise",
+      "originalFile": "amboise.zip",
+      "url": "https://fr.ftp.opendatasoft.com/centrevaldeloire/OKINAGTFS/GTFS_AO/AMBOISE.zip",
+      "sha256": "5dfa44eec6e9c4b47f9b7c6d7be82cc1f06193e497e44a7af44908664fe76280",
+      "bytes": 48080,
+      "license": "odc-odbl",
+      "calendarRange": [
+        "20260912",
+        "20261231"
+      ],
+      "stopRecords": 47,
+      "routeDecisions": [
+        {
+          "routeId": "Nav1",
+          "code": "Nav1",
+          "name": "Gare SNCF <> Pôle Emploi <> Nazelles",
+          "decision": "candidate",
+          "reason": "Service régulier identifié ; validation des courses avant intégration."
+        }
+      ]
+    },
+    {
+      "id": "ogalo",
+      "originalFile": "ogalo.zip",
+      "url": "https://mobi-iti-pdl.okina.fr/static/mobiiti_saumur_val_de_loire/gtfs_imported-id_saumur.zip",
+      "sha256": "15c234364c88343ddf27dc20813c7dddbccfbcb5149eafd5b2f2a937ab084229",
+      "bytes": 727697,
+      "license": "odc-odbl",
+      "calendarRange": [
+        "20260405",
+        "20260831"
+      ],
+      "stopRecords": 1080,
+      "routeDecisions": [
+        {
+          "routeId": "111",
+          "code": "L11",
+          "name": "ALLONNES - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "60",
+          "code": "L3A",
+          "name": "ANTOIGNE - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "41",
+          "code": "L12",
+          "name": "BRAIN SUR ALLONNES - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "148",
+          "code": "L15(416/436)",
+          "name": "COURLEON - SAUMUR / ALEOP 416-436 NOYANT - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "46",
+          "code": "L16(406)",
+          "name": "DOUE LA FONTAINE - SAUMUR / ALEOP 406 CHOLET - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "201",
+          "code": "B",
+          "name": "ECOPARC - GARE - CHAMP BLANCHARD",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "200",
+          "code": "A",
+          "name": "ECOPARC - GARE - HOPITAL - MARECHAUX",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "37",
+          "code": "L1",
+          "name": "FONTEVRAUD L ABBAYE - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "71",
+          "code": "L9",
+          "name": "LA BREILLE LES PINS - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "43",
+          "code": "L14(404)",
+          "name": "LES ROSIERS - SAUMUR / ALEOP 404 ANGERS ST MARTIN GENNES SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "38",
+          "code": "L10(415)",
+          "name": "LONGUE_VIVY_ NEUILLE_SAUMUR/ALEOP 415",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "48",
+          "code": "L2",
+          "name": "LOUDUN - ÉPIEDS - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "202",
+          "code": "C",
+          "name": "LOUIS BLERIOT - CENTRE-VILLE",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "203",
+          "code": "D",
+          "name": "OFFARD - MILLOCHEAU - CHATEAU DE POCE",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "69",
+          "code": "L7",
+          "name": "ROU MARSON - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "2",
+          "code": "L17(417)",
+          "name": "ST GEORGES - GENNES - SAUMUR / ALEOP 417 ANGERS SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "62",
+          "code": "L4",
+          "name": "ST MACAIRE-DU-BOIS - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "70",
+          "code": "L8",
+          "name": "VARENNES SUR LOIRE - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "67",
+          "code": "L6",
+          "name": "VAUDELNAY - BROSSAY - CIZAY - COURCHAMPS -SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        },
+        {
+          "routeId": "65",
+          "code": "L5",
+          "name": "VERRIE - SAUMUR",
+          "decision": "blocked-expired-feed",
+          "reason": "GTFS expiré le 31/08/2026 ; utiliser les nouvelles fiches horaires pour reconstruire, pas ce fichier dans le calcul."
+        }
+      ]
+    },
+    {
+      "id": "fil-rouge",
+      "page": "https://www.ville-chateau-renault.fr/mon-quotidien/se-deplacer/bus-urbain-municipal/",
+      "referenceFile": "fil-rouge-actuel.pdf",
+      "decision": "prepare-from-document",
+      "license": "Pas de licence ouverte explicite identifiée pour ces documents",
+      "note": "Horaire actuel jusqu’au 30/10 ; nouvelle version distincte à partir du 02/11/2026."
+    },
+    {
+      "id": "le-lien-blere",
+      "page": "https://www.cc-autourdechenonceaux.fr/actualites/navette-le-lien/",
+      "referenceFile": "blere-horaires.png",
+      "decision": "prepare-from-document",
+      "license": "Pas de licence ouverte explicite identifiée pour ces documents",
+      "note": "Navette annuelle lundi–vendredi sans réservation ; horaires et tracé à transcrire."
+    },
+    {
+      "id": "le-lien-loches",
+      "page": "https://loches-valdeloire.com/patrimoine/a-plus-dans-lbus/",
+      "referenceFile": "loches-plan.png",
+      "decision": "prepare-from-document",
+      "license": "Pas de licence ouverte explicite identifiée pour ces documents",
+      "note": "Deux boucles lundi–vendredi ; horaires complets à récupérer avant reconstruction."
+    },
+    {
+      "id": "fil-bleu",
+      "decision": "already-integrated",
+      "page": "https://transport.data.gouv.fr/datasets/fil-bleu-syndicat-des-mobilites-gtfs-gtfs-rt"
+    }
+  ]
+}
