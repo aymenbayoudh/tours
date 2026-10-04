@@ -173,7 +173,12 @@ for(let k=0;k<reference.length;k++){
 }
 // 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below any user-facing precision.
 reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch'));
-for(const [n,state] of d.routeStates.entries())if(state.routeId==='TER P21')check(!Number.isFinite(model.distances[n]),'Suspended P21 must not be routable');
+const p21States=d.routeStates.map((state,n)=>[state,n]).filter(([state])=>state.routeId==='TER P21').map(([,n])=>n);
+check(p21States.length>0,'P21 fallback route states missing');
+check(p21States.some(n=>Number.isFinite(model.distances[n])),'P21 must be routable from Tours');
+const chinonIndex=d.stations.findIndex(s=>s.name==='Chinon');
+check(chinonIndex>=0,'Chinon station missing');
+check(d.boardingStates[chinonIndex].some(n=>d.routeStates[n].routeId==='TER P21'),'P21 boarding missing at Chinon');
 const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
 
