@@ -32,7 +32,7 @@ d.stations.forEach((station,index)=>{
   group.push(index); parentGroups.set(station.parentStop,group);
 });
 check([...parentGroups.values()].some(group=>group.length>=2),'Opposite/related physical bus stops were unexpectedly merged');
-let sameCodeChanges=0,crossMode=0,artificialTerPreferenceEdges=0,redundantSpToursPreferenceEdges=0,sameRouteBlockedEdges=0,sameTerContinuationEdges=0;
+let sameCodeChanges=0,crossMode=0,artificialTerPreferenceEdges=0,sameNextRailBlockedEdges=0,sameRouteBlockedEdges=0,sameTerContinuationEdges=0;
 const alightHub=Array.from({length:d.stations.length},()=>[]);
 const boardHub=Array.from({length:d.stations.length},()=>[]);
 d.routeStates.forEach((state,index)=>{
@@ -98,6 +98,7 @@ for(let i=0;i<d.stations.length;i++){
     const catchUpRail=previous!==undefined&&targetPattern?.stops.slice(0,targetPos).includes(previous);
     if(sameNextRail||catchUpRail){
       check(!edge,sameNextRail?'Do not change TER when both services have the same next station':'Do not catch a rail service already boardable at the preceding stop');
+      if(sameNextRail)sameNextRailBlockedEdges++;
       continue;
     }
     check(Boolean(edge),'Missing same-stop route interchange');
@@ -115,19 +116,12 @@ for(let i=0;i<d.stations.length;i++){
       && [firstFamily,secondFamily].includes('P')
       && [firstFamily,secondFamily].includes('K')
     );
-    const redundantSpTours=Boolean(
-      i===spdcIndex
-      && nextStopFor(a,i)===toursIndex
-      && nextStopFor(b,i)===toursIndex
-    );
     let expected=0;
-    if(redundantSpTours) expected=2;
-    else if(artificialTer) expected=2;
+    if(artificialTer) expected=2;
     else if(pkNeutral) expected=0;
     else if(a.routeId&&b.routeId&&a.routeId!==b.routeId) expected=1;
-    check((Number(edge[3])||0)===expected,'Wrong weighted comfort-transfer metadata: '+JSON.stringify({station:d.stations[i].name,from:a.routeId,to:b.routeId,fromMode:firstMode,toMode:secondMode,fromPattern:a.pattern,toPattern:b.pattern,actual:Number(edge[3])||0,expected,redundantSpTours}));
+    check((Number(edge[3])||0)===expected,'Wrong weighted comfort-transfer metadata: '+JSON.stringify({station:d.stations[i].name,from:a.routeId,to:b.routeId,fromMode:firstMode,toMode:secondMode,fromPattern:a.pattern,toPattern:b.pattern,actual:Number(edge[3])||0,expected}));
     if(artificialTer)artificialTerPreferenceEdges++;
-    if(redundantSpTours&&!artificialTer)redundantSpToursPreferenceEdges++;
   }
   for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
     const x=d.routeStates[a],y=d.routeStates[b];
@@ -144,7 +138,7 @@ for(let i=0;i<d.stations.length;i++){
 check(artificialTerPreferenceEdges>0,'No artificial TER stitching preference edges found');
 check(sameTerContinuationEdges===0,'Free switching between TER profiles must be absent');
 check(sameRouteBlockedEdges>0,'No same-line reboarding candidates were checked');
-check(redundantSpToursPreferenceEdges>0,'No redundant Saint-Pierre→Tours cross-route preference edges found');
+check(sameNextRailBlockedEdges>0,'No same-next-station rail transfer candidates were blocked');
 
 // The exception must remain possible: a train terminating at Saint-Pierre (or
 // heading elsewhere) may legitimately connect to the NAVETTE/another TER for Tours.
@@ -409,7 +403,7 @@ const fretevalModel=buildTravelModel(d,freteval.point,true);
 const fretevalDruye=describeJourney(d,fretevalModel,station('Druye').point);
 check(!fretevalDruye.legs.some(leg=>leg.routeId==='TRAM A'),'Fréteval→Druye must not use TRAM A as a comfort-penalty detour: '+JSON.stringify(fretevalDruye.legs.map(l=>({route:l.routeId,from:d.stations[l.from].name,to:d.stations[l.to].name,minutes:l.minutes}))));
 
-const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,artificialTerPreferenceEdges,redundantSpToursPreferenceEdges,sameRouteBlockedEdges,sameTerContinuationEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
+const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,artificialTerPreferenceEdges,sameNextRailBlockedEdges,sameRouteBlockedEdges,sameTerContinuationEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
 
 // Multipliers apply to each boarding, while observed in-vehicle times stay intact.
