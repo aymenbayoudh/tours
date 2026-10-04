@@ -3,13 +3,16 @@
 // the observed stop sequence and relative segment times.
 class MinHeap {
   constructor() { this.items = []; }
+  static before(a, b) {
+    return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
+  }
   push(item) {
     const a = this.items;
     a.push(item);
     let i = a.length - 1;
     while (i > 0) {
       const p = (i - 1) >> 1;
-      if (a[p][0] <= item[0]) break;
+      if (!MinHeap.before(item, a[p])) break;
       a[i] = a[p];
       i = p;
     }
@@ -24,8 +27,8 @@ class MinHeap {
       let i = 0;
       while (i * 2 + 1 < a.length) {
         let c = i * 2 + 1;
-        if (c + 1 < a.length && a[c + 1][0] < a[c][0]) c += 1;
-        if (a[c][0] >= last[0]) break;
+        if (c + 1 < a.length && MinHeap.before(a[c + 1], a[c])) c += 1;
+        if (!MinHeap.before(a[c], last)) break;
         a[i] = a[c];
         i = c;
       }
@@ -216,6 +219,12 @@ function indexedEstimate(data, model, destination, walk, exitPenalty, best) {
 export function buildTravelModel(data, origin, includeProjects = true, customSettings = {}) {
   const settings = normalizeSettings(data, customSettings);
   const distances = new Float64Array(data.routeStates.length).fill(Infinity);
+  // Hidden preference dimension: number of artificial changes between
+  // representative profiles of the SAME TER route. It never changes the
+  // displayed minutes. A P→K (or any different-route) interchange costs zero
+  // here, so legitimate omnibus→express transfers remain fully available.
+  const sameRouteChanges = new Uint16Array(data.routeStates.length);
+  sameRouteChanges.fill(65535);
   const previous = new Int32Array(data.routeStates.length).fill(-1);
   const allowed = data.routeStates.map((s) => {
     const info = data.routeInfo?.[s.routeId];
@@ -249,36 +258,51 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
       const value = access + waitForRoute(data, data.routeStates[node].routeId, settings);
       if (value < distances[node]) {
         distances[node] = value;
-        queue.push([value, node]);
+        sameRouteChanges[node] = 0;
+        queue.push([0, value, node]);
       }
     }
   });
 
   while (queue.length) {
-    const [value, node] = queue.pop();
-    if (value !== distances[node]) continue;
-    for (const [next, storedCost, walkingMetres] of data.adjacency[node]) {
+    const [changes, value, node] = queue.pop();
+    if (changes !== sameRouteChanges[node] || value !== distances[node]) continue;
+    for (const edge of data.adjacency[node]) {
+      const [next, storedCost, walkingMetres] = edge;
       if (!allowed[next]) continue;
       const cost = adjustedEdgeCost(data, node, next, storedCost, settings, walkingMetres);
       const candidate = value + cost;
-      if (candidate < distances[next]) {
+      const candidateChanges = changes + (Number(edge[3]) || 0);
+      if (
+        candidateChanges < sameRouteChanges[next]
+        || (candidateChanges === sameRouteChanges[next] && candidate < distances[next])
+      ) {
         distances[next] = candidate;
+        sameRouteChanges[next] = candidateChanges;
         previous[next] = node;
-        queue.push([candidate, next]);
+        queue.push([candidateChanges, candidate, next]);
       }
     }
   }
 
   const stationArrivals = data.stationStates.map((nodes) => {
     let best = Infinity;
+    let bestChanges = 65535;
     let node = -1;
     for (const n of nodes) {
-      if (allowed[n] && distances[n] < best) {
+      if (
+        allowed[n]
+        && (
+          sameRouteChanges[n] < bestChanges
+          || (sameRouteChanges[n] === bestChanges && distances[n] < best)
+        )
+      ) {
         best = distances[n];
+        bestChanges = sameRouteChanges[n];
         node = n;
       }
     }
-    return { minutes: best, node };
+    return { minutes: best, node, sameRouteChanges: bestChanges };
   });
   const activeStations = data.boardingStates.map((nodes) => nodes.some((n) => allowed[n]));
   const stationOrder = stationArrivals
@@ -294,7 +318,7 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     });
     walkingField = road.search(seeds, true, limit);
   }
-  return { origin, includeProjects, distances, previous, stationArrivals, activeStations, stationOrder, settings,
+  return { origin, includeProjects, distances, sameRouteChanges, previous, stationArrivals, activeStations, stationOrder, settings,
     accessMinutes, walkingField, sourceCovered, sourceSnap, walkingLimitMinutes:customSettings.walkingLimitMinutes ?? Infinity,
     arrivalIndex: arrivalIndex(data, stationArrivals.map((a,i) => ({minutes:a.minutes + exitMargin(data, settings, i)}))) };
 }
