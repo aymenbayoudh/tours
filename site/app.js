@@ -2292,8 +2292,7 @@ function updateJourney() {
   else {
     add(`Marche : ${formatMinutes(journey.walking)} ; attente, accès et marges : ${formatMinutes(journey.waiting)}.`);
     for (const leg of journey.legs) {
-      const method = leg.pattern === null ? " (estimation)" : " (durée horaire représentative)";
-      add(`${leg.routeId} : ${state.data.stations[leg.from].name} → ${state.data.stations[leg.to].name}, ${formatMinutes(leg.minutes)}${method}.`);
+      add(`${leg.routeId} : ${state.data.stations[leg.from].name} → ${state.data.stations[leg.to].name}, ${formatMinutes(leg.minutes)}.`);
     }
   }
 }
