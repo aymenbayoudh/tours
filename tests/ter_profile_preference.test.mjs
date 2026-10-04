@@ -75,19 +75,29 @@ function directVsStitched(withCrossRoute=false){
 
 {
   const d=baseData();
-  const pDep=node(d,0,'TER P7','departure',0);
-  const pArr=node(d,1,'TER P7','arrival',0);
+  // Slower one-seat P7: 100 min.
+  const directDep=node(d,0,'TER P7','departure',0);
+  const directArr=node(d,3,'TER P7','arrival',0);
+  edge(d,directDep,directArr,100);
+  d.boardingStates[0].push(directDep); d.stationStates[3].push(directArr);
+
+  // Faster P→K feeder pattern: 20 + 3.5 + 45 = 68.5 min. This is a useful
+  // omnibus→Krono interchange and must carry ZERO comfort penalty.
+  const pDep=node(d,0,'TER P7','departure',1);
+  const pArr=node(d,1,'TER P7','arrival',1);
   const pAlight=node(d,1,'TER P7','alight');
   const kBoard=node(d,1,'TER KX','board');
-  const kDep=node(d,1,'TER KX','departure',1);
-  const kArr=node(d,3,'TER KX','arrival',1);
-  edge(d,pDep,pArr,20); edge(d,pArr,pAlight,0); edge(d,pAlight,kBoard,3.5,1); edge(d,kBoard,kDep,0); edge(d,kDep,kArr,45);
+  const kDep=node(d,1,'TER KX','departure',2);
+  const kArr=node(d,3,'TER KX','arrival',2);
+  edge(d,pDep,pArr,20); edge(d,pArr,pAlight,0); edge(d,pAlight,kBoard,3.5,0); edge(d,kBoard,kDep,0); edge(d,kDep,kArr,45);
   d.boardingStates[0].push(pDep); d.stationStates[1].push(pArr); d.boardingStates[1].push(kDep); d.stationStates[3].push(kArr);
 
   const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
   const journey=describeJourney(d,model,d.stations[3].point);
-  assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7','TER KX'],'cross-route TER interchange must remain available when no one-seat service exists');
-  assert.equal(model.sameRouteChanges[model.stationArrivals[3].node],1);
+  assert.equal(journey.preference,'comfort','fixture must remain in the 60+ minute comfort branch');
+  assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7','TER KX'],'faster P→K interchange must beat a slower direct train');
+  assert.equal(model.comfortStationArrivals[3].transferCount,0,'P→K must not consume a comfort penalty');
+  assert.ok(journey.minutes<100);
 }
 
 {
