@@ -33,18 +33,11 @@ TER_SPEED_KMH = {
     "P17": 78, "P21": 50, "P30": 78, "P31": 52,
     "P33": 55, "P65": 90, "P166": 82,
 }
-# The reference week is 5–11 October 2026. Tours–Chinon is fully closed to
-# trains from 14 September 2026 to 26 February 2027 for regeneration works;
-# replacement coaches must be represented as bus service, never recreated by
-# the geometric rail fallback.
-SUSPENDED_RAIL_ROUTES = {
-    "TER P21": {
-        "status": "suspended",
-        "from": "2026-09-14",
-        "to": "2027-02-26",
-        "reason": "Travaux Tours–Chinon ; substitution par autocars",
-    }
-}
+# P21 is deliberately kept in the accessibility model even when the selected
+# timetable week contains no trains because of temporary works. The user's map
+# represents the structural rail offer here, so P21 falls back to the calibrated
+# KML corridor instead of being suppressed by a temporary service exception.
+SUSPENDED_RAIL_ROUTES = {}
 COLOURS = ["#c13f34", "#2275a5", "#7a49a5", "#13816f", "#a96616", "#c34485", "#4759ba", "#698400", "#a14f31", "#007f96", "#935a9d", "#367245", "#bb6b00", "#5645a2", "#a93c5f", "#2d7f85", "#8b6b22", "#6a6bb0"]
 
 
@@ -261,6 +254,7 @@ def build_stations_and_routes():
         stations.append({"id": "KML:" + name, "name": name, "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     tram = read_json("filbleu_tram.json")
     bus = read_json("filbleu_bus.json")
+    timetable_data = read_json("timetables.json")
     tram_paths = [[xy(*p) for p in shape["points"]] for shape in tram["shapes"]]
     tram_index = {}
     for stop_id, item in tram["stops"].items():
@@ -320,6 +314,25 @@ def build_stations_and_routes():
                 commercial_kmh = 60 if route_id == "NAVETTE" else TER_SPEED_KMH[code]
                 minutes = max(1.0, (pb - pa) / (commercial_kmh * 1000 / 60))
                 edges[key] = min(edges.get(key, float("inf")), minutes)
+
+    # Some useful TER services share already displayed corridors but are not
+    # named as separate layers in the reference KML (P14, P16, P10, K5+, ...).
+    # Keep their real GTFS route IDs and metadata so station bubbles, waits and
+    # journey details remain intelligible even without inventing a straight
+    # display polyline between their stops.
+    for route_id, meta in timetable_data.get("routes", {}).items():
+        if route_id in route_info:
+            route_info[route_id].setdefault("timetableTitle", meta.get("title", route_id))
+            continue
+        colour = COLOURS[sum(ord(ch) for ch in route_id) % len(COLOURS)]
+        route_info[route_id] = {
+            "title": meta.get("title", route_id),
+            "mode": "NAVETTE" if route_id == "NAVETTE" else "TER",
+            "color": colour,
+            "planned": False,
+            "timetableOnly": True,
+        }
+        route_waits[route_id] = 5.0 if route_id == "NAVETTE" else 15.0
     rail_base = []
     for feature in read_json("sncf_lines.json"):
         geometry = feature["geometry"]
@@ -363,7 +376,7 @@ def build_stations_and_routes():
         for (pa, a), (pb, b) in zip(matches, matches[1:]):
             key = (min(a, b), max(a, b), route_id)
             edges[key] = max(0.5, (pb - pa) / speed)
-    for route_id, estimate in read_json("timetables.json").get("waitEstimates", {}).items():
+    for route_id, estimate in timetable_data.get("waitEstimates", {}).items():
         if route_id in route_info:
             route_info[route_id].update(estimate)
             route_waits[route_id] = estimate["waitMinutes"]
@@ -410,12 +423,12 @@ def build_graph(stations, edges, route_waits):
             add(departures[pos], arrivals[pos+1], pattern["arrivals"][pos+1]-pattern["departures"][pos])
         audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": [by_id[s] for s in pattern["stops"]], "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
     # Only routes without an observed schedule retain a geometric estimate.
-    # A rail route known to be suspended during the reference week is never
-    # synthesized: its replacement coaches belong to the bus layer.
-    # KML-only rail halts have no boarding link unless present in a timetable.
+    # This intentionally keeps P21 available when a temporary closure removes
+    # all trains from the selected GTFS week. KML-only rail halts still have no
+    # boarding link unless their corridor itself falls back geometrically.
     fallback_nodes = {}
     for (a, b, route), minutes in edges.items():
-        if route in scheduled_routes or route in SUSPENDED_RAIL_ROUTES: continue
+        if route in scheduled_routes: continue
         for station in (a, b):
             if (station, route) not in fallback_nodes:
                 arr = node(station, route, "arrival")
