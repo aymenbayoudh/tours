@@ -647,18 +647,32 @@ def build_graph(stations, edges, route_waits, route_info):
         return 0
 
     def redundant_rail_catch(first_key, second_key, station_index):
-        # Do not ride A→B merely to board at B a service already available at
-        # A in that direction. Whole profiles identify this shared corridor;
-        # P→K feeders remain possible when K does not serve the previous stop.
+        # Two structural cases can never improve a representative journey:
+        #
+        # 1) both trains have the SAME next station. Getting off one train only
+        #    to board another for exactly the same hop adds a transfer without
+        #    skipping anything (e.g. P33→K30 at Fondettes-Saint-Cyr when both
+        #    run next to Tours);
+        # 2) ride A→B merely to catch at B a train that was already available
+        #    at A in the same direction.
+        #
+        # These are hard dominance rules, not comfort weights. A genuine
+        # omnibus→Krono feeder remains available as soon as the Krono skips the
+        # incoming train's next stop.
         first_pattern, second_pattern = key_pattern(first_key), key_pattern(second_key)
         if first_pattern is None or second_pattern is None:
             return False
         incoming = audit_patterns[first_pattern]["stops"]
         outgoing = audit_patterns[second_pattern]["stops"]
-        pos = incoming.index(station_index)
-        if pos == 0:
+        incoming_pos = incoming.index(station_index)
+        outgoing_pos = outgoing.index(station_index)
+        incoming_next = incoming[incoming_pos + 1] if incoming_pos + 1 < len(incoming) else None
+        outgoing_next = outgoing[outgoing_pos + 1] if outgoing_pos + 1 < len(outgoing) else None
+        if incoming_next is not None and incoming_next == outgoing_next:
+            return True
+        if incoming_pos == 0:
             return False
-        return incoming[pos - 1] in outgoing[:outgoing.index(station_index)]
+        return incoming[incoming_pos - 1] in outgoing[:outgoing_pos]
 
     alight_hubs = [dict() for _ in stations]
     board_hubs = [dict() for _ in stations]
