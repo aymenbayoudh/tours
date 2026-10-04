@@ -504,23 +504,28 @@ def build_graph(stations, edges, route_waits, route_info):
         first_mode = route_info.get(first_route, {}).get("mode") if first_route is not None else None
         second_mode = route_info.get(second_route, {}).get("mode") if second_route is not None else None
 
-        # Comfort preference applies to artificial TER stitching, not to every
-        # useful rail interchange. A P→K or K→P change (e.g. omnibus P1 feeding
-        # a faster K1 at Saumur) stays neutral. We only tag:
-        #   - another representative profile of the SAME TER route;
-        #   - P→P changes, such as P33→P34 at Châteaudun, which otherwise mimic
-        #     a through regional service by stitching two local profiles.
+        # The edge metadata is a COMFORT WEIGHT, not a hard prohibition.
+        # routing.mjs values one unit at 30 minutes for journeys whose fastest
+        # option already exceeds one hour.
+        #
+        # 2 units: artificial TER stitching (same TER or P→P).
+        # 0 units: useful omnibus↔Krono upgrade P↔K.
+        # 1 unit : any other real transfer. This prevents detours through tram/
+        #          bus from being used merely to dodge a P→P comfort cost.
         if first_mode == "TER" and second_mode == "TER":
             first_code = first_route.removeprefix("TER ")
             second_code = second_route.removeprefix("TER ")
-            if first_route == second_route or (first_code.startswith("P") and second_code.startswith("P")):
-                return 1
+            first_family = first_code[:1]
+            second_family = second_code[:1]
+            if first_route == second_route or (first_family == "P" and second_family == "P"):
+                return 2
+            if {first_family, second_family} == {"P", "K"}:
+                return 0
+            return 1
 
-        # Specific Tours / Saint-Pierre-des-Corps safeguard: if the incoming
-        # train and the service one would board BOTH have Tours as their very
-        # next stop, getting off at Saint-Pierre just to re-board for Tours is
-        # an artificial interchange. If the incoming train does not continue to
-        # Tours, the NAVETTE or another TER remains an ordinary transfer.
+        # Specific Saint-Pierre-des-Corps safeguard: if the incoming train and
+        # another service both continue immediately to Tours, changing for that
+        # single stop is especially artificial.
         if (
             saint_pierre_index is not None
             and tours_index is not None
@@ -533,7 +538,17 @@ def build_graph(stations, edges, route_waits, route_info):
                 and next_stop_by_pattern.get((first_pattern, saint_pierre_index)) == tours_index
                 and next_stop_by_pattern.get((second_pattern, saint_pierre_index)) == tours_index
             ):
-                return 1
+                return 2
+
+        if first_route is None or second_route is None:
+            return 0
+        if first_route != second_route:
+            return 1
+        # Same non-TER line at the same stop is structurally removed below.
+        # If two distinct physical stops of the same line are linked by walking,
+        # retain it but make it unattractive as a comfort detour.
+        if first_station != second_station:
+            return 1
         return 0
 
     alight_hubs = [dict() for _ in stations]
