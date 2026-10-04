@@ -126,11 +126,11 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingM
 
   if (a.role === "arrival" && b.role === "departure") {
     const sameStation = a.stationIndex === b.stationIndex;
-    const samePattern = a.pattern !== null && a.pattern === b.pattern;
-    const fallbackStayAboard = a.routeId === b.routeId && a.pattern === null && b.pattern === null && storedCost === 0;
+    const sameRouteContinuation = a.routeId === b.routeId && storedCost === 0;
 
-    // Dwell / staying aboard must not pay a second wait.
-    if (sameStation && (samePattern || fallbackStayAboard)) return storedCost;
+    // Dwell and a switch between representative timetable profiles of the
+    // SAME TER line are line continuity, not a correspondence: no second wait.
+    if (sameStation && sameRouteContinuation) return storedCost;
 
     const wait = waitForRoute(data, b.routeId, settings);
     if (sameStation) return transferMargin(data, settings, a.stationIndex, b.stationIndex) + wait;
@@ -513,7 +513,7 @@ export function describeJourney(data, model, destination) {
     const b = data.routeStates[nodes[i]];
     if (a.role !== "departure" || b.role !== "arrival" || a.stationIndex === b.stationIndex) continue;
     const last = legs.at(-1);
-    if (last && last.pattern === a.pattern && last.routeId === a.routeId && last.to === a.stationIndex) {
+    if (last && last.routeId === a.routeId && last.to === a.stationIndex) {
       last.to = b.stationIndex;
       last.end = distances[nodes[i]];
       last.minutes = last.end - last.start;
