@@ -20,7 +20,7 @@ const DEFAULT_ISOCHRONE_STOPS = Object.freeze([
   { t: 1, color: "#ffe2a1", alpha: 0 },
 ]);
 const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
-  railMagnetMinZoom: 1,
+  railMagnetMaxScale: 500000,
   isochronePocketScale: 1.3,
   railMagnetism: true,
   showBusLabels: true,
@@ -133,7 +133,14 @@ function normalizeDisplaySettings(value) {
     };
   });
   return {
-    railMagnetMinZoom: numeric("railMagnetMinZoom", 0.25, 8),
+    railMagnetMaxScale: (() => {
+      const direct = Number(source.railMagnetMaxScale);
+      if (Number.isFinite(direct)) return Math.max(50000, Math.min(5000000, direct));
+      const legacyZoom = Number(source.railMagnetMinZoom);
+      return Number.isFinite(legacyZoom) && legacyZoom > 0
+        ? Math.max(50000, Math.min(5000000, 500000 / legacyZoom))
+        : DEFAULT_DISPLAY_SETTINGS.railMagnetMaxScale;
+    })(),
     isochronePocketScale: numeric("isochronePocketScale", 0.5, 3),
     railMagnetism: source.railMagnetism !== false,
     showBusLabels: source.showBusLabels !== false,
@@ -244,6 +251,10 @@ const statusText = document.getElementById("statusText");
 const reachText = document.getElementById("reachText");
 const legend = document.getElementById("legend");
 const legendMax = document.getElementById("legendMax");
+const mapScale = document.getElementById("mapScale");
+const mapScaleBar = document.getElementById("mapScaleBar");
+const mapScaleDistance = document.getElementById("mapScaleDistance");
+const mapScaleRatio = document.getElementById("mapScaleRatio");
 const maxTimeInput = document.getElementById("maxTimeInput");
 const maxTimeLabel = document.getElementById("maxTimeLabel");
 const helpPanel = document.getElementById("helpPanel");
@@ -744,7 +755,7 @@ function applyDisplayNumber(input) {
   const percent = displaySettingsPanel.querySelector('[data-display-percent="' + key + '"]');
   if (percent) percent.textContent = Math.round(value * 100) + "%";
   saveDisplaySettings();
-  if (key === "railMagnetMinZoom") syncUrl();
+  if (key === "railMagnetMaxScale") syncUrl();
   if (key === "isochroneOpacity") syncDisplaySettingsControls();
   invalidateVisualSettings();
 }
@@ -904,7 +915,7 @@ displaySettingsPanel.addEventListener("click", (event) => {
     displaySettings[key] = DEFAULT_DISPLAY_SETTINGS[key];
     syncDisplaySettingsControls();
     saveDisplaySettings();
-    if (key === "railMagnetMinZoom") syncUrl();
+    if (key === "railMagnetMaxScale") syncUrl();
     invalidateVisualSettings();
     return;
   }
@@ -1136,6 +1147,39 @@ function buildTransform(bounds, width, height, zoom, centerPoint) {
       return [centerX + (x - width / 2) / scale, centerY - (y - height / 2) / scale];
     },
   };
+}
+
+const CSS_METRES_PER_PIXEL_AT_SCALE_1 = 0.0002645833333;
+function mapScaleDenominator(transform = state.currentRender?.transform) {
+  if (!transform?.scale) return Infinity;
+  const metresPerPixel = 1 / transform.scale;
+  return metresPerPixel / CSS_METRES_PER_PIXEL_AT_SCALE_1;
+}
+function niceScaleDistance(targetMetres) {
+  if (!(targetMetres > 0)) return 1;
+  const power = 10 ** Math.floor(Math.log10(targetMetres));
+  for (const factor of [5, 2, 1]) {
+    const candidate = factor * power;
+    if (candidate <= targetMetres) return candidate;
+  }
+  return power / 2;
+}
+function formatScaleRatio(value) {
+  if (!Number.isFinite(value)) return "";
+  const rounded = Math.max(1000, Math.round(value / 1000) * 1000);
+  return "≈ 1:" + rounded.toLocaleString("fr-FR");
+}
+function updateMapScale(transform) {
+  if (!mapScale || !transform?.scale) return;
+  const targetPixels = 92;
+  const metres = niceScaleDistance(targetPixels / transform.scale);
+  const pixels = Math.max(36, metres * transform.scale);
+  mapScaleBar.style.width = pixels + "px";
+  mapScaleDistance.textContent = metres >= 1000
+    ? (metres / 1000).toLocaleString("fr-FR", {maximumFractionDigits:1}) + " km"
+    : Math.round(metres) + " m";
+  mapScaleRatio.textContent = formatScaleRatio(mapScaleDenominator(transform));
+  mapScale.hidden = false;
 }
 
 function nearestStations(point, count, includePlanned = true) {
@@ -1867,6 +1911,7 @@ function drawMap() {
   mapCanvas.dataset.walkingMode = useRoadWorker ? "road" : "direct";
   mapCanvas.dataset.calculationState = roadSnapshot()?.key === roadRequestedKey ? "ready" : useRoadWorker ? "pending" : "ready";
   state.currentRender = { warp, transform, focus };
+  updateMapScale(transform);
   legend.hidden = !warp;
   legendMax.textContent = `${state.maxTransitTime} min`;
   syncStatus(warp, travelMinutes);
@@ -1900,7 +1945,8 @@ function hitPin(screen) {
 }
 
 function placePoint(world, magnet) {
-  const point = magnet && pointInLand(world) && displaySettings.railMagnetism && state.viewportScale >= displaySettings.railMagnetMinZoom
+  const scaleAllowsMagnetism = mapScaleDenominator() <= displaySettings.railMagnetMaxScale;
+  const point = magnet && pointInLand(world) && displaySettings.railMagnetism && scaleAllowsMagnetism
     ? snapToRailStation(world, state.data.stations, state.data.routeInfo, travelSettings.railMagnetRadiusKm * 1000) : world;
   return nearestLandPoint(point);
 }
@@ -1986,7 +2032,7 @@ function syncUrl() {
   for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) params.set(param, String(travelSettings[key]));
   params.set("walking", state.walkingOnRoads ? "road" : "direct");
   params.set("magnet", displaySettings.railMagnetism ? "1" : "0");
-  params.set("magnetzoom", String(displaySettings.railMagnetMinZoom));
+  params.set("magnetscale", String(Math.round(displaySettings.railMagnetMaxScale)));
   if (state.viewportCenter) {
     const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
     params.set("view", `${formatCoord(lat)},${formatCoord(lon)}`);
@@ -2001,9 +2047,12 @@ function restoreUrl() {
   state.walkingOnRoads = params.get("walking") !== "direct";
   roadWalkingToggle.checked = state.walkingOnRoads;
   if (params.has("magnet")) displaySettings.railMagnetism = params.get("magnet") !== "0";
-  if (params.has("magnetzoom")) {
-    const zoom = Number(params.get("magnetzoom"));
-    if (Number.isFinite(zoom)) displaySettings.railMagnetMinZoom = clamp(zoom, 0.25, 8);
+  if (params.has("magnetscale")) {
+    const scale = Number(params.get("magnetscale"));
+    if (Number.isFinite(scale)) displaySettings.railMagnetMaxScale = clamp(scale, 50000, 5000000);
+  } else if (params.has("magnetzoom")) {
+    const legacyZoom = Number(params.get("magnetzoom"));
+    if (Number.isFinite(legacyZoom) && legacyZoom > 0) displaySettings.railMagnetMaxScale = clamp(500000 / legacyZoom, 50000, 5000000);
   }
   const origin = parsePair(params.get("origin"));
   const probe = parsePair(params.get("distance"));
