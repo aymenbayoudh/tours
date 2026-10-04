@@ -508,24 +508,14 @@ def build_graph(stations, edges, route_waits, route_info):
         # routing.mjs values one unit at 30 minutes for journeys whose fastest
         # option already exceeds one hour.
         #
-        # 2 units: artificial TER stitching (same TER or P→P).
+        # 2 units: especially artificial changes.
         # 0 units: useful omnibus↔Krono upgrade P↔K.
-        # 1 unit : any other real transfer. This prevents detours through tram/
-        #          bus from being used merely to dodge a P→P comfort cost.
-        if first_mode == "TER" and second_mode == "TER":
-            first_code = first_route.removeprefix("TER ")
-            second_code = second_route.removeprefix("TER ")
-            first_family = first_code[:1]
-            second_family = second_code[:1]
-            if first_route == second_route or (first_family == "P" and second_family == "P"):
-                return 2
-            if {first_family, second_family} == {"P", "K"}:
-                return 0
-            return 1
+        # 1 unit : any other real transfer.
 
-        # Specific Saint-Pierre-des-Corps safeguard: if the incoming train and
-        # another service both continue immediately to Tours, changing for that
-        # single stop is especially artificial.
+        # Saint-Pierre-des-Corps rule comes FIRST: if the incoming train and the
+        # service one would board both go immediately to Tours next, changing
+        # vehicle for that single remaining stop is artificial regardless of
+        # P/K family.
         if (
             saint_pierre_index is not None
             and tours_index is not None
@@ -539,6 +529,17 @@ def build_graph(stations, edges, route_waits, route_info):
                 and next_stop_by_pattern.get((second_pattern, saint_pierre_index)) == tours_index
             ):
                 return 2
+
+        if first_mode == "TER" and second_mode == "TER":
+            first_code = first_route.removeprefix("TER ")
+            second_code = second_route.removeprefix("TER ")
+            first_family = first_code[:1]
+            second_family = second_code[:1]
+            if first_route == second_route or (first_family == "P" and second_family == "P"):
+                return 2
+            if {first_family, second_family} == {"P", "K"}:
+                return 0
+            return 1
 
         if first_route is None or second_route is None:
             return 0
