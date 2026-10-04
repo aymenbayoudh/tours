@@ -411,6 +411,16 @@ def build_stations_and_routes():
         if route_id in route_info:
             route_info[route_id].update(estimate)
             route_waits[route_id] = estimate["waitMinutes"]
+
+    # Tours ↔ Saint-Pierre-des-Corps is a dedicated connector in this model.
+    # Treat the NAVETTE as immediately available so a traveller who actually
+    # changes vehicle for this single link does not get routed via another TER
+    # profile or a pair of urban buses. A traveller already aboard a through
+    # train can still stay on that train without re-boarding.
+    if "NAVETTE" in route_info:
+        route_waits["NAVETTE"] = 0.0
+        route_info["NAVETTE"]["waitMinutes"] = 0.0
+        route_info["NAVETTE"]["preferredConnector"] = True
     return stations, routes, edges, route_waits, route_info
 
 
@@ -443,6 +453,7 @@ def build_graph(stations, edges, route_waits, route_info):
         adjacency[a].append(edge)
     audit_patterns = []
     next_stop_by_pattern = {}
+    previous_stop_by_pattern = {}
     for number, pattern in enumerate(patterns):
         arrivals, departures = [], []
         for pos, sid in enumerate(pattern["stops"]):
@@ -458,7 +469,57 @@ def build_graph(stations, edges, route_waits, route_info):
         stop_indexes = [by_id[s] for s in pattern["stops"]]
         for pos in range(len(stop_indexes) - 1):
             next_stop_by_pattern[(number, stop_indexes[pos])] = stop_indexes[pos + 1]
+            previous_stop_by_pattern[(number, stop_indexes[pos + 1])] = stop_indexes[pos]
         audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": stop_indexes, "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
+
+    # Same TER line = continuous line, not a correspondence. Representative
+    # timetable profiles may begin/end at different stations, so connect them
+    # directly with no second wait or transfer penalty. Reject immediate
+    # reversals (A→B then B→A): those are not a continuation.
+    for station_index in range(len(stations)):
+        arrivals_here = list(station_states[station_index])
+        departures_here = list(boarding_states[station_index])
+        for src in arrivals_here:
+            a = route_states[src]
+            if route_info.get(a["routeId"], {}).get("mode") != "TER" or a.get("pattern") is None:
+                continue
+            for dst in departures_here:
+                b = route_states[dst]
+                if b["routeId"] != a["routeId"] or b.get("pattern") is None or b["pattern"] == a["pattern"]:
+                    continue
+                previous_stop = previous_stop_by_pattern.get((a["pattern"], station_index))
+                next_stop = next_stop_by_pattern.get((b["pattern"], station_index))
+                if previous_stop is not None and next_stop == previous_stop:
+                    continue
+                add(src, dst, 0)
+
+    # If a scheduled TER at Saint-Pierre has Tours as its final remaining stop,
+    # it is not offered as a new boarding option for that one-stop hop. Through
+    # passengers already on that exact train still continue normally via the
+    # pattern's own arrival→departure dwell edge. The dedicated NAVETTE remains
+    # the connector for a traveller who actually changes vehicle there.
+    saint_pierre_id = "SNCF:87571240"
+    tours_id = "SNCF:87571000"
+    saint_pierre_scheduled = by_id.get(saint_pierre_id)
+    tours_scheduled = by_id.get(tours_id)
+    if saint_pierre_scheduled is not None and tours_scheduled is not None:
+        filtered = []
+        for dst in boarding_states[saint_pierre_scheduled]:
+            state = route_states[dst]
+            route_id = state.get("routeId")
+            pattern_no = state.get("pattern")
+            if route_id == "NAVETTE" or pattern_no is None:
+                filtered.append(dst)
+                continue
+            info = route_info.get(route_id, {})
+            pattern = audit_patterns[pattern_no]
+            pos = pattern["stops"].index(saint_pierre_scheduled) if saint_pierre_scheduled in pattern["stops"] else -1
+            only_tours_left = pos >= 0 and pos + 1 == len(pattern["stops"]) - 1 and pattern["stops"][pos + 1] == tours_scheduled
+            if info.get("mode") == "TER" and only_tours_left:
+                continue
+            filtered.append(dst)
+        boarding_states[saint_pierre_scheduled] = filtered
+
     # Only routes without an observed schedule retain a geometric estimate.
     # This intentionally keeps P21 available when a temporary closure removes
     # all trains from the selected GTFS week. KML-only rail halts still have no
@@ -535,7 +596,7 @@ def build_graph(stations, edges, route_waits, route_info):
             second_code = second_route.removeprefix("TER ")
             first_family = first_code[:1]
             second_family = second_code[:1]
-            if first_route == second_route or (first_family == "P" and second_family == "P"):
+            if first_family == "P" and second_family == "P":
                 return 2
             if {first_family, second_family} == {"P", "K"}:
                 return 0
@@ -583,8 +644,7 @@ def build_graph(stations, edges, route_waits, route_info):
         for first_key, first_hub in alight_hubs[i].items():
             for second_key, second_hub in board_hubs[i].items():
                 first_route, second_route = key_route(first_key), key_route(second_key)
-                first_mode = route_info.get(first_route, {}).get("mode") if first_route is not None else None
-                if first_route is not None and first_route == second_route and first_mode != "TER":
+                if first_route is not None and first_route == second_route:
                     continue
                 add(
                     first_hub,
@@ -596,6 +656,13 @@ def build_graph(stations, edges, route_waits, route_info):
     def connect_transfer_hubs(first_index, second_index, minutes, walk_distance):
         for first_key, first_hub in alight_hubs[first_index].items():
             for second_key, second_hub in board_hubs[second_index].items():
+                first_route, second_route = key_route(first_key), key_route(second_key)
+                # Never get off a line merely to re-board the SAME line at
+                # another platform/physical stop, whether in the same direction
+                # or the opposite direction. TER same-line continuity is already
+                # handled directly between timetable profiles above.
+                if first_route is not None and first_route == second_route:
+                    continue
                 add(
                     first_hub,
                     second_hub,
