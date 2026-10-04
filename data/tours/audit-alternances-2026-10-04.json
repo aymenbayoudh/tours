@@ -1,0 +1,3360 @@
+{
+  "auditedCommit": "d9b139c14d9469ca7b8518876a43ef86ee920923",
+  "compiledDataSha256": "6a81a159a76c4fe8cde28b8978b04549e7cd323c8476c44a76199892933dfe51",
+  "coveredBoardableRoutes": 60,
+  "rail": {
+    "graph": {
+      "stations": 1678,
+      "railStations": 181,
+      "patterns": 359
+    },
+    "structural": {
+      "sameLineHubEdges": 0,
+      "redundantRailCatchEdges": 0
+    },
+    "phases": {
+      "rail": {
+        "origins": 181,
+        "targets": 181,
+        "factors": [
+          0,
+          0.5,
+          1
+        ],
+        "journeys": 98283,
+        "seconds": 35.566
+      }
+    },
+    "repeatedRoutes": {
+      "TER": 2817
+    },
+    "continuousCandidates": {
+      "TER": 1748
+    },
+    "byRoute": {
+      "TER K39": {
+        "returns": 994,
+        "continuousCandidates": 429
+      },
+      "TER K15": {
+        "returns": 178,
+        "continuousCandidates": 4
+      },
+      "TER P15": {
+        "returns": 14,
+        "continuousCandidates": 14
+      },
+      "TER P14": {
+        "returns": 240,
+        "continuousCandidates": 4
+      },
+      "TER K1": {
+        "returns": 1073,
+        "continuousCandidates": 1073
+      },
+      "TER P7": {
+        "returns": 18,
+        "continuousCandidates": 6
+      },
+      "TER P1": {
+        "returns": 24,
+        "continuousCandidates": 7
+      },
+      "TER P16": {
+        "returns": 46,
+        "continuousCandidates": 46
+      },
+      "TER P65": {
+        "returns": 44,
+        "continuousCandidates": 0
+      },
+      "TER P30": {
+        "returns": 176,
+        "continuousCandidates": 165
+      },
+      "TER P166": {
+        "returns": 2,
+        "continuousCandidates": 0
+      },
+      "TER P5": {
+        "returns": 8,
+        "continuousCandidates": 0
+      }
+    },
+    "examples": [
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Azay-le-Rideau",
+        "factor": 0,
+        "minutes": 134.68540000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Azay-le-Rideau",
+            "pattern": null,
+            "minutes": 31.585400000000007
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Ballan",
+        "factor": 0,
+        "minutes": 115.65599999999999,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Ballan",
+            "pattern": null,
+            "minutes": 12.555999999999997
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Chambourg",
+        "factor": 0,
+        "minutes": 153.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Chambourg",
+            "pattern": 158,
+            "minutes": 50.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Chasseneuil (Vienne)",
+        "factor": 0,
+        "minutes": 184.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Chasseneuil (Vienne)",
+            "pattern": 97,
+            "minutes": 81.00000000000001
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Chinon",
+        "factor": 0,
+        "minutes": 162.9459,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Chinon",
+            "pattern": null,
+            "minutes": 59.845899999999986
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Châtellerault",
+        "factor": 0,
+        "minutes": 149.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Châtellerault",
+            "pattern": 99,
+            "minutes": 46.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Cinq-Mars-la-Pile",
+        "factor": 0,
+        "minutes": 114.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P1",
+            "from": "Tours",
+            "to": "Cinq-Mars-la-Pile",
+            "pattern": 78,
+            "minutes": 11
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Cormery",
+        "factor": 0,
+        "minutes": 137.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Cormery",
+            "pattern": 158,
+            "minutes": 34.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Courcay-Tauxigny",
+        "factor": 0,
+        "minutes": 142.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Courcay-Tauxigny",
+            "pattern": 158,
+            "minutes": 39.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Dangé",
+        "factor": 0,
+        "minutes": 141.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Dangé",
+            "pattern": 99,
+            "minutes": 38.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Dissay",
+        "factor": 0,
+        "minutes": 174.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Dissay",
+            "pattern": 97,
+            "minutes": 71.00000000000001
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Druye",
+        "factor": 0,
+        "minutes": 124.06379999999999,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Druye",
+            "pattern": null,
+            "minutes": 20.963799999999992
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Esvres",
+        "factor": 0,
+        "minutes": 131.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Esvres",
+            "pattern": 158,
+            "minutes": 28.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Futuroscope",
+        "factor": 0,
+        "minutes": 163.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Futuroscope",
+            "pattern": 99,
+            "minutes": 60.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Ingrandes-sur-Vienne",
+        "factor": 0,
+        "minutes": 149.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Ingrandes-sur-Vienne",
+            "pattern": 96,
+            "minutes": 46.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Jaunay-Clan",
+        "factor": 0,
+        "minutes": 178.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Jaunay-Clan",
+            "pattern": 97,
+            "minutes": 75.00000000000001
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Joué-lès-Tours",
+        "factor": 0,
+        "minutes": 109.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Joué-lès-Tours",
+            "pattern": 158,
+            "minutes": 6
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "La Chapelle-sur-Loire",
+        "factor": 0,
+        "minutes": 136.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P1",
+            "from": "Tours",
+            "to": "La Chapelle-sur-Loire",
+            "pattern": 82,
+            "minutes": 33.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "La Douzillère",
+        "factor": 0,
+        "minutes": 115.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "La Douzillère",
+            "pattern": 158,
+            "minutes": 12
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "La Tricherie",
+        "factor": 0,
+        "minutes": 170.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "La Tricherie",
+            "pattern": 97,
+            "minutes": 67.00000000000001
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Langeais",
+        "factor": 0,
+        "minutes": 119.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P1",
+            "from": "Tours",
+            "to": "Langeais",
+            "pattern": 78,
+            "minutes": 16
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Les Ormes-sur-Vienne",
+        "factor": 0,
+        "minutes": 139.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Les Ormes-sur-Vienne",
+            "pattern": 96,
+            "minutes": 36.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Loches",
+        "factor": 0,
+        "minutes": 160.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Loches",
+            "pattern": 158,
+            "minutes": 57.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Maillé",
+        "factor": 0,
+        "minutes": 130.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Maillé",
+            "pattern": 96,
+            "minutes": 27.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Montbazon",
+        "factor": 0,
+        "minutes": 124.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Montbazon",
+            "pattern": 158,
+            "minutes": 21
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Monts",
+        "factor": 0,
+        "minutes": 111.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Monts",
+            "pattern": 96,
+            "minutes": 8
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Naintré-les-Barres",
+        "factor": 0,
+        "minutes": 164.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Naintré-les-Barres",
+            "pattern": 97,
+            "minutes": 61.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Nerpuy",
+        "factor": 0,
+        "minutes": 160.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Nerpuy",
+            "pattern": 97,
+            "minutes": 57.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Poitiers",
+        "factor": 0,
+        "minutes": 172.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Poitiers",
+            "pattern": 99,
+            "minutes": 69.00000000000001
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Port-de-Piles",
+        "factor": 0,
+        "minutes": 134.10000000000002,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN16562F1187_F:TER:FR:Line::1f647a2c-138d-47de-8fb5-333f230e16f7::87444000:87571000:10:2054:20261206",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Tours",
+            "pattern": 42,
+            "minutes": 28
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Port-de-Piles",
+            "pattern": 97,
+            "minutes": 31.000000000000014
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Donges",
+        "factor": 0,
+        "minutes": 186.60000000000002,
+        "repeated": "TER K15",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P15",
+            "from": "Le Mans",
+            "to": "Sablé-sur-Sarthe",
+            "pattern": 128,
+            "minutes": 24
+          },
+          {
+            "route": "TER K15",
+            "from": "Sablé-sur-Sarthe",
+            "to": "Angers-St-Laud",
+            "pattern": 11,
+            "minutes": 20
+          },
+          {
+            "route": "TER P1",
+            "from": "Angers-St-Laud",
+            "to": "St-Nazaire",
+            "pattern": 79,
+            "minutes": 85.00000000000001
+          },
+          {
+            "route": "TER K15",
+            "from": "St-Nazaire",
+            "to": "Donges",
+            "pattern": 15,
+            "minutes": 8
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Alençon",
+        "target": "Angers Maître École",
+        "factor": 0,
+        "minutes": 92.1,
+        "repeated": "TER P15",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN857427F1187_F:TER:FR:Line::10D812B6-51CF-4132-BCE8-013E1E973570::87396002:87484006:10:1905:20261211",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Alençon",
+            "to": "Le Mans",
+            "pattern": 41,
+            "minutes": 31.999999999999996
+          },
+          {
+            "route": "TER P15",
+            "from": "Le Mans",
+            "to": "Sablé-sur-Sarthe",
+            "pattern": 128,
+            "minutes": 24
+          },
+          {
+            "route": "TER K15",
+            "from": "Sablé-sur-Sarthe",
+            "to": "Angers-St-Laud",
+            "pattern": 11,
+            "minutes": 20
+          },
+          {
+            "route": "TER P15",
+            "from": "Angers-St-Laud",
+            "to": "Angers Maître École",
+            "pattern": 130,
+            "minutes": 2
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Amboise",
+        "target": "Vierzon Forges",
+        "factor": 0,
+        "minutes": 114.1,
+        "repeated": "TER P14",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K6+",
+            "from": "Amboise",
+            "to": "Les Aubrais-Orléans",
+            "pattern": 64,
+            "minutes": 48
+          },
+          {
+            "route": "TER P14",
+            "from": "Les Aubrais-Orléans",
+            "to": "Salbris",
+            "pattern": 114,
+            "minutes": 36
+          },
+          {
+            "route": "TER K5+",
+            "from": "Salbris",
+            "to": "Vierzon-Ville",
+            "pattern": 54,
+            "minutes": 12
+          },
+          {
+            "route": "TER P14",
+            "from": "Vierzon-Ville",
+            "to": "Vierzon Forges",
+            "pattern": 115,
+            "minutes": 4
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Avord",
+        "target": "Ancenis",
+        "factor": 0,
+        "minutes": 211.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860001F1187_F:TER:FR:Line::4E3AACA5-7784-4A62-99BB-F7B1B040D001::87543009:87481002:9:950:20261008",
+        "legs": [
+          {
+            "route": "TER P7",
+            "from": "Avord",
+            "to": "Tours",
+            "pattern": 205,
+            "minutes": 119
+          },
+          {
+            "route": "TER K1",
+            "from": "Tours",
+            "to": "Saumur",
+            "pattern": 8,
+            "minutes": 32.000000000000014
+          },
+          {
+            "route": "TER P1",
+            "from": "Saumur",
+            "to": "Angers-St-Laud",
+            "pattern": 77,
+            "minutes": 24
+          },
+          {
+            "route": "TER K1",
+            "from": "Angers-St-Laud",
+            "to": "Ancenis",
+            "pattern": 5,
+            "minutes": 22
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Avord",
+        "target": "Azay-sur-Cher",
+        "factor": 0,
+        "minutes": 112.6,
+        "repeated": "TER P7",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P7",
+            "from": "Avord",
+            "to": "Bourges",
+            "pattern": 206,
+            "minutes": 12
+          },
+          {
+            "route": "TER K5+",
+            "from": "Bourges",
+            "to": "Vierzon-Ville",
+            "pattern": 57,
+            "minutes": 16.999999999999996
+          },
+          {
+            "route": "TER P7",
+            "from": "Vierzon-Ville",
+            "to": "Azay-sur-Cher",
+            "pattern": 202,
+            "minutes": 73
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Batz-sur-Mer",
+        "target": "St-Genouph",
+        "factor": 0,
+        "minutes": 188.10000000000002,
+        "repeated": "TER P1",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Batz-sur-Mer",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 67
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P1",
+            "from": "Tours",
+            "to": "St-Genouph",
+            "pattern": 82,
+            "minutes": 7
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Chaingy-Fourneaux-Plage",
+        "target": "Alençon",
+        "factor": 0,
+        "minutes": 184.10000000000002,
+        "repeated": "TER P16",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860289F1187_F:TER:FR:Line::C5346DEF-1F3B-4DD3-9627-15558CC7B5C9::87543009:87571000:14:921:20261016",
+        "legs": [
+          {
+            "route": "TER P16",
+            "from": "Chaingy-Fourneaux-Plage",
+            "to": "Les Aubrais-Orléans",
+            "pattern": 137,
+            "minutes": 12
+          },
+          {
+            "route": "TER K6+",
+            "from": "Les Aubrais-Orléans",
+            "to": "Blois-Chambord",
+            "pattern": 62,
+            "minutes": 22.999999999999996
+          },
+          {
+            "route": "TER P16",
+            "from": "Blois-Chambord",
+            "to": "St-Pierre-des-Corps",
+            "pattern": 134,
+            "minutes": 31
+          },
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Alençon",
+            "pattern": 53,
+            "minutes": 104.00000000000001
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "La Bohalle",
+        "target": "Bournezeau",
+        "factor": 0,
+        "minutes": 296.1532182622718,
+        "repeated": "TER P65",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P65",
+            "from": "La Bohalle",
+            "to": "Angers-St-Laud",
+            "pattern": 183,
+            "minutes": 10
+          },
+          {
+            "route": "TER K1",
+            "from": "Angers-St-Laud",
+            "to": "Saumur",
+            "pattern": 4,
+            "minutes": 19.999999999999996
+          },
+          {
+            "route": "TER P65",
+            "from": "Saumur",
+            "to": "Chantonnay",
+            "pattern": 191,
+            "minutes": 128
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "La Hutte-Coulombiers",
+        "target": "Amboise",
+        "factor": 0,
+        "minutes": 119.6,
+        "repeated": "TER P30",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN857242F1187_F:TER:FR:Line::124908e5-9f85-4eaf-876e-45fcae675ad4::87444711:87571000:17:736:20261207",
+        "legs": [
+          {
+            "route": "TER P30",
+            "from": "La Hutte-Coulombiers",
+            "to": "Vivoin-Beaumont",
+            "pattern": 153,
+            "minutes": 8
+          },
+          {
+            "route": "TER K39",
+            "from": "Vivoin-Beaumont",
+            "to": "Le Mans",
+            "pattern": 43,
+            "minutes": 19.999999999999996
+          },
+          {
+            "route": "TER P30",
+            "from": "Le Mans",
+            "to": "Château-du-Loir",
+            "pattern": 151,
+            "minutes": 29
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "St-Pierre-des-Corps",
+            "pattern": 48,
+            "minutes": 31
+          },
+          {
+            "route": "TER P166",
+            "from": "St-Pierre-des-Corps",
+            "to": "Amboise",
+            "pattern": 140,
+            "minutes": 14
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Limeray",
+        "target": "Chouzy",
+        "factor": 0,
+        "minutes": 31.6,
+        "repeated": "TER P166",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P166",
+            "from": "Limeray",
+            "to": "Onzain-Chaumont-sur-Loire",
+            "pattern": 141,
+            "minutes": 6
+          },
+          {
+            "route": "TER K1",
+            "from": "Onzain-Chaumont-sur-Loire",
+            "to": "Blois-Chambord",
+            "pattern": 4,
+            "minutes": 8
+          },
+          {
+            "route": "TER P166",
+            "from": "Blois-Chambord",
+            "to": "Chouzy",
+            "pattern": 138,
+            "minutes": 7
+          }
+        ]
+      },
+      {
+        "phase": "rail",
+        "origin": "Thouaré",
+        "target": "Alençon",
+        "factor": 0,
+        "minutes": 144.10000000000002,
+        "repeated": "TER P5",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P5",
+            "from": "Thouaré",
+            "to": "Ancenis",
+            "pattern": 171,
+            "minutes": 19
+          },
+          {
+            "route": "TER K15",
+            "from": "Ancenis",
+            "to": "Angers-St-Laud",
+            "pattern": 14,
+            "minutes": 22.999999999999996
+          },
+          {
+            "route": "TER P15",
+            "from": "Angers-St-Laud",
+            "to": "Angers Maître École",
+            "pattern": 130,
+            "minutes": 2
+          },
+          {
+            "route": "TER K15",
+            "from": "Angers Maître École",
+            "to": "Angers-St-Laud",
+            "pattern": 9,
+            "minutes": 2
+          },
+          {
+            "route": "TER P5",
+            "from": "Angers-St-Laud",
+            "to": "Le Mans",
+            "pattern": 173,
+            "minutes": 47
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Alençon",
+            "pattern": 53,
+            "minutes": 30.000000000000014
+          }
+        ]
+      }
+    ]
+  },
+  "network": {
+    "graph": {
+      "stations": 1678,
+      "railStations": 181,
+      "patterns": 359
+    },
+    "structural": {
+      "sameLineHubEdges": 0,
+      "redundantRailCatchEdges": 0
+    },
+    "phases": {
+      "network": {
+        "origins": 393,
+        "targets": 1678,
+        "factors": [
+          0,
+          1
+        ],
+        "journeys": 1318908,
+        "seconds": 56.771
+      }
+    },
+    "repeatedRoutes": {
+      "TER": 12417
+    },
+    "continuousCandidates": {
+      "TER": 9595
+    },
+    "byRoute": {
+      "TER K39": {
+        "returns": 7255,
+        "continuousCandidates": 5046
+      },
+      "TER P14": {
+        "returns": 227,
+        "continuousCandidates": 4
+      },
+      "TER K1": {
+        "returns": 2816,
+        "continuousCandidates": 2816
+      },
+      "TER P1": {
+        "returns": 259,
+        "continuousCandidates": 59
+      },
+      "TER K15": {
+        "returns": 141,
+        "continuousCandidates": 2
+      },
+      "TER P166": {
+        "returns": 1,
+        "continuousCandidates": 0
+      },
+      "TER P15": {
+        "returns": 8,
+        "continuousCandidates": 8
+      },
+      "TER P30": {
+        "returns": 1660,
+        "continuousCandidates": 1654
+      },
+      "TER P65": {
+        "returns": 35,
+        "continuousCandidates": 0
+      },
+      "TER P7": {
+        "returns": 15,
+        "continuousCandidates": 6
+      }
+    },
+    "examples": [
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "La Hutte-Coulombiers",
+        "factor": 0,
+        "minutes": 114.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Écommoy",
+            "pattern": 156,
+            "minutes": 23
+          },
+          {
+            "route": "TER K39",
+            "from": "Écommoy",
+            "to": "La Hutte-Coulombiers",
+            "pattern": 51,
+            "minutes": 47
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "Montbizot",
+        "factor": 0,
+        "minutes": 99.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Montbizot",
+            "pattern": 37,
+            "minutes": 12
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "Vivoin-Beaumont",
+        "factor": 0,
+        "minutes": 106.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Vivoin-Beaumont",
+            "pattern": 37,
+            "minutes": 19
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "Neuville",
+        "factor": 0,
+        "minutes": 96.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Neuville",
+            "pattern": 39,
+            "minutes": 9
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "La Guierche",
+        "factor": 0,
+        "minutes": 96.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "La Guierche",
+            "pattern": 36,
+            "minutes": 9
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "Teillé",
+        "factor": 0,
+        "minutes": 110.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Teillé",
+            "pattern": 39,
+            "minutes": 23
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "St-Pierre-des-Corps",
+        "target": "Le Mans Hôpital-Université",
+        "factor": 0,
+        "minutes": 90.6,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Le Mans Hôpital-Université",
+            "pattern": 39,
+            "minutes": 3
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Amboise",
+        "target": "Neuville",
+        "factor": 0,
+        "minutes": 114.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P166",
+            "from": "Amboise",
+            "to": "St-Pierre-des-Corps",
+            "pattern": 138,
+            "minutes": 14
+          },
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Neuville",
+            "pattern": 39,
+            "minutes": 9
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Amboise",
+        "target": "La Guierche",
+        "factor": 0,
+        "minutes": 114.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P166",
+            "from": "Amboise",
+            "to": "St-Pierre-des-Corps",
+            "pattern": 138,
+            "minutes": 14
+          },
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "La Guierche",
+            "pattern": 36,
+            "minutes": 9
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Amboise",
+        "target": "Vierzon Forges",
+        "factor": 0,
+        "minutes": 114.1,
+        "repeated": "TER P14",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K6+",
+            "from": "Amboise",
+            "to": "Les Aubrais-Orléans",
+            "pattern": 64,
+            "minutes": 48
+          },
+          {
+            "route": "TER P14",
+            "from": "Les Aubrais-Orléans",
+            "to": "Salbris",
+            "pattern": 114,
+            "minutes": 36
+          },
+          {
+            "route": "TER K5+",
+            "from": "Salbris",
+            "to": "Vierzon-Ville",
+            "pattern": 54,
+            "minutes": 12
+          },
+          {
+            "route": "TER P14",
+            "from": "Vierzon-Ville",
+            "to": "Vierzon Forges",
+            "pattern": 115,
+            "minutes": 4
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Amboise",
+        "target": "Foëcy",
+        "factor": 0,
+        "minutes": 119.1,
+        "repeated": "TER P14",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K6+",
+            "from": "Amboise",
+            "to": "Les Aubrais-Orléans",
+            "pattern": 64,
+            "minutes": 48
+          },
+          {
+            "route": "TER P14",
+            "from": "Les Aubrais-Orléans",
+            "to": "Salbris",
+            "pattern": 114,
+            "minutes": 36
+          },
+          {
+            "route": "TER K5+",
+            "from": "Salbris",
+            "to": "Vierzon-Ville",
+            "pattern": 54,
+            "minutes": 12
+          },
+          {
+            "route": "TER P14",
+            "from": "Vierzon-Ville",
+            "to": "Foëcy",
+            "pattern": 115,
+            "minutes": 9
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Amboise",
+        "target": "Le Mans Hôpital-Université",
+        "factor": 0,
+        "minutes": 108.1,
+        "repeated": "TER K39",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P166",
+            "from": "Amboise",
+            "to": "St-Pierre-des-Corps",
+            "pattern": 138,
+            "minutes": 14
+          },
+          {
+            "route": "TER K39",
+            "from": "St-Pierre-des-Corps",
+            "to": "Château-du-Loir",
+            "pattern": 53,
+            "minutes": 34
+          },
+          {
+            "route": "TER P30",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 156,
+            "minutes": 43
+          },
+          {
+            "route": "TER K39",
+            "from": "Le Mans",
+            "to": "Le Mans Hôpital-Université",
+            "pattern": 39,
+            "minutes": 3
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Avord",
+        "factor": 0,
+        "minutes": 302.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P7",
+            "from": "Tours",
+            "to": "Avord",
+            "pattern": 198,
+            "minutes": 118
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Azay-le-Rideau",
+        "factor": 0,
+        "minutes": 215.68540000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Azay-le-Rideau",
+            "pattern": null,
+            "minutes": 31.585399999999993
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Azay-sur-Cher",
+        "factor": 0,
+        "minutes": 201.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P17",
+            "from": "Tours",
+            "to": "Azay-sur-Cher",
+            "pattern": 142,
+            "minutes": 17
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Ballan",
+        "factor": 0,
+        "minutes": 196.656,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Ballan",
+            "pattern": null,
+            "minutes": 12.555999999999983
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Bengy",
+        "factor": 0,
+        "minutes": 310.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P7",
+            "from": "Tours",
+            "to": "Vierzon-Ville",
+            "pattern": 195,
+            "minutes": 82
+          },
+          {
+            "route": "TER K5+",
+            "from": "Vierzon-Ville",
+            "to": "Bourges",
+            "pattern": 55,
+            "minutes": 17
+          },
+          {
+            "route": "TER P14",
+            "from": "Bourges",
+            "to": "Bengy",
+            "pattern": 119,
+            "minutes": 20
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Bléré-la-Croix",
+        "factor": 0,
+        "minutes": 204.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P7",
+            "from": "Tours",
+            "to": "Bléré-la-Croix",
+            "pattern": 194,
+            "minutes": 20
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Bonneval",
+        "factor": 0,
+        "minutes": 295.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P33",
+            "from": "Tours",
+            "to": "Bonneval",
+            "pattern": 165,
+            "minutes": 111
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Bourges",
+        "factor": 0,
+        "minutes": 286.6,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P7",
+            "from": "Tours",
+            "to": "Vierzon-Ville",
+            "pattern": 195,
+            "minutes": 82
+          },
+          {
+            "route": "TER K5+",
+            "from": "Vierzon-Ville",
+            "to": "Bourges",
+            "pattern": 54,
+            "minutes": 17
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Bournezeau",
+        "factor": 0,
+        "minutes": 412.6532182622718,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P5",
+            "from": "Nantes",
+            "to": "Ancenis",
+            "pattern": 171,
+            "minutes": 27
+          },
+          {
+            "route": "TER K1",
+            "from": "Ancenis",
+            "to": "Saumur",
+            "pattern": 4,
+            "minutes": 46.000000000000014
+          },
+          {
+            "route": "TER P65",
+            "from": "Saumur",
+            "to": "Chantonnay",
+            "pattern": 191,
+            "minutes": 128
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Bressuire",
+        "factor": 0,
+        "minutes": 227.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P5",
+            "from": "Nantes",
+            "to": "Ancenis",
+            "pattern": 171,
+            "minutes": 27
+          },
+          {
+            "route": "TER K1",
+            "from": "Ancenis",
+            "to": "Saumur",
+            "pattern": 4,
+            "minutes": 46.000000000000014
+          },
+          {
+            "route": "TER P65",
+            "from": "Saumur",
+            "to": "Bressuire",
+            "pattern": 190,
+            "minutes": 70
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Cerizay",
+        "factor": 0,
+        "minutes": 250.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P5",
+            "from": "Nantes",
+            "to": "Ancenis",
+            "pattern": 171,
+            "minutes": 27
+          },
+          {
+            "route": "TER K1",
+            "from": "Ancenis",
+            "to": "Saumur",
+            "pattern": 4,
+            "minutes": 46.000000000000014
+          },
+          {
+            "route": "TER P65",
+            "from": "Saumur",
+            "to": "Cerizay",
+            "pattern": 191,
+            "minutes": 93
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chambourg",
+        "factor": 0,
+        "minutes": 234.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P31",
+            "from": "Tours",
+            "to": "Chambourg",
+            "pattern": 158,
+            "minutes": 50
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chantonnay",
+        "factor": 0,
+        "minutes": 285.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P5",
+            "from": "Nantes",
+            "to": "Ancenis",
+            "pattern": 171,
+            "minutes": 27
+          },
+          {
+            "route": "TER K1",
+            "from": "Ancenis",
+            "to": "Saumur",
+            "pattern": 4,
+            "minutes": 46.000000000000014
+          },
+          {
+            "route": "TER P65",
+            "from": "Saumur",
+            "to": "Chantonnay",
+            "pattern": 191,
+            "minutes": 128
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chartres",
+        "factor": 0,
+        "minutes": 337.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P33",
+            "from": "Tours",
+            "to": "Chartres",
+            "pattern": 165,
+            "minutes": 153
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chasseneuil (Vienne)",
+        "factor": 0,
+        "minutes": 265.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P11",
+            "from": "Tours",
+            "to": "Chasseneuil (Vienne)",
+            "pattern": 97,
+            "minutes": 81
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chenonceaux-Chisseaux",
+        "factor": 0,
+        "minutes": 209.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P7",
+            "from": "Tours",
+            "to": "Chenonceaux-Chisseaux",
+            "pattern": 198,
+            "minutes": 25
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chinon",
+        "factor": 0,
+        "minutes": 243.9459,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P21",
+            "from": "Tours",
+            "to": "Chinon",
+            "pattern": null,
+            "minutes": 59.84589999999997
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Chissay-en-Touraine",
+        "factor": 0,
+        "minutes": 224.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P17",
+            "from": "Tours",
+            "to": "Chissay-en-Touraine",
+            "pattern": 143,
+            "minutes": 40
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Château-Renault",
+        "factor": 0,
+        "minutes": 218.10000000000002,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P33",
+            "from": "Tours",
+            "to": "Château-Renault",
+            "pattern": 165,
+            "minutes": 34
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "Châteaudun",
+        "factor": 0,
+        "minutes": 285.1,
+        "repeated": "TER K1",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN860014F1187_F:TER:FR:Line::12F1382A-0107-43BD-9724-8BF0BC91CBCD::87481788:87543009:21:2325:20261212",
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P33",
+            "from": "Tours",
+            "to": "Châteaudun",
+            "pattern": 165,
+            "minutes": 101
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Croisic",
+        "target": "St-Genouph",
+        "factor": 0,
+        "minutes": 191.10000000000002,
+        "repeated": "TER P1",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K1",
+            "from": "Le Croisic",
+            "to": "Nantes",
+            "pattern": 4,
+            "minutes": 70
+          },
+          {
+            "route": "TER P1",
+            "from": "Nantes",
+            "to": "Saumur",
+            "pattern": 70,
+            "minutes": 68.00000000000001
+          },
+          {
+            "route": "TER K1",
+            "from": "Saumur",
+            "to": "Tours",
+            "pattern": 2,
+            "minutes": 32
+          },
+          {
+            "route": "TER P1",
+            "from": "Tours",
+            "to": "St-Genouph",
+            "pattern": 82,
+            "minutes": 7
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Le Mans",
+        "target": "Donges",
+        "factor": 0,
+        "minutes": 145.60000000000002,
+        "repeated": "TER K15",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER K15",
+            "from": "Le Mans",
+            "to": "Angers-St-Laud",
+            "pattern": 11,
+            "minutes": 42
+          },
+          {
+            "route": "TER P1",
+            "from": "Angers-St-Laud",
+            "to": "St-Nazaire",
+            "pattern": 79,
+            "minutes": 85.00000000000001
+          },
+          {
+            "route": "TER K15",
+            "from": "St-Nazaire",
+            "to": "Donges",
+            "pattern": 15,
+            "minutes": 8
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Limeray",
+        "target": "Chouzy",
+        "factor": 0,
+        "minutes": 31.6,
+        "repeated": "TER P166",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P166",
+            "from": "Limeray",
+            "to": "Onzain-Chaumont-sur-Loire",
+            "pattern": 141,
+            "minutes": 6
+          },
+          {
+            "route": "TER K1",
+            "from": "Onzain-Chaumont-sur-Loire",
+            "to": "Blois-Chambord",
+            "pattern": 4,
+            "minutes": 8
+          },
+          {
+            "route": "TER P166",
+            "from": "Blois-Chambord",
+            "to": "Chouzy",
+            "pattern": 138,
+            "minutes": 7
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Château-du-Loir",
+        "target": "Angers Maître École",
+        "factor": 0,
+        "minutes": 89.1,
+        "repeated": "TER P15",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN857427F1187_F:TER:FR:Line::10D812B6-51CF-4132-BCE8-013E1E973570::87396002:87484006:10:1905:20261211",
+        "legs": [
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Le Mans",
+            "pattern": 50,
+            "minutes": 29
+          },
+          {
+            "route": "TER P15",
+            "from": "Le Mans",
+            "to": "Sablé-sur-Sarthe",
+            "pattern": 128,
+            "minutes": 24
+          },
+          {
+            "route": "TER K15",
+            "from": "Sablé-sur-Sarthe",
+            "to": "Angers-St-Laud",
+            "pattern": 11,
+            "minutes": 20
+          },
+          {
+            "route": "TER P15",
+            "from": "Angers-St-Laud",
+            "to": "Angers Maître École",
+            "pattern": 130,
+            "minutes": 2
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Neuillé-Pont-Pierre",
+        "target": "Teillé",
+        "factor": 0,
+        "minutes": 87.6,
+        "repeated": "TER P30",
+        "consecutive": false,
+        "continuousCandidate": true,
+        "referenceTrip": "OCESN857235F1187_F:TER:FR:Line::1658a1cd-b1c4-4e2c-ba35-1eee2ae6fbf9::87571000:87444711:22:1955:20261211",
+        "legs": [
+          {
+            "route": "TER P30",
+            "from": "Neuillé-Pont-Pierre",
+            "to": "Château-du-Loir",
+            "pattern": 155,
+            "minutes": 16
+          },
+          {
+            "route": "TER K39",
+            "from": "Château-du-Loir",
+            "to": "Vivoin-Beaumont",
+            "pattern": 51,
+            "minutes": 56
+          },
+          {
+            "route": "TER P30",
+            "from": "Vivoin-Beaumont",
+            "to": "Teillé",
+            "pattern": 153,
+            "minutes": 5
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "La Bohalle",
+        "target": "Bournezeau",
+        "factor": 0,
+        "minutes": 296.1532182622718,
+        "repeated": "TER P65",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P65",
+            "from": "La Bohalle",
+            "to": "Angers-St-Laud",
+            "pattern": 183,
+            "minutes": 10
+          },
+          {
+            "route": "TER K1",
+            "from": "Angers-St-Laud",
+            "to": "Saumur",
+            "pattern": 4,
+            "minutes": 19.999999999999996
+          },
+          {
+            "route": "TER P65",
+            "from": "Saumur",
+            "to": "Chantonnay",
+            "pattern": 191,
+            "minutes": 128
+          }
+        ]
+      },
+      {
+        "phase": "network",
+        "origin": "Avord",
+        "target": "Azay-sur-Cher",
+        "factor": 0,
+        "minutes": 112.6,
+        "repeated": "TER P7",
+        "consecutive": false,
+        "continuousCandidate": false,
+        "legs": [
+          {
+            "route": "TER P7",
+            "from": "Avord",
+            "to": "Bourges",
+            "pattern": 206,
+            "minutes": 12
+          },
+          {
+            "route": "TER K5+",
+            "from": "Bourges",
+            "to": "Vierzon-Ville",
+            "pattern": 57,
+            "minutes": 16.999999999999996
+          },
+          {
+            "route": "TER P7",
+            "from": "Vierzon-Ville",
+            "to": "Azay-sur-Cher",
+            "pattern": 202,
+            "minutes": 73
+          }
+        ]
+      }
+    ]
+  }
+}
