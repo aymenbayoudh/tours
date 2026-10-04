@@ -67,10 +67,10 @@ function directVsStitched(withCrossRoute=false){
 {
   const d=directVsStitched(false);
   const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
-  const arrival=model.stationArrivals[3];
-  assert.equal(model.sameRouteChanges[arrival.node],0,'continuous P7 must beat stitched P7');
-  assert.equal(arrival.node,1,'continuous P7 arrival should be selected despite slower raw stitched minutes');
-  assert.equal(arrival.minutes,100);
+  const journey=describeJourney(d,model,d.stations[3].point);
+  assert.equal(journey.preference,'pure','sub-60-minute journey must use fastest-time routing');
+  assert.ok(journey.minutes<60,'fixture must stay below the one-hour threshold');
+  assert.equal(journey.legs.length,2,'faster stitched P7 should remain allowed below one hour');
 }
 
 {
@@ -99,21 +99,24 @@ function directVsStitched(withCrossRoute=false){
   edge(d,a1,b1,30); edge(d,b1,ah1,0); edge(d,ah1,bh1,3.5,1); edge(d,bh1,b2,0); edge(d,b2,d1,46.5);
   d.boardingStates[0].push(a1); d.boardingStates[1].push(b2); d.stationStates[1].push(b1); d.stationStates[3].push(d1);
 
-  // Two P7 profile changes: only 50 min raw.
+  // Two P7 profile changes: 70 min raw. It is faster, but both options are
+  // long journeys, so the one-change itinerary should win on comfort.
   const a2=node(d,0,'TER P7','departure',2), b3=node(d,1,'TER P7','arrival',2);
   const ah2=node(d,1,'TER P7','alight'), bh2=node(d,1,'TER P7','board');
   const b4=node(d,1,'TER P7','departure',3), c1=node(d,2,'TER P7','arrival',3);
   const ah3=node(d,2,'TER P7','alight'), bh3=node(d,2,'TER P7','board');
   const c2=node(d,2,'TER P7','departure',4), d2=node(d,3,'TER P7','arrival',4);
-  edge(d,a2,b3,10); edge(d,b3,ah2,0); edge(d,ah2,bh2,3.5,1); edge(d,bh2,b4,0); edge(d,b4,c1,10);
+  edge(d,a2,b3,20); edge(d,b3,ah2,0); edge(d,ah2,bh2,3.5,1); edge(d,bh2,b4,0); edge(d,b4,c1,20);
   edge(d,c1,ah3,0); edge(d,ah3,bh3,3.5,1); edge(d,bh3,c2,0); edge(d,c2,d2,23);
   d.boardingStates[0].push(a2); d.boardingStates[1].push(b4); d.boardingStates[2].push(c2);
   d.stationStates[1].push(b3); d.stationStates[2].push(c1); d.stationStates[3].push(d2);
 
   const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
-  const arrival=model.stationArrivals[3];
-  assert.equal(model.sameRouteChanges[arrival.node],1,'one same-route profile change must beat two');
-  assert.equal(arrival.node,d1);
+  const journey=describeJourney(d,model,d.stations[3].point);
+  assert.equal(journey.preference,'comfort','60+ minute journey must use comfort routing');
+  assert.equal(journey.legs.length,2,'one TER change should beat two for a long journey');
+  assert.equal(journey.minutes,80);
 }
+
 
 console.log('TER profile preference tests: ok');
