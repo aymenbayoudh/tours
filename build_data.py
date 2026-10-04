@@ -414,7 +414,7 @@ def build_stations_and_routes():
     return stations, routes, edges, route_waits, route_info
 
 
-def build_graph(stations, edges, route_waits):
+def build_graph(stations, edges, route_waits, route_info):
     schedules = read_json("timetables.json")
     bus = read_json("filbleu_bus.json")
     patterns = schedules["patterns"] + bus.get("patterns", [])
@@ -432,12 +432,14 @@ def build_graph(stations, edges, route_waits):
         if route is not None:
             stations[station]["routes"].add(route)
         return index
-    def add(a, b, minutes, walking_metres=None):
+    def add(a, b, minutes, walking_metres=None, same_route_changes=0):
         if minutes < 0:
             raise ValueError("Negative graph edge")
         edge = [b, round(minutes, 4)]
-        if walking_metres is not None:
-            edge.append(round(walking_metres, 1))
+        if walking_metres is not None or same_route_changes:
+            edge.append(round(walking_metres, 1) if walking_metres is not None else None)
+        if same_route_changes:
+            edge.append(int(same_route_changes))
         adjacency[a].append(edge)
     audit_patterns = []
     for number, pattern in enumerate(patterns):
@@ -469,23 +471,64 @@ def build_graph(stations, edges, route_waits):
                 fallback_nodes[(station, route)] = (arr, dep)
         aa, ad = fallback_nodes[(a, route)]; ba, bd = fallback_nodes[(b, route)]
         add(ad, ba, minutes); add(bd, aa, minutes)
-    # Compress transfers through two hubs per physical stop. Every arrival
-    # reaches one alighting hub; every boarding state is reached from one
-    # boarding hub. This preserves the same transfer/wait semantics without
-    # materialising the Cartesian product of all arrival/departure states.
-    alight_hubs = [None] * len(stations)
-    board_hubs = [None] * len(stations)
+    # Keep bus transfers compact through one generic hub, but preserve the
+    # incoming/outgoing route identity for rail/tram/project services. This lets
+    # the router distinguish a real P→K interchange from an artificial
+    # P7-profile→P7-profile change without materialising every pattern pair.
+    def transfer_key(route_id):
+        return None if route_info.get(route_id, {}).get("mode") == "BUS" else route_id
+
+    def artificial_same_route_change(first_key, second_key):
+        return int(
+            first_key is not None
+            and first_key == second_key
+            and route_info.get(first_key, {}).get("mode") == "TER"
+        )
+
+    alight_hubs = [dict() for _ in stations]
+    board_hubs = [dict() for _ in stations]
     for i in range(len(stations)):
-        if station_states[i]:
-            alight_hubs[i] = node(i, None, "alight")
-            for src in station_states[i]:
-                add(src, alight_hubs[i], 0)
-        if boarding_states[i]:
-            board_hubs[i] = node(i, None, "board")
-            for dst in boarding_states[i]:
-                add(board_hubs[i], dst, route_waits[route_states[dst]["routeId"]])
-        if alight_hubs[i] is not None and board_hubs[i] is not None:
-            add(alight_hubs[i], board_hubs[i], 3.5)
+        arrivals_by_key = defaultdict(list)
+        departures_by_key = defaultdict(list)
+        for src in station_states[i]:
+            arrivals_by_key[transfer_key(route_states[src]["routeId"])].append(src)
+        for dst in boarding_states[i]:
+            departures_by_key[transfer_key(route_states[dst]["routeId"])].append(dst)
+
+        for key, sources in arrivals_by_key.items():
+            hub = node(i, key, "alight")
+            alight_hubs[i][key] = hub
+            for src in sources:
+                add(src, hub, 0)
+
+        for key, targets in departures_by_key.items():
+            hub = node(i, key, "board")
+            board_hubs[i][key] = hub
+            for dst in targets:
+                add(hub, dst, route_waits[route_states[dst]["routeId"]])
+
+        # Every route can still interchange with every other route at the same
+        # physical stop. Only changing between two representative profiles of
+        # the SAME TER route is tagged as artificial preference cost.
+        for first_key, first_hub in alight_hubs[i].items():
+            for second_key, second_hub in board_hubs[i].items():
+                add(
+                    first_hub,
+                    second_hub,
+                    3.5,
+                    same_route_changes=artificial_same_route_change(first_key, second_key),
+                )
+
+    def connect_transfer_hubs(first_index, second_index, minutes, walk_distance):
+        for first_key, first_hub in alight_hubs[first_index].items():
+            for second_key, second_hub in board_hubs[second_index].items():
+                add(
+                    first_hub,
+                    second_hub,
+                    minutes,
+                    walk_distance,
+                    artificial_same_route_change(first_key, second_key),
+                )
 
     # Within the SERM, use the sparse BD TOPO walking table when available.
     # Outside that prepared coverage, keep the documented Euclidean fallback.
@@ -505,10 +548,9 @@ def build_graph(stations, edges, route_waits):
             if i is None or j is None:
                 return
             walk_distance = float(walk_distance)
-            if alight_hubs[i] is not None and board_hubs[j] is not None:
-                add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
-            if alight_hubs[j] is not None and board_hubs[i] is not None:
-                add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
+            minutes = walk_distance / WALK_METRES_PER_MINUTE + 2
+            connect_transfer_hubs(i, j, minutes, walk_distance)
+            connect_transfer_hubs(j, i, minutes, walk_distance)
 
         for first_id, second_id, walk_distance in walking.get("pairs", []):
             add_walking_pair(first_id, second_id, walk_distance)
@@ -534,10 +576,9 @@ def build_graph(stations, edges, route_waits):
                     walk_distance = math.dist(station["point"], stations[j]["point"])
                     if walk_distance > transfer_radius:
                         continue
-                    if alight_hubs[i] is not None and board_hubs[j] is not None:
-                        add(alight_hubs[i], board_hubs[j], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
-                    if alight_hubs[j] is not None and board_hubs[i] is not None:
-                        add(alight_hubs[j], board_hubs[i], walk_distance / WALK_METRES_PER_MINUTE + 2, walk_distance)
+                    minutes = walk_distance / WALK_METRES_PER_MINUTE + 2
+                    connect_transfer_hubs(i, j, minutes, walk_distance)
+                    connect_transfer_hubs(j, i, minutes, walk_distance)
     return route_states, station_states, boarding_states, adjacency, audit_patterns
 
 
@@ -561,7 +602,7 @@ def main():
     stations, routes, edges, route_waits, route_info = build_stations_and_routes()
     for station in stations:
         station["inSerm"] = point_in_polygons(station["point"], epci)
-    route_states, station_states, boarding_states, adjacency, audit_patterns = build_graph(stations, edges, route_waits)
+    route_states, station_states, boarding_states, adjacency, audit_patterns = build_graph(stations, edges, route_waits, route_info)
     cells, mask = build_grid(epci, stations, bounds)
     visible_points = [p for route in routes for p in route["points"]] + [rounded(s["point"]) for s in stations]
     explore_bounds = [min(p[0] for p in visible_points) - 20_000, min(p[1] for p in visible_points) - 20_000, max(p[0] for p in visible_points) + 20_000, max(p[1] for p in visible_points) + 20_000]
