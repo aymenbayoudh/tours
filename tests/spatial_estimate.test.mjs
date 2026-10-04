@@ -4,15 +4,30 @@ import { performance } from 'node:perf_hooks';
 import { buildTravelModel, estimateTravel } from '../site/routing.mjs';
 
 const data = JSON.parse(fs.readFileSync(new URL('../site/data/commute_map_data.json', import.meta.url)));
-function exhaustive(model, destination) {
+function exhaustiveVariant(model, destination, arrivals) {
   const speed = model.settings.walkMetersPerMinute;
-  let best = Math.hypot(model.origin[0] - destination[0], model.origin[1] - destination[1]) / speed;
+  let bestActual = Math.hypot(model.origin[0] - destination[0], model.origin[1] - destination[1]) / speed;
+  let bestScore = bestActual;
   for (let i = 0; i < data.stations.length; i++) {
+    const arrival = arrivals[i];
+    if (!Number.isFinite(arrival.minutes)) continue;
     const p = data.stations[i].point;
-    best = Math.min(best, model.stationArrivals[i].minutes + (data.stations[i].mode === "BUS" ? model.settings.busExitPenalty : model.settings.stationExitPenalty)
-      + Math.hypot(p[0] - destination[0], p[1] - destination[1]) / speed);
+    const exit = data.stations[i].mode === "BUS" ? model.settings.busExitPenalty : model.settings.stationExitPenalty;
+    const walk = Math.hypot(p[0] - destination[0], p[1] - destination[1]) / speed;
+    const actual = arrival.minutes + exit + walk;
+    const score = arrival.preferenceScore + exit + walk;
+    if (score < bestScore || (score === bestScore && actual < bestActual)) {
+      bestScore = score;
+      bestActual = actual;
+    }
   }
-  return best;
+  return bestActual;
+}
+function exhaustive(model, destination) {
+  const pure = exhaustiveVariant(model, destination, model.pureStationArrivals);
+  return pure < model.shortTripFastestMinutes
+    ? pure
+    : exhaustiveVariant(model, destination, model.comfortStationArrivals);
 }
 let checks = 0, maximumError = 0;
 for (const [name, projects, settings] of [
@@ -36,7 +51,7 @@ for (const [name, projects, settings] of [
 const model = buildTravelModel(data, data.stations.find(s => s.name === 'Tours').point);
 // Exercise both paths on identical data in the same process; no timing assertion
 // since CI hardware varies. The old path is still used for detailed itineraries.
-const scanModel = { ...model, arrivalIndex: null };
+const scanModel = { ...model, pureArrivalIndex: null, comfortArrivalIndex: null };
 const measurements = [];
 for (let pass = 0; pass < 3; pass++) {
   let start = performance.now();
