@@ -32,7 +32,7 @@ d.stations.forEach((station,index)=>{
   group.push(index); parentGroups.set(station.parentStop,group);
 });
 check([...parentGroups.values()].some(group=>group.length>=2),'Opposite/related physical bus stops were unexpectedly merged');
-let sameCodeChanges=0,crossMode=0,sameRoutePreferenceEdges=0,redundantSpToursPreferenceEdges=0;
+let sameCodeChanges=0,crossMode=0,terTransferPreferenceEdges=0,redundantSpToursPreferenceEdges=0;
 const alightHub=Array.from({length:d.stations.length},()=>[]);
 const boardHub=Array.from({length:d.stations.length},()=>[]);
 d.routeStates.forEach((state,index)=>{
@@ -82,16 +82,20 @@ for(let i=0;i<d.stations.length;i++){
     const edge=d.adjacency[first].find(([n])=>n===second);
     check(Boolean(edge),'Missing same-stop route interchange');
     const a=d.routeStates[first],b=d.routeStates[second];
-    const sameRoute=Boolean(a.routeId&&a.routeId===b.routeId&&d.routeInfo?.[a.routeId]?.mode==='TER');
+    const terToTer=Boolean(
+      a.routeId&&b.routeId
+      && d.routeInfo?.[a.routeId]?.mode==='TER'
+      && d.routeInfo?.[b.routeId]?.mode==='TER'
+    );
     const redundantSpTours=Boolean(
       i===spdcIndex
       && nextStopFor(a,i)===toursIndex
       && nextStopFor(b,i)===toursIndex
     );
-    const expected=(sameRoute||redundantSpTours)?1:0;
+    const expected=(terToTer||redundantSpTours)?1:0;
     check((Number(edge[3])||0)===expected,'Wrong artificial-transfer preference metadata');
-    if(sameRoute)sameRoutePreferenceEdges++;
-    if(redundantSpTours&&!sameRoute)redundantSpToursPreferenceEdges++;
+    if(terToTer)terTransferPreferenceEdges++;
+    if(redundantSpTours&&!terToTer)redundantSpToursPreferenceEdges++;
   }
   for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
     const x=d.routeStates[a],y=d.routeStates[b];
@@ -99,7 +103,7 @@ for(let i=0;i<d.stations.length;i++){
     if(x.routeId===y.routeId&&x.pattern!==y.pattern)sameCodeChanges++;
   }
 }
-check(sameRoutePreferenceEdges>0,'No TER same-route preference edges found');
+check(terTransferPreferenceEdges>0,'No TER interchange preference edges found');
 check(redundantSpToursPreferenceEdges>0,'No redundant Saint-Pierre→Tours cross-route preference edges found');
 
 // The exception must remain possible: a train terminating at Saint-Pierre (or
@@ -273,7 +277,15 @@ check(d.timetablePatterns.some(pattern=>{
   return a>=0&&b>=0&&a!==b;
 }),'P14 direct Mehun–Vierzon pattern missing');
 
-const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,sameRoutePreferenceEdges,redundantSpToursPreferenceEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
+const chartres=station('Chartres');
+const chartresModel=buildTravelModel(d,chartres.point,true);
+const chartresTours=describeJourney(d,chartresModel,station('Tours').point);
+check(chartresTours.legs.length===1,'Chartres→Tours should prefer a one-seat train');
+check(chartresTours.legs[0].routeId==='TER P33','Chartres→Tours should use direct P33');
+check(chartresTours.legs[0].from===d.stations.indexOf(chartres),'Chartres→Tours direct leg should start at Chartres');
+check(d.stations[chartresTours.legs[0].to].name==='Tours','Chartres→Tours direct leg should end at Tours');
+
+const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,terTransferPreferenceEdges,redundantSpToursPreferenceEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
 
 // Multipliers apply to each boarding, while observed in-vehicle times stay intact.
