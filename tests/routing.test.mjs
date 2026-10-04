@@ -179,6 +179,21 @@ check(p21States.some(n=>Number.isFinite(model.distances[n])),'P21 must be routab
 const chinonIndex=d.stations.findIndex(s=>s.name==='Chinon');
 check(chinonIndex>=0,'Chinon station missing');
 check(d.boardingStates[chinonIndex].some(n=>d.routeStates[n].routeId==='TER P21'),'P21 boarding missing at Chinon');
+
+for(const routeId of ['TER P14','TER P16','TER P10','TER K5+','TER K15','TER P5','TER P15']){
+  check(d.routeStates.some(state=>state.routeId===routeId), `Complementary TER route missing: ${routeId}`);
+}
+check((d.routeInfo?.['TER P10']?.title||'').includes('Paris - Châteaudun - Vendôme'),'Wrong regional P10 selected');
+check((d.routeInfo?.['TER P14']?.title||'').includes('Orléans - Nevers'),'Wrong regional P14 selected');
+const mehunIndex=d.stations.findIndex(s=>s.name==='Mehun-sur-Yèvre');
+const vierzonIndex=d.stations.findIndex(s=>s.name==='Vierzon-Ville');
+check(mehunIndex>=0&&vierzonIndex>=0,'Mehun/Vierzon stations missing');
+check(d.timetablePatterns.some(pattern=>{
+  if(pattern.routeId!=='TER P14')return false;
+  const a=pattern.stops.indexOf(mehunIndex),b=pattern.stops.indexOf(vierzonIndex);
+  return a>=0&&b>=0&&a!==b;
+}),'P14 direct Mehun–Vierzon pattern missing');
+
 const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
 
