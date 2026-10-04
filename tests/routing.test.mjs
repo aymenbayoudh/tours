@@ -136,7 +136,7 @@ const endingAlight=alightHub[spdcIndex].find(h=>d.routeStates[h].pattern===endin
 const navetteBoard=boardHub[spdcIndex].find(h=>d.routeStates[h].pattern===navetteToTours);
 check(Number.isInteger(endingAlight)&&Number.isInteger(navetteBoard),'Saint-Pierre exception hubs missing');
 const exceptionEdge=d.adjacency[endingAlight].find(([n])=>n===navetteBoard);
-check(Boolean(exceptionEdge)&&(Number(exceptionEdge[3])||0)===0,'Train ending at Saint-Pierre must keep an ordinary navette transfer to Tours');
+check(Boolean(exceptionEdge)&&(Number(exceptionEdge[3])||0)===1,'Train ending at Saint-Pierre must keep an available navette transfer to Tours');
 const roadWalking=Boolean(d.meta?.walkingTransferSource?.generated);
 let roadTransferEdges=0;
 for(let i=0;i<d.stations.length;i++){
