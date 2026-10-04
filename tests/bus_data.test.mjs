@@ -5,6 +5,12 @@ import { buildTravelModel, describeJourney } from '../site/routing.mjs';
 const data = JSON.parse(fs.readFileSync(new URL('../site/data/commute_map_data.json', import.meta.url)));
 const bus = JSON.parse(fs.readFileSync(new URL('../data/tours/filbleu_bus.json', import.meta.url)));
 const plannedRoutes = new Set(bus.patterns.map(p => p.routeId));
+for (const short of ['66','67','69','70','72','73','N1','N2']) {
+  const id = `BUS ${short}`;
+  assert(!bus.routes[id], `Excluded school/night route remains in import: ${id}`);
+  assert(!data.routeInfo[id], `Excluded school/night route remains published: ${id}`);
+  assert(!data.routes.some(r => r.id === id), `Excluded school/night route still drawn: ${id}`);
+}
 let intervals = 0;
 for (const p of bus.patterns) {
   assert.equal(p.requiresReservation, false, `Conditional service imported: ${p.tripId}`);

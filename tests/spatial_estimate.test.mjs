@@ -9,7 +9,7 @@ function exhaustive(model, destination) {
   let best = Math.hypot(model.origin[0] - destination[0], model.origin[1] - destination[1]) / speed;
   for (let i = 0; i < data.stations.length; i++) {
     const p = data.stations[i].point;
-    best = Math.min(best, model.stationArrivals[i].minutes + model.settings.stationExitPenalty
+    best = Math.min(best, model.stationArrivals[i].minutes + (data.stations[i].mode === "BUS" ? model.settings.busExitPenalty : model.settings.stationExitPenalty)
       + Math.hypot(p[0] - destination[0], p[1] - destination[1]) / speed);
   }
   return best;
@@ -17,6 +17,7 @@ function exhaustive(model, destination) {
 let checks = 0, maximumError = 0;
 for (const [name, projects, settings] of [
   ['Tours', true, {}], ['Rotière', false, {}], ['Orléans', true, { terWait: 0, stationExitPenalty: 0 }],
+  ['Agrocampus', true, { busEntryPenalty: 0, busExitPenalty: 9, busTransferPenalty: 0, busWalkingTransferPenalty: 0 }],
   ['Tours', false, { tramWait: 20, walkingTransferPenalty: 10, stationExitPenalty: 8 }],
 ]) {
   const origin = data.stations.find(s => s.name === name).point;

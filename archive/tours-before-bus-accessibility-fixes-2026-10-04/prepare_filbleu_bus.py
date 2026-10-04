@@ -18,8 +18,6 @@ from pathlib import Path
 from prepare_timetables import active_service_dates, representative, rows, seconds
 
 ROOT = Path(__file__).resolve().parents[1]
-EXCLUDED_SERVICE_LINES = {"66", "67", "69", "70", "72", "73", "N1", "N2"}
-# Official Fil Bleu school/special and night categories, excluded from this map.
 OUTPUT = ROOT / "data" / "tours" / "filbleu_bus.json"
 
 
@@ -50,7 +48,6 @@ def main() -> None:
         route_rows = {
             r["route_id"]: r for r in rows(z, "routes.txt")
             if r.get("route_type") == "3"
-            and (r.get("route_short_name") or r["route_id"]).strip() not in EXCLUDED_SERVICE_LINES
         }
         all_stops = {r["stop_id"]: r for r in rows(z, "stops.txt")}
         trip_rows = {
@@ -220,7 +217,6 @@ def main() -> None:
             "license": "Licence Ouverte 2.0",
             "url": "https://data.tours-metropole.fr/api/v2/catalog/datasets/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/alternative_exports/filbleu_gtfszip",
             "referenceWeek": ["2026-10-05", "2026-10-11"],
-            "excludedServiceLines": sorted(EXCLUDED_SERVICE_LINES),
             "reservationPolicy": "conditional trips excluded from calculations; shapes retained",
         },
         "stops": reduced_stops,

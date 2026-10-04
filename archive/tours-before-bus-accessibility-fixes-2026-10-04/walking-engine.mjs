@@ -1,5 +1,5 @@
 import { WalkingNetwork } from './walking.mjs';
-import { buildTravelModel, estimateTravel, describeJourney, reachability } from './routing.mjs?v=2026-10-04e';
+import { buildTravelModel, estimateTravel, describeJourney, reachability } from './routing.mjs';
 
 function inRing([x, y], ring) {
   let inside = false;

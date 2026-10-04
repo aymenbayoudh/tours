@@ -1,7 +1,7 @@
-import { contourSegments } from "./isochrone.mjs?v=2026-10-04e";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-04e";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04e";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04e", import.meta.url).toString();
+import { contourSegments } from "./isochrone.mjs?v=2026-10-04d";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-04d";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04d";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03g", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -44,10 +44,6 @@ const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
   bhnsWait: 3.25,
   navetteWait: 5,
   busWaitFactor: 1,
-  busEntryPenalty: 1.8,
-  busExitPenalty: 1.8,
-  busTransferPenalty: 3.5,
-  busWalkingTransferPenalty: 2,
   stationEntryPenalty: 1.8,
   stationExitPenalty: 1.8,
   transferPenalty: 3.5,
@@ -79,10 +75,6 @@ const TRAVEL_QUERY_PARAMS = Object.freeze({
   bhnsWait: "bhnsw",
   navetteWait: "navw",
   busWaitFactor: "busfactor",
-  busEntryPenalty: "busentry",
-  busExitPenalty: "busexit",
-  busTransferPenalty: "bustransfer",
-  busWalkingTransferPenalty: "buswalktransfer",
   stationEntryPenalty: "entry",
   stationExitPenalty: "exit",
   transferPenalty: "transfer",
@@ -180,10 +172,6 @@ function normalizeTravelSettings(value) {
     bhnsWait: numeric("bhnsWait", 0, 30),
     navetteWait: 5,
     busWaitFactor: numeric("busWaitFactor", 0, 3),
-    busEntryPenalty: numeric("busEntryPenalty", 0, 30),
-    busExitPenalty: numeric("busExitPenalty", 0, 30),
-    busTransferPenalty: numeric("busTransferPenalty", 0, 30),
-    busWalkingTransferPenalty: numeric("busWalkingTransferPenalty", 0, 30),
     stationEntryPenalty: numeric("stationEntryPenalty", 0, 20),
     stationExitPenalty: numeric("stationExitPenalty", 0, 20),
     transferPenalty: numeric("transferPenalty", 0, 30),
@@ -1152,7 +1140,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04e", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04d", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1411,7 +1399,7 @@ function drawStations(drawCtx, projectPoint, warp) {
   const snapshot = roadSnapshot();
   const model = !snapshot && source ? getTravelModel(source) : null;
   const active = snapshot?.activeStations || model?.activeStations;
-  const threshold = activeThreshold();
+  const threshold = state.maxTransitTime;
   const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
   const labels = [];
   for (const [index, station] of state.data.stations.entries()) {
@@ -1423,16 +1411,12 @@ function drawStations(drawCtx, projectPoint, warp) {
     const minutes = snapshot ? snapshot.stationMinutes[index] : model && model.activeStations[index] ? routeEstimate(state.data, model, station.point) : Infinity;
     const rasterMissesStation = Number.isFinite(minutes) && minutes <= threshold && minimumWarpMinutesNearPoint(warp, station.point) > threshold;
     if (rasterMissesStation) {
-      // A minimum-size coloured pocket preserves visibility at overview scale.
-      // It is a display enlargement; the travel time and geographic grid stay unchanged.
-      const radius = state.viewportScale < 2 ? 11 : 7;
-      const gradient = drawCtx.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, heatmapColor(minutes, 0.8));
-      gradient.addColorStop(0.72, heatmapColor(minutes, 0.32));
-      gradient.addColorStop(1, heatmapColor(minutes, 0));
-      drawCtx.beginPath(); drawCtx.arc(x, y, radius, 0, Math.PI * 2);
-      drawCtx.fillStyle = gradient; drawCtx.fill();
-      drawCtx.strokeStyle = "#111111"; drawCtx.lineWidth = 1;
+      // A ring is deliberately a point symbol, not a fake geographic surface.
+      // It also represents reachable stations outside the SERM, where the raster is clipped.
+      drawCtx.beginPath();
+      drawCtx.arc(x, y, Math.max(stationRadius + 3.2, 5), 0, Math.PI * 2);
+      drawCtx.strokeStyle = heatmapColor(minutes, 1.35, false);
+      drawCtx.lineWidth = 2.2;
       drawCtx.stroke();
     }
     drawCtx.beginPath();
@@ -2224,9 +2208,7 @@ let lastJourneyKey = "";
 function updateJourney() {
   if (!state.originPoint || !state.probePoint) { journeyPanel.hidden = true; lastJourneyKey = ""; return; }
   const snapshot = currentRoadProbe();
-  const useRoad = state.walkingOnRoads && roadClient?.ready && !roadClient.failed;
-  if (!useRoad) getTravelModel(state.originPoint);
-  const key = `${useRoad ? "road:" + (snapshot?.key || roadRequestedKey) : "direct:" + cachedModelKey}:${state.probePoint}`;
+  const key = `${snapshot?.key || roadRequestedKey || cachedModelKey}:${state.probePoint}`;
   if (key === lastJourneyKey) return;
   lastJourneyKey = key;
   const journey = snapshot ? snapshot.journey : state.walkingOnRoads && roadClient?.ready && !roadClient.failed ? null : describeJourney(state.data, getTravelModel(state.originPoint), state.probePoint);

@@ -53,10 +53,6 @@ function normalizeSettings(data, value = {}) {
     tramWait: numeric(value.tramWait, 4, 0),
     busWaitFactor: numeric(value.busWaitFactor, 1, 0),
     bhnsWait: numeric(value.bhnsWait, 3.25, 0),
-    busEntryPenalty: numeric(value.busEntryPenalty, 1.8, 0),
-    busExitPenalty: numeric(value.busExitPenalty, 1.8, 0),
-    busTransferPenalty: numeric(value.busTransferPenalty, 3.5, 0),
-    busWalkingTransferPenalty: numeric(value.busWalkingTransferPenalty, 2, 0),
     stationEntryPenalty: numeric(value.stationEntryPenalty, data.meta.stationAccessPenalty ?? 1.8, 0),
     stationExitPenalty: numeric(value.stationExitPenalty, data.meta.stationAccessPenalty ?? 1.8, 0),
     transferPenalty: numeric(value.transferPenalty, 3.5, 0),
@@ -82,12 +78,6 @@ function waitForRoute(data, routeId, settings) {
   return settings.terWaitFactor * (settings.terWait !== 15 ? settings.terWait : numeric(data.routeInfo?.[routeId]?.waitMinutes, settings.terWait));
 }
 
-function exitMargin(data, settings, index) {
-  return data.stations[index].mode === "BUS" ? settings.busExitPenalty : settings.stationExitPenalty;
-}
-function transferMargin(data, settings, a, b) {
-  return data.stations[a].mode === "BUS" && data.stations[b].mode === "BUS" ? settings.busTransferPenalty : settings.transferPenalty;
-}
 function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingMetres = null) {
   const a = data.routeStates[fromNode];
   const b = data.routeStates[toNode];
@@ -100,11 +90,11 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingM
     return waitForRoute(data, b.routeId, settings);
   }
   if (a.role === "alight" && b.role === "board") {
-    if (a.stationIndex === b.stationIndex) return transferMargin(data, settings, a.stationIndex, b.stationIndex);
+    if (a.stationIndex === b.stationIndex) return settings.transferPenalty;
     const walkDistance = Number.isFinite(walkingMetres)
       ? walkingMetres
       : distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point);
-    return walkDistance / settings.walkMetersPerMinute + (data.stations[a.stationIndex].mode === "BUS" && data.stations[b.stationIndex].mode === "BUS" ? settings.busWalkingTransferPenalty : settings.walkingTransferPenalty);
+    return walkDistance / settings.walkMetersPerMinute + settings.walkingTransferPenalty;
   }
 
   // In-vehicle durations are already encoded in the graph: representative
@@ -128,10 +118,10 @@ function adjustedEdgeCost(data, fromNode, toNode, storedCost, settings, walkingM
     if (sameStation && (samePattern || fallbackStayAboard)) return storedCost;
 
     const wait = waitForRoute(data, b.routeId, settings);
-    if (sameStation) return transferMargin(data, settings, a.stationIndex, b.stationIndex) + wait;
+    if (sameStation) return settings.transferPenalty + wait;
 
     const walkDistance = distance(data.stations[a.stationIndex].point, data.stations[b.stationIndex].point);
-    return walkDistance / settings.walkMetersPerMinute + (data.stations[a.stationIndex].mode === "BUS" && data.stations[b.stationIndex].mode === "BUS" ? settings.busWalkingTransferPenalty : settings.walkingTransferPenalty) + wait;
+    return walkDistance / settings.walkMetersPerMinute + settings.walkingTransferPenalty + wait;
   }
 
   return storedCost;
@@ -193,13 +183,13 @@ function indexedEstimate(data, model, destination, walk, exitPenalty, best) {
     if (!node) return Infinity;
     const dx = Math.max(node.minX - x, 0, x - node.maxX);
     const dy = Math.max(node.minY - y, 0, y - node.maxY);
-    return minimum[node.id] + Math.hypot(dx, dy) / walk;
+    return minimum[node.id] + exitPenalty + Math.hypot(dx, dy) / walk;
   }
   function visit(node, lower) {
     if (!node || lower > best + 1e-10) return;
     if (node.indices) {
       for (const i of node.indices) {
-        const arrival = model.stationArrivals[i].minutes + exitMargin(data, model.settings, i);
+        const arrival = model.stationArrivals[i].minutes + exitPenalty;
         if (arrival >= best) continue;
         best = Math.min(best, arrival + distance(data.stations[i].point, destination) / walk);
       }
@@ -243,7 +233,7 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
       if (distance(origin, station.point) <= 2) walking = distance(origin, station.point) / settings.walkMetersPerMinute;
     }
     accessMinutes[index] = walking;
-    const access = walking + (station.mode === "BUS" ? settings.busEntryPenalty : settings.stationEntryPenalty);
+    const access = walking + settings.stationEntryPenalty;
     for (const node of data.boardingStates[index] || []) {
       if (!allowed[node]) continue;
       const value = access + waitForRoute(data, data.routeStates[node].routeId, settings);
@@ -290,13 +280,13 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   if (road) {
     const seeds = sourceSnap ? [[sourceSnap, 0, -1]] : [];
     data.stations.forEach((station, i) => {
-      if (road.stops[i] && Number.isFinite(stationArrivals[i].minutes)) seeds.push([road.stops[i], (stationArrivals[i].minutes + exitMargin(data, settings, i)) * speedCm, i]);
+      if (road.stops[i] && Number.isFinite(stationArrivals[i].minutes)) seeds.push([road.stops[i], (stationArrivals[i].minutes + settings.stationExitPenalty) * speedCm, i]);
     });
     walkingField = road.search(seeds, true, limit);
   }
   return { origin, includeProjects, distances, previous, stationArrivals, activeStations, stationOrder, settings,
     accessMinutes, walkingField, sourceCovered, sourceSnap, walkingLimitMinutes:customSettings.walkingLimitMinutes ?? Infinity,
-    arrivalIndex: arrivalIndex(data, stationArrivals.map((a,i) => ({minutes:a.minutes + exitMargin(data, settings, i)}))) };
+    arrivalIndex: arrivalIndex(data, stationArrivals) };
 }
 
 export function estimateTravel(data, model, destination, details = false) {
@@ -311,10 +301,10 @@ export function estimateTravel(data, model, destination, details = false) {
     // At a transport point, arriving there requires no extra street access.
     const coincidentStations = road.stationsAt(destination);
     for (const coincident of coincidentStations) {
-      const value = model.stationArrivals[coincident].minutes + exitMargin(data, model.settings, coincident) + distance(destination, data.stations[coincident].point) / walk;
+      const value = model.stationArrivals[coincident].minutes + exitPenalty + distance(destination, data.stations[coincident].point) / walk;
       if (value < minutes && value <= model.walkingLimitMinutes) { minutes=value; station=coincident; }
     }
-    const finalWalkMinutes = station >= 0 ? Math.max(0, minutes - model.stationArrivals[station].minutes - exitMargin(data, model.settings, station)) : minutes;
+    const finalWalkMinutes = station >= 0 ? Math.max(0, minutes - model.stationArrivals[station].minutes - exitPenalty) : minutes;
     return details ? {minutes, station, finalWalkMinutes, walkingApproximation:!model.sourceCovered, roadUnavailable:!Number.isFinite(minutes)} : minutes;
   }
   let best = distance(model.origin, destination) / walk;
@@ -323,8 +313,8 @@ export function estimateTravel(data, model, destination, details = false) {
   let bestStation = -1;
   const candidates = model.stationOrder || data.stations.map((_, index) => index);
   for (const i of candidates) {
-    const arrival = model.stationArrivals[i].minutes + exitMargin(data, model.settings, i);
-    if (arrival >= best) continue;
+    const arrival = model.stationArrivals[i].minutes + exitPenalty;
+    if (arrival >= best) break;
     const point = data.stations[i].point;
     const remaining = (best - arrival) * walk;
     if (Math.abs(point[0] - destination[0]) >= remaining || Math.abs(point[1] - destination[1]) >= remaining) continue;

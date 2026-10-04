@@ -150,11 +150,3 @@ node tests/walking_surface.test.mjs
 ```
 
 Le manifeste `site/data/point_walking.meta.json` conserve la source, le SHA-256 et les tailles. Aucun téléchargement WFS lourd n’est lancé à chaque publication.
-
-## Corrections bus et affichage — 4 octobre 2026
-
-Les lignes scolaires/spéciales 66, 67, 69, 70, 72 et 73 et les lignes nocturnes N1/N2 sont retirées de la carte et du calcul, selon les catégories officielles Fil Bleu (https://www.filbleu.fr/services/le-reseau-bus-tram). Les autres lignes régulières conservent leurs durées GTFS représentatives.
-
-Paramètres → Malus permet de régler séparément accès bus, sortie bus, correspondance bus au même arrêt et correspondance bus à pied. Valeurs initiales : 1,8 / 1,8 / 3,5 / 2 minutes, pour préserver les durées précédentes. Les correspondances avec un autre mode utilisent les marges générales. Les réglages sont mémorisés, partagés dans l’URL et réinitialisables.
-
-Le trajet retenu se recalcule au changement de mode de marche et aux réglages suivants : son cache distingue désormais voirie et vol d’oiseau. Les anneaux ponctuels introduits par 909637d sont remplacés par de petites poches remplies avec la couleur réelle du temps et un contour noir, seulement lorsque la surface n’est pas visible au point accessible. Ces poches ont une taille minimale d’affichage ; elles ne modifient ni le temps ni la zone géographique calculée. Leur seuil est celui des contours sélectionnés.
