@@ -61,11 +61,30 @@ def representative(groups):
     return result
 
 def rail(path):
-    # Keep the import scope stable: a regional rail service is relevant when one
-    # of its trips serves at least two stations from the map's official SNCF
-    # inventory. Do not infer relevance from the route name containing "Tours":
-    # that excluded complementary services such as P14, P16, P10 and K5+.
+    # The original import kept only route names containing "Tours" AND a closed
+    # list of route codes. Keep the useful geographic scope but remove that
+    # brittle code whitelist, then add the complementary corridors confirmed by
+    # the TER coverage audit. Route short names are not nationally unique, so
+    # complementary services are matched by both code and endpoints.
     anchor_stations = {item['uic'] for item in json.loads((DATA/'sncf_stations.json').read_text())}
+    complementary = {
+        'P14': ('orléans', 'nevers'),
+        'P16': ('orléans', 'blois'),
+        'P10': ('paris', 'châteaudun', 'vendôme'),
+        'K5+': ('paris', 'bourges', 'nevers'),
+        'K15': ('nantes', 'le mans'),
+        'P5': ('nantes', 'angers', 'le mans'),
+        'P15': ('angers', 'le mans'),
+    }
+
+    def relevant_route(code, name):
+        folded=(name or '').casefold()
+        if 'tours' in folded:
+            return True
+        if code == 'K1' and 'orléans' in folded:
+            return True
+        terms=complementary.get(code)
+        return bool(terms and all(term in folded for term in terms))
 
     def route_id_for(code):
         # Preserve the historical aliases used by the KML/map where they are
@@ -81,7 +100,7 @@ def rail(path):
         route_map={}; route_source={}
         all_stops={r['stop_id']:r for r in rows(z,'stops.txt')}
         for r in rows(z,'routes.txt'):
-            if r['route_type']!='2': continue
+            if r['route_type']!='2' or not relevant_route(r['route_short_name'], r['route_long_name']): continue
             base=route_id_for(r['route_short_name'])
             if not base: continue
             route_map[r['route_id']]=base
