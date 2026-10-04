@@ -49,7 +49,7 @@ function directVsStitched(withCrossRoute=false){
   const pDep2=node(d,1,'TER P7','departure',2);
   const pArrD=node(d,3,'TER P7','arrival',2);
   edge(d,pDep1,pArrB,20); edge(d,pArrB,pAlight,0);
-  edge(d,pAlight,pBoard,3.5,1); edge(d,pBoard,pDep2,0); edge(d,pDep2,pArrD,20);
+  edge(d,pAlight,pBoard,3.5,2); edge(d,pBoard,pDep2,0); edge(d,pDep2,pArrD,20);
   d.boardingStates[0].push(pDep1); d.boardingStates[1].push(pDep2);
   d.stationStates[1].push(pArrB); d.stationStates[3].push(pArrD);
 
@@ -106,7 +106,7 @@ function directVsStitched(withCrossRoute=false){
   const a1=node(d,0,'TER P7','departure',0), b1=node(d,1,'TER P7','arrival',0);
   const ah1=node(d,1,'TER P7','alight'), bh1=node(d,1,'TER P7','board');
   const b2=node(d,1,'TER P7','departure',1), d1=node(d,3,'TER P7','arrival',1);
-  edge(d,a1,b1,30); edge(d,b1,ah1,0); edge(d,ah1,bh1,3.5,1); edge(d,bh1,b2,0); edge(d,b2,d1,46.5);
+  edge(d,a1,b1,30); edge(d,b1,ah1,0); edge(d,ah1,bh1,3.5,2); edge(d,bh1,b2,0); edge(d,b2,d1,46.5);
   d.boardingStates[0].push(a1); d.boardingStates[1].push(b2); d.stationStates[1].push(b1); d.stationStates[3].push(d1);
 
   // Two P7 profile changes: 70 min raw. It is faster, but both options are
@@ -116,8 +116,8 @@ function directVsStitched(withCrossRoute=false){
   const b4=node(d,1,'TER P7','departure',3), c1=node(d,2,'TER P7','arrival',3);
   const ah3=node(d,2,'TER P7','alight'), bh3=node(d,2,'TER P7','board');
   const c2=node(d,2,'TER P7','departure',4), d2=node(d,3,'TER P7','arrival',4);
-  edge(d,a2,b3,20); edge(d,b3,ah2,0); edge(d,ah2,bh2,3.5,1); edge(d,bh2,b4,0); edge(d,b4,c1,20);
-  edge(d,c1,ah3,0); edge(d,ah3,bh3,3.5,1); edge(d,bh3,c2,0); edge(d,c2,d2,23);
+  edge(d,a2,b3,20); edge(d,b3,ah2,0); edge(d,ah2,bh2,3.5,2); edge(d,bh2,b4,0); edge(d,b4,c1,20);
+  edge(d,c1,ah3,0); edge(d,ah3,bh3,3.5,2); edge(d,bh3,c2,0); edge(d,c2,d2,23);
   d.boardingStates[0].push(a2); d.boardingStates[1].push(b4); d.boardingStates[2].push(c2);
   d.stationStates[1].push(b3); d.stationStates[2].push(c1); d.stationStates[3].push(d2);
 
