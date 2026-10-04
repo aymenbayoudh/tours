@@ -325,7 +325,7 @@ check((Number(p1k1[3])||0)===0,'Saumur P1→K1 must stay neutral in comfort rout
 const freteval=station('Fréteval-Morée');
 const fretevalModel=buildTravelModel(d,freteval.point,true);
 const fretevalDruye=describeJourney(d,fretevalModel,station('Druye').point);
-check(!fretevalDruye.legs.some(leg=>leg.routeId==='TRAM A'),'Fréteval→Druye must not use TRAM A as a comfort-penalty detour');
+check(!fretevalDruye.legs.some(leg=>leg.routeId==='TRAM A'),'Fréteval→Druye must not use TRAM A as a comfort-penalty detour: '+JSON.stringify(fretevalDruye.legs.map(l=>({route:l.routeId,from:d.stations[l.from].name,to:d.stations[l.to].name,minutes:l.minutes}))));
 
 const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,artificialTerPreferenceEdges,redundantSpToursPreferenceEdges,sameLineLoopEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
