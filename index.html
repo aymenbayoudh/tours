@@ -85,6 +85,16 @@
           </div>
           <div class="display-settings-scroll">
             <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Placement des points</strong></summary>
+              <div class="settings-collapse-body"><div class="display-settings-grid">
+                <span>Magnétisme vers les gares TER</span><label><input type="checkbox" data-display-toggle="railMagnetism" aria-label="Magnétisme vers les gares TER" checked> Activer</label>
+                <span>Rayon du magnétisme TER</span>
+                <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="railMagnetRadiusKm" data-delta="-0.1" aria-label="Réduire le rayon du magnétisme">−</button><input aria-label="Rayon du magnétisme TER" data-travel-number="railMagnetRadiusKm" type="number" min="0.1" max="3" step="0.1" inputmode="decimal"><small>km</small><button type="button" class="display-step-button" data-travel-adjust="railMagnetRadiusKm" data-delta="0.1" aria-label="Augmenter le rayon du magnétisme">+</button><button type="button" class="display-row-reset" data-reset-travel="railMagnetRadiusKm" aria-label="Rétablir le rayon du magnétisme">↺</button></label>
+                <span>Magnétisme désactivé si la carte est plus dézoomée que</span><label class="display-number-control"><small>1 :</small><button type="button" class="display-step-button" data-adjust="railMagnetMaxScale" data-delta="-50000" aria-label="Réduire le seuil d’échelle du magnétisme">−</button><input aria-label="Échelle maximale du magnétisme TER" data-display-number="railMagnetMaxScale" type="number" min="50000" max="5000000" step="50000" inputmode="numeric"><button type="button" class="display-step-button" data-adjust="railMagnetMaxScale" data-delta="50000" aria-label="Augmenter le seuil d’échelle du magnétisme">+</button><button type="button" class="display-row-reset" data-reset-display="railMagnetMaxScale" aria-label="Rétablir le seuil d’échelle du magnétisme">↺</button></label>
+                <span>Taille des petites zones isochrones</span><label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochronePocketScale" data-delta="-0.1" aria-label="Réduire Taille des petites zones isochrones">−</button><input aria-label="Taille des petites zones isochrones" data-display-number="isochronePocketScale" type="number" min="0.5" max="3" step="0.1" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-adjust="isochronePocketScale" data-delta="0.1" aria-label="Augmenter Taille des petites zones isochrones">+</button><button type="button" class="display-row-reset" data-reset-display="isochronePocketScale" aria-label="Rétablir Taille des petites zones isochrones">↺</button></label>
+              </div></div>
+            </details>
+            <details class="settings-collapse settings-section-collapse">
               <summary><strong>Marche</strong></summary>
               <div class="settings-collapse-body"><div class="display-settings-grid">
                 <label for="roadWalkingToggle">Suivre la voirie IGN dans le SERM</label><input id="roadWalkingToggle" type="checkbox" checked>
@@ -227,10 +237,17 @@
             <p>Un clic simple sur le fond pose uniquement le point manquant. Double-cliquez directement sur un point pour le retirer.</p>
             <p>Hors du SERM, les gares desservies restent visibles ; les lignes grises d’infrastructure et les gares sans desserte ne sont pas affichées.</p>
           </aside>
-          <div id="legend" class="legend" hidden>
-            <span>0 min</span>
-            <div class="legend-bar"></div>
-            <span id="legendMax">90 min</span>
+          <div class="map-legend-column">
+            <div id="legend" class="legend" hidden>
+              <span>0 min</span>
+              <div class="legend-bar"></div>
+              <span id="legendMax">90 min</span>
+            </div>
+            <div id="mapScale" class="map-scale" hidden aria-label="Échelle de la carte">
+              <span id="mapScaleDistance" class="map-scale-distance">10 km</span>
+              <div id="mapScaleBar" class="map-scale-bar"></div>
+              <span id="mapScaleRatio" class="map-scale-ratio">≈ 1:500 000</span>
+            </div>
           </div>
         </div>
 
