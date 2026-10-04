@@ -288,9 +288,28 @@ function indexedVariantEstimate(data, model, destination, variant, bestActual, b
   const walk = model.settings.walkMetersPerMinute;
   const arrivals = variant === "comfort" ? model.comfortStationArrivals : model.pureStationArrivals;
   const index = variant === "comfort" ? model.comfortArrivalIndex : model.pureArrivalIndex;
+  let station = -1;
+
+  const consider = (i) => {
+    const arrival = arrivals[i];
+    if (!Number.isFinite(arrival.minutes)) return;
+    const finalWalk = distance(data.stations[i].point, destination) / walk;
+    const actual = arrival.minutes + exitMargin(data, model.settings, i) + finalWalk;
+    const score = arrival.preferenceScore + exitMargin(data, model.settings, i) + finalWalk;
+    if (score < bestScore || (score === bestScore && actual < bestActual)) {
+      bestScore = score;
+      bestActual = actual;
+      station = i;
+    }
+  };
+
+  if (!index) {
+    for (let i = 0; i < data.stations.length; i++) consider(i);
+    return { minutes: bestActual, score: bestScore, station };
+  }
+
   const { root, minimum } = index;
   const [x, y] = destination;
-  let station = -1;
   function bound(node) {
     if (!node) return Infinity;
     const dx = Math.max(node.minX - x, 0, x - node.maxX);
@@ -300,18 +319,7 @@ function indexedVariantEstimate(data, model, destination, variant, bestActual, b
   function visit(node, lower) {
     if (!node || lower > bestScore + 1e-10) return;
     if (node.indices) {
-      for (const i of node.indices) {
-        const arrival = arrivals[i];
-        if (!Number.isFinite(arrival.minutes)) continue;
-        const finalWalk = distance(data.stations[i].point, destination) / walk;
-        const actual = arrival.minutes + exitMargin(data, model.settings, i) + finalWalk;
-        const score = arrival.preferenceScore + exitMargin(data, model.settings, i) + finalWalk;
-        if (score < bestScore || (score === bestScore && actual < bestActual)) {
-          bestScore = score;
-          bestActual = actual;
-          station = i;
-        }
-      }
+      for (const i of node.indices) consider(i);
     } else {
       const left = bound(node.left), right = bound(node.right);
       if (left <= right) { visit(node.left, left); visit(node.right, right); }
