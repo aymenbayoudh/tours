@@ -311,25 +311,26 @@ h1 {
 }
 
 .map-scale {
-  min-width: 112px;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  padding: 4px 8px 5px;
-  font-size: .67rem;
-  line-height: 1.05;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 1px 5px;
+  font-size: .56rem;
+  line-height: 1;
   color: var(--muted);
   background: color-mix(in srgb, var(--card) 92%, transparent);
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 7px;
   pointer-events: none;
 }
 
 .map-scale-bar {
-  height: 6px;
-  border-left: 2px solid currentColor;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
+  height: 3px;
+  border-left: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
 }
 
 .map-scale-distance {
@@ -389,7 +390,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px; }
   .slider input { height: 30px; }
   .map-legend-column { bottom: 9px; left: 9px; gap: 4px; }
   .legend { font-size: .72rem; }
-  .map-scale { font-size: .62rem; min-width: 100px; }
+  .map-scale { font-size: .52rem; min-width: 0; padding: 1px 4px; gap: 3px; }
   .share-panel { flex-wrap: wrap; }
   .share-url { min-width: 100%; }
   .reach { line-height: 1.4; }
