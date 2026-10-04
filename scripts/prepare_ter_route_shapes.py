@@ -24,14 +24,14 @@ def xy(lon, lat):
     return lon * METRES_X, lat * METRES_Y
 
 
-def point_segment_distance(point, a, b):
+def project_segment(point, a, b):
     dx, dy = b[0] - a[0], b[1] - a[1]
     size = dx * dx + dy * dy
     if not size:
-        return math.dist(point, a)
+        return math.dist(point, a), 0.0, a
     t = max(0.0, min(1.0, ((point[0]-a[0])*dx + (point[1]-a[1])*dy) / size))
     q = (a[0] + t*dx, a[1] + t*dy)
-    return math.dist(point, q)
+    return math.dist(point, q), t, q
 
 
 def geometry_lines(geometry):
@@ -67,6 +67,7 @@ def main():
     nodes = []              # [x,y,lon,lat]
     adjacency = []
     endpoint_nodes = {}
+    endpoint_ids = set()
     segments = []
     retained_features = 0
 
@@ -86,6 +87,7 @@ def main():
         if idx is None:
             idx = new_node(lon, lat)
             endpoint_nodes[key] = idx
+        endpoint_ids.add(idx)
         return idx
 
     for feature_no, feature in enumerate(source.get("features", [])):
@@ -113,15 +115,15 @@ def main():
                     continue
                 adjacency[a].append((b, metres))
                 adjacency[b].append((a, metres))
-                segments.append((a, b))
+                segments.append((a, b, feature_no, props.get("code_ligne", "")))
 
     if not segments:
         raise RuntimeError("No exploited RFN segments retained")
 
-    # 10 km buckets for station snapping.
+    # 10 km buckets for endpoint reconciliation and station snapping.
     buckets = defaultdict(list)
     cell = 10_000
-    for seg_index, (a, b) in enumerate(segments):
+    for seg_index, (a, b, _feature, _code) in enumerate(segments):
         ax, ay = nodes[a][:2]; bx, by = nodes[b][:2]
         min_bx, max_bx = math.floor(min(ax,bx)/cell), math.floor(max(ax,bx)/cell)
         min_by, max_by = math.floor(min(ay,by)/cell), math.floor(max(ay,by)/cell)
@@ -129,32 +131,81 @@ def main():
             for cy in range(min_by, max_by+1):
                 buckets[(cx,cy)].append(seg_index)
 
-    station_nodes = {}
-    snap_metres = {}
-    for sid in used_station_ids:
-        lon, lat = station_ll[sid]
-        pxy = xy(lon, lat)
-        cx, cy = math.floor(pxy[0]/cell), math.floor(pxy[1]/cell)
-        best = (float("inf"), None)
+    attachments = defaultdict(list)
+    def nearest_segment(point, exclude_node=None):
+        cx, cy = math.floor(point[0]/cell), math.floor(point[1]/cell)
+        best = (float("inf"), None, None, None)
         seen = set()
-        for radius in (0,1,2):
+        for radius in (0,1):
             for dx in range(-radius, radius+1):
                 for dy in range(-radius, radius+1):
                     for seg_index in buckets.get((cx+dx,cy+dy), []):
                         if seg_index in seen: continue
                         seen.add(seg_index)
-                        a,b=segments[seg_index]
-                        # For routing, snapping to the nearer endpoint is enough;
-                        # the displayed geometry itself stays on official RFN.
-                        da=math.dist(pxy,nodes[a][:2]); db=math.dist(pxy,nodes[b][:2])
-                        if min(da,db) < best[0]:
-                            best=(min(da,db), a if da<=db else b)
-            if best[1] is not None and best[0] < (radius+1)*cell:
+                        a,b,_feature,_code=segments[seg_index]
+                        if exclude_node is not None and (a==exclude_node or b==exclude_node):
+                            continue
+                        gap,t,q=project_segment(point,nodes[a][:2],nodes[b][:2])
+                        if gap < best[0]:
+                            best=(gap,seg_index,t,q)
+            if best[1] is not None and best[0] < 200:
                 break
-        if best[1] is None or best[0] > 3000:
+        return best
+
+    def attach_to_segment(seg_index, t, q):
+        a,b,_feature,_code=segments[seg_index]
+        if t <= 1e-6: return a
+        if t >= 1-1e-6: return b
+        lon=q[0]/METRES_X; lat=q[1]/METRES_Y
+        node=new_node(lon,lat)
+        attachments[seg_index].append((t,node))
+        return node
+
+    # A RFN "tronçon" endpoint can meet the middle of another official
+    # LineString at a junction. Reconcile endpoints only: internal crossings
+    # never become graph connections merely because their geometries intersect.
+    endpoint_links=0
+    for endpoint in list(endpoint_ids):
+        gap,seg_index,t,q=nearest_segment(nodes[endpoint][:2],exclude_node=endpoint)
+        if seg_index is None or gap > 120:
             continue
-        station_nodes[sid]=best[1]
-        snap_metres[sid]=best[0]
+        target=attach_to_segment(seg_index,t,q)
+        if target!=endpoint:
+            adjacency[endpoint].append((target,gap))
+            adjacency[target].append((endpoint,gap))
+            endpoint_links+=1
+
+    station_nodes = {}
+    snap_metres = {}
+    for sid in used_station_ids:
+        lon, lat = station_ll[sid]
+        pxy = xy(lon, lat)
+        gap,seg_index,t,q=nearest_segment(pxy)
+        if seg_index is None or gap > 3000:
+            continue
+        station_nodes[sid]=attach_to_segment(seg_index,t,q)
+        snap_metres[sid]=gap
+
+    # Connect all projected station/junction attachment points along each
+    # original RFN segment in their true order. The original edge is retained;
+    # these equal-length subdivisions add access without changing network cost.
+    for seg_index, values in attachments.items():
+        a,b,_feature,_code=segments[seg_index]
+        chain=[(0.0,a),*sorted(values),(1.0,b)]
+        dedup=[]
+        for t,node in chain:
+            if dedup and abs(t-dedup[-1][0])<1e-9:
+                # Co-located attachments are connected at zero cost.
+                if node!=dedup[-1][1]:
+                    adjacency[node].append((dedup[-1][1],0.0))
+                    adjacency[dedup[-1][1]].append((node,0.0))
+                continue
+            dedup.append((t,node))
+        total=math.dist(nodes[a][:2],nodes[b][:2])
+        for (ta,na),(tb,nb) in zip(dedup,dedup[1:]):
+            cost=max(0.0,(tb-ta)*total)
+            adjacency[na].append((nb,cost))
+            adjacency[nb].append((na,cost))
 
     pair_cache = {}
     def shortest_path(first_sid, second_sid):
@@ -230,6 +281,7 @@ def main():
             "retainedRfnFeatures":retained_features,
             "graphNodes":len(nodes),
             "graphEdges":sum(len(v) for v in adjacency)//2,
+            "endpointLinks":endpoint_links,
             "stationsRequested":len(used_station_ids),
             "stationsSnapped":len(station_nodes),
             "snapMedianMetres":round(sorted(snap_metres.values())[len(snap_metres)//2],1) if snap_metres else None,
