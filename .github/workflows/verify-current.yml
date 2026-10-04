@@ -1,0 +1,35 @@
+name: Verify current Tours build
+
+on:
+  push:
+    paths:
+      - ".github/workflows/verify-current.yml"
+      - "build_data.py"
+      - "site/**"
+      - "tests/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          python3 build_data.py
+          node --check site/app.js
+          node --check site/routing.mjs
+          node --check site/walking-engine.mjs
+          node --check site/walking-worker.mjs
+          python3 tests/walking_graph.test.py
+          python3 tests/point_walking_preparation.test.py
+          node tests/point_walking.test.mjs
+          node tests/walking_surface.test.mjs
+          node tests/routing.test.mjs
+          node tests/ter_profile_preference.test.mjs
+          node tests/bus_data.test.mjs
+          node tests/spatial_estimate.test.mjs
