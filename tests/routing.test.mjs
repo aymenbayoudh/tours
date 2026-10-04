@@ -229,8 +229,12 @@ for(const name of names){
   d.routeStates.forEach((s,i)=>{if(d.routeInfo?.[s.routeId]?.planned)check(!Number.isFinite(noProjects.distances[i]),'Disabled project reachable');});
   let previous=0;
   for(const threshold of [15,30,45,60,90,120,180]){const r=reachability(d,model,threshold);check(r.reachable>=previous,'Nonmonotonic reachability');previous=r.reachable;}
-  for(const target of d.stations){
-    const v=estimateTravel(d,model,target.point),no=estimateTravel(d,noProjects,target.point);check(Number.isFinite(v)&&v>=0,'Invalid travel');check(no+1e-6>=v,'Removing projects improves time');
+  for(let targetIndex=0;targetIndex<d.stations.length;targetIndex++){
+    const target=d.stations[targetIndex];
+    const v=estimateTravel(d,model,target.point),no=estimateTravel(d,noProjects,target.point);check(Number.isFinite(v)&&v>=0&&Number.isFinite(no)&&no>=0,'Invalid travel');
+    const pureWith=model.pureStationArrivals[targetIndex]?.minutes;
+    const pureWithout=noProjects.pureStationArrivals[targetIndex]?.minutes;
+    if(Number.isFinite(pureWith)&&Number.isFinite(pureWithout))check(pureWithout+1e-6>=pureWith,'Removing projects improves the pure-time minimum');
     const journey=describeJourney(d,model,target.point);
     check(Math.abs(journey.minutes-journey.walking-journey.waiting-journey.legs.reduce((n,l)=>n+l.minutes,0))<1e-5,'Journey breakdown mismatch');
     for(let i=1;i<journey.legs.length;i++){
