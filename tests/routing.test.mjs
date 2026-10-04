@@ -117,9 +117,9 @@ for(let i=0;i<d.stations.length;i++){
       && [firstFamily,secondFamily].includes('K')
     );
     let expected=0;
-    if(artificialTer) expected=2;
+    if(artificialTer||firstMode==='TER'&&['BUS','TRAM','BHNS'].includes(secondMode)) expected=2;
     else if(pkNeutral) expected=0;
-    else if(a.routeId&&b.routeId&&a.routeId!==b.routeId) expected=1;
+    else if(a.routeId&&b.routeId&&a.routeId!==b.routeId&&!(secondMode==='TER'&&['BUS','TRAM','BHNS','NAVETTE'].includes(firstMode))) expected=1;
     check((Number(edge[3])||0)===expected,'Wrong weighted comfort-transfer metadata: '+JSON.stringify({station:d.stations[i].name,from:a.routeId,to:b.routeId,fromMode:firstMode,toMode:secondMode,fromPattern:a.pattern,toPattern:b.pattern,actual:Number(edge[3])||0,expected}));
     if(artificialTer)artificialTerPreferenceEdges++;
   }

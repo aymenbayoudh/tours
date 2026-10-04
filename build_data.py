@@ -652,8 +652,9 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
         # This selection score never changes the displayed physical duration.
         #
         # 2 units: especially artificial changes.
-        # 0 units: useful omnibus↔Krono upgrade P↔K.
-        # 1 unit : any other real transfer.
+        # 0 units: useful P↔K upgrades and local-transit feeders to TER;
+        #          their real walking, access and waiting costs are modeled.
+        # 1 unit : other ordinary interchanges (including TER→NAVETTE).
 
         # Saint-Pierre-des-Corps rule comes FIRST: if the incoming train and the
         # service one would board both go immediately to Tours next, changing
@@ -683,6 +684,17 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
             if {first_family, second_family} == {"P", "K"}:
                 return 0
             return 1
+
+        # A bus/tram/navette feeding a TER is a real way to reach the rail
+        # network. Its access walk, transfer margin and boarding wait are
+        # already included in the physical cost; another 30-minute preference
+        # penalty can make a long walk beat the feeder. Keep the reverse
+        # direction weighted so TER→local-transit→TER loops do not beat a
+        # direct rail continuation merely because each mode change is free.
+        if second_mode == "TER" and first_mode in {"BUS", "TRAM", "BHNS", "NAVETTE"}:
+            return 0
+        if first_mode == "TER" and second_mode in {"BUS", "TRAM", "BHNS"}:
+            return 2
 
         if first_route is None or second_route is None:
             return 0
