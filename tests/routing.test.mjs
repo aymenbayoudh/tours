@@ -96,8 +96,20 @@ for(let i=0;i<d.stations.length;i++){
     const targetNext=targetPos>=0&&targetPos+1<targetPattern.stops.length?targetPattern.stops[targetPos+1]:undefined;
     const sameNextRail=sourceNext!==undefined&&sourceNext===targetNext;
     const catchUpRail=previous!==undefined&&targetPattern?.stops.slice(0,targetPos).includes(previous);
-    if(sameNextRail||catchUpRail){
-      check(!edge,sameNextRail?'Do not change TER when both services have the same next station':'Do not catch a rail service already boardable at the preceding stop');
+    const sourceBefore=new Set(sourcePattern?.stops.slice(0,sourcePos)||[]);
+    const targetAfter=targetPattern?.stops.slice(targetPos+1)||[];
+    const backtrack=targetAfter.some(stop=>sourceBefore.has(stop));
+    const leaveAndReboard=b.routeId!=='NAVETTE'&&sourcePos>0&&targetAfter.some((stop,k)=>{
+      const rest=new Set(targetAfter.slice(k+1));if(!rest.size)return false;
+      return d.boardingStates[stop].some(n=>{
+        const state=d.routeStates[n],pattern=Number.isInteger(state.pattern)?d.timetablePatterns[state.pattern]:null;
+        const pos=pattern?.stops.indexOf(stop)??-1;
+        return state.routeId===a.routeId&&pos>=0&&pattern.stops.slice(pos+1).some(next=>rest.has(next));
+      });
+    });
+    if(sameNextRail||catchUpRail||backtrack||leaveAndReboard){
+      const reason=sameNextRail?'same next TER stop':catchUpRail?'TER already boardable at preceding stop':backtrack?'service returns to a station already passed':'leave and reboard the same TER line later';
+      check(!edge,'Do not add redundant rail interchange: '+reason);
       if(sameNextRail)sameNextRailBlockedEdges++;
       continue;
     }
@@ -451,12 +463,27 @@ for(const name of ['Écommoy','Château-du-Loir','Le Mans','Tours'])for(const wa
 for(const wait of [0,1]){
  const m=buildTravelModel(d,station('Tours').point,true,{terWaitFactor:wait,navetteWaitFactor:wait});
  const j=describeJourney(d,m,station('St-Pierre-des-Corps').point);
- assert.deepEqual(j.legs.map(l=>l.routeId),['NAVETTE'],'Local Tours-Saint-Pierre must use NAVETTE');
+ const directNavette=j.legs.length===1&&j.legs[0].routeId==='NAVETTE';
+ const directTer=j.legs.length===1&&d.routeInfo[j.legs[0].routeId]?.mode==='TER'&&j.legs[0].from===toursIndex&&j.legs[0].to===spdcIndex;
+ assert.ok(directNavette||directTer,'Tours-Saint-Pierre must use a direct navette or a TER, never a Montlouis backtrack');
+ const montlouisIndex=d.stations.indexOf(station('Montlouis'));
+ assert.ok(!j.legs.some(l=>l.to===montlouisIndex||l.from===montlouisIndex),'Tours-Saint-Pierre must not detour through Montlouis');
  const through=describeJourney(d,m,station('Nevers').point);
  assert.ok(through.legs.some(l=>l.routeId==='TER P2'&&l.from===toursIndex&&l.to!==spdcIndex),'Through P2 must remain available');
 }
-for(const n of d.stationStates[spdcIndex]){
- const state=d.routeStates[n],p=d.timetablePatterns[state.pattern];
- if(state.routeId==='NAVETTE'||d.routeInfo[state.routeId]?.mode!=='TER'||!p)continue;
- assert.notEqual(p.stops[p.stops.indexOf(spdcIndex)-1],toursIndex,'Other TER must not impersonate the local navette');
+const amboiseThrough=describeJourney(d,buildTravelModel(d,station('Amboise').point,true,{terWaitFactor:0}),station('St-Pierre-des-Corps').point);
+assert.ok(amboiseThrough.legs.some(l=>l.routeId==='TER K1'&&l.to===spdcIndex),'Stay aboard the through K1 from Amboise to Saint-Pierre');
+const laigne=station('Laigné-St-Gervais'),chenonceaux=station('Chenonceaux-Chisseaux');
+for(const wait of [0,1]){
+ const m=buildTravelModel(d,laigne.point,true,{terWaitFactor:wait});
+ const j=describeJourney(d,m,chenonceaux.point);
+ const seen=new Set();let lastRoute=null;
+ for(const leg of j.legs){
+  if(leg.routeId!==lastRoute){assert.ok(!seen.has(leg.routeId),`Do not leave and reboard ${leg.routeId}: ${j.legs.map(x=>x.routeId).join(' → ')}`);seen.add(leg.routeId);lastRoute=leg.routeId;}
+ }
 }
+const directTerArrivals=d.stationStates[spdcIndex].filter(n=>{
+ const state=d.routeStates[n],p=d.timetablePatterns[state.pattern];
+ return d.routeInfo[state.routeId]?.mode==='TER'&&p&&p.stops[p.stops.indexOf(spdcIndex)-1]===toursIndex;
+});
+check(directTerArrivals.length>0,'Direct TER arrivals from Tours must remain alightable at Saint-Pierre');

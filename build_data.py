@@ -552,11 +552,9 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
                     continue
                 add(src, dst, 3.5, same_route_changes=2)
 
-    # If a scheduled TER at Saint-Pierre has Tours as its final remaining stop,
-    # it is not offered as a new boarding option for that one-stop hop. Through
-    # passengers already on that exact train still continue normally via the
-    # pattern's own arrival→departure dwell edge. The dedicated NAVETTE remains
-    # the connector for a traveller who actually changes vehicle there.
+    # Keep the navette as the local Saint-Pierre→Tours connector for passengers
+    # boarding at Saint-Pierre, while allowing a through TER to be boarded at
+    # Tours and used to reach Saint-Pierre directly.
     saint_pierre_id = "SNCF:87571240"
     tours_id = "SNCF:87571000"
     saint_pierre_scheduled = by_id.get(saint_pierre_id)
@@ -578,29 +576,6 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
                 continue
             filtered.append(dst)
         boarding_states[saint_pierre_scheduled] = filtered
-
-        # Canonical local Tours→Saint-Pierre link: a newly chosen rail leg
-        # ending after that hop is represented by NAVETTE, never by borrowing
-        # the first segment of P2/K16/etc. Keep each through train's dwell and
-        # onward edges untouched: Tours→Orléans/Nevers remains a direct ride.
-        # This is a modelling convention, not a real-world alighting ban.
-        withdrawn_arrivals = set()
-        for src in station_states[saint_pierre_scheduled]:
-            state = route_states[src]
-            if state["routeId"] == "NAVETTE" or route_info.get(state["routeId"], {}).get("mode") != "TER":
-                continue
-            if previous_stop_by_pattern.get((state.get("pattern"), saint_pierre_scheduled)) == tours_scheduled:
-                withdrawn_arrivals.add(src)
-        station_states[saint_pierre_scheduled] = [src for src in station_states[saint_pierre_scheduled] if src not in withdrawn_arrivals]
-        for src in withdrawn_arrivals:
-            adjacency[src] = [edge for edge in adjacency[src] if route_states[edge[0]].get("pattern") == route_states[src].get("pattern")]
-
-        # Apply the existing one-hop boarding convention in both directions.
-        boarding_states[tours_scheduled] = [dst for dst in boarding_states[tours_scheduled]
-            if route_states[dst]["routeId"] == "NAVETTE"
-            or route_info.get(route_states[dst]["routeId"], {}).get("mode") != "TER"
-            or route_states[dst].get("pattern") is None
-            or audit_patterns[route_states[dst]["pattern"]]["stops"][-2:] != [tours_scheduled, saint_pierre_scheduled]]
 
     # Only routes without an observed schedule retain a geometric estimate.
     # This intentionally keeps P21 available when a temporary closure removes
@@ -707,14 +682,18 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
         return 0
 
     def redundant_rail_catch(first_key, second_key, station_index):
-        # Two structural cases can never improve a representative journey:
+        # These structural cases do not improve a representative journey:
         #
         # 1) both trains have the SAME next station. Getting off one train only
         #    to board another for exactly the same hop adds a transfer without
         #    skipping anything (e.g. P33→K30 at Fondettes-Saint-Cyr when both
         #    run next to Tours);
         # 2) ride A→B merely to catch at B a train that was already available
-        #    at A in the same direction.
+        #    at A in the same direction;
+        # 3) continue past a station then transfer onto a service returning to
+        #    that station (e.g. Tours→Montlouis→Saint-Pierre);
+        # 4) leave a line only to board it again farther along the same
+        #    service corridor (e.g. K39→P30→K39).
         #
         # These are hard dominance rules, not comfort weights. A genuine
         # omnibus→Krono feeder remains available as soon as the Krono skips the
@@ -732,6 +711,30 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
             return True
         if incoming_pos == 0:
             return False
+        incoming_before = set(incoming[:incoming_pos])
+        outgoing_after = outgoing[outgoing_pos + 1:]
+        # Do not ride past a station and then change trains to return to it
+        # (e.g. Tours→Montlouis on K16, then Montlouis→Saint-Pierre on P166).
+        if incoming_before.intersection(outgoing_after):
+            return True
+        # Nor leave a line just to board that same line again farther along
+        # the service being boarded (e.g. K39→P30→K39 at Écommoy/Château).
+        first_route = key_route(first_key)
+        if key_route(second_key) != "NAVETTE":
+            for position, downstream_station in enumerate(outgoing_after):
+                rest_of_outgoing = set(outgoing_after[position + 1:])
+                if not rest_of_outgoing:
+                    continue
+                for dst in boarding_states[downstream_station]:
+                    if route_states[dst]["routeId"] != first_route:
+                        continue
+                    return_pattern = route_states[dst].get("pattern")
+                    if return_pattern is None:
+                        continue
+                    return_stops = audit_patterns[return_pattern]["stops"]
+                    return_pos = return_stops.index(downstream_station)
+                    if rest_of_outgoing.intersection(return_stops[return_pos + 1:]):
+                        return True
         return incoming[incoming_pos - 1] in outgoing[:outgoing_pos]
 
     alight_hubs = [dict() for _ in stations]
