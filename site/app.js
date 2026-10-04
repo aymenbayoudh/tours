@@ -1,8 +1,8 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-04g";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-04g";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-04g";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04g";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04g", import.meta.url).toString();
+import { snapToRailStation } from "./placement.mjs?v=2026-10-04h";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-04h";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-04h";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04h";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04h", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -1182,7 +1182,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04g", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04h", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
