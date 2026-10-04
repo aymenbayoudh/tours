@@ -1,0 +1,129 @@
+{
+  "networks": {
+    "azalys": {
+      "routes": 29,
+      "stops": 568,
+      "patterns": 114
+    },
+    "move": {
+      "routes": 3,
+      "stops": 99,
+      "patterns": 13
+    },
+    "cvl": {
+      "routes": 1,
+      "stops": 59,
+      "patterns": 4
+    },
+    "amboise": {
+      "routes": 1,
+      "stops": 24,
+      "patterns": 11
+    }
+  },
+  "lines": 34,
+  "stops": 750,
+  "patterns": 142,
+  "missingWalkingCoverage": [],
+  "checkedTimetableSpans": 20614,
+  "implausibleSpans": [],
+  "publishedJsonBytes": 9624768,
+  "itineraryChecks": [
+    {
+      "network": "move",
+      "from": "Place des anciens combattants",
+      "to": "Lycée Ronsard ligne",
+      "minutes": 74.6,
+      "legs": [
+        "BUS MOVE M"
+      ],
+      "withoutNetworkMinutes": 349.43879581531854,
+      "disabledStates": 27070,
+      "modelMs": 1058,
+      "sourceSnapped": true,
+      "targetSnapped": true
+    },
+    {
+      "network": "azalys",
+      "from": "Le Breuil - Villefrancoeur",
+      "to": "Pôle d'échanges scolaire - 20 à 23",
+      "minutes": 49.85595596265493,
+      "legs": [
+        "BUS Azalys L21"
+      ],
+      "withoutNetworkMinutes": 192.89554850285063,
+      "disabledStates": 22170,
+      "modelMs": 645,
+      "sourceSnapped": true,
+      "targetSnapped": true
+    },
+    {
+      "network": "cvl",
+      "from": "Saint-Benoît-la-Forêt - Hôpital",
+      "to": "Bourgueil - Mairie",
+      "minutes": 69.6,
+      "legs": [
+        "BUS CVL Mobilité A"
+      ],
+      "withoutNetworkMinutes": 248.72390991805858,
+      "disabledStates": 27342,
+      "modelMs": 663,
+      "sourceSnapped": true,
+      "targetSnapped": true
+    },
+    {
+      "network": "amboise",
+      "from": "Boitardière ouest",
+      "to": "Gare SNCF",
+      "minutes": 28.6,
+      "legs": [
+        "BUS Le Bus Amboise Nav1"
+      ],
+      "withoutNetworkMinutes": 48.529535508502676,
+      "disabledStates": 27316,
+      "modelMs": 776,
+      "sourceSnapped": true,
+      "targetSnapped": true
+    }
+  ],
+  "validation": [
+    {
+      "path": "tests/walking_graph.test.py",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/point_walking_preparation.test.py",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/point_walking.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/walking_surface.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/routing.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/ter_profile_preference.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/bus_data.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/spatial_estimate.test.mjs",
+      "exitCode": 0
+    }
+  ],
+  "walkingCoveredStopsAdded": 748,
+  "walkingPairsAdded": 1701,
+  "walkingPriorPairsPreserved": true,
+  "baseCommit": "f724bb6",
+  "cacheVersion": "2026-10-04s",
+  "compressedJsonBytes": 1286097
+}

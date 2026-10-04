@@ -48,7 +48,6 @@ function numeric(value, fallback, min = 0) {
 
 function normalizeSettings(data, value = {}) {
   return {
-    disabledBusNetworks: Array.isArray(value.disabledBusNetworks) ? value.disabledBusNetworks : [],
     walkMetersPerMinute: numeric(value.walkSpeedKmh, (data.meta.walkMetersPerMinute || 80) * 60 / 1000, 0.5) * 1000 / 60,
     navetteWaitFactor: numeric(value.navetteWaitFactor, 1, 0),
     terWaitFactor: numeric(value.terWaitFactor, 1, 0),
@@ -400,7 +399,6 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
   const allowed = data.routeStates.map((s) => {
     const info = data.routeInfo?.[s.routeId];
     if (info?.serviceStatus?.status === "suspended") return false;
-    if (info?.mode === "BUS" && settings.disabledBusNetworks.includes(info.network || "filbleu")) return false;
     return includeProjects || !info?.planned;
   });
 

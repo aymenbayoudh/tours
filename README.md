@@ -1,5 +1,39 @@
 # Un tour à Tours
 
+## Bus locaux hors SMT intégrés — 4 octobre 2026
+
+Reprise après `f724bb6`, en conservant les derniers correctifs de continuité TER.
+Les sources collectées dans l’autre conversation sont maintenant raccordées à la carte, aux trajets et aux isochrones : **34 lignes, 750 arrêts physiques et 142 motifs horaires** (hors réseau Fil Bleu déjà présent).
+
+| Réseau | Lignes ajoutées |
+|---|---|
+| Azalys / Agglopolys | 29 : A–H, N1/N2 de journée et lignes L régulières |
+| MOVE / Territoires Vendômois | A, TGV, partie annuelle sans réservation de M |
+| CVL Mobilité | A, incluant sa desserte de Bourgueil / Port-Boulet, sans doublon par EPCI |
+| Le Bus Amboise | Nav1 |
+
+Les identifiants des réseaux sont séparés : Azalys A ne devient pas Fil Bleu A ; ses navettes N1/N2 ne sont pas les lignes nocturnes Fil Bleu exclues. Chaque motif horaire conserve un vecteur complet d’une vraie course, ses permissions et son sens. MOVE M est contrôlée contre la fiche du 9 septembre 2026 : seules les colonnes annuelles sans réservation sont retenues, sans les cellules scolaires de début de course au retour. La période de référence reste le 5–11 octobre 2026, sans simulation d’une heure de départ exacte.
+
+Paramètres → **Réseaux de bus** : activation de chaque réseau et couleurs par ligne. Désactiver un réseau retire ses trajets du calcul et son dessin ; le choix est conservé localement et dans le lien partagé (`offbus`). Les marges et le multiplicateur d’attente bus s’appliquent à tous les réseaux.
+
+Les nouveaux arrêts dans le SERM sont raccordés au même graphe IGN contracté que le site, avec un maximum de 150 m d’accroche et 650 m de correspondance routière. Les paires historiques et accès manuels de gares sont conservés. Aucun graphe routier supplémentaire n’est chargé.
+
+Préparation reproductible, à partir des archives intactes :
+
+```bash
+python3 scripts/prepare_local_bus_gtfs.py
+python3 build_data.py --prepare-transfers --output /tmp/tours-new-buses.json
+node scripts/prepare_local_bus_transfers.mjs /tmp/tours-new-buses.json
+python3 build_data.py
+python3 scripts/sync_root_page.py
+```
+
+Le mode `--prepare-transfers` exige un fichier intermédiaire séparé ; une publication normale continue de refuser une table piétonne incomplète.
+
+**À poursuivre :** Ogalo (GTFS périmé et absent de l’agrégat actuel ; horaires PDF actuels à reconstruire), Fil Rouge, Le Lien Bléré/Loches et lignes locales MOVE absentes du GTFS. Le plan de Loches ne suffit pas à produire des durées ; les coordonnées et les horaires doivent être vérifiés ensemble. Cars régionaux Centre-Val de Loire différés conformément au périmètre demandé. Voir [l’état détaillé](data/tours/LOCAL-BUS-INTEGRATION-2026-10-04.md).
+
+Copie de l’état d’origine dans `archive/tours-before-local-bus-integration-2026-10-04/`.
+
 ## Marche sur voirie réactivée — 4 octobre 2026
 
 La marche directe, l’accès départ→arrêt et arrêt→destination suivent de nouveau le graphe IGN dans le SERM. Les recherches et les raccords de grille sont exécutés dans un **Web Worker**, sans parcourir le gros graphe sur le fil de l’interface. Une seule recherche est envoyée à la fois ; les demandes intermédiaires d’un glissement sont remplacées par la dernière. Les fonds cartographiques, tracés et raccords de grille sont réutilisés. La vitesse et le choix voirie/ligne droite sont réglables dans Paramètres → Marche et dans le lien partagé (`walkspeed`, `walking`).
@@ -12,11 +46,11 @@ Validation : tests de routage/transferts/bus existants, 7 999 cellules de surfac
 
 Pour la suite, la marche sur voirie est réactivée, mais garder les contrôles de barrières/accès et de téléphone réel ouverts ; ne pas présenter le raster comme une précision cadastrale. Vélo et bus hors SMT restent des lots séparés.
 
-Carte interactive des trajets estimés en TER, tram, BHNS et bus Fil Bleu. Elle s'ouvre sur les 14 EPCI du SERM de Touraine tout en laissant explorer les lignes connectées au-delà. La carte se déplace directement par glisser-déposer ; les anciens boutons « main » et verrouillage de l'arrivée ont été supprimés.
+Carte interactive des trajets estimés en TER, tram, BHNS et bus Fil Bleu, Azalys, MOVE, CVL Mobilité et Le Bus Amboise. Elle s'ouvre sur les 14 EPCI du SERM de Touraine tout en laissant explorer les lignes connectées au-delà. La carte se déplace directement par glisser-déposer ; les anciens boutons « main » et verrouillage de l'arrivée ont été supprimés.
 
 Les isochrones surfaciques restent limités au périmètre SERM. Hors SERM, les gares accessibles sont signalées ponctuellement sans fabriquer de grand halo territorial. Les courbes restent centrées sur le **départ** quand une arrivée est ajoutée. Les limites des 425 communes IGN du SERM sont visibles ; leurs noms apparaissent au zoom rapproché. Les lignes et petits arrêts de bus sont progressivement masqués au dézoom pour préserver la lisibilité, mais restent présents dans le calcul.
 
-Le **tram B et le BHNS C**, prévus pour 2028, sont inclus par défaut dans les temps estimés. L'option « Inclure tram B et BHNS C » permet de les exclure et recalcule les trajets. Les bus Fil Bleu sont issus du GTFS officiel courant ; les autres réseaux du SERM restent à intégrer séparément.
+Le **tram B et le BHNS C**, prévus pour 2028, sont inclus par défaut dans les temps estimés. L'option « Inclure tram B et BHNS C » permet de les exclure et recalcule les trajets. Les bus Fil Bleu sont issus du GTFS officiel courant ; 34 lignes locales supplémentaires sont intégrées : Azalys (29), MOVE A/TGV/M (3), CVL Mobilité A et Le Bus Amboise Nav1. Les autres réseaux restent à reconstruire à partir de leurs fiches officielles.
 
 L'[audit systémique des bus](BUS-AUDIT-2026-10-03.md) corrige l'import des courses
 sur réservation et le mélange des jours/branches dans les attentes. Les services
@@ -83,13 +117,13 @@ Les TER, le tram A et les bus Fil Bleu utilisent les **horaires officiels**, et 
 
 Le moteur compare la marche directe aux trajets en transport :
 
-1. **Accès au réseau et marche directe** : marche à 4,8 km/h encore estimée en ligne droite depuis le départ vers les arrêts, puis de l'arrêt final vers la destination ; 1,8 minute d'accès et 1,8 minute de sortie par défaut. Cette partie n'utilise pas encore la voirie réelle.
+1. **Accès au réseau et marche directe** : marche sur la voirie IGN dans le SERM, à 4,8 km/h par défaut ; accès et sortie réglables, à 1,8 minute par défaut. Le mode en ligne droite reste une option explicite, et le repli hors couverture est signalé.
 2. Attente estimée : TER 15 min, navette 5 min, trams 4 min, BHNS C 3,25 min. Pour chaque ligne de bus Fil Bleu, l'attente est dérivée de la moitié de l'intervalle médian observé sur les services retenus, bornée pour éviter des valeurs aberrantes.
 3. Temps à bord issus du trajet horaire représentatif ; rester dans le même véhicule n'ajoute pas une nouvelle attente.
 4. Changement dans la même gare/arrêt : 3,5 min + attente. Entre deux arrêts distincts du SERM, une correspondance n'est créée que si le chemin piéton préparé sur **IGN BD TOPO** reste dans la limite de 650 m ; sa longueur de voirie + 2 min de marge + l'attente sont utilisées. Seuls les vrais endpoints topologiques BD TOPO sont fusionnés : un simple croisement géométrique, par exemple une voie passant sous un pont, ne crée pas de connexion. Hors de cette couverture préparée, le modèle conserve explicitement le repli antérieur à vol d'oiseau jusqu'à 650 m. Les hubs de correspondance gardent ce graphe compact.
 5. À l'arrivée : 1,8 minute de sortie, puis marche vers le point choisi. Dijkstra retient le minimum parmi les possibilités.
 
-Cela reproduit les intervalles B–C du **trajet de référence**, pas ceux de tous les trains. Il n'y a pas de choix de date/heure : un enchaînement peut combiner des services circulant à des heures ou des jours différents. Les correspondances ne sont pas synchronisées à une heure de départ précise : le modèle représente une offre et des attentes estimées, pas un calculateur horaire. La voirie réelle est actuellement utilisée pour les **correspondances arrêt-à-arrêt dans le SERM**, pas encore pour l'accès depuis un point arbitraire ni pour la marche finale/directe. Une exception documentée relie le point SNCF de **St-Pierre-des-Corps**, situé dans le complexe ferroviaire, au parvis via l'arrêt officiel « St Pierre Gare » sur la distance entre leurs coordonnées officielles (~194 m), car l'accès intérieur n'est pas représenté dans le graphe routier. Les autres accès de bâtiments, quais, escaliers et obstacles fins ne sont pas tous garantis.
+Cela reproduit les intervalles B–C du **trajet de référence**, pas ceux de tous les trains. Il n'y a pas de choix de date/heure : un enchaînement peut combiner des services circulant à des heures ou des jours différents. Les correspondances ne sont pas synchronisées à une heure de départ précise : le modèle représente une offre et des attentes estimées, pas un calculateur horaire. La voirie réelle est utilisée pour les correspondances, l’accès et la marche finale/directe dans le SERM en mode voirie. Une exception documentée relie le point SNCF de **St-Pierre-des-Corps**, situé dans le complexe ferroviaire, au parvis via l'arrêt officiel « St Pierre Gare » sur la distance entre leurs coordonnées officielles (~194 m), car l'accès intérieur n'est pas représenté dans le graphe routier. Les autres accès de bâtiments, quais, escaliers et obstacles fins ne sont pas tous garantis.
 
 **Exceptions** : tram B à 18,4 km/h et BHNS C à 18 km/h restent des projets estimés. **P21 Tours–Chinon est volontairement conservée dans le modèle**, même lorsque la semaine GTFS de référence ne contient aucun train à cause de travaux temporaires : elle utilise alors le corridor ferroviaire de référence et sa vitesse commerciale estimée, afin de représenter l'offre structurelle demandée plutôt que l'interruption ponctuelle. Le bouton des projets retire B/C et leurs correspondances. Les autres gares TER sans desserte ni corridor calculable sont masquées plutôt que présentées comme accessibles.
 

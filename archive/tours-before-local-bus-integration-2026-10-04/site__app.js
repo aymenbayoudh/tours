@@ -1,8 +1,8 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-04s";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-04s";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-04s";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04s";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04s", import.meta.url).toString();
+import { snapToRailStation } from "./placement.mjs?v=2026-10-04r";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-04r";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-04r";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04r";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04r", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -48,7 +48,6 @@ const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
   bhnsWait: 3.25,
   navetteWait: 5,
   railMagnetRadiusKm: 1,
-  disabledBusNetworks: [],
   busWaitFactor: 1,
   busEntryPenalty: 1.8,
   busExitPenalty: 1.8,
@@ -197,7 +196,6 @@ function normalizeTravelSettings(value) {
     bhnsWait: numeric("bhnsWait", 0, 30),
     navetteWait: 5,
     railMagnetRadiusKm: numeric("railMagnetRadiusKm", 0.1, 3),
-    disabledBusNetworks: Array.isArray(source.disabledBusNetworks) ? [...new Set(source.disabledBusNetworks.filter(v => typeof v === "string" && /^[a-z0-9_-]+$/.test(v)))] : [],
     busWaitFactor: numeric("busWaitFactor", 0, 3),
     busEntryPenalty: numeric("busEntryPenalty", 0, 30),
     busExitPenalty: numeric("busExitPenalty", 0, 30),
@@ -381,8 +379,7 @@ function syncDisplaySettingsControls() {
   setColorControl("communeColor", displaySettings.communeColor);
   setColorControl("backgroundColor", displaySettings.backgroundColor);
 
-  displaySettingsPanel.querySelectorAll("[data-bus-network]").forEach(input => { input.checked = !travelSettings.disabledBusNetworks.includes(input.dataset.busNetwork); });
-  displaySettingsPanel.querySelectorAll(".route-color-row").forEach((row) => {
+  displayRouteColors.querySelectorAll(".route-color-row").forEach((row) => {
     const routeId = row.dataset.routeId;
     const color = (displaySettings.routeColors[routeId] || defaultRouteColor(routeId)).toLowerCase();
     const picker = row.querySelector("[data-route-color]");
@@ -472,51 +469,6 @@ function applyPaletteToGroup(group) {
   syncDisplaySettingsControls();
   saveDisplaySettings();
   invalidateVisualSettings();
-}
-
-function busNetworkEnabled(routeId) {
-  return !travelSettings.disabledBusNetworks.includes(state.data.routeInfo?.[routeId]?.network || "filbleu");
-}
-
-function buildBusNetworkSettings() {
-  const container = document.getElementById("busNetworkSettings");
-  container.replaceChildren();
-  const groups = new Map();
-  for (const [id, info] of Object.entries(state.data.routeInfo || {})) {
-    if (info.mode !== "BUS") continue;
-    const network = info.network || "filbleu";
-    if (!groups.has(network)) groups.set(network, []);
-    groups.get(network).push({id, ...info});
-  }
-  for (const [network, items] of groups) {
-    const section = document.createElement("details");
-    section.className = "settings-collapse";
-    const summary = document.createElement("summary");
-    summary.textContent = `${items[0].networkName || "Fil Bleu"} · ${items.length} ${items.length === 1 ? "ligne" : "lignes"}`;
-    section.append(summary);
-    const body = document.createElement("div");
-    body.className = "settings-collapse-body";
-    const enable = document.createElement("label"), checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.dataset.busNetwork = network;
-    enable.append(checkbox, document.createTextNode(" Inclure ce réseau dans la carte et les calculs"));
-    body.append(enable);
-    for (const info of items.sort((a,b)=>a.id.localeCompare(b.id, "fr", {numeric:true}))) {
-      const row = document.createElement("div");
-      row.className = "route-color-row"; row.dataset.routeId = info.id;
-      const label = document.createElement("div"); label.className = "route-color-label";
-      const name = document.createElement("strong"), title = document.createElement("small");
-      name.textContent = info.shortName || info.id; title.textContent = info.title;
-      label.append(name, title);
-      const controls = document.createElement("div"); controls.className = "display-color-control";
-      const color = document.createElement("input"); color.type = "color"; color.dataset.routeColor = info.id;
-      color.setAttribute("aria-label", "Couleur de " + info.id);
-      const reset = document.createElement("button"); reset.type = "button"; reset.className = "display-row-reset";
-      reset.dataset.resetRoute = info.id; reset.textContent = "↺"; reset.setAttribute("aria-label", "Rétablir la couleur de " + info.id);
-      controls.append(color, reset); row.append(label, controls); body.append(row);
-    }
-    section.append(body); container.append(section);
-  }
 }
 
 function buildRouteColorSettings() {
@@ -825,13 +777,6 @@ function applyTravelNumber(input) {
 
 displaySettingsPanel.addEventListener("input", (event) => {
   const target = event.target;
-  if (target.matches("[data-bus-network]")) {
-    const disabled = new Set(travelSettings.disabledBusNetworks);
-    if (target.checked) disabled.delete(target.dataset.busNetwork); else disabled.add(target.dataset.busNetwork);
-    travelSettings.disabledBusNetworks = [...disabled];
-    saveTravelSettings(); invalidateTravelSettings(); invalidateVisualSettings(); syncUrl();
-    return;
-  }
   if (target.matches("[data-display-toggle]")) {
     displaySettings[target.dataset.displayToggle] = target.checked;
     saveDisplaySettings();
@@ -1241,7 +1186,6 @@ function nearestStations(point, count, includePlanned = true) {
   const nearest = [];
   state.data.stations.forEach((station, index) => {
     if (!includePlanned && station.planned) return;
-    if (station.mode === "BUS" && !(station.displayRoutes || station.routes || []).some(busNetworkEnabled)) return;
     const item = {
       index,
       name: station.name,
@@ -1282,7 +1226,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04s", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04r", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1452,7 +1396,7 @@ function drawBasemap(drawCtx, projectPoint) {
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
     if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended") continue;
-    if (route.mode === "BUS" && (!busNetworkEnabled(route.id) || state.viewportScale < 1.8)) continue;
+    if (route.mode === "BUS" && state.viewportScale < 1.8) continue;
     drawCtx.strokeStyle = routeDisplayColor(route);
     drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : route.mode === "BUS" ? 1.35 : displaySettings.terWidth;
     drawCtx.lineCap = "round";
@@ -1546,7 +1490,7 @@ function drawStations(drawCtx, projectPoint, warp) {
   const labels = [];
   for (const [index, station] of state.data.stations.entries()) {
     if (station.mode === "TER" && ((!station.routes || station.routes.length === 0) || (active && !active[index]))) continue;
-    if (station.mode === "BUS" && (state.viewportScale < 2.4 || !(station.displayRoutes || station.routes || []).some(busNetworkEnabled))) continue;
+    if (station.mode === "BUS" && state.viewportScale < 2.4) continue;
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : station.mode === "BUS" ? Math.max(1.4, displaySettings.stationRadius * 0.62) : displaySettings.stationRadius;
@@ -2086,7 +2030,6 @@ function syncUrl() {
   if (state.includeProjects !== DEFAULT_INCLUDE_PROJECTS) params.set("projects", state.includeProjects ? "1" : "0");
   params.set("calc", SHARE_CALC_VERSION);
   for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) params.set(param, String(travelSettings[key]));
-  if (travelSettings.disabledBusNetworks.length) params.set("offbus", travelSettings.disabledBusNetworks.join(","));
   params.set("walking", state.walkingOnRoads ? "road" : "direct");
   params.set("magnet", displaySettings.railMagnetism ? "1" : "0");
   params.set("magnetscale", String(Math.round(displaySettings.railMagnetMaxScale)));
@@ -2133,9 +2076,9 @@ function restoreUrl() {
   }
   state.includeProjects = params.get("projects") === "1" ? true : params.get("projects") === "0" ? false : DEFAULT_INCLUDE_PROJECTS;
   projectsToggle.checked = state.includeProjects;
-  const hasTravelParams = params.has("offbus") || Object.values(TRAVEL_QUERY_PARAMS).some((param) => params.has(param));
+  const hasTravelParams = Object.values(TRAVEL_QUERY_PARAMS).some((param) => params.has(param));
   if (params.get("calc") === SHARE_CALC_VERSION || hasTravelParams) {
-    const restored = { ...DEFAULT_TRAVEL_SETTINGS, disabledBusNetworks: params.get("offbus")?.split(",") || [] };
+    const restored = { ...DEFAULT_TRAVEL_SETTINGS };
     for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) {
       if (params.has(param)) restored[key] = Number(params.get(param));
     }
@@ -2476,7 +2419,6 @@ async function init() {
   buildIsochroneGradientControls();
   buildEpciColorSettings();
   buildRouteColorSettings();
-  buildBusNetworkSettings();
   syncDisplaySettingsControls();
   restoreUrl();
   if (state.walkingOnRoads) startRoadWalking();

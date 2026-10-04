@@ -2,7 +2,7 @@
 
 Voir [l’inventaire complet des 14 EPCI](../TRANSPORT-SOURCES.md).
 
-- `inventory.json` : AOM, EPCI, réseaux et décisions par ligne ; aucune intégration au moteur à ce stade.
+- `inventory.json` : AOM, EPCI, réseaux et décisions par ligne ; inventaire initial ; voir `../LOCAL-BUS-INTEGRATION-2026-10-04.md` pour l’état d’intégration actuel.
 - `*.zip` : GTFS originaux intacts. **Ogalo est périmé**, conservé comme référence seulement.
 - `*-audit.json` : contenu descriptif, calendriers et empreinte de chaque archive.
 - `*-metadata.json` : métadonnées minimales du catalogue et ressource statique.

@@ -8,7 +8,6 @@ the direct-service corridors. Travel times are deliberately approximate.
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 import re
@@ -255,9 +254,6 @@ def build_stations_and_routes():
         stations.append({"id": "KML:" + name, "name": name, "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     tram = read_json("filbleu_tram.json")
     bus = read_json("filbleu_bus.json")
-    local_bus = read_json("local_bus.json") if (DATA / "local_bus.json").exists() else {}
-    bus["routes"].update(local_bus.get("routes", {}))
-    bus["shapes"].extend(local_bus.get("shapes", []))
     timetable_data = read_json("timetables.json")
     tram_paths = [[xy(*p) for p in shape["points"]] for shape in tram["shapes"]]
     tram_index = {}
@@ -273,11 +269,6 @@ def build_stations_and_routes():
             continue
         station_ids[sid] = len(stations)
         stations.append({"id": sid, "name": item["name"], "point": xy(*item["point"]), "mode": "BUS", "routes": set(), "planned": False, "parentStop": item.get("parent", ""), "displayRoutes": item.get("displayRoutes", [])})
-    for sid, item in local_bus.get("stops", {}).items():
-        if sid in station_ids:
-            raise ValueError("Duplicate local stop: " + sid)
-        station_ids[sid] = len(stations)
-        stations.append({"id": sid, "name": item["name"], "point": xy(*item["point"]), "mode": "BUS", "routes": set(), "planned": False, "network": item.get("network"), "parentStop": item.get("parent", ""), "displayRoutes": item.get("displayRoutes", [])})
     route_waits = {"TRAM A": 4.0, "TRAM B": 4.0, "BHNS C": 3.25}
     route_info = {"TRAM A": {"title": "Tramway A — Vaucanson ↔ Lycée Jean Monnet", "mode": "TRAM", "color": tram["route"]["color"], "planned": False}}
     for route_id, item in bus.get("routes", {}).items():
@@ -285,10 +276,6 @@ def build_stations_and_routes():
         route_info[route_id] = {
             "title": item.get("title", route_id),
             "mode": "BUS",
-            "network": item.get("network", "filbleu"),
-            "networkName": item.get("networkName", "Fil Bleu"),
-            "shortName": item.get("shortName", route_id.removeprefix("BUS ")),
-            "excludedConditionalTrips": item.get("excludedConditionalTrips", 0),
             "color": item.get("color", "#3b6f8f"),
             "planned": False,
             "waitMinutes": route_waits[route_id],
@@ -437,11 +424,10 @@ def build_stations_and_routes():
     return stations, routes, edges, route_waits, route_info
 
 
-def build_graph(stations, edges, route_waits, route_info, preparing_transfers=False):
+def build_graph(stations, edges, route_waits, route_info):
     schedules = read_json("timetables.json")
     bus = read_json("filbleu_bus.json")
-    local_bus = read_json("local_bus.json") if (DATA / "local_bus.json").exists() else {}
-    patterns = schedules["patterns"] + bus.get("patterns", []) + local_bus.get("patterns", [])
+    patterns = schedules["patterns"] + bus.get("patterns", [])
     scheduled_routes = {p["routeId"] for p in patterns}
     by_id = {s["id"]: i for i, s in enumerate(stations)}
     route_states, adjacency = [], []
@@ -756,7 +742,7 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
     if walking_generated:
         covered = set(walking.get("coveredStopIds", []))
         missing = [station["id"] for station in stations if station.get("inSerm") and station["id"] not in covered]
-        if missing and not preparing_transfers:
+        if missing:
             raise RuntimeError(
                 "Walking-transfer table does not cover current SERM stops; regenerate it first: "
                 + ", ".join(missing[:12])
@@ -816,33 +802,26 @@ def build_grid(epci, stations, bounds):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--output", type=Path, default=None)
-    parser.add_argument("--prepare-transfers", action="store_true")
-    args = parser.parse_args()
-    if args.prepare_transfers and (args.output is None or args.output.resolve() == OUTPUT.resolve()):
-        parser.error("Transfer preparation must use a separate --output file")
-    output_path = args.output or OUTPUT
     epci, bounds, boroughs, communes = build_administration()
     stations, routes, edges, route_waits, route_info = build_stations_and_routes()
     for station in stations:
         station["inSerm"] = point_in_polygons(station["point"], epci)
-    route_states, station_states, boarding_states, adjacency, audit_patterns = build_graph(stations, edges, route_waits, route_info, args.prepare_transfers)
+    route_states, station_states, boarding_states, adjacency, audit_patterns = build_graph(stations, edges, route_waits, route_info)
     cells, mask = build_grid(epci, stations, bounds)
     visible_points = [p for route in routes for p in route["points"]] + [rounded(s["point"]) for s in stations]
     explore_bounds = [min(p[0] for p in visible_points) - 20_000, min(p[1] for p in visible_points) - 20_000, max(p[0] for p in visible_points) + 20_000, max(p[1] for p in visible_points) + 20_000]
     walking_source = read_json("walking_transfers.json") if (DATA / "walking_transfers.json").exists() else {"generated": False}
     walking_meta = {key: value for key, value in walking_source.items() if key not in {"pairs", "manualPairs", "coveredStopIds"}}
     output = {
-        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {}), "localBusSources": read_json("local_bus.json").get("sources", []) if (DATA / "local_bus.json").exists() else [], "walkingTransferSource": walking_meta},
+        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {}), "walkingTransferSource": walking_meta},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
         "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "drawPoint": rounded(s.get("drawPoint", s["point"])), "displayOffset": round(s.get("displayOffset", 0), 2), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "parentStop": s.get("parentStop", ""), "displayRoutes": s.get("displayRoutes", []), "inSerm": s["inSerm"]} for s in stations],
         "routeInfo": route_info,
         "routeStates": route_states, "stationStates": station_states, "boardingStates": boarding_states, "timetablePatterns": audit_patterns, "routeWaits": route_waits, "adjacency": adjacency, "cells": cells, "mask": mask,
     }
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(f"Wrote {output_path}: {len(stations)} stations, {len(route_states)} route states, {len(routes)} line segments, {len(cells)} grid cells")
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    print(f"Wrote {OUTPUT}: {len(stations)} stations, {len(route_states)} route states, {len(routes)} line segments, {len(cells)} grid cells")
 
 
 if __name__ == "__main__":
