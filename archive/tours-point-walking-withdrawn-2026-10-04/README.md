@@ -1,11 +1,5 @@
 # Tours selon le temps qu'il faut pour y aller
 
-## Correctif du 4 octobre 2026 — retour au calcul fluide
-
-L’intégration des accès aux points libres sur voirie du commit `59457ba` est retirée du site actif : elle créait des cellules sans valeur, des contours fragmentés et deux recherches routières coûteuses à chaque déplacement. Le site revient au calcul spatial précédent pour la marche directe et l’accès initial/final, en ligne droite à vitesse réglable. Les correspondances arrêt-à-arrêt IGN, les horaires et les multiplicateurs restent actifs.
-
-Le graphe compact, ses scripts et ses tests sont conservés comme préparation expérimentale ; le navigateur ne le télécharge ni ne l’instancie. Le lot marche depuis les points libres n’est **pas terminé**. Avant de le réactiver : séparer calcul détaillé et surface continue, traiter les cellules sans accès plausible et mesurer le déplacement sur mobile sans bloquer le dessin.
-
 Carte interactive des trajets estimés en TER, tram, BHNS et bus Fil Bleu. Elle s'ouvre sur les 14 EPCI du SERM de Touraine tout en laissant explorer les lignes connectées au-delà. La carte se déplace directement par glisser-déposer ; les anciens boutons « main » et verrouillage de l'arrivée ont été supprimés.
 
 Les isochrones surfaciques restent limités au périmètre SERM. Hors SERM, les gares accessibles sont signalées ponctuellement sans fabriquer de grand halo territorial. Les courbes restent centrées sur le **départ** quand une arrivée est ajoutée. Les limites des 425 communes IGN du SERM sont visibles ; leurs noms apparaissent au zoom rapproché. Les lignes et petits arrêts de bus sont progressivement masqués au dézoom pour préserver la lisibilité, mais restent présents dans le calcul.
@@ -60,7 +54,7 @@ contre un calcul exhaustif : aucun écart dans le jeu courant. Dans trois passag
 sur la même machine, les 29 084 cellules passent de 1 366–1 798 ms à 70–88 ms.
 Ces mesures concernent le calcul Node, pas le dessin ni une garantie mobile.
 
-**Reste à faire dans la passation :** finaliser la marche depuis/vers les points libres sans dégrader les contours et la fluidité, puis vélo et réseaux bus hors SMT.
+**Reste à faire dans la passation :** vélo seul et vélo jusqu’à une gare ; réseaux bus hors SMT. Le lot des accès depuis/vers des points libres et de la marche directe est intégré depuis le 4 octobre 2026 ; voir la section ci-dessous.
 
 ## Données
 
@@ -133,9 +127,7 @@ Dans **Paramètres → Attentes**, les multiplicateurs TER, tram, bus et navette
 **Paramètres → Réseau → Étiquettes des arrêts de bus** masque les noms uniquement ; le réseau et son calcul restent actifs. Ce choix d’affichage est mémorisé localement.
 
 
-### Expérimentation retirée du site actif — marche depuis les points libres
-
-Les paragraphes suivants décrivent l’essai du commit `59457ba`, conservé pour préparer une prochaine intégration. Ils ne décrivent pas le calcul actuellement publié.
+### Marche depuis et vers les points libres — 4 octobre 2026
 
 Dans le SERM, le moteur utilise le réseau piéton IGN pour **départ → premier arrêt**, **dernier arrêt → destination** et **marche seule**. Il compare ces possibilités avec les transports, en conservant les durées horaires et les correspondances existantes. Les malus d’entrée et de sortie restent des marges résiduelles réglables, distinctes des longueurs de voirie. Un départ arbitraire ne se limite pas aux quelques arrêts les plus proches. La vitesse de marche, par défaut 4,8 km/h, est modifiable dans **Paramètres → Marche** et incluse dans les liens partagés ; elle agit aussi sur les correspondances piétonnes.
 

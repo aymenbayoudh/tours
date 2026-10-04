@@ -1,10 +1,4 @@
-## Correctif du 4 octobre 2026 — retour au calcul fluide
-
-L’intégration des accès aux points libres sur voirie du commit `59457ba` est retirée du site actif : elle créait des cellules sans valeur, des contours fragmentés et deux recherches routières coûteuses à chaque déplacement. Le site revient au calcul spatial précédent pour la marche directe et l’accès initial/final, en ligne droite à vitesse réglable. Les correspondances arrêt-à-arrêt IGN, les horaires et les multiplicateurs restent actifs.
-
-Le graphe compact, ses scripts et ses tests sont conservés comme préparation expérimentale ; le navigateur ne le télécharge ni ne l’instancie. Le lot marche depuis les points libres n’est **pas terminé**. Avant de le réactiver : séparer calcul détaillé et surface continue, traiter les cellules sans accès plausible et mesurer le déplacement sur mobile sans bloquer le dessin.
-
-# Historique de l’essai retiré — 4 octobre 2026
+# Mise à jour — 4 octobre 2026
 
 Les accès depuis/vers les points libres et la marche directe sont maintenant intégrés sur le graphe IGN dans le SERM. Les paragraphes du 3 octobre ci-dessous sont un état historique. Voir la section « Marche depuis et vers les points libres » du README pour l’architecture, les limites de couverture et les raccords locaux.
 
