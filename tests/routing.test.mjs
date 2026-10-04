@@ -32,46 +32,66 @@ d.stations.forEach((station,index)=>{
   group.push(index); parentGroups.set(station.parentStop,group);
 });
 check([...parentGroups.values()].some(group=>group.length>=2),'Opposite/related physical bus stops were unexpectedly merged');
-let sameCodeChanges=0,crossMode=0,sameRoutePreferenceEdges=0;
-const alightHub=Array.from({length:d.stations.length},()=>new Map());
-const boardHub=Array.from({length:d.stations.length},()=>new Map());
-const hubKey=(state)=>state.routeId??'__BUS_GENERIC__';
+let sameCodeChanges=0,crossMode=0,sameRoutePreferenceEdges=0,redundantSpToursPreferenceEdges=0;
+const alightHub=Array.from({length:d.stations.length},()=>[]);
+const boardHub=Array.from({length:d.stations.length},()=>[]);
 d.routeStates.forEach((state,index)=>{
-  if(state.role==='alight')alightHub[state.stationIndex].set(hubKey(state),index);
-  if(state.role==='board')boardHub[state.stationIndex].set(hubKey(state),index);
+  if(state.role==='alight')alightHub[state.stationIndex].push(index);
+  if(state.role==='board')boardHub[state.stationIndex].push(index);
 });
-const expectedHubKey=(routeId)=>d.routeInfo?.[routeId]?.mode==='BUS'?'__BUS_GENERIC__':routeId;
+const spdcIndex=d.stations.findIndex(s=>s.id==='SNCF:87571240');
+const toursIndex=d.stations.findIndex(s=>s.id==='SNCF:87571000');
+check(spdcIndex>=0&&toursIndex>=0,'Tours/Saint-Pierre rail fixtures missing');
+const nextStopFor=(state,stationIndex)=>{
+  if(!Number.isInteger(state?.pattern))return -1;
+  const pattern=d.timetablePatterns[state.pattern];
+  if(!pattern)return -1;
+  const pos=pattern.stops.indexOf(stationIndex);
+  return pos>=0&&pos+1<pattern.stops.length?pattern.stops[pos+1]:-1;
+};
+const matchesHub=(serviceState,hubState,stationIndex)=>{
+  const mode=d.routeInfo?.[serviceState.routeId]?.mode;
+  if(mode==='BUS')return hubState.routeId===null;
+  if(stationIndex===spdcIndex&&Number.isInteger(serviceState.pattern)){
+    return hubState.routeId===serviceState.routeId&&hubState.pattern===serviceState.pattern;
+  }
+  return hubState.routeId===serviceState.routeId;
+};
 const transferEdges=(fromStation,toStation)=>{
+  const targets=new Set(boardHub[toStation]);
   const found=[];
-  for(const first of alightHub[fromStation].values())for(const edge of d.adjacency[first]){
-    if([...boardHub[toStation].values()].includes(edge[0]))found.push(edge);
+  for(const first of alightHub[fromStation])for(const edge of d.adjacency[first]){
+    if(targets.has(edge[0]))found.push(edge);
   }
   return found;
 };
 const transferEdge=(fromStation,toStation)=>transferEdges(fromStation,toStation)[0];
+
 for(let i=0;i<d.stations.length;i++){
-  if(d.stationStates[i].length){
-    for(const a of d.stationStates[i]){
-      const key=expectedHubKey(d.routeStates[a].routeId);
-      const hub=alightHub[i].get(key);
-      check(Number.isInteger(hub),'Missing route-aware alighting hub');
-      check(d.adjacency[a].some(([n])=>n===hub),'Arrival not linked to route-aware alighting hub');
-    }
+  for(const a of d.stationStates[i]){
+    const source=d.routeStates[a];
+    const hub=alightHub[i].find(h=>matchesHub(source,d.routeStates[h],i)&&d.adjacency[a].some(([n])=>n===h));
+    check(Number.isInteger(hub),'Missing route/pattern-aware alighting hub');
   }
-  if(d.boardingStates[i].length){
-    for(const b of d.boardingStates[i]){
-      const key=expectedHubKey(d.routeStates[b].routeId);
-      const hub=boardHub[i].get(key);
-      check(Number.isInteger(hub),'Missing route-aware boarding hub');
-      check(d.adjacency[hub].some(([n])=>n===b),'Route-aware boarding hub not linked to departure');
-    }
+  for(const b of d.boardingStates[i]){
+    const target=d.routeStates[b];
+    const hub=boardHub[i].find(h=>matchesHub(target,d.routeStates[h],i)&&d.adjacency[h].some(([n])=>n===b));
+    check(Number.isInteger(hub),'Missing route/pattern-aware boarding hub');
   }
-  for(const [firstKey,first] of alightHub[i])for(const [secondKey,second] of boardHub[i]){
+  for(const first of alightHub[i])for(const second of boardHub[i]){
     const edge=d.adjacency[first].find(([n])=>n===second);
     check(Boolean(edge),'Missing same-stop route interchange');
-    const expected=firstKey===secondKey&&firstKey.startsWith('TER ')?1:0;
-    check((Number(edge[3])||0)===expected,'Wrong same-route profile-change metadata');
-    if(expected)sameRoutePreferenceEdges++;
+    const a=d.routeStates[first],b=d.routeStates[second];
+    const sameRoute=Boolean(a.routeId&&a.routeId===b.routeId&&d.routeInfo?.[a.routeId]?.mode==='TER');
+    const redundantSpTours=Boolean(
+      i===spdcIndex
+      && nextStopFor(a,i)===toursIndex
+      && nextStopFor(b,i)===toursIndex
+    );
+    const expected=(sameRoute||redundantSpTours)?1:0;
+    check((Number(edge[3])||0)===expected,'Wrong artificial-transfer preference metadata');
+    if(sameRoute)sameRoutePreferenceEdges++;
+    if(redundantSpTours&&!sameRoute)redundantSpToursPreferenceEdges++;
   }
   for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
     const x=d.routeStates[a],y=d.routeStates[b];
@@ -80,11 +100,24 @@ for(let i=0;i<d.stations.length;i++){
   }
 }
 check(sameRoutePreferenceEdges>0,'No TER same-route preference edges found');
+check(redundantSpToursPreferenceEdges>0,'No redundant Saint-Pierre→Tours cross-route preference edges found');
+
+// The exception must remain possible: a train terminating at Saint-Pierre (or
+// heading elsewhere) may legitimately connect to the NAVETTE/another TER for Tours.
+const navetteToTours=d.timetablePatterns.findIndex(p=>p.routeId==='NAVETTE'&&p.stops[0]===spdcIndex&&p.stops[1]===toursIndex);
+check(navetteToTours>=0,'Saint-Pierre→Tours navette pattern missing');
+const endingAtSpdc=d.timetablePatterns.findIndex(p=>p.stops.at(-1)===spdcIndex&&p.routeId!=='NAVETTE');
+check(endingAtSpdc>=0,'No train terminating at Saint-Pierre fixture');
+const endingAlight=alightHub[spdcIndex].find(h=>d.routeStates[h].pattern===endingAtSpdc);
+const navetteBoard=boardHub[spdcIndex].find(h=>d.routeStates[h].pattern===navetteToTours);
+check(Number.isInteger(endingAlight)&&Number.isInteger(navetteBoard),'Saint-Pierre exception hubs missing');
+const exceptionEdge=d.adjacency[endingAlight].find(([n])=>n===navetteBoard);
+check(Boolean(exceptionEdge)&&(Number(exceptionEdge[3])||0)===0,'Train ending at Saint-Pierre must keep an ordinary navette transfer to Tours');
 const roadWalking=Boolean(d.meta?.walkingTransferSource?.generated);
 let roadTransferEdges=0;
 for(let i=0;i<d.stations.length;i++){
-  if(!alightHub[i].size)continue;
-  for(const first of alightHub[i].values())for(const edge of d.adjacency[first]){
+  if(!alightHub[i].length)continue;
+  for(const first of alightHub[i])for(const edge of d.adjacency[first]){
     const [next,,walkMetres]=edge;
     const state=d.routeStates[next];
     if(state?.role!=='board'||state.stationIndex===i)continue;
@@ -103,8 +136,8 @@ for(let i=0;i<d.stations.length;i++)for(let j=i+1;j<d.stations.length;j++){
   if(Math.hypot(...d.stations[i].point.map((x,k)=>x-d.stations[j].point[k]))>650)continue;
   const bothInSerm=d.stations[i].inSerm&&d.stations[j].inSerm;
   if(!roadWalking||!bothInSerm){
-    if(alightHub[i].size&&boardHub[j].size)check(transferEdges(i,j).length>0,'Missing nearby fallback transfer');
-    if(alightHub[j].size&&boardHub[i].size)check(transferEdges(j,i).length>0,'Missing reverse nearby fallback transfer');
+    if(alightHub[i].length&&boardHub[j].length)check(transferEdges(i,j).length>0,'Missing nearby fallback transfer');
+    if(alightHub[j].length&&boardHub[i].length)check(transferEdges(j,i).length>0,'Missing reverse nearby fallback transfer');
   }
   if(d.stations[i].mode!==d.stations[j].mode)crossMode++;
 }
@@ -236,7 +269,7 @@ check(d.timetablePatterns.some(pattern=>{
   return a>=0&&b>=0&&a!==b;
 }),'P14 direct Mehun–Vierzon pattern missing');
 
-const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,sameRoutePreferenceEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
+const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,sameRoutePreferenceEdges,redundantSpToursPreferenceEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
 
 // Multipliers apply to each boarding, while observed in-vehicle times stay intact.
