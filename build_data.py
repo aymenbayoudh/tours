@@ -500,14 +500,16 @@ def build_graph(stations, edges, route_waits, route_info):
 
     def artificial_transfer_change(first_key, second_key, first_station, second_station):
         first_route, second_route = key_route(first_key), key_route(second_key)
-        # Switching between representative profiles of the same TER remains
-        # possible, but is always less plausible than staying on one direct
-        # representative service.
-        if (
-            first_route is not None
-            and first_route == second_route
-            and route_info.get(first_route, {}).get("mode") == "TER"
-        ):
+        first_mode = route_info.get(first_route, {}).get("mode") if first_route is not None else None
+        second_mode = route_info.get(second_route, {}).get("mode") if second_route is not None else None
+
+        # Prefer a one-seat TER service whenever one exists. Every TER→TER
+        # interchange therefore adds one hidden preference unit, regardless of
+        # whether the codes are identical (P7→P7) or different (P33→P34,
+        # omnibus P→express K, etc.). The preference is finite in routing.mjs:
+        # these interchanges remain fully available when they are genuinely
+        # needed, while 0 changes beats 1 and 1 beats 2 in normal cases.
+        if first_mode == "TER" and second_mode == "TER":
             return 1
 
         # Specific Tours / Saint-Pierre-des-Corps safeguard: if the incoming
