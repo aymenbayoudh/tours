@@ -61,42 +61,78 @@ def representative(groups):
     return result
 
 def rail(path):
-    current=json.loads((ROOT/'site/data/commute_map_data.json').read_text())
-    allowed={s['id'].split(':',1)[1] for s in current['stations'] if s['id'].startswith('SNCF:')}
-    codes={r.removeprefix('TER ') for r in current['routeInfo'] if r.startswith('TER ')}
+    # Keep the import scope stable: a regional rail service is relevant when one
+    # of its trips serves at least two stations from the map's official SNCF
+    # inventory. Do not infer relevance from the route name containing "Tours":
+    # that excluded complementary services such as P14, P16, P10 and K5+.
+    anchor_stations = {item['uic'] for item in json.loads((DATA/'sncf_stations.json').read_text())}
+
+    def route_id_for(code):
+        # Preserve the historical aliases used by the KML/map where they are
+        # deliberate; every other regional code keeps its real GTFS code.
+        if code == 'A01': return 'NAVETTE'
+        if code == 'K16+': return 'TER K16'
+        if code == 'F11': return 'TER P11'
+        if re.match(r'^[A-Z]\d+\+?$', code or ''): return 'TER '+code
+        return None
+
     with zipfile.ZipFile(path) as z:
-        dates=active_service_dates(z); active=set(dates); route_map={}
+        dates=active_service_dates(z); active=set(dates)
+        route_map={}; route_source={}
         all_stops={r['stop_id']:r for r in rows(z,'stops.txt')}
         for r in rows(z,'routes.txt'):
-            code=r['route_short_name']; name=r['route_long_name']
-            if r['route_type']!='2' or not ('Tours' in name or ('Orléans' in name and code=='K1')):continue
-            if code=='A01':base='NAVETTE'
-            elif code=='K16+':base='TER K16'
-            elif code=='F11':base='TER P11'
-            elif code in codes:base='TER '+code
-            else:continue
+            if r['route_type']!='2': continue
+            base=route_id_for(r['route_short_name'])
+            if not base: continue
             route_map[r['route_id']]=base
+            route_source[r['route_id']]={
+                'code': r['route_short_name'],
+                'name': r['route_long_name'],
+                'title': f"{r['route_short_name']} - {r['route_long_name']}",
+            }
+
         trips={r['trip_id']:r for r in rows(z,'trips.txt') if r['route_id'] in route_map and r['service_id'] in active}
-        by_trip=defaultdict(list); bus_trips=set(); station_meta={}
+        by_trip=defaultdict(list); bus_trips=set()
         for r in rows(z,'stop_times.txt'):
             if r['trip_id'] not in trips:continue
             match=re.search(r'(\d{8})$',r['stop_id']); uic=match.group(1) if match else ''
             if 'Car ' in r['stop_id']:bus_trips.add(r['trip_id'])
             st=all_stops[r['stop_id']]
-            station_meta[uic]={'uic':uic,'name':st['stop_name'],'point':[float(st['stop_lon']),float(st['stop_lat'])]}
-            by_trip[r['trip_id']].append((int(r['stop_sequence']),uic,seconds(r['arrival_time']),seconds(r['departure_time']),r.get('pickup_type','0')!='1',r.get('drop_off_type','0')!='1'))
+            by_trip[r['trip_id']].append((int(r['stop_sequence']),uic,seconds(r['arrival_time']),seconds(r['departure_time']),r.get('pickup_type','0')!='1',r.get('drop_off_type','0')!='1',st))
+
         groups=defaultdict(list); departures=defaultdict(lambda:defaultdict(list))
+        station_meta={}; retained_routes={}
         for tid,stops in by_trip.items():
             stops.sort()
-            if tid in bus_trips or sum(s[1] in allowed for s in stops)<2:continue
+            if tid in bus_trips or sum(s[1] in anchor_stations for s in stops)<2:continue
             if any(b[2]<a[3] for a,b in zip(stops,stops[1:])):continue
-            r=trips[tid];zero=stops[0][3]
+            r=trips[tid]; base=route_map[r['route_id']]; zero=stops[0][3]
+            retained_routes.setdefault(base, route_source[r['route_id']])
+            for s in stops:
+                if not s[1]: continue
+                st=s[6]
+                station_meta[s[1]]={'uic':s[1],'name':st['stop_name'],'point':[float(st['stop_lon']),float(st['stop_lat'])]}
             for day in dates[r['service_id']]:
-                departures[route_map[r['route_id']]][(day,r.get('direction_id') or stops[-1][1],stops[0][1])].append(zero)
-            groups[(route_map[r['route_id']],tuple('SNCF:'+s[1] for s in stops),tuple((s[4],s[5]) for s in stops))].append({'arrivals':[(s[2]-zero)/60 for s in stops],'departures':[(s[3]-zero)/60 for s in stops],'tripId':tid,'train':r['trip_headsign']})
+                departures[base][(day,r.get('direction_id') or stops[-1][1],stops[0][1])].append(zero)
+            groups[(base,tuple('SNCF:'+s[1] for s in stops if s[1]),tuple((s[4],s[5]) for s in stops if s[1]))].append({
+                'arrivals':[(s[2]-zero)/60 for s in stops if s[1]],
+                'departures':[(s[3]-zero)/60 for s in stops if s[1]],
+                'tripId':tid,
+                'train':r['trip_headsign'],
+            })
+
         patterns=representative(groups)
         feed=list(rows(z,'feed_info.txt'))[0]
-    return {'source':'https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip','feedVersion':feed['feed_version'],'referenceWeek':[d.isoformat() for d in (DAYS[0],DAYS[-1])],'stations':[station_meta[uic] for uic in sorted({sid.split(':')[1] for p in patterns for sid in p['stops']})],'waitEstimates':wait_estimates(departures),'excludedCarTrips':len(bus_trips),'patterns':patterns}
+    return {
+        'source':'https://eu.ftp.opendatasoft.com/sncf/plandata/Export_OpenData_SNCF_GTFS_NewTripId.zip',
+        'feedVersion':feed['feed_version'],
+        'referenceWeek':[d.isoformat() for d in (DAYS[0],DAYS[-1])],
+        'stations':[station_meta[uic] for uic in sorted({sid.split(':')[1] for p in patterns for sid in p['stops']})],
+        'routes':retained_routes,
+        'waitEstimates':wait_estimates(departures),
+        'excludedCarTrips':len(bus_trips),
+        'patterns':patterns,
+    }
 
 def tram(path):
     with zipfile.ZipFile(path) as z:
