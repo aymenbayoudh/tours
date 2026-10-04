@@ -34,6 +34,7 @@ jobs:
           node tests/point_walking.test.mjs
           node tests/walking_surface.test.mjs
           node tests/routing.test.mjs
+          node tests/intermodal_feeder.test.mjs
           node tests/ter_profile_preference.test.mjs
           node tests/bus_data.test.mjs
           node tests/local_bus.test.mjs
