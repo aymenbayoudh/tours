@@ -333,6 +333,37 @@ def build_stations_and_routes():
             "timetableOnly": True,
         }
         route_waits[route_id] = 5.0 if route_id == "NAVETTE" else 15.0
+
+    # Missing timetable-only routes get display geometry reconstructed on the
+    # official SNCF Réseau RFN graph. This geometry is visual/snapping support
+    # only: service, stopping pattern and travel times still come from GTFS.
+    visual_route_ids = {route["id"] for route in routes}
+    shape_path = DATA / "ter_route_shapes.json"
+    if shape_path.exists():
+        shape_data = json.loads(shape_path.read_text(encoding="utf-8"))
+        for route_id, variants in shape_data.get("routes", {}).items():
+            if route_id in visual_route_ids or route_id not in route_info:
+                continue
+            info = route_info[route_id]
+            added = 0
+            for variant in variants:
+                points = simplify([xy(*p[:2]) for p in variant], 120)
+                if len(points) < 2:
+                    continue
+                routes.append({
+                    "id": route_id,
+                    "title": info.get("title", route_id),
+                    "color": info.get("color", "#345c77"),
+                    "mode": info.get("mode", "TER"),
+                    "officialTrace": True,
+                    "points": [rounded(p) for p in points],
+                })
+                added += 1
+            if added:
+                info["traceSource"] = shape_data.get("source", "SNCF Réseau RFN")
+                info["timetableOnly"] = False
+                visual_route_ids.add(route_id)
+
     rail_base = []
     for feature in read_json("sncf_lines.json"):
         geometry = feature["geometry"]
