@@ -90,17 +90,29 @@ for(let i=0;i<d.stations.length;i++){
     check(Boolean(edge),'Missing same-stop route interchange');
     const firstCode=(a.routeId||'').replace(/^TER /,'');
     const secondCode=(b.routeId||'').replace(/^TER /,'');
+    const firstFamily=firstCode[0]||'';
+    const secondFamily=secondCode[0]||'';
     const artificialTer=Boolean(
       firstMode==='TER'&&secondMode==='TER'
-      && (a.routeId===b.routeId || (firstCode.startsWith('P')&&secondCode.startsWith('P')))
+      && (a.routeId===b.routeId || (firstFamily==='P'&&secondFamily==='P'))
+    );
+    const pkNeutral=Boolean(
+      firstMode==='TER'&&secondMode==='TER'
+      && new Set([firstFamily,secondFamily]).size===2
+      && [firstFamily,secondFamily].includes('P')
+      && [firstFamily,secondFamily].includes('K')
     );
     const redundantSpTours=Boolean(
       i===spdcIndex
       && nextStopFor(a,i)===toursIndex
       && nextStopFor(b,i)===toursIndex
     );
-    const expected=(artificialTer||redundantSpTours)?1:0;
-    check((Number(edge[3])||0)===expected,'Wrong artificial-transfer preference metadata');
+    let expected=0;
+    if(artificialTer) expected=2;
+    else if(pkNeutral) expected=0;
+    else if(redundantSpTours) expected=2;
+    else if(a.routeId&&b.routeId&&a.routeId!==b.routeId) expected=1;
+    check((Number(edge[3])||0)===expected,'Wrong weighted comfort-transfer metadata');
     if(artificialTer)artificialTerPreferenceEdges++;
     if(redundantSpTours&&!artificialTer)redundantSpToursPreferenceEdges++;
   }
