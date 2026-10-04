@@ -66,7 +66,7 @@ function directVsStitched(withCrossRoute=false){
 
 {
   const d=directVsStitched(false);
-  const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0});
+  const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
   const arrival=model.stationArrivals[3];
   assert.equal(model.sameRouteChanges[arrival.node],0,'continuous P7 must beat stitched P7');
   assert.equal(arrival.node,1,'continuous P7 arrival should be selected despite slower raw stitched minutes');
@@ -75,7 +75,7 @@ function directVsStitched(withCrossRoute=false){
 
 {
   const d=directVsStitched(true);
-  const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0});
+  const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
   const journey=describeJourney(d,model,d.stations[3].point);
   assert.equal(model.sameRouteChanges[model.stationArrivals[3].node],0);
   assert.deepEqual(journey.legs.map(l=>l.routeId),['TER P7','TER KX'],'cross-route TER interchange must remain available');
@@ -102,7 +102,7 @@ function directVsStitched(withCrossRoute=false){
   d.boardingStates[0].push(a2); d.boardingStates[1].push(b4); d.boardingStates[2].push(c2);
   d.stationStates[1].push(b3); d.stationStates[2].push(c1); d.stationStates[3].push(d2);
 
-  const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0});
+  const model=buildTravelModel(d,d.stations[0].point,true,{terWaitFactor:0,stationEntryPenalty:0,stationExitPenalty:0,walkSpeedKmh:0.5});
   const arrival=model.stationArrivals[3];
   assert.equal(model.sameRouteChanges[arrival.node],1,'one same-route profile change must beat two');
   assert.equal(arrival.node,d1);
