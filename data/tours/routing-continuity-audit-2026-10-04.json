@@ -1,0 +1,127 @@
+{
+  "counts": {
+    "TER": 859,
+    "TRAM": 58,
+    "BUS": 11936,
+    "BHNS": 60
+  },
+  "edgeExamples": [
+    {
+      "route": "TRAM A",
+      "from": "Charcot",
+      "to": "Liberté",
+      "walk": 369.4,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Gare de Tours",
+      "to": "Jean Jaurès",
+      "walk": 564.2,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Verdun",
+      "to": "Suzanne Valadon",
+      "walk": 446.6,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Rabière",
+      "to": "Bulle D'o",
+      "walk": 501.2,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Place Choiseul",
+      "to": "Charles Barrier",
+      "walk": 582.3,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Trois Rivières",
+      "to": "Christ Roi",
+      "walk": 568.8,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Liberté",
+      "to": "Charcot",
+      "walk": 369.4,
+      "comfort": 1
+    },
+    {
+      "route": "TRAM A",
+      "from": "Liberté",
+      "to": "Saint Paul",
+      "walk": 451,
+      "comfort": 1
+    }
+  ],
+  "checks": 26848,
+  "repeats": 120,
+  "withContinuousAlternative": 72,
+  "repeatModes": {
+    "TER": 120
+  },
+  "samples": [
+    {
+      "origin": "Tours",
+      "to": "Bournezeau",
+      "continuousAlternative": false,
+      "waitFactor": 0,
+      "minutes": 179.60000000000002,
+      "preference": "comfort",
+      "legs": [
+        {
+          "route": "TER K1",
+          "from": "Tours",
+          "to": "Saumur",
+          "minutes": 30.999999999999996
+        },
+        {
+          "route": "TER P65",
+          "from": "Saumur",
+          "to": "Chantonnay",
+          "minutes": 128
+        },
+        {
+          "route": "TER P65",
+          "from": "Chantonnay",
+          "to": "Bournezeau",
+          "minutes": 10
+        }
+      ]
+    },
+    {
+      "origin": "Tours",
+      "to": "La Chapelle-sur-Loire",
+      "continuousAlternative": true,
+      "waitFactor": 0,
+      "minutes": 33.1,
+      "preference": "pure",
+      "legs": [
+        {
+          "route": "TER P1",
+          "from": "Tours",
+          "to": "Cinq-Mars-la-Pile",
+          "minutes": 11
+        },
+        {
+          "route": "TER P1",
+          "from": "Cinq-Mars-la-Pile",
+          "to": "La Chapelle-sur-Loire",
+          "minutes": 15
+        }
+      ]
+    }
+  ],
+  "auditedCommit": "ab0029f97fa65e19049f57d67a347689ae41f3b4",
+  "accessMode": "straight-line; road walking transfer edges are retained in graph",
+  "note": "Counts are graph candidates or sampled journeys, not a claim that every same-line change is invalid. ContinuousAlternative checks stop order; a full decision must also check boarding permissions and service applicability."
+}

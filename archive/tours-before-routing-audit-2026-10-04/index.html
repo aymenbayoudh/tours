@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>C'est encore loin ?</title>
+    <meta
+      name="description"
+      content="Cartogramme interactif des temps de trajet en TER et tram autour de Tours et du SERM de Touraine."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./site/styles.css?v=2026-10-04n" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">TER, tram et BHNS • Tours et SERM de Touraine</p>
+        <h1>C'est encore loin ?</h1>
+        <p class="lede">
+          Le départ est à la gare de Tours par défaut. Cliquez sur la carte pour poser un point d'arrivée.
+          Déplacez l'un ou l'autre des points pour que la carte se mette à jour en direct.
+        </p>
+        <p class="lede">
+          Idée originale et visualisation : Anthony Castrio et son
+          <a href="https://castrio.me/nyc/" target="_blank" rel="noopener noreferrer">cartogramme new-yorkais</a>.
+          Cette version l'applique à la Touraine et aux lignes TER voisines, avec des courbes de 15 à 120 minutes.
+        </p>
+      </header>
+
+      <section class="map-card">
+        <div class="map-toolbar">
+          <div>
+            <h2>Temps de trajet</h2>
+            <p id="statusText">Chargement du réseau…</p>
+          </div>
+          <div class="toolbar-actions">
+            <button id="settingsButton" type="button" class="ghost" aria-expanded="false" aria-controls="settingsPanel">Options</button>
+            <button id="displaySettingsButton" type="button" class="ghost" aria-expanded="false" aria-controls="displaySettingsPanel">Paramètres</button>
+            <button id="locateButton" type="button" class="ghost">Ma position</button>
+            <button id="shareButton" type="button" class="ghost">Partager</button>
+            <button id="fullscreenButton" type="button" class="ghost">Plein écran</button>
+          </div>
+        </div>
+
+        <div id="settingsPanel" class="settings-panel" hidden>
+          <div class="settings-header">
+            <h3>Options</h3>
+            <button id="settingsClose" type="button" class="icon-button" aria-label="Fermer">×</button>
+          </div>
+          <div class="controls">
+            <div id="outlineOptions" class="contour-options">
+              <span>contour</span>
+              <label class="toggle"><input type="checkbox" data-outline="15" checked /> 15 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="30" checked /> 30 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="45" /> 45 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="60" checked /> 60 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="90" /> 90 min</label>
+              <label class="toggle"><input type="checkbox" data-outline="120" /> 120 min</label>
+            </div>
+            <label class="slider">
+              <span id="maxTimeLabel">Temps max. 90 min</span>
+              <input id="maxTimeInput" type="range" min="20" max="180" step="5" value="90" />
+            </label>
+            <label class="toggle"><input id="projectsToggle" type="checkbox" checked /> Inclure tram B et BHNS C (projets 2028) dans les temps estimés</label>
+          </div>
+        </div>
+
+        <div id="sharePanel" class="share-panel" hidden>
+          <p id="shareUrl" class="share-url"></p>
+          <button id="copyLinkButton" type="button">Copier le lien</button>
+        </div>
+
+        <div id="displaySettingsScrim" class="display-settings-scrim" hidden></div>
+        <section id="displaySettingsPanel" class="display-settings-panel" hidden aria-label="Paramètres d’affichage">
+          <div class="display-settings-header">
+            <div>
+              <h3>Paramètres d’affichage</h3>
+            </div>
+            <button id="displaySettingsClose" type="button" class="icon-button" aria-label="Fermer les paramètres">×</button>
+          </div>
+          <div class="display-settings-scroll">
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Placement des points</strong></summary>
+              <div class="settings-collapse-body"><div class="display-settings-grid">
+                <span>Magnétisme vers les gares TER</span><label><input type="checkbox" data-display-toggle="railMagnetism" aria-label="Magnétisme vers les gares TER" checked> Activer</label>
+                <span>Rayon du magnétisme TER</span>
+                <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="railMagnetRadiusKm" data-delta="-0.1" aria-label="Réduire le rayon du magnétisme">−</button><input aria-label="Rayon du magnétisme TER" data-travel-number="railMagnetRadiusKm" type="number" min="0.1" max="3" step="0.1" inputmode="decimal"><small>km</small><button type="button" class="display-step-button" data-travel-adjust="railMagnetRadiusKm" data-delta="0.1" aria-label="Augmenter le rayon du magnétisme">+</button><button type="button" class="display-row-reset" data-reset-travel="railMagnetRadiusKm" aria-label="Rétablir le rayon du magnétisme">↺</button></label>
+                <span>Magnétisme désactivé si la carte est plus zoomée que</span><label class="display-number-control"><small>1 :</small><button type="button" class="display-step-button" data-adjust="railMagnetMaxScale" data-delta="-50000" aria-label="Réduire le seuil d’échelle du magnétisme">−</button><input aria-label="Seuil d’échelle au-delà duquel le magnétisme TER est désactivé en zoomant" data-display-number="railMagnetMaxScale" type="number" min="50000" max="5000000" step="50000" inputmode="numeric"><button type="button" class="display-step-button" data-adjust="railMagnetMaxScale" data-delta="50000" aria-label="Augmenter le seuil d’échelle du magnétisme">+</button><button type="button" class="display-row-reset" data-reset-display="railMagnetMaxScale" aria-label="Rétablir le seuil d’échelle du magnétisme">↺</button></label>
+                <span>Taille des petites zones isochrones</span><label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochronePocketScale" data-delta="-0.1" aria-label="Réduire Taille des petites zones isochrones">−</button><input aria-label="Taille des petites zones isochrones" data-display-number="isochronePocketScale" type="number" min="0.5" max="3" step="0.1" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-adjust="isochronePocketScale" data-delta="0.1" aria-label="Augmenter Taille des petites zones isochrones">+</button><button type="button" class="display-row-reset" data-reset-display="isochronePocketScale" aria-label="Rétablir Taille des petites zones isochrones">↺</button></label>
+              </div></div>
+            </details>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Marche</strong></summary>
+              <div class="settings-collapse-body"><div class="display-settings-grid">
+                <label for="roadWalkingToggle">Suivre la voirie IGN dans le SERM</label><input id="roadWalkingToggle" type="checkbox" checked>
+                <span>Vitesse de marche</span>
+                <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="walkSpeedKmh" data-delta="-0.2" aria-label="Réduire la vitesse de marche">−</button><input aria-label="Vitesse de marche en kilomètres par heure" data-travel-number="walkSpeedKmh" type="number" min="1" max="8" step="0.2" inputmode="decimal"><small>km/h</small><button type="button" class="display-step-button" data-travel-adjust="walkSpeedKmh" data-delta="0.2" aria-label="Augmenter la vitesse de marche">+</button><button type="button" class="display-row-reset" data-reset-travel="walkSpeedKmh" aria-label="Rétablir la vitesse de marche">↺</button></label>
+              </div></div>
+            </details>
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Attentes</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="display-settings-grid">
+                  <span>Attentes TER · multiplicateur</span>
+<label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="terWaitFactor" data-delta="-0.25" aria-label="Réduire les attentes TER">−</button><input aria-label="Multiplicateur des attentes TER" data-travel-number="terWaitFactor" type="number" min="0" max="3" step="0.25" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-travel-adjust="terWaitFactor" data-delta="0.25" aria-label="Augmenter les attentes TER">+</button><button type="button" class="display-row-reset" data-reset-travel="terWaitFactor" aria-label="Rétablir les attentes TER">↺</button></label>
+                  <span>Attentes tram · multiplicateur</span>
+<label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="tramWaitFactor" data-delta="-0.25" aria-label="Réduire les attentes tram">−</button><input aria-label="Multiplicateur des attentes tram" data-travel-number="tramWaitFactor" type="number" min="0" max="3" step="0.25" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-travel-adjust="tramWaitFactor" data-delta="0.25" aria-label="Augmenter les attentes tram">+</button><button type="button" class="display-row-reset" data-reset-travel="tramWaitFactor" aria-label="Rétablir les attentes tram">↺</button></label>
+                  <span>Attente BHNS</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="bhnsWait" data-delta="-0.25" aria-label="Réduire l’attente BHNS">−</button><input data-travel-number="bhnsWait" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="bhnsWait" data-delta="0.25" aria-label="Augmenter l’attente BHNS">+</button><button type="button" class="display-row-reset" data-reset-travel="bhnsWait" aria-label="Rétablir l’attente BHNS">↺</button></label>
+                  <span>Attentes bus · multiplicateur</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="busWaitFactor" data-delta="-0.25" aria-label="Réduire les attentes bus">−</button><input aria-label="Multiplicateur des attentes bus" data-travel-number="busWaitFactor" type="number" min="0" max="3" step="0.25" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-travel-adjust="busWaitFactor" data-delta="0.25" aria-label="Augmenter les attentes bus">+</button><button type="button" class="display-row-reset" data-reset-travel="busWaitFactor" aria-label="Rétablir les attentes bus">↺</button></label>
+                  <span>Attente navette · multiplicateur</span><label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="navetteWaitFactor" data-delta="-0.25" aria-label="Réduire l’attente navette">−</button><input aria-label="Multiplicateur des attentes navette" data-travel-number="navetteWaitFactor" type="number" min="0" max="3" step="0.25" inputmode="decimal"><small>×</small><button type="button" class="display-step-button" data-travel-adjust="navetteWaitFactor" data-delta="0.25" aria-label="Augmenter l’attente navette">+</button><button type="button" class="display-row-reset" data-reset-travel="navetteWaitFactor" aria-label="Rétablir l’attente navette">↺</button></label>
+                </div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Malus</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="display-settings-grid">
+                  <span>Entrée station</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="stationEntryPenalty" data-delta="-0.1" aria-label="Réduire le malus d’entrée">−</button><input data-travel-number="stationEntryPenalty" type="number" min="0" max="20" step="0.1" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="stationEntryPenalty" data-delta="0.1" aria-label="Augmenter le malus d’entrée">+</button><button type="button" class="display-row-reset" data-reset-travel="stationEntryPenalty" aria-label="Rétablir le malus d’entrée">↺</button></label>
+                  <span>Sortie station</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="stationExitPenalty" data-delta="-0.1" aria-label="Réduire le malus de sortie">−</button><input data-travel-number="stationExitPenalty" type="number" min="0" max="20" step="0.1" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="stationExitPenalty" data-delta="0.1" aria-label="Augmenter le malus de sortie">+</button><button type="button" class="display-row-reset" data-reset-travel="stationExitPenalty" aria-label="Rétablir le malus de sortie">↺</button></label>
+                  <span>Correspondance</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="transferPenalty" data-delta="-0.25" aria-label="Réduire le malus de correspondance">−</button><input data-travel-number="transferPenalty" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="transferPenalty" data-delta="0.25" aria-label="Augmenter le malus de correspondance">+</button><button type="button" class="display-row-reset" data-reset-travel="transferPenalty" aria-label="Rétablir le malus de correspondance">↺</button></label>
+                  <span>Correspondance à pied</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-travel-adjust="walkingTransferPenalty" data-delta="-0.25" aria-label="Réduire le malus de correspondance à pied">−</button><input data-travel-number="walkingTransferPenalty" type="number" min="0" max="30" step="0.25" inputmode="decimal"><small>min</small><button type="button" class="display-step-button" data-travel-adjust="walkingTransferPenalty" data-delta="0.25" aria-label="Augmenter le malus de correspondance à pied">+</button><button type="button" class="display-row-reset" data-reset-travel="walkingTransferPenalty" aria-label="Rétablir le malus de correspondance à pied">↺</button></label>
+                </div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Réseau</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="display-settings-grid">
+                  <span>Étiquettes des arrêts de bus</span><label><input type="checkbox" data-display-toggle="showBusLabels" aria-label="Afficher les étiquettes des arrêts de bus" checked> Afficher</label>
+                  <span>Épaisseur TER</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="-0.2">−</button><input data-display-number="terWidth" type="number" min="0.5" max="10" step="0.2"><small>px</small><button type="button" class="display-step-button" data-adjust="terWidth" data-delta="0.2">+</button><button type="button" class="display-row-reset" data-reset-display="terWidth">↺</button></label>
+                  <span>Épaisseur tram</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="-0.2">−</button><input data-display-number="tramWidth" type="number" min="0.5" max="10" step="0.2"><small>px</small><button type="button" class="display-step-button" data-adjust="tramWidth" data-delta="0.2">+</button><button type="button" class="display-row-reset" data-reset-display="tramWidth">↺</button></label>
+                  <span>Épaisseur BHNS</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="-0.2">−</button><input data-display-number="bhnsWidth" type="number" min="0.5" max="10" step="0.2"><small>px</small><button type="button" class="display-step-button" data-adjust="bhnsWidth" data-delta="0.2">+</button><button type="button" class="display-row-reset" data-reset-display="bhnsWidth">↺</button></label>
+                  <span>Ronds des stations</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="-0.2">−</button><input data-display-number="stationRadius" type="number" min="1" max="10" step="0.2"><small>px</small><button type="button" class="display-step-button" data-adjust="stationRadius" data-delta="0.2">+</button><button type="button" class="display-row-reset" data-reset-display="stationRadius">↺</button></label>
+                  <span>Ronds des gares</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="-0.2">−</button><input data-display-number="railStationRadius" type="number" min="1" max="10" step="0.2"><small>px</small><button type="button" class="display-step-button" data-adjust="railStationRadius" data-delta="0.2">+</button><button type="button" class="display-row-reset" data-reset-display="railStationRadius">↺</button></label>
+                  <span>Taille des étiquettes</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="-0.05">−</button><input data-display-number="labelScale" type="number" min="0.6" max="1.8" step="0.05"><small>×</small><button type="button" class="display-step-button" data-adjust="labelScale" data-delta="0.05">+</button><button type="button" class="display-row-reset" data-reset-display="labelScale">↺</button></label>
+                </div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Fond de carte</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="display-settings-grid">
+                  <span>Fond hors périmètre</span>
+                  <div class="display-color-control"><input type="color" data-display-color="backgroundColor"><input type="text" maxlength="7" data-display-color-code="backgroundColor"><button type="button" class="display-row-reset" data-reset-display="backgroundColor">↺</button></div>
+                </div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Communes</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="settings-range-row">
+                  <span>Opacité</span>
+                  <div class="settings-range-control"><input data-display-number="communeFillOpacity" type="range" min="0" max="1" step="0.05"><output data-display-percent="communeFillOpacity">100%</output><button type="button" class="display-row-reset" data-reset-display="communeFillOpacity">↺</button></div>
+                </div>
+                <div class="display-settings-grid">
+                  <span>Couleur</span>
+                  <div class="display-color-control"><input type="color" data-display-color="communeColor"><input type="text" maxlength="7" data-display-color-code="communeColor"><button type="button" class="display-row-reset" data-reset-display="communeColor">↺</button></div>
+                  <span>Épaisseur des limites</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="-0.1">−</button><input data-display-number="communeBorderWidth" type="number" min="0.1" max="6" step="0.1"><small>px</small><button type="button" class="display-step-button" data-adjust="communeBorderWidth" data-delta="0.1">+</button><button type="button" class="display-row-reset" data-reset-display="communeBorderWidth">↺</button></label>
+                </div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Dégradé des isochrones</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="display-settings-grid isochrone-opacity-row">
+                  <span>Opacité générale</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="-0.05">−</button><input data-display-number="isochroneOpacity" type="number" min="0" max="1" step="0.05"><small>α</small><button type="button" class="display-step-button" data-adjust="isochroneOpacity" data-delta="0.05">+</button><button type="button" class="display-row-reset" data-reset-display="isochroneOpacity">↺</button></label>
+                </div>
+                <div id="isochroneGradientPreview" class="isochrone-gradient-preview"></div>
+                <div id="isochroneGradientControls" class="isochrone-gradient-controls"></div>
+                <div class="isochrone-gradient-actions"><button type="button" class="gradient-reset-button" data-reset-isochrone-gradient>↺ Réinitialiser</button></div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Intercommunalités</strong></summary>
+              <div class="settings-collapse-body">
+                <div class="settings-range-row">
+                  <span>Opacité</span>
+                  <div class="settings-range-control"><input data-display-number="epciFillOpacity" type="range" min="0" max="1" step="0.05"><output data-display-percent="epciFillOpacity">100%</output><button type="button" class="display-row-reset" data-reset-display="epciFillOpacity">↺</button></div>
+                </div>
+                <div class="display-settings-grid epci-border-row">
+                  <span>Épaisseur des limites</span>
+                  <label class="display-number-control"><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="-0.1">−</button><input data-display-number="epciBorderWidth" type="number" min="0.2" max="8" step="0.1"><small>px</small><button type="button" class="display-step-button" data-adjust="epciBorderWidth" data-delta="0.1">+</button><button type="button" class="display-row-reset" data-reset-display="epciBorderWidth">↺</button></label>
+                </div>
+                <div class="epci-palette-toolbar"><button type="button" class="display-palette-button" data-palette-epci title="Nouvelle palette EPCI" aria-label="Générer une palette de couleurs pour les EPCI">🎨</button></div>
+                <div id="displayEpciColors" class="route-color-settings"></div>
+              </div>
+            </details>
+
+            <details class="settings-collapse settings-section-collapse">
+              <summary><strong>Lignes par direction</strong></summary>
+              <div class="settings-collapse-body"><div id="displayRouteColors" class="route-color-settings"></div></div>
+            </details>
+          </div>
+          <div class="display-settings-actions">
+            <button id="displayResetAll" type="button">Tout réinitialiser</button>
+            <button id="displaySettingsDone" type="button" class="primary">Fermer</button>
+          </div>
+        </section>
+
+        <div class="map-stage" id="mapStage">
+          <canvas id="mapCanvas" aria-label="Carte des temps de trajet autour de Tours"></canvas>
+          <div class="map-float">
+            <button id="helpButton" type="button" class="icon-button" aria-label="Aide">?</button>
+            <div class="zoom-stack">
+              <button id="zoomInButton" type="button" class="icon-button" aria-label="Zoom avant">+</button>
+              <button id="zoomOutButton" type="button" class="icon-button" aria-label="Zoom arrière">−</button>
+            </div>
+          </div>
+          <aside id="helpPanel" class="help-panel" hidden>
+            <p>Le déplacement libre est toujours actif : cliquez-glissez sur le fond pour déplacer la carte.</p>
+            <p>Départ et Arrivée ne bougent que si vous les saisissez directement puis les faites glisser.</p>
+            <p>Un clic simple sur le fond pose uniquement le point manquant. Double-cliquez directement sur un point pour le retirer.</p>
+            <p>Hors du SERM, les gares desservies restent visibles ; les lignes grises d’infrastructure et les gares sans desserte ne sont pas affichées.</p>
+          </aside>
+          <div class="map-legend-column">
+            <div id="legend" class="legend" hidden>
+              <span>0 min</span>
+              <div class="legend-bar"></div>
+              <span id="legendMax">90 min</span>
+            </div>
+            <div id="mapScale" class="map-scale" hidden aria-label="Échelle de la carte">
+              <span id="mapScaleDistance" class="map-scale-distance">10 km</span>
+              <div id="mapScaleBar" class="map-scale-bar"></div>
+              <span id="mapScaleRatio" class="map-scale-ratio">≈ 1:500 000</span>
+            </div>
+          </div>
+        </div>
+
+        <details class="journey" id="journeyPanel" hidden><summary>Voir le trajet retenu</summary><div id="journeyContent"></div></details>
+        
+        <p id="walkingNote" class="map-hint" aria-live="polite"></p>
+        <p id="reachText" class="reach">Choisissez un départ pour voir la part du réseau sélectionné joignable au seuil choisi.</p>
+      </section>
+
+      <footer class="notes">
+        <p>
+          Sources :
+          <a href="https://geoservices.ign.fr/adminexpress">Admin Express COG 2026 © IGN</a>,
+          <a href="https://geoservices.ign.fr/bdtopo">BD TOPO © IGN (voirie piétonne, Licence Ouverte Etalab 2.0)</a>,
+          <a href="https://data.sncf.com/explore/dataset/formes-des-lignes-du-rfn/">lignes SNCF Réseau</a>,
+          <a href="https://data.sncf.com/explore/dataset/liste-des-gares/">gares SNCF Réseau</a>,
+          <a href="https://transport.data.gouv.fr/datasets/horaires-sncf">horaires SNCF (GTFS)</a>,
+          <a href="https://data.tours-metropole.fr/explore/dataset/horaires-temps-reel-gtfsrt-reseau-filbleu-tmvl/">GTFS Fil Bleu / SMT</a>.
+          Inspiré du <a href="https://castrio.me/nyc/">cartogramme new-yorkais</a> d'Anthony Castrio.
+        </p>
+        <details class="method">
+          <summary>Comment sont calculés les temps ?</summary>
+          <ol>
+            <li><strong>À pied :</strong> la marche directe, l’accès aux arrêts et la marche finale suivent la voirie piétonne IGN dans le SERM, à une vitesse réglable (4,8 km/h par défaut). Le raccord local à une rue est limité à 75 m pour un point libre. Un point sans accès identifié ne reçoit pas de trajet artificiel ; les passages privés et accès intérieurs restent imparfaitement décrits. Hors couverture, l’estimation en ligne droite est signalée. Paramètres → Marche permet aussi de revenir au modèle en ligne droite. Les malus d’entrée et de sortie sont réglables dans Paramètres.</li>
+            <li><strong>À bord :</strong> les TER et le tram A utilisent des séquences d’arrêts réellement présentes dans les GTFS SNCF et Fil Bleu pour la semaine du 5 au 11 octobre 2026. Pour chaque desserte, un trajet réel de durée médiane est retenu dans son intégralité. Le temps de B à C correspond donc à ce trajet de référence, y compris les arrêts intermédiaires. Les trains traversant une gare sans arrêt ne permettent pas d’y descendre.</li>
+            <li><strong>Attente :</strong> pour les TER, la navette, le tram A et les bus, les intervalles sont mesurés séparément par jour, direction et point de départ, puis regroupés pour estimer la moitié de leur médiane, entre 2 et 30 minutes. Les groupes de moins de quatre départs conservent une attente forfaitaire de 30 minutes. Les courses sur réservation sont exclues. Les multiplicateurs TER, navette, tram et bus dans Paramètres conservent ces valeurs à ×1, les divisent par deux à ×0,5 et les doublent à ×2. Ils s’appliquent à chaque embarquement, y compris après une correspondance. À ×0, aucune attente n’est ajoutée et son indication disparaît des bulles. Référence : semaine du 5 au 11 octobre 2026, GTFS officiels SNCF et Fil Bleu. Pour les projets sans horaires, le tram B utilise une base de 4 minutes multipliée par le réglage tram ; le BHNS conserve 3 min 15 réglables. La navette utilise également ses horaires SNCF. Ces hypothèses ne reproduisent pas une heure de départ précise.</li>
+            <li><strong>Correspondances :</strong> par défaut, changer dans une même gare ajoute 3 min 30 puis l’attente de la nouvelle ligne. Entre arrêts distincts du SERM, la distance piétonne est préparée sur la voirie IGN BD TOPO : seuls les chemins de 650 m au plus sont reliés, puis on ajoute 2 minutes de marge et l’attente. Seuls les vrais endpoints topologiques BD TOPO sont fusionnés : un croisement géométrique sans connexion, par exemple une voie passant sous un pont, ne devient pas une correspondance. Hors de cette couverture, le repli reste une distance en ligne droite jusqu’à 650 m. À St-Pierre-des-Corps, le point SNCF situé dans le complexe ferroviaire est relié explicitement au parvis via l’arrêt officiel « St Pierre Gare » (~194 m entre coordonnées officielles), car l’accès intérieur n’est pas représenté par le graphe routier. Les deux malus sont modifiables. Rester dans le même véhicule conserve seulement le temps d’arrêt de l’horaire.</li>
+            <li><strong>Durées à bord et projets :</strong> quand un horaire GTFS ferroviaire est disponible, sa durée représentative est utilisée directement. Le tram B et le BHNS C restent des projets estimés à 18,4 et 18 km/h. P21 Tours–Chinon est volontairement maintenue comme offre ferroviaire structurelle même lorsqu’une fermeture temporaire retire ses trains de la semaine GTFS : le calcul utilise alors le corridor de référence et une vitesse commerciale estimée. Décocher les projets retire le tram B et le BHNS C.</li>
+            <li><strong>Services sur réservation :</strong> les courses demandant une réservation ou un accord préalable sont exclues du calcul. Leur succession d’arrêts et leurs heures GTFS ne garantissent pas un trajet régulier réalisable. Les lignes uniquement sur réservation restent visibles en pointillés et sont indiquées « hors calcul ». Les courses régulières des lignes mixtes sont conservées.</li>
+            <li><strong>Résultat :</strong> pour un meilleur temps inférieur à 60 minutes, le moteur conserve le trajet le plus rapide. À partir de 60 minutes, il privilégie le confort en défavorisant surtout les changements artificiels entre profils d’une même ligne TER et les enchaînements P→P ; les rabattements P↔K / omnibus↔Krono restent neutres et peuvent gagner s’ils sont plus rapides. Le calcul compare toujours la marche directe, les TER, le tram et les bus Fil Bleu intégrés. La bulle du départ décrit les lignes de l’arrêt proche ; d’autres arrêts et lignes peuvent produire les isochrones. Les points physiques de bus restent distincts, y compris lorsqu’ils appartiennent à une même zone d’arrêt. Les temps des points sélectionnés suivent la voirie. La surface colorée étend les valeurs des rues à leurs alentours jusqu’à 350 m avec un coût local de marche estimé ; ce raccord graphique ne crée pas de connexion routière et ne sert pas au temps du point sélectionné. Les cellules sans valeur atteignable restent au-delà des seuils affichés, sans casser les contours. Le dessin est interpolé : il ne certifie pas l’accessibilité d’une parcelle, d’une rive ou d’un accès privé. « Voir le trajet retenu » donne les étapes. Les correspondances ne sont pas garanties à une date et une heure précises : les services peuvent circuler à des moments ou jours différents.</li>
+            <li><strong>Isochrones :</strong> la couleur et les contours viennent d’une grille affinée quand on zoome. Une poche accessible peut être plus petite qu’une maille au dézoom ; un anneau coloré ponctuel signale alors la gare réellement accessible, sans représenter une surface artificielle. Le pourcentage utilise la plus grande durée cochée (ou le curseur si aucune courbe n’est cochée), parmi les arrêts desservis par le réseau sélectionné.</li>
+          </ol>
+        </details>
+      </footer>
+    </main>
+    <script type="module" src="./site/app.js?v=2026-10-04n"></script>
+  </body>
+</html>
