@@ -6,9 +6,9 @@ function baseData() {
     meta:{walkMetersPerMinute:80,stationAccessPenalty:0},
     stations:[
       {name:'A',point:[0,0],mode:'TER'},
-      {name:'B',point:[1000,0],mode:'TER'},
-      {name:'C',point:[2000,0],mode:'TER'},
-      {name:'D',point:[3000,0],mode:'TER'},
+      {name:'B',point:[100000,0],mode:'TER'},
+      {name:'C',point:[200000,0],mode:'TER'},
+      {name:'D',point:[300000,0],mode:'TER'},
     ],
     routeInfo:{
       'TER P7':{mode:'TER',waitMinutes:0,planned:false},
