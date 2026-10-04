@@ -281,10 +281,18 @@ h1 {
   margin-bottom: 0;
 }
 
-.legend {
+.map-legend-column {
   position: absolute;
   left: 16px;
   bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 6;
+}
+
+.legend {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -300,6 +308,37 @@ h1 {
   height: 8px;
   border-radius: 999px;
   background: linear-gradient(90deg, #dc4525, #f47f2e, #ffc44f, #f8e89c, rgba(255,226,161,.42), rgba(255,226,161,0));
+}
+
+.map-scale {
+  min-width: 112px;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 4px 8px 5px;
+  font-size: .67rem;
+  line-height: 1.05;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.map-scale-bar {
+  height: 6px;
+  border-left: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+
+.map-scale-distance {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.map-scale-ratio {
+  white-space: nowrap;
 }
 
 .notes {
@@ -348,7 +387,9 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px; }
   .toggle input { width: 20px; height: 20px; flex-shrink: 0; }
   .slider { flex-direction: column; align-items: stretch; min-width: 0; width: 100%; flex-basis: 100%; }
   .slider input { height: 30px; }
-  .legend { bottom: 9px; left: 9px; font-size: .72rem; }
+  .map-legend-column { bottom: 9px; left: 9px; gap: 4px; }
+  .legend { font-size: .72rem; }
+  .map-scale { font-size: .62rem; min-width: 100px; }
   .share-panel { flex-wrap: wrap; }
   .share-url { min-width: 100%; }
   .reach { line-height: 1.4; }
