@@ -1,8 +1,8 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-04g";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-04g";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-04g";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04g";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04g", import.meta.url).toString();
+import { snapToRailStation } from "./placement.mjs?v=2026-10-04f";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-04f";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-04f";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04f";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-04f", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -20,8 +20,6 @@ const DEFAULT_ISOCHRONE_STOPS = Object.freeze([
   { t: 1, color: "#ffe2a1", alpha: 0 },
 ]);
 const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
-  railMagnetMinZoom: 1,
-  isochronePocketScale: 1.3,
   railMagnetism: true,
   showBusLabels: true,
   terWidth: ROUTE_LINE_WIDTH,
@@ -133,8 +131,6 @@ function normalizeDisplaySettings(value) {
     };
   });
   return {
-    railMagnetMinZoom: numeric("railMagnetMinZoom", 0.25, 8),
-    isochronePocketScale: numeric("isochronePocketScale", 0.5, 3),
     railMagnetism: source.railMagnetism !== false,
     showBusLabels: source.showBusLabels !== false,
     terWidth: numeric("terWidth", 0.5, 10),
@@ -727,7 +723,6 @@ function applyDisplayNumber(input) {
   const percent = displaySettingsPanel.querySelector('[data-display-percent="' + key + '"]');
   if (percent) percent.textContent = Math.round(value * 100) + "%";
   saveDisplaySettings();
-  if (key === "railMagnetMinZoom") syncUrl();
   if (key === "isochroneOpacity") syncDisplaySettingsControls();
   invalidateVisualSettings();
 }
@@ -887,7 +882,6 @@ displaySettingsPanel.addEventListener("click", (event) => {
     displaySettings[key] = DEFAULT_DISPLAY_SETTINGS[key];
     syncDisplaySettingsControls();
     saveDisplaySettings();
-    if (key === "railMagnetMinZoom") syncUrl();
     invalidateVisualSettings();
     return;
   }
@@ -1165,7 +1159,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04g", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04f", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1438,7 +1432,7 @@ function drawStations(drawCtx, projectPoint, warp) {
     if (rasterMissesStation) {
       // A minimum-size coloured pocket preserves visibility at overview scale.
       // It is a display enlargement; the travel time and geographic grid stay unchanged.
-      const radius = Math.max(stationRadius + 0.5, (stationRadius + (state.viewportScale < 2 ? 2.2 : 1.4)) * displaySettings.isochronePocketScale);
+      const radius = stationRadius + (state.viewportScale < 2 ? 2.2 : 1.4);
       const gradient = drawCtx.createRadialGradient(x, y, 0, x, y, radius);
       gradient.addColorStop(0, heatmapColor(minutes, 0.8));
       gradient.addColorStop(0.72, heatmapColor(minutes, 0.32));
@@ -1883,7 +1877,7 @@ function hitPin(screen) {
 }
 
 function placePoint(world, magnet) {
-  const point = magnet && pointInLand(world) && displaySettings.railMagnetism && state.viewportScale >= displaySettings.railMagnetMinZoom
+  const point = magnet && displaySettings.railMagnetism
     ? snapToRailStation(world, state.data.stations, state.data.routeInfo, travelSettings.railMagnetRadiusKm * 1000) : world;
   return nearestLandPoint(point);
 }
@@ -1907,18 +1901,10 @@ function setProbe(world, pinned = false, { silent = false, magnet = true } = {})
   if (!silent) syncUrl();
 }
 
-function settleOutsideStation(kind) {
-  const key = kind === "origin" ? "originPoint" : "probePoint";
-  const point = state[key];
-  if (!point || pointInLand(point)) return;
-  state[key] = snapToRailStation(point, state.data.stations, state.data.routeInfo, Infinity);
-}
-
 function endDrag(event) {
   if (!state.dragTarget) return;
   const moved = state.dragMoved;
   const target = state.dragTarget;
-  let settledTarget = target;
   state.dragTarget = null;
   state.dragPointerId = null;
   state.dragMoved = false;
@@ -1932,11 +1918,10 @@ function endDrag(event) {
   if (!moved && target === "pan" && event?.type === "pointerup") {
     const { world } = pointerToWorld(event);
     if (world) {
-      if (!state.originPoint) { setOrigin(world, { pin: true, label: null, silent: true }); settledTarget = "origin"; }
-      else if (!state.probePoint) { setProbe(world, false, { silent: true }); settledTarget = "probe"; }
+      if (!state.originPoint) setOrigin(world, { pin: true, label: null, silent: true });
+      else if (!state.probePoint) setProbe(world, false, { silent: true });
     }
   }
-  if (settledTarget === "origin" || settledTarget === "probe") settleOutsideStation(settledTarget);
   syncUrl();
   requestDraw();
   syncCursor();
@@ -1969,7 +1954,6 @@ function syncUrl() {
   for (const [key, param] of Object.entries(TRAVEL_QUERY_PARAMS)) params.set(param, String(travelSettings[key]));
   params.set("walking", state.walkingOnRoads ? "road" : "direct");
   params.set("magnet", displaySettings.railMagnetism ? "1" : "0");
-  params.set("magnetzoom", String(displaySettings.railMagnetMinZoom));
   if (state.viewportCenter) {
     const { lat, lon } = worldToLonLat(state.viewportCenter || defaultCenter());
     params.set("view", `${formatCoord(lat)},${formatCoord(lon)}`);
@@ -1984,10 +1968,6 @@ function restoreUrl() {
   state.walkingOnRoads = params.get("walking") !== "direct";
   roadWalkingToggle.checked = state.walkingOnRoads;
   if (params.has("magnet")) displaySettings.railMagnetism = params.get("magnet") !== "0";
-  if (params.has("magnetzoom")) {
-    const zoom = Number(params.get("magnetzoom"));
-    if (Number.isFinite(zoom)) displaySettings.railMagnetMinZoom = clamp(zoom, 0.25, 8);
-  }
   const origin = parsePair(params.get("origin"));
   const probe = parsePair(params.get("distance"));
   const outlineParam = params.get("outline");
@@ -2037,7 +2017,6 @@ function restoreUrl() {
     const zoom = Number(params.get("zoom"));
     if (Number.isFinite(zoom) && zoom > 0) state.viewportScale = clamp(zoom, MIN_VIEWPORT_SCALE, MAX_VIEWPORT_SCALE);
   }
-  settleOutsideStation("origin"); settleOutsideStation("probe");
   state.handMode = true;
   syncCursor();
   syncUrl();

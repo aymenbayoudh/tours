@@ -162,7 +162,3 @@ Le trajet retenu se recalcule au changement de mode de marche et aux réglages s
 ## Placement des points — 4 octobre 2026
 
 Paramètres → Placement des points : magnétisme TER activé par défaut, rayon de 1 km réglable de 0,1 à 3 km. Lors du placement ou du déplacement du départ ou de l’arrivée, le point se cale sur les coordonnées physiques de la gare TER desservie la plus proche dans ce rayon, dans et hors SERM. Les gares suspendues ou sans ligne retenue sont exclues. Désactiver le magnétisme permet de placer librement un point à proximité d’une gare. Les liens existants et la géolocalisation conservent leurs coordonnées ; les réglages du magnétisme sont mémorisés et partagés. Les poches isochrones ponctuelles sont rapprochées de la taille du symbole de gare/arrêt (rayon du symbole + 1,4 à 2,2 pixels selon le zoom).
-
-## Magnétisme au relâchement et taille des poches — 4 octobre 2026
-
-Dans le SERM, le magnétisme facultatif est désactivé sous un seuil de zoom réglable (défaut : 1×, la vue initiale). Hors SERM, le point glisse sur les tracés durant le geste, puis rejoint obligatoirement la gare TER desservie la plus proche au relâchement, indépendamment du rayon et du bouton de magnétisme SERM. Les points hors SERM d’un lien existant sont également calés à l’ouverture. La taille des petites zones isochrones est réglable dans Placement des points, avec un multiplicateur initial de 1,3 par rapport au commit précédent.
