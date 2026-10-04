@@ -63,7 +63,7 @@ def prepare(road):
     return raw,{'junctions':len(core),'chains':len(chains),'geometryPoints':len(positions),'rawBytes':len(raw)}
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--road',type=Path,required=True);parser.add_argument('--artifact-run',type=int);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--road',type=Path,required=True);args=parser.parse_args()
     road=json.loads(args.road.read_text());raw,stats=prepare(road)
     output=ROOT/'site/data/point_walking.bin.gz';output.write_bytes(gzip.compress(raw,compresslevel=9,mtime=0))
     stats['gzipBytes']=output.stat().st_size

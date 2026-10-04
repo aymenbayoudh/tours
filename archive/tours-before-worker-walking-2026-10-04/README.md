@@ -1,16 +1,10 @@
 # Tours selon le temps qu'il faut pour y aller
 
-## Marche sur voirie réactivée — 4 octobre 2026
+## Correctif du 4 octobre 2026 — retour au calcul fluide
 
-La marche directe, l’accès départ→arrêt et arrêt→destination suivent de nouveau le graphe IGN dans le SERM. Les recherches et les raccords de grille sont exécutés dans un **Web Worker**, sans parcourir le gros graphe sur le fil de l’interface. Une seule recherche est envoyée à la fois ; les demandes intermédiaires d’un glissement sont remplacées par la dernière. Les fonds cartographiques, tracés et raccords de grille sont réutilisés. La vitesse et le choix voirie/ligne droite sont réglables dans Paramètres → Marche et dans le lien partagé (`walkspeed`, `walking`).
+L’intégration des accès aux points libres sur voirie du commit `59457ba` est retirée du site actif : elle créait des cellules sans valeur, des contours fragmentés et deux recherches routières coûteuses à chaque déplacement. Le site revient au calcul spatial précédent pour la marche directe et l’accès initial/final, en ligne droite à vitesse réglable. Les correspondances arrêt-à-arrêt IGN, les horaires et les multiplicateurs restent actifs.
 
-Le calcul des points sélectionnés conserve les raccords stricts (75 m maximum) et les vrais détours du graphe. **La surface affichée est une approximation distincte** : extension des valeurs du réseau jusqu’à 350 m autour des rues, en ajoutant le coût local de marche ; elle ne crée aucun arc et ne sert pas au temps du point choisi. Les valeurs absentes ou supérieures à la fenêtre affichée sont plafonnées au-dessus des seuils pour dessiner des intersections finies, plutôt que supprimer des morceaux de contour. Les couleurs sont interpolées. Une isochrone peut comporter plusieurs îlots accessibles légitimes ; elle ne garantit pas un accès privé, une parcelle ou un franchissement depuis tout pixel coloré.
-
-Pendant un déplacement, les recherches sont limitées au plus grand seuil affiché + 15 min ; elles sont complétées au relâchement pour les temps au-delà. La carte se recalcule pendant le glissement et le pointeur ne doit pas attendre le Worker. Un résultat peut avoir quelques dizaines de millisecondes de retard sur le point pendant son calcul. Hors couverture, les portions géométriques sont signalées. Au premier chargement, un aperçu en ligne droite reste visible avec la mention de préparation, puis est remplacé par le calcul sur voirie ; une erreur de chargement est signalée explicitement.
-
-Validation : tests de routage/transferts/bus existants, 7 999 cellules de surface finies, **aucune extrémité isolée de contour à l’intérieur de la couverture** dans le viewport testé, file de calcul coalescée, détour Jumeaux conservé (~594 m, ~7,42 min à 4,8 km/h). Mesures Node de la nouvelle surface 100×80 : premier calcul ~410–531 ms ; déplacements suivants ~37–74 ms, hors dessin/transfert Worker. Aperçus bureau et 390×844 vérifiés ; aucune garantie de performance sur un téléphone physique. Le chargement froid conserve environ 5,6 Mo gzip de voirie supplémentaires, désormais préparés hors du fil de l’interface.
-
-Pour la suite, la marche sur voirie est réactivée, mais garder les contrôles de barrières/accès et de téléphone réel ouverts ; ne pas présenter le raster comme une précision cadastrale. Vélo et bus hors SMT restent des lots séparés.
+Le graphe compact, ses scripts et ses tests sont conservés comme préparation expérimentale ; le navigateur ne le télécharge ni ne l’instancie. Le lot marche depuis les points libres n’est **pas terminé**. Avant de le réactiver : séparer calcul détaillé et surface continue, traiter les cellules sans accès plausible et mesurer le déplacement sur mobile sans bloquer le dessin.
 
 Carte interactive des trajets estimés en TER, tram, BHNS et bus Fil Bleu. Elle s'ouvre sur les 14 EPCI du SERM de Touraine tout en laissant explorer les lignes connectées au-delà. La carte se déplace directement par glisser-déposer ; les anciens boutons « main » et verrouillage de l'arrivée ont été supprimés.
 
@@ -66,7 +60,7 @@ contre un calcul exhaustif : aucun écart dans le jeu courant. Dans trois passag
 sur la même machine, les 29 084 cellules passent de 1 366–1 798 ms à 70–88 ms.
 Ces mesures concernent le calcul Node, pas le dessin ni une garantie mobile.
 
-**Reste à faire dans la passation :** contrôles complémentaires des accès/barrières et sur téléphone physique ; vélo et réseaux bus hors SMT.
+**Reste à faire dans la passation :** finaliser la marche depuis/vers les points libres sans dégrader les contours et la fluidité, puis vélo et réseaux bus hors SMT.
 
 ## Données
 
@@ -139,14 +133,26 @@ Dans **Paramètres → Attentes**, les multiplicateurs TER, tram, bus et navette
 **Paramètres → Réseau → Étiquettes des arrêts de bus** masque les noms uniquement ; le réseau et son calcul restent actifs. Ce choix d’affichage est mémorisé localement.
 
 
-### Préparer la voirie compacte
+### Expérimentation retirée du site actif — marche depuis les points libres
 
-Le graphe et ses scripts sont conservés dans le dépôt. Pour régénérer le binaire depuis une acquisition IGN auditée :
+Les paragraphes suivants décrivent l’essai du commit `59457ba`, conservé pour préparer une prochaine intégration. Ils ne décrivent pas le calcul actuellement publié.
+
+Dans le SERM, le moteur utilise le réseau piéton IGN pour **départ → premier arrêt**, **dernier arrêt → destination** et **marche seule**. Il compare ces possibilités avec les transports, en conservant les durées horaires et les correspondances existantes. Les malus d’entrée et de sortie restent des marges résiduelles réglables, distinctes des longueurs de voirie. Un départ arbitraire ne se limite pas aux quelques arrêts les plus proches. La vitesse de marche, par défaut 4,8 km/h, est modifiable dans **Paramètres → Marche** et incluse dans les liens partagés ; elle agit aussi sur les correspondances piétonnes.
+
+Le graphe validé du run `37151657397` est préparé par `scripts/prepare_point_walking.py` : les chaînes sans branchement sont contractées, leurs longueurs et leurs géométries de raccord sont conservées. Le navigateur charge un binaire préparé de 5 592 569 octets gzip (11 364 228 octets décodés), plutôt que les 22 Mo du JSON de préparation. Cela ajoute environ 5,6 Mo au premier chargement, puis bénéficie du cache du navigateur ; ce coût n’est pas nul.
+
+- Raccord d’un point libre au segment piéton le plus proche : maximum **75 m**, sans connexion automatique entre rues croisées. Le raccord court lui-même est une approximation locale : accès intérieurs, barrières privées et traversée de chaussée ne sont pas certifiés.
+- Arrêts : raccords aux sommets conservant la méthode auditée, jusqu’à 150 m, avec regroupement des points de même nom à moins de 5 m. Le parvis de St-Pierre conserve son accès manuel documenté. À moins de 2 m d’un point de transport, le raccord terminal reste local.
+- Dans le SERM, aucun raccord plausible signifie une absence de chemin identifié, **pas** un remplacement silencieux par la ligne droite. Hors SERM, le repli géométrique demeure et un message indique cette approximation.
+- Pendant le déplacement du départ, les recherches piétonnes sont bornées au plus grand seuil affiché, avec 5 minutes de marge pour l’interpolation des contours. Puisque les coûts sont positifs, aucun chemin sous ce seuil n’est perdu ; le calcul complet est refait au relâchement, notamment pour les détails au-delà du seuil. Les points, temps et isochrones sont recalculés ensemble pendant le déplacement.
+- Tests : détour Jumeaux ~594 m pour 26 m géométriques, franchissement audité de Loire ~610 m, Île Aucard→Loire ~701 m, branches déconnectées, marche initiale/finale, marche directe et conservation des temps sous le seuil. Voir `tests/point_walking.test.mjs` et `tests/point_walking_preparation.test.py`.
+
+Le réseau représente les accès piétons retenus par le profil BD TOPO de préparation ; il ne certifie pas que tous les passages privés, tunnels de gare ou restrictions temporaires sont décrits. Le vélo n’est pas intégré par ce lot.
+
+Reconstruction du binaire (depuis une acquisition IGN validée, non téléchargée à chaque déploiement) :
 
 ```sh
 python3 scripts/prepare_point_walking.py --road /chemin/road_graph.json --artifact-run 37151657397
-node tests/point_walking.test.mjs
-node tests/walking_surface.test.mjs
 ```
 
-Le manifeste `site/data/point_walking.meta.json` conserve la source, le SHA-256 et les tailles. Aucun téléchargement WFS lourd n’est lancé à chaque publication.
+Le manifeste `site/data/point_walking.meta.json` conserve le SHA-256 du graphe source et les tailles. Utiliser l’identifiant réel du run source lors d’une nouvelle acquisition, ou omettre `--artifact-run` pour une préparation locale.

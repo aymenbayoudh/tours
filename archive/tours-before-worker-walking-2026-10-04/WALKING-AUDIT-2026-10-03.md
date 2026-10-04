@@ -1,18 +1,4 @@
-## Marche sur voirie réactivée — 4 octobre 2026
-
-La marche directe, l’accès départ→arrêt et arrêt→destination suivent de nouveau le graphe IGN dans le SERM. Les recherches et les raccords de grille sont exécutés dans un **Web Worker**, sans parcourir le gros graphe sur le fil de l’interface. Une seule recherche est envoyée à la fois ; les demandes intermédiaires d’un glissement sont remplacées par la dernière. Les fonds cartographiques, tracés et raccords de grille sont réutilisés. La vitesse et le choix voirie/ligne droite sont réglables dans Paramètres → Marche et dans le lien partagé (`walkspeed`, `walking`).
-
-Le calcul des points sélectionnés conserve les raccords stricts (75 m maximum) et les vrais détours du graphe. **La surface affichée est une approximation distincte** : extension des valeurs du réseau jusqu’à 350 m autour des rues, en ajoutant le coût local de marche ; elle ne crée aucun arc et ne sert pas au temps du point choisi. Les valeurs absentes ou supérieures à la fenêtre affichée sont plafonnées au-dessus des seuils pour dessiner des intersections finies, plutôt que supprimer des morceaux de contour. Les couleurs sont interpolées. Une isochrone peut comporter plusieurs îlots accessibles légitimes ; elle ne garantit pas un accès privé, une parcelle ou un franchissement depuis tout pixel coloré.
-
-Pendant un déplacement, les recherches sont limitées au plus grand seuil affiché + 15 min ; elles sont complétées au relâchement pour les temps au-delà. La carte se recalcule pendant le glissement et le pointeur ne doit pas attendre le Worker. Un résultat peut avoir quelques dizaines de millisecondes de retard sur le point pendant son calcul. Hors couverture, les portions géométriques sont signalées. Au premier chargement, un aperçu en ligne droite reste visible avec la mention de préparation, puis est remplacé par le calcul sur voirie ; une erreur de chargement est signalée explicitement.
-
-Validation : tests de routage/transferts/bus existants, 7 999 cellules de surface finies, **aucune extrémité isolée de contour à l’intérieur de la couverture** dans le viewport testé, file de calcul coalescée, détour Jumeaux conservé (~594 m, ~7,42 min à 4,8 km/h). Mesures Node de la nouvelle surface 100×80 : premier calcul ~410–531 ms ; déplacements suivants ~37–74 ms, hors dessin/transfert Worker. Aperçus bureau et 390×844 vérifiés ; aucune garantie de performance sur un téléphone physique. Le chargement froid conserve environ 5,6 Mo gzip de voirie supplémentaires, désormais préparés hors du fil de l’interface.
-
-Pour la suite, la marche sur voirie est réactivée, mais garder les contrôles de barrières/accès et de téléphone réel ouverts ; ne pas présenter le raster comme une précision cadastrale. Vélo et bus hors SMT restent des lots séparés.
-
----
-
-## Historique du retrait provisoire — 4 octobre 2026
+## Correctif du 4 octobre 2026 — retour au calcul fluide
 
 L’intégration des accès aux points libres sur voirie du commit `59457ba` est retirée du site actif : elle créait des cellules sans valeur, des contours fragmentés et deux recherches routières coûteuses à chaque déplacement. Le site revient au calcul spatial précédent pour la marche directe et l’accès initial/final, en ligne droite à vitesse réglable. Les correspondances arrêt-à-arrêt IGN, les horaires et les multiplicateurs restent actifs.
 

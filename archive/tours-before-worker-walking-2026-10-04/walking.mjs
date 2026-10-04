@@ -48,7 +48,7 @@ export class WalkingNetwork {
   snap(point,maxGap=75,vertexOnly=false) {
     const x=(point[0]-this.origin[0])*10,y=(point[1]-this.origin[1])*10,bx=Math.floor(x/2000),by=Math.floor(y/2000),r=Math.ceil(maxGap/200)+1;
     let best=maxGap*10,bestSnap=null;
-    for(let yy=Math.max(0,Math.floor((y-maxGap*10)/2000));yy<=Math.min(this.height-1,Math.floor((y+maxGap*10)/2000));yy++)for(let xx=Math.max(0,Math.floor((x-maxGap*10)/2000));xx<=Math.min(this.width-1,Math.floor((x+maxGap*10)/2000));xx++){
+    for(let yy=Math.max(0,by-r);yy<=Math.min(this.height-1,by+r);yy++)for(let xx=Math.max(0,bx-r);xx<=Math.min(this.width-1,bx+r);xx++){
       const bucket=yy*this.width+xx;
       for(let k=this.bucketOffsets[bucket];k<this.bucketOffsets[bucket+1];k++){
         const p=this.bucketSegments[k],a=p*2,dx=this.coords[a+2]-this.coords[a],dy=this.coords[a+3]-this.coords[a+1],den=dx*dx+dy*dy;
