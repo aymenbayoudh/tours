@@ -32,33 +32,59 @@ d.stations.forEach((station,index)=>{
   group.push(index); parentGroups.set(station.parentStop,group);
 });
 check([...parentGroups.values()].some(group=>group.length>=2),'Opposite/related physical bus stops were unexpectedly merged');
-let sameCodeChanges=0,crossMode=0;
-const alightHub=Array(d.stations.length).fill(-1),boardHub=Array(d.stations.length).fill(-1);
+let sameCodeChanges=0,crossMode=0,sameRoutePreferenceEdges=0;
+const alightHub=Array.from({length:d.stations.length},()=>new Map());
+const boardHub=Array.from({length:d.stations.length},()=>new Map());
+const hubKey=(state)=>state.routeId??'__BUS_GENERIC__';
 d.routeStates.forEach((state,index)=>{
-  if(state.role==='alight')alightHub[state.stationIndex]=index;
-  if(state.role==='board')boardHub[state.stationIndex]=index;
+  if(state.role==='alight')alightHub[state.stationIndex].set(hubKey(state),index);
+  if(state.role==='board')boardHub[state.stationIndex].set(hubKey(state),index);
 });
+const expectedHubKey=(routeId)=>d.routeInfo?.[routeId]?.mode==='BUS'?'__BUS_GENERIC__':routeId;
+const transferEdges=(fromStation,toStation)=>{
+  const found=[];
+  for(const first of alightHub[fromStation].values())for(const edge of d.adjacency[first]){
+    if([...boardHub[toStation].values()].includes(edge[0]))found.push(edge);
+  }
+  return found;
+};
+const transferEdge=(fromStation,toStation)=>transferEdges(fromStation,toStation)[0];
 for(let i=0;i<d.stations.length;i++){
   if(d.stationStates[i].length){
-    check(alightHub[i]>=0,'Missing alighting hub');
-    for(const a of d.stationStates[i])check(d.adjacency[a].some(([n])=>n===alightHub[i]),'Arrival not linked to alighting hub');
+    for(const a of d.stationStates[i]){
+      const key=expectedHubKey(d.routeStates[a].routeId);
+      const hub=alightHub[i].get(key);
+      check(Number.isInteger(hub),'Missing route-aware alighting hub');
+      check(d.adjacency[a].some(([n])=>n===hub),'Arrival not linked to route-aware alighting hub');
+    }
   }
   if(d.boardingStates[i].length){
-    check(boardHub[i]>=0,'Missing boarding hub');
-    for(const b of d.boardingStates[i])check(d.adjacency[boardHub[i]].some(([n])=>n===b),'Boarding hub not linked to departure');
+    for(const b of d.boardingStates[i]){
+      const key=expectedHubKey(d.routeStates[b].routeId);
+      const hub=boardHub[i].get(key);
+      check(Number.isInteger(hub),'Missing route-aware boarding hub');
+      check(d.adjacency[hub].some(([n])=>n===b),'Route-aware boarding hub not linked to departure');
+    }
   }
-  if(alightHub[i]>=0&&boardHub[i]>=0)check(d.adjacency[alightHub[i]].some(([n])=>n===boardHub[i]),'Missing same-stop transfer');
+  for(const [firstKey,first] of alightHub[i])for(const [secondKey,second] of boardHub[i]){
+    const edge=d.adjacency[first].find(([n])=>n===second);
+    check(Boolean(edge),'Missing same-stop route interchange');
+    const expected=firstKey===secondKey&&firstKey.startsWith('TER ')?1:0;
+    check((Number(edge[3])||0)===expected,'Wrong same-route profile-change metadata');
+    if(expected)sameRoutePreferenceEdges++;
+  }
   for(const a of d.stationStates[i])for(const b of d.boardingStates[i]){
     const x=d.routeStates[a],y=d.routeStates[b];
     if(x.pattern!==null&&x.pattern===y.pattern)continue;
     if(x.routeId===y.routeId&&x.pattern!==y.pattern)sameCodeChanges++;
   }
 }
+check(sameRoutePreferenceEdges>0,'No TER same-route preference edges found');
 const roadWalking=Boolean(d.meta?.walkingTransferSource?.generated);
 let roadTransferEdges=0;
 for(let i=0;i<d.stations.length;i++){
-  if(alightHub[i]<0)continue;
-  for(const edge of d.adjacency[alightHub[i]]){
+  if(!alightHub[i].size)continue;
+  for(const first of alightHub[i].values())for(const edge of d.adjacency[first]){
     const [next,,walkMetres]=edge;
     const state=d.routeStates[next];
     if(state?.role!=='board'||state.stationIndex===i)continue;
@@ -77,8 +103,8 @@ for(let i=0;i<d.stations.length;i++)for(let j=i+1;j<d.stations.length;j++){
   if(Math.hypot(...d.stations[i].point.map((x,k)=>x-d.stations[j].point[k]))>650)continue;
   const bothInSerm=d.stations[i].inSerm&&d.stations[j].inSerm;
   if(!roadWalking||!bothInSerm){
-    if(alightHub[i]>=0&&boardHub[j]>=0)check(d.adjacency[alightHub[i]].some(([n])=>n===boardHub[j]),'Missing nearby fallback transfer');
-    if(alightHub[j]>=0&&boardHub[i]>=0)check(d.adjacency[alightHub[j]].some(([n])=>n===boardHub[i]),'Missing reverse nearby fallback transfer');
+    if(alightHub[i].size&&boardHub[j].size)check(transferEdges(i,j).length>0,'Missing nearby fallback transfer');
+    if(alightHub[j].size&&boardHub[i].size)check(transferEdges(j,i).length>0,'Missing reverse nearby fallback transfer');
   }
   if(d.stations[i].mode!==d.stations[j].mode)crossMode++;
 }
@@ -88,7 +114,7 @@ if(roadWalking){
   const j1=byId('FILBLEU:TTR:JUMEB-1'),j2=byId('FILBLEU:TTR:JUMEB-2');
   check(j1>=0&&j2>=0,'Missing Jumeaux physical stop fixtures');
   const jumeauxDirect=Math.hypot(d.stations[j1].point[0]-d.stations[j2].point[0],d.stations[j1].point[1]-d.stations[j2].point[1]);
-  const jumeauxEdge=d.adjacency[alightHub[j1]].find(([next])=>next===boardHub[j2]);
+  const jumeauxEdge=transferEdge(j1,j2);
   check(jumeauxDirect<50,'Jumeaux fixture is no longer geometrically close');
   check(Boolean(jumeauxEdge)&&Number.isFinite(jumeauxEdge[2])&&jumeauxEdge[2]>500,'BD TOPO detour between Jumeaux stops was lost');
 
@@ -96,21 +122,21 @@ if(roadWalking){
   check(island>=0&&loire>=0,'Missing Loire barrier fixtures');
   const loireDirect=Math.hypot(d.stations[island].point[0]-d.stations[loire].point[0],d.stations[island].point[1]-d.stations[loire].point[1]);
   check(loireDirect<300,'Loire barrier fixture is no longer geometrically close');
-  check(!d.adjacency[alightHub[island]].some(([next])=>next===boardHub[loire]),'Short straight-line Loire crossing incorrectly became a walking transfer');
+  check(transferEdges(island,loire).length===0,'Short straight-line Loire crossing incorrectly became a walking transfer');
 
   const porteLoire=byId('FILBLEU:TTR:PODLB-1'),choiseul=byId('FILBLEU:TTR:CHONB-2A');
   check(porteLoire>=0&&choiseul>=0,'Missing allowed Loire bridge fixtures');
-  const bridgeEdge=d.adjacency[alightHub[porteLoire]].find(([next])=>next===boardHub[choiseul]);
+  const bridgeEdge=transferEdge(porteLoire,choiseul);
   check(Boolean(bridgeEdge)&&Number.isFinite(bridgeEdge[2])&&bridgeEdge[2]>550&&bridgeEdge[2]<=650,'Allowed Loire bridge walking transfer was lost');
 
   const toursRail=byId('SNCF:87571000'),toursForecourt=byId('FILBLEU:TTR:AC-GATO');
   check(toursRail>=0&&toursForecourt>=0,'Missing Tours station access fixtures');
-  const toursAccess=d.adjacency[alightHub[toursRail]].find(([next])=>next===boardHub[toursForecourt]);
+  const toursAccess=transferEdge(toursRail,toursForecourt);
   check(Boolean(toursAccess)&&Number.isFinite(toursAccess[2])&&toursAccess[2]<120,'Tours station road access is missing or implausible');
 
   const stPierreRail=byId('SNCF:87571240'),stPierreForecourt=byId('FILBLEU:TTR:SPGAB-1A');
   check(stPierreRail>=0&&stPierreForecourt>=0,'Missing St-Pierre-des-Corps station access fixtures');
-  const stPierreAccess=d.adjacency[alightHub[stPierreRail]].find(([next])=>next===boardHub[stPierreForecourt]);
+  const stPierreAccess=transferEdge(stPierreRail,stPierreForecourt);
   check(Boolean(stPierreAccess)&&Number.isFinite(stPierreAccess[2])&&stPierreAccess[2]>150&&stPierreAccess[2]<250,'Documented St-Pierre-des-Corps station access is missing or implausible');
 }
 const station=(name,route)=>{const s=d.stations.find(s=>s.name===name&&(!route||s.routes.includes(route)));assert.ok(s,`Missing station ${name}`);return s;};
@@ -134,7 +160,7 @@ for(const name of names){
 const model=buildTravelModel(d,station('Tours').point);const gridStart=performance.now();for(const c of d.cells)estimateTravel(d,model,c.point);const gridMs=performance.now()-gridStart;
 // Independent O(V²) shortest-path oracle. Recompute the current transfer/wait
 // semantics here instead of trusting the stored transfer costs.
-const reference=Array(d.routeStates.length).fill(Infinity),visited=Array(d.routeStates.length).fill(false);
+const reference=Array(d.routeStates.length).fill(Infinity),referenceChanges=Array(d.routeStates.length).fill(Infinity),visited=Array(d.routeStates.length).fill(false);
 const src=station('Tours').point;
 const refWalk=d.meta.walkMetersPerMinute||80;
 const refEntry=d.meta.stationAccessPenalty??1.8;
@@ -164,15 +190,31 @@ const refEdgeCost=(fromNode,toNode,storedCost,walkingMetres)=>{
   }
   return storedCost;
 };
-d.stations.forEach((s,i)=>{for(const n of d.boardingStates[i])if(refAllowed[n])reference[n]=Math.hypot(s.point[0]-src[0],s.point[1]-src[1])/refWalk+refEntry+refWait(d.routeStates[n].routeId);});
+d.stations.forEach((s,i)=>{for(const n of d.boardingStates[i])if(refAllowed[n]){
+  reference[n]=Math.hypot(s.point[0]-src[0],s.point[1]-src[1])/refWalk+refEntry+refWait(d.routeStates[n].routeId);
+  referenceChanges[n]=0;
+}});
 for(let k=0;k<reference.length;k++){
-  let node=-1,value=Infinity;
-  for(let n=0;n<reference.length;n++)if(!visited[n]&&reference[n]<value){value=reference[n];node=n;}
+  let node=-1,value=Infinity,changes=Infinity;
+  for(let n=0;n<reference.length;n++)if(!visited[n]&&(
+    referenceChanges[n]<changes||(referenceChanges[n]===changes&&reference[n]<value)
+  )){value=reference[n];changes=referenceChanges[n];node=n;}
   if(node<0)break;visited[node]=true;
-  for(const [next,cost,walkingMetres] of d.adjacency[node])if(refAllowed[next])reference[next]=Math.min(reference[next],value+refEdgeCost(node,next,cost,walkingMetres));
+  for(const edge of d.adjacency[node]){
+    const [next,cost,walkingMetres]=edge;
+    if(!refAllowed[next])continue;
+    const nextChanges=changes+(Number(edge[3])||0);
+    const nextValue=value+refEdgeCost(node,next,cost,walkingMetres);
+    if(nextChanges<referenceChanges[next]||(nextChanges===referenceChanges[next]&&nextValue<reference[next])){
+      referenceChanges[next]=nextChanges;reference[next]=nextValue;
+    }
+  }
 }
 // 0.001 minute = 0.06 s: enough for coordinate-rounding noise, far below any user-facing precision.
-reference.forEach((v,n)=>check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch'));
+reference.forEach((v,n)=>{
+  check(referenceChanges[n]===model.sameRouteChanges[n]||(referenceChanges[n]===Infinity&&model.sameRouteChanges[n]===65535),'Same-route preference oracle mismatch');
+  check(v===model.distances[n]||Math.abs(v-model.distances[n])<1e-3,'Heap/shortest-path oracle mismatch');
+});
 const p21States=d.routeStates.map((state,n)=>[state,n]).filter(([state])=>state.routeId==='TER P21').map(([,n])=>n);
 check(p21States.length>0,'P21 fallback route states missing');
 check(p21States.some(n=>Number.isFinite(model.distances[n])),'P21 must be routable from Tours');
@@ -194,7 +236,7 @@ check(d.timetablePatterns.some(pattern=>{
   return a>=0&&b>=0&&a!==b;
 }),'P14 direct Mehun–Vierzon pattern missing');
 
-const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
+const output={checks,patterns:d.timetablePatterns.length,intervals,sameCodeChanges,sameRoutePreferenceEdges,crossModeNearbyPairs:crossMode,roadWalking,roadTransferEdges,stations:d.stations.length,routeStates:d.routeStates.length,adjacencyEdges:d.adjacency.reduce((n,a)=>n+a.length,0),noBoarding:d.stations.filter((s,i)=>!d.boardingStates[i].length).map(s=>s.name),tramMaxDisplayOffsetMetres:Math.max(...d.stations.filter(s=>s.mode==='TRAM'&&!s.planned).map(s=>s.displayOffset)),maxModelMs:+maxModel.toFixed(1),gridCells:d.cells.length,gridMs:+gridMs.toFixed(1),suiteMs:+(performance.now()-start).toFixed(1),examples};
 console.log(JSON.stringify(output,null,2));
 
 // Multipliers apply to each boarding, while observed in-vehicle times stay intact.
