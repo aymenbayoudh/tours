@@ -347,7 +347,7 @@ check(d.timetablePatterns.some(pattern=>{
 const chartres=station('Chartres');
 const chartresModel=buildTravelModel(d,chartres.point,true);
 const chartresTours=describeJourney(d,chartresModel,station('Tours').point);
-check(chartresTours.legs.length===1,'Chartres→Tours should prefer a one-seat train');
+check(chartresTours.legs.length===1,'Chartres→Tours should prefer a one-seat train: '+JSON.stringify(chartresTours.legs.map(l=>({route:l.routeId,from:d.stations[l.from].name,to:d.stations[l.to].name,minutes:l.minutes}))))
 check(chartresTours.legs[0].routeId==='TER P33','Chartres→Tours should use direct P33');
 check(chartresTours.legs[0].from===d.stations.indexOf(chartres),'Chartres→Tours direct leg should start at Chartres');
 check(d.stations[chartresTours.legs[0].to].name==='Tours','Chartres→Tours direct leg should end at Tours');
