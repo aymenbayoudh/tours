@@ -408,9 +408,9 @@ function syncDisplaySettingsControls() {
 
 const MY_MAPS_ROUTE_GROUPS = Object.freeze({
   Tours: ["TRAM A", "TRAM B", "BHNS C", "NAVETTE"],
-  Nord: ["TER K39", "TER P30", "TER P33"],
-  Ouest: ["TER K1", "TER P1", "TER P65"],
-  Est: ["TER K1", "TER K16", "TER K6+", "TER P6", "TER P7", "TER P17", "TER P166"],
+  Nord: ["TER K39", "TER K30", "TER P30", "TER P33", "TER P34", "TER P10"],
+  Ouest: ["TER K1", "TER P1", "TER P65", "TER P101", "TER K15", "TER P5", "TER P15"],
+  Est: ["TER K1", "TER K16", "TER K6+", "TER P6", "TER P7", "TER P17", "TER P166", "TER P14", "TER P16", "TER K5+", "TER P2"],
   Sud: ["TER P11", "TER P31", "TER P21"],
 });
 const ROUTE_GROUP_ORDER = ["Tours", "Nord", "Ouest", "Est", "Sud"];
@@ -472,6 +472,11 @@ function buildRouteColorSettings() {
       mode: info.mode || route.mode,
       title: info.title || route.title || route.id,
     });
+  }
+  for (const [id, info] of Object.entries(state.data.routeInfo || {})) {
+    if (unique.has(id) || info?.mode === "BUS" || info?.serviceStatus?.status === "suspended") continue;
+    if (!["TER", "NAVETTE", "TRAM", "BHNS"].includes(info?.mode)) continue;
+    unique.set(id, { id, mode: info.mode, title: info.title || id });
   }
 
   displayRouteColors.replaceChildren();
@@ -544,12 +549,24 @@ function buildRouteColorSettings() {
     displayRouteColors.append(section);
   }
 
-  // The current My Maps reference accounts for every configured route.
-  // If a new route is added later, keep it visible under Tours rather than
-  // silently dropping it, until the reference folders are updated.
+  // Keep newly discovered routes visible without misclassifying them under
+  // Tours. Unknown rail routes receive a neutral "Autres TER" section until
+  // their corridor is explicitly classified.
   const ungrouped = [...unique.values()].filter((route) => !groupedIds.has(route.id));
   if (ungrouped.length) {
-    const tours = displayRouteColors.querySelector('[data-route-group="Tours"] .route-color-group-body');
+    const section = document.createElement("details");
+    section.className = "route-color-group settings-collapse";
+    section.dataset.routeGroup = "Autres TER";
+    const summary = document.createElement("summary");
+    summary.className = "route-color-group-header";
+    const title = document.createElement("strong");
+    title.textContent = "Autres TER";
+    summary.append(title);
+    section.append(summary);
+    const tours = document.createElement("div");
+    tours.className = "route-color-group-body";
+    section.append(tours);
+    displayRouteColors.append(section);
     for (const route of ungrouped) {
       const row = document.createElement("div");
       row.className = "route-color-row";
