@@ -1,6 +1,6 @@
-import { contourSegments } from "./isochrone.mjs?v=2026-10-04c";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-04c";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04c";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-04d";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-04d";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-04d";
 const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-03g", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
@@ -1140,7 +1140,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04c", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-04d", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -2116,6 +2116,7 @@ displaySettingsScrim.addEventListener("click", () => setDisplaySettingsOpen(fals
 displayResetAll.addEventListener("click", () => {
   Object.assign(displaySettings, freshDisplaySettings());
   Object.assign(travelSettings, DEFAULT_TRAVEL_SETTINGS);
+  state.walkingOnRoads = true; roadWalkingToggle.checked = true; startRoadWalking();
   syncDisplaySettingsControls();
   saveDisplaySettings();
   saveTravelSettings();
