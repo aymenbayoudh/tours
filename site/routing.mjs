@@ -41,7 +41,7 @@ class MinHeap {
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const SHORT_TRIP_FASTEST_MINUTES = 60;
-const LONG_TRIP_TRANSFER_PREFERENCE_MINUTES = 60;
+const LONG_TRIP_TRANSFER_PREFERENCE_MINUTES = 30;
 function numeric(value, fallback, min = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? Math.max(min, number) : fallback;
