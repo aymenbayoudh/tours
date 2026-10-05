@@ -17,7 +17,7 @@ def main():
         'sha256': hashlib.sha256((gtfs.SOURCES / 'REMI.zip').read_bytes()).hexdigest(),
         'routeDecisions': [{'routeId': r, 'decision': 'candidate'} for r in selected],
         'url': 'https://data.centrevaldeloire.fr/explore/dataset/offre-theorique-mobilite-remi/',
-        'license': 'Licence Ouverte', 'maxSpeedKmh': 100})
+        'license': 'ODbL', 'maxSpeedKmh': 100})
     source = data.pop('source')
     source['regularCoursePolicy'] = 'KML selection; reference-week daytime non-reservation courses; real complete timing vectors'
     source['excludedSelectedRoutes'] = sorted(set(selected) - {r['gtfsRouteId'] for r in data['routes'].values()})
