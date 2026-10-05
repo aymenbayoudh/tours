@@ -1284,9 +1284,19 @@ html { scrollbar-gutter: stable; }
 .toolbar-actions .info-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%; flex: 0 0 44px; }
 @media (max-width: 720px) {
   .map-card.is-expanded { padding: 18px max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
-  .map-toolbar { flex-direction: column; gap: 8px; }
-  .toolbar-actions { align-self: flex-end; }
+  .map-toolbar { flex-direction: row; align-items: center; gap: 10px; }
+  .map-toolbar > div:first-child { flex: 1; min-width: 0; }
+  .toolbar-actions { align-self: center; }
   .toolbar-actions .ghost { min-height: 44px; }
   .map-card.is-expanded .map-stage { height: max(240px, calc(100svh - 290px)); }
   .infos-dialog { max-width: calc(100% - 24px); }
+}
+
+.settings-button-icon { display: none; }
+@media (max-width: 720px) {
+  .settings-button-label { display: none; }
+  .settings-button-icon { display: block; font-size: 25px; line-height: 1; }
+  .toolbar-actions #displaySettingsButton { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border-radius: 50%; }
+  #journeyContent p { font-size: .78rem; line-height: 1.45; margin: 7px 0; }
+  #statusText { font-size: .8rem; line-height: 1.35; }
 }
