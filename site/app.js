@@ -1,8 +1,8 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-05f";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-05f";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-05f";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05f";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05f", import.meta.url).toString();
+import { snapToRailStation } from "./placement.mjs?v=2026-10-05g";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-05g";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-05g";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05g";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05g", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -24,6 +24,8 @@ const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
   isochronePocketScale: 1.3,
   railMagnetism: true,
   showBusLabels: true,
+  busEpciColors: false,
+  busEpciTone: 0,
   terWidth: ROUTE_LINE_WIDTH,
   tramWidth: 4.2,
   bhnsWidth: 3.4,
@@ -124,15 +126,14 @@ function normalizeDisplaySettings(value) {
     }
     return result;
   };
-  const isochroneStops = DEFAULT_ISOCHRONE_STOPS.map((fallback, index) => {
-    const stop = Array.isArray(source.isochroneStops) ? source.isochroneStops[index] : null;
-    const alpha = Number(stop?.alpha);
-    return {
-      t: fallback.t,
-      color: validHexColor(stop?.color) ? stop.color.toLowerCase() : fallback.color,
-      alpha: Number.isFinite(alpha) ? Math.max(0, Math.min(1, alpha)) : fallback.alpha,
-    };
-  });
+  const savedStops = Array.isArray(source.isochroneStops) && source.isochroneStops.length >= 2
+    ? source.isochroneStops.slice(0, 24) : DEFAULT_ISOCHRONE_STOPS;
+  const isochroneStops = savedStops.map((stop, index) => ({
+    t: Number.isFinite(Number(stop.t)) ? clamp(Number(stop.t), 0, 1) : index / (savedStops.length - 1),
+    color: validHexColor(stop.color) ? stop.color.toLowerCase() : DEFAULT_ISOCHRONE_STOPS[0].color,
+    alpha: Number.isFinite(Number(stop.alpha)) ? clamp(Number(stop.alpha), 0, 1) : 1,
+  })).sort((a,b) => a.t - b.t);
+  isochroneStops[0].t = 0; isochroneStops.at(-1).t = 1;
   return {
     railMagnetMaxScale: (() => {
       const direct = Number(source.railMagnetMaxScale);
@@ -145,6 +146,8 @@ function normalizeDisplaySettings(value) {
     isochronePocketScale: numeric("isochronePocketScale", 0.5, 3),
     railMagnetism: source.railMagnetism !== false,
     showBusLabels: source.showBusLabels !== false,
+    busEpciColors: source.busEpciColors === true,
+    busEpciTone: numeric("busEpciTone", -0.8, 0.8),
     terWidth: numeric("terWidth", 0.5, 10),
     tramWidth: numeric("tramWidth", 0.5, 10),
     bhnsWidth: numeric("bhnsWidth", 0.5, 10),
@@ -260,11 +263,7 @@ const mapScaleRatio = document.getElementById("mapScaleRatio");
 const maxTimeInput = document.getElementById("maxTimeInput");
 const maxTimeLabel = document.getElementById("maxTimeLabel");
 const helpPanel = document.getElementById("helpPanel");
-const sharePanel = document.getElementById("sharePanel");
-const shareUrl = document.getElementById("shareUrl");
-const settingsButton = document.getElementById("settingsButton");
 const settingsPanel = document.getElementById("settingsPanel");
-const settingsClose = document.getElementById("settingsClose");
 const displaySettingsButton = document.getElementById("displaySettingsButton");
 const displaySettingsPanel = document.getElementById("displaySettingsPanel");
 const displaySettingsScrim = document.getElementById("displaySettingsScrim");
@@ -325,7 +324,33 @@ function defaultRouteColor(routeId) {
   return route?.color?.toLowerCase() || "#345c77";
 }
 
+const busReferenceEpcis = new Map();
+const NETWORK_EPCIS = {filbleu: "243700754", azalys: "200030385", move: "200072072", cvl: "200043081", amboise: "200043065", ogalo: "200071876", filrouge: "243700499", loches: "200071587", blere: "243700820"};
+function referenceEpci(route) {
+  const info = state.data.routeInfo?.[route.id];
+  const fixed = NETWORK_EPCIS[info?.network || (route.mode === "BHNS" ? "filbleu" : "")];
+  if (fixed) return state.data.boroughs.find(b => b.code === fixed);
+  if (!busReferenceEpcis.has(route.id)) {
+    const votes = new Map();
+    const stops = state.data.stations.filter(s => s.displayRoutes.includes(route.id));
+    for (const station of stops) {
+      const epci = state.data.boroughs.find(b => b.polygons.some(p => pointInPolygon(station.point, p)));
+      if (epci) votes.set(epci.code, (votes.get(epci.code) || 0) + 1);
+    }
+    busReferenceEpcis.set(route.id, [...votes].sort((a,b) => b[1] - a[1])[0]?.[0] || null);
+  }
+  return state.data.boroughs.find(b => b.code === busReferenceEpcis.get(route.id));
+}
 function routeDisplayColor(route) {
+  if (displaySettings.busEpciColors && ["BUS", "BHNS"].includes(route.mode)) {
+    if (state.data.routeInfo?.[route.id]?.network === "remi") return "#ffffff";
+    const epci = referenceEpci(route);
+    if (epci) {
+      const tone = displaySettings.busEpciTone;
+      const rgb = hexToRgb(epciDisplayColor(epci));
+      return "#" + rgb.map(v => Math.round(tone < 0 ? v * (1 + tone) : v + (255 - v) * tone).toString(16).padStart(2,"0")).join("");
+    }
+  }
   return displaySettings.routeColors[route.id] || route.color;
 }
 
@@ -352,8 +377,6 @@ function setDisplaySettingsOpen(open) {
   displaySettingsScrim.hidden = !open;
   displaySettingsButton.setAttribute("aria-expanded", String(open));
   if (open) {
-    setSettingsOpen(false);
-    sharePanel.hidden = true;
     syncDisplaySettingsControls();
   }
 }
@@ -710,7 +733,7 @@ function buildIsochroneGradientControls() {
     const label = document.createElement("div");
     label.className = "isochrone-stop-label";
     const strong = document.createElement("strong");
-    strong.textContent = Math.round(stop.t * 100) + "%";
+    strong.textContent = Math.round((1 - stop.t) * 100) + "%";
     const small = document.createElement("small");
     small.textContent = index === 0 ? "départ" : index === displaySettings.isochroneStops.length - 1 ? "temps maximal" : "étape";
     label.append(strong, small);
@@ -721,7 +744,7 @@ function buildIsochroneGradientControls() {
     const picker = document.createElement("input");
     picker.type = "color";
     picker.dataset.isochroneColor = String(index);
-    picker.setAttribute("aria-label", "Couleur du dégradé à " + Math.round(stop.t * 100) + "%");
+    picker.setAttribute("aria-label", "Couleur du dégradé à " + Math.round((1 - stop.t) * 100) + "%");
 
     const alphaTrack = document.createElement("div");
     alphaTrack.className = "isochrone-alpha-track";
@@ -731,7 +754,7 @@ function buildIsochroneGradientControls() {
     alpha.max = "100";
     alpha.step = "1";
     alpha.dataset.isochroneAlpha = String(index);
-    alpha.setAttribute("aria-label", "Transparence du dégradé à " + Math.round(stop.t * 100) + "%");
+    alpha.setAttribute("aria-label", "Transparence du dégradé à " + Math.round((1 - stop.t) * 100) + "%");
     alphaTrack.append(alpha);
 
     const alphaValue = document.createElement("span");
@@ -1004,10 +1027,23 @@ displaySettingsPanel.addEventListener("click", (event) => {
     return;
   }
 
+  if (event.target.closest("[data-add-isochrone-stop]")) {
+    const stops = displaySettings.isochroneStops;
+    if (stops.length >= 24) return;
+    const middle = Math.floor(stops.length / 2);
+    const a = stops[middle - 1], b = stops[middle];
+    const rgbA = hexToRgb(a.color), rgbB = hexToRgb(b.color);
+    const color = "#" + rgbA.map((value, i) => Math.round((value + rgbB[i]) / 2).toString(16).padStart(2, "0")).join("");
+    stops.splice(middle, 0, {t: 0.5, color, alpha: (a.alpha + b.alpha) / 2});
+    stops.forEach((stop, i) => {stop.t = i / (stops.length - 1);});
+    buildIsochroneGradientControls(); saveDisplaySettings(); invalidateVisualSettings();
+    return;
+  }
+
   const resetGradient = event.target.closest("[data-reset-isochrone-gradient]");
   if (resetGradient) {
     displaySettings.isochroneStops = DEFAULT_ISOCHRONE_STOPS.map((stop) => ({ ...stop }));
-    syncDisplaySettingsControls();
+    buildIsochroneGradientControls();
     saveDisplaySettings();
     invalidateVisualSettings();
     return;
@@ -1282,7 +1318,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05f", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05g", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1454,7 +1490,7 @@ function drawRoutes(drawCtx, projectPoint) {
     if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended") continue;
     if (route.mode === "BUS" && (!busNetworkEnabled(route.id) || state.viewportScale < 1.8)) continue;
     drawCtx.strokeStyle = routeDisplayColor(route);
-    drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : route.mode === "BHNS" ? displaySettings.bhnsWidth : route.mode === "BUS" ? 1.35 : displaySettings.terWidth;
+    drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : ["BHNS", "BUS"].includes(route.mode) ? displaySettings.bhnsWidth : displaySettings.terWidth;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
     const excluded = state.data.routeInfo?.[route.id]?.calculationAvailable === false;
@@ -1819,7 +1855,7 @@ function syncStatus(warp, travelMinutes) {
     statusText.textContent = `${prefix} ${sourceName}`;
   }
   const snapshot = roadSnapshot();
-  walkingNote.textContent = !state.walkingOnRoads ? "Marche estimée en ligne droite."
+  walkingNote.textContent = !state.walkingOnRoads ? ""
     : roadFailure ? "Voirie indisponible : marche provisoirement estimée en ligne droite. Rechargez pour réessayer."
     : !snapshot ? roadClient?.ready ? "Calcul de la marche sur voirie…" : "Préparation de la marche sur voirie…"
     : !snapshot.sourceCovered ? "Départ hors couverture IGN du SERM : accès initial estimé en ligne droite."
@@ -1830,7 +1866,7 @@ function syncStatus(warp, travelMinutes) {
     const { reachable, total } = snapshot?.reach || summarizeReachability(source);
     const percent = Math.round((reachable / total) * 100);
     const percentText = reachable > 0 && percent === 0 ? "Moins de 1 %" : `${percent} %`;
-    reachText.textContent = `${percentText} des points d’arrêt intégrés au calcul sont joignables en ${activeThreshold()} minutes depuis ce point (estimation, pas une part de population).`;
+    reachText.textContent = `${percentText} des points d’arrêt intégrés au calcul sont joignables en ${activeThreshold()} minutes depuis ce point.`;
   }
 }
 
@@ -1953,13 +1989,13 @@ function drawMap() {
   }
   if (state.originPoint) {
     const originScreen = projectPoint(state.originPoint);
-    drawMarker(ctx, originScreen, "#c44b2b", state.pinned || state.dragTarget === "origin" ? 7 : 6);
+    drawMarker(ctx, originScreen, displaySettings.isochroneStops[0].color, state.pinned || state.dragTarget === "origin" ? 7 : 6);
     const originName = placeName(state.originPoint);
     const originLines = ["Départ", originName];
     originLines.push(...stationModeLines(state.originPoint));
     const probeScreen = state.probePoint ? projectPoint(state.probePoint) : null;
     const nearProbe = probeScreen && Math.abs(originScreen[0] - probeScreen[0]) < 280 && Math.abs(originScreen[1] - probeScreen[1]) < 130;
-    const originLabel = drawLabelBubble(ctx, originScreen, originLines, "#c44b2b", nearProbe && originScreen[1] >= probeScreen[1]);
+    const originLabel = drawLabelBubble(ctx, originScreen, originLines, displaySettings.isochroneStops[0].color, nearProbe && originScreen[1] >= probeScreen[1]);
     state.pinHits.origin = { screen: originScreen, label: originLabel };
   }
 
@@ -2272,15 +2308,6 @@ mapCanvas.addEventListener("dblclick", (event) => {
   }
 });
 
-function setSettingsOpen(open) {
-  settingsPanel.hidden = !open;
-  settingsButton.setAttribute("aria-expanded", open ? "true" : "false");
-  if (open) {
-    sharePanel.hidden = true;
-    if (!displaySettingsPanel.hidden) setDisplaySettingsOpen(false);
-  }
-}
-
 displaySettingsButton.addEventListener("click", (event) => {
   event.stopPropagation();
   setDisplaySettingsOpen(displaySettingsPanel.hidden);
@@ -2292,28 +2319,20 @@ displayResetAll.addEventListener("click", () => {
   Object.assign(displaySettings, freshDisplaySettings());
   Object.assign(travelSettings, DEFAULT_TRAVEL_SETTINGS);
   state.walkingOnRoads = true; roadWalkingToggle.checked = true; startRoadWalking();
-  syncDisplaySettingsControls();
+  buildIsochroneGradientControls();
   saveDisplaySettings();
   saveTravelSettings();
   invalidateTravelSettings();
   syncUrl();
 });
 
-settingsButton.addEventListener("click", (event) => {
-  event.stopPropagation();
-  setSettingsOpen(settingsPanel.hidden);
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !displaySettingsPanel.hidden) setDisplaySettingsOpen(false);
 });
-settingsClose.addEventListener("click", () => setSettingsOpen(false));
-document.addEventListener("click", (event) => {
-  if (settingsPanel.hidden) return;
-  if (settingsPanel.contains(event.target) || settingsButton.contains(event.target)) return;
-  setSettingsOpen(false);
-});
-document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
-  if (!displaySettingsPanel.hidden) setDisplaySettingsOpen(false);
-  else if (!settingsPanel.hidden) setSettingsOpen(false);
-});
+const infosDialog = document.getElementById("infosDialog");
+document.getElementById("infosButton").addEventListener("click", () => infosDialog.showModal());
+document.getElementById("infosClose").addEventListener("click", () => infosDialog.close());
+infosDialog.addEventListener("click", event => { if (event.target === infosDialog && (event.clientX < infosDialog.getBoundingClientRect().left || event.clientX > infosDialog.getBoundingClientRect().right || event.clientY < infosDialog.getBoundingClientRect().top || event.clientY > infosDialog.getBoundingClientRect().bottom)) infosDialog.close(); });
 
 function syncOutlineToggles() {
   for (const minutes of OUTLINE_OPTIONS) {
@@ -2359,26 +2378,6 @@ document.getElementById("zoomInButton").addEventListener("click", () => {
 document.getElementById("zoomOutButton").addEventListener("click", () => {
   zoomAt(1 / VIEWPORT_ZOOM_STEP, [mapCanvas.clientWidth / 2, mapCanvas.clientHeight / 2]);
 });
-const fullscreenButton = document.getElementById("fullscreenButton");
-function syncFullscreen() {
-  const active = Boolean(document.fullscreenElement) || mapCard.classList.contains("is-expanded");
-  fullscreenButton.textContent = active ? "Quitter le plein écran" : "Plein écran";
-  fullscreenButton.setAttribute("aria-pressed", String(active));
-  document.body.classList.toggle("map-expanded", active);
-  backdropKey = "";
-  requestDraw();
-}
-fullscreenButton.addEventListener("click", () => {
-  // A viewport-sized map is reliable on iPhone and embedded browsers, which
-  // can reject or immediately exit the native Fullscreen API.
-  mapCard.classList.toggle("is-expanded");
-  syncFullscreen();
-});
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && mapCard.classList.contains("is-expanded") && !document.fullscreenElement) {
-    mapCard.classList.remove("is-expanded"); syncFullscreen();
-  }
-});
 let lastJourneyKey = "";
 function updateJourney() {
   if (!state.originPoint || !state.probePoint) { journeyPanel.hidden = true; lastJourneyKey = ""; return; }
@@ -2393,46 +2392,15 @@ function updateJourney() {
   const add = text => { const p = document.createElement("p"); p.textContent = text; journeyContent.append(p); };
   if (!journey) { add("Calcul du trajet sur voirie en cours…"); return; }
   if (journey.roadUnavailable) { add("Aucun chemin piéton identifié vers ce point. Placez-le près d’une rue ou d’un arrêt."); return; }
-  if (journey.walkingApproximation) add("Certaines portions hors couverture sont estimées en ligne droite.");
-  if (!journey.legs.length) add(`Marche directe estimée : ${formatMinutes(journey.minutes)}.`);
+
+  if (!journey.legs.length) add(`Marche${!state.walkingOnRoads ? " (en ligne droite)" : ""} : ${formatMinutes(journey.minutes)}.`);
   else {
-    add(`Marche : ${formatMinutes(journey.walking)} ; attente, accès et marges : ${formatMinutes(journey.waiting)}.`);
+    add(`Marche${!state.walkingOnRoads ? " (en ligne droite)" : ""} : ${formatMinutes(journey.walking)} ; attente, accès et marges : ${formatMinutes(journey.waiting)}.`);
     for (const leg of journey.legs) {
       add(`${leg.routeId} : ${state.data.stations[leg.from].name} → ${state.data.stations[leg.to].name}, ${formatMinutes(leg.minutes)}${leg.requiresReservation ? " (sur réservation)" : ""}.`);
     }
   }
 }
-document.getElementById("shareButton").addEventListener("click", () => {
-  sharePanel.hidden = !sharePanel.hidden;
-  shareUrl.textContent = location.href;
-  if (!sharePanel.hidden) setSettingsOpen(false);
-});
-document.getElementById("copyLinkButton").addEventListener("click", async () => {
-  await navigator.clipboard.writeText(location.href);
-  document.getElementById("copyLinkButton").textContent = "Copié";
-  setTimeout(() => {
-    document.getElementById("copyLinkButton").textContent = "Copier le lien";
-  }, 1400);
-});
-document.getElementById("locateButton").addEventListener("click", () => {
-  if (!navigator.geolocation) {
-    statusText.textContent = "Géolocalisation indisponible.";
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const world = lonLatToWorld(position.coords.longitude, position.coords.latitude);
-      if (!nearestLandPoint(world)) {
-        statusText.textContent = "Votre position est hors du périmètre et des lignes affichées.";
-        return;
-      }
-      setOrigin(world, { pin: true, label: "Ma position", magnet: false });
-    },
-    () => {
-      statusText.textContent = "Impossible de lire la position.";
-    },
-  );
-});
 function zoomAt(factor, screen) {
   if (!state.currentRender) return;
   const {width,height} = mapCanvas.getBoundingClientRect();
