@@ -1,8 +1,8 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-05l";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-05l";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-05l";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05l";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05l", import.meta.url).toString();
+import { snapToRailStation } from "./placement.mjs?v=2026-10-05m";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-05m";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-05m";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05m";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05m", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -151,8 +151,8 @@ function normalizeDisplaySettings(value) {
     terWidth: numeric("terWidth", 0.5, 10),
     tramWidth: numeric("tramWidth", 0.5, 10),
     bhnsWidth: numeric("bhnsWidth", 0.5, 10),
-    stationRadius: numeric("stationRadius", 1, 10),
-    railStationRadius: numeric("railStationRadius", 1, 10),
+    stationRadius: numeric("stationRadius", 0, Infinity),
+    railStationRadius: numeric("railStationRadius", 0, Infinity),
     labelScale: numeric("labelScale", 0.6, 1.8),
     communeBorderWidth: numeric("communeBorderWidth", 0.1, 6),
     epciBorderWidth: numeric("epciBorderWidth", 0.2, 8),
@@ -816,8 +816,8 @@ function buildEpciColorSettings() {
 function applyDisplayNumber(input) {
   const key = input.dataset.displayNumber;
   const fallback = DEFAULT_DISPLAY_SETTINGS[key];
-  const min = Number(input.min);
-  const max = Number(input.max);
+  const min = input.min === "" ? -Infinity : Number(input.min);
+  const max = input.max === "" ? Infinity : Number(input.max);
   let value = Number(input.value);
   if (!Number.isFinite(value)) value = fallback;
   value = Math.max(min, Math.min(max, value));
@@ -1318,7 +1318,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05l", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05m", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1587,7 +1587,7 @@ function drawStations(drawCtx, projectPoint, warp) {
     if (station.mode === "BUS" && (state.viewportScale < 2.4 || !(station.displayRoutes || station.routes || []).some(busNetworkEnabled))) continue;
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
-    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : station.mode === "BUS" ? Math.max(1.4, displaySettings.stationRadius * 0.62) : displaySettings.stationRadius;
+    const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : station.mode === "BUS" ? displaySettings.stationRadius * 0.62 : displaySettings.stationRadius;
     const minutes = snapshot ? snapshot.stationMinutes[index] : model && model.activeStations[index] ? routeEstimate(state.data, model, station.point) : Infinity;
     const rasterMissesStation = Number.isFinite(minutes) && minutes <= threshold && minimumWarpMinutesNearPoint(warp, station.point) > threshold;
     if (rasterMissesStation) {
