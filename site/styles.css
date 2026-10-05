@@ -1300,3 +1300,25 @@ html { scrollbar-gutter: stable; }
   #journeyContent p { font-size: .78rem; line-height: 1.45; margin: 7px 0; }
   #statusText { font-size: .8rem; line-height: 1.35; }
 }
+
+/* Mobile: all thresholds stay visible; the maximum sits on the second row. */
+@media (max-width: 720px) {
+  .map-card.is-expanded { padding-top: 10px; }
+  .map-toolbar { margin-bottom: 7px; gap: 6px; }
+  .map-toolbar h1 { font-size: 1.1rem; line-height: 1.15; }
+  #statusText { margin-top: 3px; font-size: .7rem; line-height: 1.25; }
+  .toolbar-actions { gap: 3px; }
+  .toolbar-actions .info-button, .toolbar-actions #displaySettingsButton { width: 38px; height: 38px; min-height: 38px; flex-basis: 38px; }
+  .settings-panel { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 6px; padding: 6px 8px; margin-bottom: 7px; overflow: visible; border-radius: 12px; }
+  .settings-panel .settings-header { grid-column: 1; grid-row: 1; }
+  .settings-header h3 { font-size: .75rem; }
+  .settings-panel .controls { display: contents; }
+  .settings-panel .contour-options { grid-column: 2; grid-row: 1; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; }
+  .settings-panel .contour-options .toggle { font-size: .65rem; gap: 2px; min-height: 28px; }
+  .settings-panel .toggle input { width: 12px; height: 12px; margin: 0; }
+  .duration-unit { display: none; }
+  .settings-panel .slider { grid-column: 1 / -1; grid-row: 2; min-width: 0; width: 100%; gap: 6px; font-size: .65rem; flex-direction: row; }
+  .settings-panel .slider input { flex: 1; width: auto; min-width: 0; height: 18px; }
+  .settings-panel .controls > .toggle { grid-column: 1 / -1; font-size: .65rem; min-height: 22px; gap: 5px; }
+  .reach { font-size: .7rem; line-height: 1.35; margin-top: 6px; }
+}

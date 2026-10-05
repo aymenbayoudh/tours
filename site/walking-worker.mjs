@@ -1,4 +1,4 @@
-import { WalkingEngine } from './walking-engine.mjs?v=2026-10-05m';
+import { WalkingEngine } from './walking-engine.mjs?v=2026-10-05n';
 let engine;
 self.onmessage = async ({data: message}) => {
   try {
