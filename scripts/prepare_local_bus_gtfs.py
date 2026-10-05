@@ -2,6 +2,7 @@
 """Prepare namespaced local bus data from official GTFS snapshots, offline."""
 import hashlib
 import json
+import math
 import re
 import statistics
 import zipfile
@@ -40,6 +41,7 @@ def prepare(network):
             times[s['trip_id']].append(s)
         groups, departures = defaultdict(list), defaultdict(lambda: defaultdict(list))
         excluded = defaultdict(int)
+        quality_excluded = defaultdict(int)
         runtime = {k: f'BUS {label} {(r.get("route_short_name") or k).strip()}' for k, r in routes.items()}
         selected_shapes, stop_routes = {}, defaultdict(set)
         for tid, records in times.items():
@@ -69,6 +71,15 @@ def prepare(network):
             dep = [seconds(s['departure_time']) / 60 - start for s in records]
             if any(a > b for a, b in zip(arrivals, dep)) or any(arrivals[i+1] < dep[i] for i in range(len(dep)-1)):
                 raise ValueError(f'Non-monotonic trip: {ident} {tid}')
+            # Optional source-quality guard for interurban imports. Reject a
+            # complete corrupt course rather than inventing faster segment times.
+            if network.get('maxSpeedKmh'):
+                points = [(float(stops[s['stop_id']]['stop_lon']) * 111320 * math.cos(math.radians(47.4)),
+                           float(stops[s['stop_id']]['stop_lat']) * 111320) for s in records]
+                if any(math.dist(points[i], points[j]) / (arrivals[j] - dep[i] + 1) * .06 > network['maxSpeedKmh']
+                       for i in range(len(points)-1) for j in range(i+1, len(points))):
+                    quality_excluded[rid] += 1
+                    continue
             sequence = tuple(f'{ident.upper()}:{s["stop_id"]}' for s in records)
             permissions = tuple((s.get('pickup_type', '0') != '1', s.get('drop_off_type', '0') != '1') for s in records)
             groups[(rid, sequence, permissions)].append({'train': rid, 'tripId': tid, 'arrivals': arrivals, 'departures': dep, 'shapeId': t.get('shape_id'), 'directionId': t.get('direction_id', '0'), 'requiresReservation': False})
@@ -94,7 +105,7 @@ def prepare(network):
             color = r.get('route_color') or '356E91'
             if not re.fullmatch(r'#?[0-9a-fA-F]{6}', color):
                 color = '356E91'
-            route_info[rid] = {'title': f'{label} {(r.get("route_short_name") or key)} — {r.get("route_long_name") or ""}', 'network': ident, 'networkName': label, 'shortName': r.get('route_short_name') or key, 'color': '#' + color.lstrip('#'), 'waitMinutes': round(min(30, max(2, statistics.median(intervals)/2 if intervals else 30)), 2), 'calculationAvailable': True, 'gtfsRouteId': key, 'excludedConditionalTrips': excluded[rid], 'waitMethod': 'half-median-headway-per-day-direction-origin-bounded-2-30'}
+            route_info[rid] = {'title': f'{label} {(r.get("route_short_name") or key)} — {r.get("route_long_name") or ""}', 'network': ident, 'networkName': label, 'shortName': r.get('route_short_name') or key, 'color': '#' + color.lstrip('#'), 'waitMinutes': round(min(30, max(2, statistics.median(intervals)/2 if intervals else 30)), 2), 'calculationAvailable': True, 'gtfsRouteId': key, 'excludedConditionalTrips': excluded[rid], 'excludedImplausibleTrips': quality_excluded[rid], 'waitMethod': 'half-median-headway-per-day-direction-origin-bounded-2-30'}
         reduced_stops = {}
         for sid, ids in stop_routes.items():
             s = stops[sid]

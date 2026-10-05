@@ -54,6 +54,21 @@ def read_json(name: str):
     return json.loads((DATA / name).read_text(encoding="utf-8"))
 
 
+def read_local_buses():
+    result = {"sources": [], "routes": {}, "stops": {}, "patterns": [], "shapes": []}
+    for filename in ("local_bus.json", "remi_bus.json"):
+        if not (DATA / filename).exists():
+            continue
+        item = read_json(filename)
+        for key in ("routes", "stops"):
+            if set(result[key]) & set(item.get(key, {})):
+                raise ValueError("Duplicate bus identifiers in " + filename)
+            result[key].update(item.get(key, {}))
+        for key in ("sources", "patterns", "shapes"):
+            result[key].extend(item.get(key, []))
+    return result
+
+
 def polyline_length(points) -> float:
     return sum(math.dist(a, b) for a, b in zip(points, points[1:]))
 
@@ -255,7 +270,7 @@ def build_stations_and_routes():
         stations.append({"id": "KML:" + name, "name": name, "point": point, "mode": "TER", "routes": set(), "planned": False, "terminal": False})
     tram = read_json("filbleu_tram.json")
     bus = read_json("filbleu_bus.json")
-    local_bus = read_json("local_bus.json") if (DATA / "local_bus.json").exists() else {}
+    local_bus = read_local_buses()
     bus["routes"].update(local_bus.get("routes", {}))
     bus["shapes"].extend(local_bus.get("shapes", []))
     timetable_data = read_json("timetables.json")
@@ -474,7 +489,7 @@ def build_stations_and_routes():
 def build_graph(stations, edges, route_waits, route_info, preparing_transfers=False):
     schedules = read_json("timetables.json")
     bus = read_json("filbleu_bus.json")
-    local_bus = read_json("local_bus.json") if (DATA / "local_bus.json").exists() else {}
+    local_bus = read_local_buses()
     patterns = schedules["patterns"] + bus.get("patterns", []) + local_bus.get("patterns", [])
     scheduled_routes = {p["routeId"] for p in patterns}
     by_id = {s["id"]: i for i, s in enumerate(stations)}
@@ -883,7 +898,7 @@ def main():
     walking_source = read_json("walking_transfers.json") if (DATA / "walking_transfers.json").exists() else {"generated": False}
     walking_meta = {key: value for key, value in walking_source.items() if key not in {"pairs", "manualPairs", "coveredStopIds"}}
     output = {
-        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {}), "localBusSources": read_json("local_bus.json").get("sources", []) if (DATA / "local_bus.json").exists() else [], "walkingTransferSource": walking_meta},
+        "meta": {"lat0": LAT0, "bounds": [round(x, 1) for x in bounds], "exploreBounds": [round(x, 1) for x in explore_bounds], "gridCols": GRID_COLS, "gridRows": GRID_ROWS, "walkMetersPerMinute": WALK_METRES_PER_MINUTE, "stationAccessPenalty": 1.8, "defaultBoardWait": 15.0, "filBleuBusSource": read_json("filbleu_bus.json").get("source", {}), "localBusSources": read_local_buses()["sources"], "walkingTransferSource": walking_meta},
         "boroughs": boroughs, "communes": communes, "parks": [], "routes": routes,
         "stations": [{"id": s["id"], "name": s["name"], "point": rounded(s["point"]), "drawPoint": rounded(s.get("drawPoint", s["point"])), "displayOffset": round(s.get("displayOffset", 0), 2), "routes": sorted(s["routes"]), "mode": s["mode"], "planned": s["planned"], "terminal": s.get("terminal", False), "parentStop": s.get("parentStop", ""), "displayRoutes": s.get("displayRoutes", []), "inSerm": s["inSerm"]} for s in stations],
         "routeInfo": route_info,

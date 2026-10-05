@@ -204,3 +204,15 @@ Paramètres → Placement des points : magnétisme TER activé par défaut, rayo
 ## Magnétisme au relâchement et taille des poches — 4 octobre 2026
 
 Dans le SERM, le magnétisme facultatif est désactivé sous un seuil de zoom réglable (défaut : 1×, la vue initiale). Hors SERM, le point glisse sur les tracés durant le geste, puis rejoint obligatoirement la gare TER desservie la plus proche au relâchement, indépendamment du rayon et du bouton de magnétisme SERM. Les points hors SERM d’un lien existant sont également calés à l’ouverture. La taille des petites zones isochrones est réglable dans Placement des points, avec un multiplicateur initial de 1,3 par rapport au commit précédent.
+
+## Cars Rémi — 5 octobre 2026
+
+Les 27 lignes choisies dans le KML fourni sont confrontées au GTFS régional archivé dans `data/tours/remi-2026-10-05/`. 25 lignes, 989 points physiques et 232 profils horaires sont intégrés. TB et TH sont écartées : les courses disponibles dans la semaine de référence comportent une réservation. Les courses conditionnelles des autres lignes sont également exclues ; les lignes ayant une offre régulière restent incluses. La semaine du 5 au 11 octobre évite les services uniquement estivaux ; les courses de nuit sont exclues.
+
+Cinq courses de la ligne 800 contenant un intervalle physiquement impossible sont écartées (contrôle de tous les intervalles, plafond 100 km/h avec une minute de tolérance pour les horaires arrondis).
+
+Chaque profil conserve le vecteur complet d'une course réelle représentative, sans assembler des minima d'horaires par tronçon. Les points de cars situés dans les gares restent distincts des points ferroviaires : passage car→train = marche, marge de correspondance et attente selon les paramètres. Les transferts dans le SERM sont préparés sur le graphe IGN compact ; les accès internes manquants à Saint-Patrice et au sud de Saint-Pierre-des-Corps sont des connexions documentées de 120 et 200 mètres estimés. À l'extérieur, le modèle conserve son repli piéton géométrique existant.
+
+Les paramètres bus (attente, accès, sortie, correspondance, étiquettes) s'appliquent aux cars. Le groupe **Cars Rémi** permet de désactiver le réseau. Les règles empêchant de descendre puis remonter sur la même ligne s'appliquent également. Les horaires sont représentatifs : le site ne garantit pas une correspondance à une heure de départ précise.
+
+Régénération : `python3 scripts/prepare_remi_bus.py`, puis préparation incrémentale de la table piétonne avec `scripts/prepare_local_bus_transfers.mjs` si des arrêts changent, puis `python3 build_data.py`. Les originaux fournis sont conservés.

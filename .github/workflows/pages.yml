@@ -37,6 +37,7 @@ jobs:
           node tests/intermodal_feeder.test.mjs
           node tests/ter_profile_preference.test.mjs
           node tests/bus_data.test.mjs
+          node tests/remi_bus.test.mjs
           node tests/local_bus.test.mjs
           node tests/spatial_estimate.test.mjs
       - uses: actions/configure-pages@v5
