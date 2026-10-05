@@ -1223,7 +1223,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px; }
 }
 
 /* The map is the default page, with the requested full-view margins. */
-.map-card.is-expanded { padding: 18px max(36px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(36px, env(safe-area-inset-left)); }
+.map-card.is-expanded { padding: 18px max(72px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(72px, env(safe-area-inset-left)); }
 .map-toolbar h1 { margin: 0; font-family: Fraunces, Georgia, serif; font-size: clamp(1.35rem, 2.8vw, 2rem); line-height: 1.1; }
 .settings-panel { display: flex; align-items: center; gap: 14px; padding: 10px 14px; flex: 0 0 auto; }
 .settings-header { margin: 0; }
@@ -1239,7 +1239,7 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px; }
 .bus-tone-control input { flex: 1; min-width: 80px; }
 .isochrone-gradient-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 680px) {
-  .map-card.is-expanded { padding: 18px max(36px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(36px, env(safe-area-inset-left)); }
+  .map-card.is-expanded { padding: 18px max(72px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(72px, env(safe-area-inset-left)); }
   .map-toolbar { flex-direction: row; gap: 8px; }
   .toolbar-actions { flex-wrap: nowrap; gap: 4px; }
   .toolbar-actions .ghost { padding: 8px 10px; font-size: .82rem; }
@@ -1274,7 +1274,19 @@ body.map-expanded { overflow: auto; }
 }
 .map-card.is-expanded .map-stage {
   flex: 0 0 auto;
-  height: max(240px, calc(100svh - 174px));
+  height: max(240px, calc(100svh - 230px));
   min-height: 240px;
 }
 html { scrollbar-gutter: stable; }
+
+/* Compact actions and a usable map width on phones. */
+.toolbar-actions { display: flex; width: auto; flex: 0 0 auto; flex-wrap: nowrap; align-items: center; }
+.toolbar-actions .info-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%; flex: 0 0 44px; }
+@media (max-width: 720px) {
+  .map-card.is-expanded { padding: 18px max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+  .map-toolbar { flex-direction: column; gap: 8px; }
+  .toolbar-actions { align-self: flex-end; }
+  .toolbar-actions .ghost { min-height: 44px; }
+  .map-card.is-expanded .map-stage { height: max(240px, calc(100svh - 290px)); }
+  .infos-dialog { max-width: calc(100% - 24px); }
+}
