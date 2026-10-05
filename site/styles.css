@@ -1277,3 +1277,4 @@ body.map-expanded { overflow: auto; }
   height: max(240px, calc(100svh - 174px));
   min-height: 240px;
 }
+html { scrollbar-gutter: stable; }
