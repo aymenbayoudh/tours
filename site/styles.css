@@ -1261,3 +1261,19 @@ summary { cursor: pointer; font-weight: 600; min-height: 32px; }
 .settings-panel .slider { display: flex; align-items: center; flex: 0 0 auto; gap: 8px; }
 .settings-panel .slider span { white-space: nowrap; }
 .settings-panel .slider input { width: 120px; }
+
+/* Journey details extend the page instead of taking height from the map. */
+body.map-expanded { overflow: auto; }
+.map-expanded .page { width: 100%; margin: 0; padding: 0; }
+.map-card.is-expanded {
+  position: relative;
+  inset: auto;
+  height: auto;
+  min-height: 100svh;
+  overflow: visible;
+}
+.map-card.is-expanded .map-stage {
+  flex: 0 0 auto;
+  height: max(240px, calc(100svh - 174px));
+  min-height: 240px;
+}
