@@ -14,7 +14,8 @@ const station = name => {
   assert.ok(result, `Missing station ${name}`);
   return result;
 };
-const settings = { walkSpeedKmh: 4.8, busWaitFactor: 0, terWaitFactor: 1, tramWaitFactor: 1 };
+// Isolate the original local feeders from the newly added interurban network.
+const settings = { walkSpeedKmh: 4.8, busWaitFactor: 0, terWaitFactor: 1, tramWaitFactor: 1, disabledBusNetworks: ["remi"] };
 
 for (const { from, to, feeder } of [
   { from: 'EHPAD L’Auverdière', to: 'Blois-Chambord', feeder: 'BUS Le Lien Bléré Navette' },

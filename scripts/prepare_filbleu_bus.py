@@ -104,20 +104,39 @@ def main() -> None:
             if shape_id:
                 selected_shape_ids.add(shape_id)
                 display_shapes.setdefault(shape_id, route_id)
-            # Reservation zones are not an ordered fixed itinerary. Identical
-            # timestamps must never become instantaneous cross-zone journeys.
-            # Keep their geometry as reference, but exclude conditional trips
-            # until a reservation-aware model is available.
-            if any(item["reservation"] for item in times):
-                excluded_trips[route_id] += 1
-                continue
             first_departure = times[0]["departure"] / 60
             arrivals = [x["arrival"] / 60 - first_departure for x in times]
             departures = [x["departure"] / 60 - first_departure for x in times]
             if any(departure < arrival for arrival, departure in zip(arrivals, departures)) or any(arrivals[i + 1] < departures[i] for i in range(len(arrivals) - 1)):
                 continue
+            reservation = [x["reservation"] for x in times]
+            points = [(float(all_stops[x["physical"]]["stop_lon"]) * 111320 * math.cos(math.radians(47.4)),
+                       float(all_stops[x["physical"]]["stop_lat"]) * 111320) for x in times]
+            zonal = any(reservation) and any(math.dist(points[i], points[j]) / (arrivals[j] - departures[i] + 1) * .06 > 100
+                                            for i in range(len(times)-1) for j in range(i+1, len(times)))
+            if zonal:
+                # Zonal demand-responsive services list simultaneous stops,
+                # not an ordered itinerary. Only link permitted pickup/dropoff
+                # pairs of this service. Never use zero-duration GTFS zone times.
+                for i, start_stop in enumerate(times):
+                    if not start_stop["pickup"]:
+                        continue
+                    for j, end_stop in enumerate(times):
+                        if i == j or not end_stop["dropoff"] or start_stop["physical"] == end_stop["physical"]:
+                            continue
+                        duration = 2 + math.dist(points[i], points[j]) * 1.35 / (20000 / 60)
+                        sequence = ("FILBLEU:" + start_stop["physical"], "FILBLEU:" + end_stop["physical"])
+                        permissions = ((True, False, True), (False, True, True))
+                        if (route_id, sequence, permissions) not in groups:
+                            groups[(route_id, sequence, permissions)].append({
+                                "train": f"Bus {short}", "tripId": f"ZONAL:{route_id}:{start_stop['physical']}:{end_stop['physical']}",
+                                "arrivals": [0, round(duration, 3)], "departures": [0, round(duration, 3)],
+                                "requiresReservation": True, "reservationStops": [True, True],
+                                "timingMethod": "estimated-zonal-20kmh-distance-factor-1.35-plus-2min", "shapeId": shape_id,
+                            })
+                continue
             sequence = tuple("FILBLEU:" + x["physical"] for x in times)
-            permissions = tuple((x["pickup"], x["dropoff"]) for x in times)
+            permissions = tuple((x["pickup"], x["dropoff"], x["reservation"]) for x in times)
             direction = trip.get("direction_id") or "0"
             shape_id = trip.get("shape_id") or ""
             label = f"Bus {short}" + (f" → {trip.get('trip_headsign','').strip()}" if trip.get("trip_headsign", "").strip() else "")
@@ -128,7 +147,8 @@ def main() -> None:
                 "departures": departures,
                 "shapeId": shape_id,
                 "directionId": direction,
-                "requiresReservation": False,
+                "requiresReservation": any(reservation),
+                "reservationStops": reservation,
             })
             # Do not merge departures from different days or different origins
             # of a branched line into one fictitious frequency.
@@ -213,15 +233,7 @@ def main() -> None:
             if len(pts) >= 2:
                 shapes.append({"routeId": route_id, "shapeId": sid, "points": simplify(pts)})
 
-    # Entirely conditional lines are absent from both the map and settings.
-    # Mixed lines retain their regular courses and their existing calculation.
-    removed_reservation = sorted(route for route,info in reduced_routes.items()
-        if not info["calculationAvailable"] and info["excludedReservationTrips"])
-    reduced_routes = {route:info for route,info in reduced_routes.items() if route not in removed_reservation}
-    shapes = [shape for shape in shapes if shape["routeId"] in reduced_routes]
-    for stop in reduced_stops.values():
-        stop["displayRoutes"] = [route for route in stop["displayRoutes"] if route in reduced_routes]
-    reduced_stops = {sid:stop for sid,stop in reduced_stops.items() if stop["displayRoutes"]}
+    removed_reservation = []
 
     output = {
         "source": {
@@ -232,7 +244,7 @@ def main() -> None:
             "referenceWeek": ["2026-10-05", "2026-10-11"],
             "excludedServiceLines": sorted(EXCLUDED_SERVICE_LINES),
             "removedReservationOnlyRoutes": removed_reservation,
-            "reservationPolicy": "entirely reservation-only lines removed from map and calculations; mixed lines retain regular courses",
+            "reservationPolicy": "reservation services included; fixed courses use GTFS times, zonal courses use explicit duration estimates",
         },
         "stops": reduced_stops,
         "routes": reduced_routes,

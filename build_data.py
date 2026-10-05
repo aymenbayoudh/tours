@@ -533,7 +533,7 @@ def build_graph(stations, edges, route_waits, route_info, preparing_transfers=Fa
         for pos in range(len(stop_indexes) - 1):
             next_stop_by_pattern[(number, stop_indexes[pos])] = stop_indexes[pos + 1]
             previous_stop_by_pattern[(number, stop_indexes[pos + 1])] = stop_indexes[pos]
-        audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": stop_indexes, "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"]})
+        audit_patterns.append({"routeId": pattern["routeId"], "train": pattern["train"], "tripId": pattern["tripId"], "stops": stop_indexes, "arrivalNodes": arrivals, "departureNodes": departures, "arrivals": pattern["arrivals"], "departures": pattern["departures"], "requiresReservation": pattern.get("requiresReservation", False), "reservationStops": pattern.get("reservationStops", []), "timingMethod": pattern.get("timingMethod", "representative-timetable")})
 
     # Preserve whole train profiles. Same-code interchange is only available
     # when the incoming service ends; reject backtracking and account for the

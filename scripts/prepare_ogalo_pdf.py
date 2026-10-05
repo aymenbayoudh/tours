@@ -86,7 +86,7 @@ def prepare():
       out['stops'].setdefault(sid,{'name':name,'point':point,'parent':'','network':'ogalo','displayRoutes':[],'coordinateMethod':quality})
       if rid not in out['stops'][sid]['displayRoutes']:out['stops'][sid]['displayRoutes'].append(rid)
       ss.append(sid)
-      permissions.append((not v['conditional'],not v['conditional']))
+      permissions.append((True,True,v['conditional']))
      if unknown:raise ValueError(f'Unresolved current regular stop in {filename}: {unknown}')
      if len(ss)!=len(times):continue
      dedup=[i for i in range(len(ss)) if i==0 or ss[i]!=ss[i-1] or times[i]!=times[i-1]]
@@ -138,10 +138,10 @@ def prepare():
         geometry_mismatch+=1
         continue
      sequence=tuple(ss);permission=tuple(permissions);zero=times[0]
-     rec={'train':rid,'tripId':f'PDF:{filename}:{page["page"]}:{block[0]["y"]}:{column}','arrivals':[t-zero for t in times],'departures':[t-zero for t in times],'requiresReservation':False,'sourcePdf':filename,'sourcePage':page['page']+1}
+     rec={'train':rid,'tripId':f'PDF:{filename}:{page["page"]}:{block[0]["y"]}:{column}','arrivals':[t-zero for t in times],'departures':[t-zero for t in times],'requiresReservation':any(p[2] for p in permissions),'reservationStops':[p[2] for p in permissions],'sourcePdf':filename,'sourcePage':page['page']+1}
      groups[(rid,sequence,permission)].append(rec);kept+=1;departures[rid].append(zero)
      used_shapes[(rid,best)]=source_shapes[best]
-  audit.append({'file':filename,'sha256':hashlib.sha256((SRC/filename).read_bytes()).hexdigest(),'retainedRegularColumns':kept,'coursesContainingConditionalCells':conditional,'excludedNonMonotonicColumns':nonmonotonic,'excludedOffShapeColumns':geometry_mismatch,'excludedImplausibleSpeedColumns':implausible,'implausibleExamples':implausible_examples,'policy':'retain complete regular PDF columns whose stops match the displayed road shape and timetable speed; conditional reservation cells are not boardable'})
+  audit.append({'file':filename,'sha256':hashlib.sha256((SRC/filename).read_bytes()).hexdigest(),'retainedRegularColumns':kept,'coursesContainingConditionalCells':conditional,'excludedNonMonotonicColumns':nonmonotonic,'excludedOffShapeColumns':geometry_mismatch,'excludedImplausibleSpeedColumns':implausible,'implausibleExamples':implausible_examples,'policy':'retain complete regular PDF columns whose stops match the displayed road shape and timetable speed; conditional reservation cells are boardable and annotated'})
   if kept:
    ds=sorted(set(departures[rid]));gaps=[b-a for a,b in zip(ds,ds[1:]) if b>a]
    out['routes'][rid]={'title':f'Ogalo {code} — {r["route_long_name"]}','network':'ogalo','networkName':'Ogalo','shortName':code,'color':'#'+r['route_color'],'waitMinutes':round(min(30,max(2,statistics.median(gaps)/2 if gaps else 30)),2),'waitMethod':'half-median-current-PDF-departure-gap-bounded-2-30','calculationAvailable':True,'excludedConditionalTrips':conditional,'geometryMethod':'historical official GTFS shapes matched to current regular courses'}

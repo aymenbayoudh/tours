@@ -527,6 +527,14 @@ export function describeJourney(data, model, destination) {
     }
   }
 
+  for (const leg of legs) {
+    const profile = data.timetablePatterns?.[leg.pattern];
+    const from = profile?.stops.indexOf(leg.from), to = profile?.stops.indexOf(leg.to);
+    leg.requiresReservation = profile?.reservationStops?.length
+      ? Boolean(profile.reservationStops[from] || profile.reservationStops[to])
+      : Boolean(profile?.requiresReservation);
+  }
+
   const first = data.routeStates[nodes[0]].stationIndex;
   let walking = (model.accessMinutes?.[first] ?? distance(model.origin,data.stations[first].point)/walkSpeed) + (result.finalWalkMinutes ?? distance(destination,data.stations[result.station].point)/walkSpeed);
   for (let i = 1; i < nodes.length; i += 1) {

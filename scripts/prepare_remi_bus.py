@@ -19,7 +19,7 @@ def main():
         'url': 'https://data.centrevaldeloire.fr/explore/dataset/offre-theorique-mobilite-remi/',
         'license': 'ODbL', 'maxSpeedKmh': 100})
     source = data.pop('source')
-    source['regularCoursePolicy'] = 'KML selection; reference-week daytime non-reservation courses; real complete timing vectors'
+    source['regularCoursePolicy'] = 'KML selection; reference-week daytime courses including reservation services; real complete timing vectors'
     source['excludedSelectedRoutes'] = sorted(set(selected) - {r['gtfsRouteId'] for r in data['routes'].values()})
     data['sources'] = [source]
     (gtfs.DATA / 'remi_bus.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))

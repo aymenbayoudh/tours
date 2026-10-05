@@ -57,7 +57,7 @@ def prepare(network):
                     excluded[rid] += 1
                     continue
             conditional = any(s.get('pickup_type') in {'2', '3'} or s.get('drop_off_type') in {'2', '3'} or s.get('pickup_booking_rule_id') or s.get('drop_off_booking_rule_id') for s in records)
-            if conditional or len(records) < 2:
+            if len(records) < 2:
                 excluded[rid] += 1
                 continue
             if ident == 'move' and t['route_id'] == 'LIGNE M' and t.get('direction_id') == '1':
@@ -81,8 +81,9 @@ def prepare(network):
                     quality_excluded[rid] += 1
                     continue
             sequence = tuple(f'{ident.upper()}:{s["stop_id"]}' for s in records)
-            permissions = tuple((s.get('pickup_type', '0') != '1', s.get('drop_off_type', '0') != '1') for s in records)
-            groups[(rid, sequence, permissions)].append({'train': rid, 'tripId': tid, 'arrivals': arrivals, 'departures': dep, 'shapeId': t.get('shape_id'), 'directionId': t.get('direction_id', '0'), 'requiresReservation': False})
+            reservation = [s.get('pickup_type') in {'2','3'} or s.get('drop_off_type') in {'2','3'} or bool(s.get('pickup_booking_rule_id') or s.get('drop_off_booking_rule_id')) for s in records]
+            permissions = tuple((s.get('pickup_type', '0') != '1', s.get('drop_off_type', '0') != '1', reserved) for s,reserved in zip(records,reservation))
+            groups[(rid, sequence, permissions)].append({'train': rid, 'tripId': tid, 'arrivals': arrivals, 'departures': dep, 'shapeId': t.get('shape_id'), 'directionId': t.get('direction_id', '0'), 'requiresReservation': conditional, 'reservationStops': reservation})
             for s in records:
                 stop_routes[s['stop_id']].add(rid)
             if t.get('shape_id'):

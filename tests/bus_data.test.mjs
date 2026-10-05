@@ -13,7 +13,8 @@ for (const short of ['66','67','69','70','72','73','N1','N2']) {
 }
 let intervals = 0;
 for (const p of bus.patterns) {
-  assert.equal(p.requiresReservation, false, `Conditional service imported: ${p.tripId}`);
+  assert.equal(p.reservationStops.length, p.stops.length);
+  assert.equal(p.requiresReservation, p.reservationStops.some(Boolean));
 }
 for (const [id, info] of Object.entries(bus.routes)) {
   assert.equal(info.calculationAvailable, plannedRoutes.has(id), `Availability mismatch ${id}`);
@@ -36,15 +37,22 @@ for (const p of data.timetablePatterns) {
   }
 }
 for (const id of ['BUS R3','BUS R4','BUS R5','BUS R6','BUS R7','BUS R8','BUS R9','BUS R10','BUS R11','BUS R12']) {
-  assert(!bus.routes[id], `Reservation-only line remains in import: ${id}`);
-  assert(!data.routeInfo[id], `Reservation-only line remains in settings: ${id}`);
-  assert(!data.routes.some(r=>r.id===id), `Reservation-only line still drawn: ${id}`);
-  assert(!data.stations.some(s=>s.displayRoutes.includes(id)), `Reservation-only stop metadata remains: ${id}`);
+  assert(bus.routes[id], `Reservation line missing: ${id}`);
+  assert(data.routeInfo[id], `Reservation line missing from settings: ${id}`);
+  assert(data.routes.some(r=>r.id===id), `Reservation line not drawn: ${id}`);
+  assert(data.stations.some(s=>s.displayRoutes.includes(id)), `Reservation stops missing: ${id}`);
 }
 const origin = data.stations.find(s => s.id === 'FILBLEU:TTR:LEMOB-1').point;
 const target = data.stations.find(s => s.name === 'Baillardière').point;
 const trip = describeJourney(data, buildTravelModel(data, origin), target);
 assert(trip.minutes > 15, 'Les Montils–Baillardière still has a fictitious 15-minute shortcut');
-assert(!trip.legs.some(l => l.routeId === 'BUS R4'));
+
 console.log(JSON.stringify({ routes: Object.keys(bus.routes).length, fixedPatterns: bus.patterns.length,
   checkedBusIntervals: intervals, montilsBaillardiereMinutes: trip.minutes }, null, 2));
+// Isolate a real reservation course to validate the journey metadata used by UI.
+const reserved = data.timetablePatterns.find(p=>p.routeId==='BUS R3');
+assert(reserved?.requiresReservation);
+const isolated = {...data,routeInfo:Object.fromEntries(Object.entries(data.routeInfo).map(([id,info])=>[id,id==='BUS R3'?info:{...info,mode:'BUS',network:'test-disabled'}]))};
+const reservedJourney=describeJourney(isolated,buildTravelModel(isolated,data.stations[reserved.stops[0]].point,true,{busWaitFactor:0,busEntryPenalty:0,busExitPenalty:0,disabledBusNetworks:['test-disabled']}),data.stations[reserved.stops.at(-1)].point);
+assert(reservedJourney.legs.some(l=>l.routeId==='BUS R3'&&l.requiresReservation),'Reservation note must survive route reconstruction');
+assert(data.timetablePatterns.some(p=>p.routeId==='BUS 11'&&!p.requiresReservation),'Regular service must remain unmarked');

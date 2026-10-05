@@ -216,3 +216,9 @@ Chaque profil conserve le vecteur complet d'une course réelle représentative, 
 Les paramètres bus (attente, accès, sortie, correspondance, étiquettes) s'appliquent aux cars. Le groupe **Cars Rémi** permet de désactiver le réseau. Les règles empêchant de descendre puis remonter sur la même ligne s'appliquent également. Les horaires sont représentatifs : le site ne garantit pas une correspondance à une heure de départ précise.
 
 Régénération : `python3 scripts/prepare_remi_bus.py`, puis préparation incrémentale de la table piétonne avec `scripts/prepare_local_bus_transfers.mjs` si des arrêts changent, puis `python3 build_data.py`. Les originaux fournis sont conservés.
+
+## Services sur réservation réintégrés — 5 octobre 2026
+
+Les services sur réservation sont désormais inclus dans les réseaux Fil Bleu, Rémi et les réseaux locaux préparés. Les horaires fixes restent issus de leurs courses réelles ; les cellules conditionnelles Ogalo deviennent utilisables. Le trajet retenu ajoute « (sur réservation) » lorsqu'un point de montée ou de descente du service utilisé l'exige. Les portions régulières des lignes mixtes ne sont pas étiquetées par erreur.
+
+Pour les zones Fil Bleu dont le GTFS donne la même heure à plusieurs arrêts éloignés, il ne s'agit pas d'un horaire d'itinéraire : les liaisons permises par les droits de montée/descente sont estimées à 20 km/h, distance géométrique × 1,35 et 2 minutes de service. Ces profils sont identifiés `estimated-zonal-20kmh-distance-factor-1.35-plus-2min`, jamais présentés comme des durées horaires mesurées. Les règles de correspondance et les multiplicateurs bus restent applicables. Les sauvegardes avant réintégration sont dans `archive/before-reservation-2026-10-05/`.

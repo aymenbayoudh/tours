@@ -3,8 +3,8 @@ import fs from 'node:fs';
 import {buildTravelModel, describeJourney} from '../site/routing.mjs';
 const read=p=>JSON.parse(fs.readFileSync(new URL(p,import.meta.url)));
 const d=read('../site/data/commute_map_data.json'), source=read('../data/tours/remi_bus.json');
-assert.equal(Object.keys(source.routes).length,25);
-assert(!Object.values(source.routes).some(r=>['TB','TH'].includes(r.shortName)));
+assert.equal(Object.keys(source.routes).length,27);
+for(const code of ['TB','TH']) assert(Object.values(source.routes).some(r=>r.shortName===code));
 let intervals=0, railPairs=0, busPairs=0;
 const byId=new Map(d.stations.map((s,i)=>[s.id,i]));
 for(const p of source.patterns){
@@ -56,4 +56,4 @@ const journey=describeJourney(d,buildTravelModel(d,from,true,settings),to);
 assert(journey.legs.some(l=>d.routeInfo[l.routeId]?.network==='remi'));
 const off=describeJourney(d,buildTravelModel(d,from,true,{...settings,disabledBusNetworks:['remi']}),to);
 assert(!off.legs.some(l=>d.routeInfo[l.routeId]?.network==='remi'));
-console.log(JSON.stringify({routes:25,stops:Object.keys(source.stops).length,intervals,railPairs,busPairs,railEdges,localEdges,example:journey.legs,modelsMs:performance.now()-start}));
+console.log(JSON.stringify({routes:27,stops:Object.keys(source.stops).length,intervals,railPairs,busPairs,railEdges,localEdges,example:journey.legs,modelsMs:performance.now()-start}));
