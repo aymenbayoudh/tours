@@ -1,8 +1,8 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-05i";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-05i";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-05i";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05i";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05i", import.meta.url).toString();
+import { snapToRailStation } from "./placement.mjs?v=2026-10-05j";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-05j";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-05j";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05j";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05j", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -1318,7 +1318,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05i", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05j", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1488,9 +1488,11 @@ function drawBasemap(drawCtx, projectPoint) {
 function drawRoutes(drawCtx, projectPoint) {
   for (const route of state.data.routes) {
     if (route.mode === "RFN" || state.data.routeInfo?.[route.id]?.serviceStatus?.status === "suspended") continue;
-    if (route.mode === "BUS" && (!busNetworkEnabled(route.id) || state.viewportScale < 1.8)) continue;
+    const isRemi = route.mode === "BUS" && state.data.routeInfo?.[route.id]?.network === "remi";
+    if (route.mode === "BUS" && (!busNetworkEnabled(route.id) || state.viewportScale < (isRemi ? 1.3 : 1.8))) continue;
     drawCtx.strokeStyle = routeDisplayColor(route);
     drawCtx.lineWidth = route.mode === "TRAM" ? displaySettings.tramWidth : ["BHNS", "BUS"].includes(route.mode) ? displaySettings.bhnsWidth : displaySettings.terWidth;
+    if (isRemi) drawCtx.lineWidth *= 1.33;
     drawCtx.lineCap = "round";
     drawCtx.lineJoin = "round";
     const excluded = state.data.routeInfo?.[route.id]?.calculationAvailable === false;
