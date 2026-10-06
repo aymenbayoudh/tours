@@ -5,7 +5,7 @@ import {snapToRailStation} from '../site/placement.mjs';
 const source=fs.readFileSync(new URL('../site/app.js',import.meta.url),'utf8');
 const code=source.slice(source.indexOf('function settleOutsideStation('),source.indexOf('function parsePair('));
 const state={originPoint:[5000,0],probePoint:null,dragTarget:'origin',dragMoved:true,data:{stations:[{mode:'TER',point:[6000,0],routes:['ter']}],routeInfo:{ter:{mode:'TER'}}}};
-const context={state,snapToRailStation,pointInLand:p=>p[0]<1000,mapCanvas:{hasPointerCapture:()=>false},syncUrl(){},requestDraw(){},syncCursor(){}};
+const context={state,snapToRailStation,pointInLand:p=>p[0]<1000,placePoint:p=>p,mapCanvas:{hasPointerCapture:()=>false},syncUrl(){},requestDraw(){},syncCursor(){}};
 vm.createContext(context);vm.runInContext(code,context);
 assert.deepEqual(state.originPoint,[5000,0]); // Free intermediate position during the gesture.
 vm.runInContext('endDrag({type:"pointerup",pointerId:1})',context);

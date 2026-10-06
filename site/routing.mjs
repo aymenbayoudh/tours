@@ -1,45 +1,47 @@
 // Pure routing core: directed, observed stopping patterns; estimated waiting.
 // Runtime settings can scale in-vehicle timetable durations while preserving
 // the observed stop sequence and relative segment times.
+// One heap entry per state: decrease-key avoids allocating tuples for every
+// relaxation and processing obsolete queue entries on a moving origin.
 class MinHeap {
-  constructor() { this.items = []; }
-  static before(a, b) {
-    return a[0] < b[0] || (a[0] === b[0] && a[1] < b[1]);
+  constructor(scores, values) {
+    this.scores = scores; this.values = values;
+    this.nodes = new Int32Array(scores.length);
+    this.positions = new Int32Array(scores.length).fill(-1);
+    this.length = 0;
   }
-  push(item) {
-    const a = this.items;
-    a.push(item);
-    let i = a.length - 1;
+  before(a, b) {
+    return this.scores[a] < this.scores[b] || (this.scores[a] === this.scores[b] && this.values[a] < this.values[b]);
+  }
+  push(node) {
+    let i = this.positions[node];
+    if (i < 0) i = this.length++;
     while (i > 0) {
-      const p = (i - 1) >> 1;
-      if (!MinHeap.before(item, a[p])) break;
-      a[i] = a[p];
-      i = p;
+      const p = (i - 1) >> 1, parent = this.nodes[p];
+      if (!this.before(node, parent)) break;
+      this.nodes[i] = parent; this.positions[parent] = i; i = p;
     }
-    a[i] = item;
+    this.nodes[i] = node; this.positions[node] = i;
   }
   pop() {
-    const a = this.items;
-    if (!a.length) return null;
-    const first = a[0];
-    const last = a.pop();
-    if (a.length) {
+    const first = this.nodes[0], last = this.nodes[--this.length];
+    this.positions[first] = -1;
+    if (this.length) {
       let i = 0;
-      while (i * 2 + 1 < a.length) {
+      while (i * 2 + 1 < this.length) {
         let c = i * 2 + 1;
-        if (c + 1 < a.length && MinHeap.before(a[c + 1], a[c])) c += 1;
-        if (!MinHeap.before(a[c], last)) break;
-        a[i] = a[c];
-        i = c;
+        if (c + 1 < this.length && this.before(this.nodes[c + 1], this.nodes[c])) c++;
+        const child = this.nodes[c];
+        if (!this.before(child, last)) break;
+        this.nodes[i] = child; this.positions[child] = i; i = c;
       }
-      a[i] = last;
+      this.nodes[i] = last; this.positions[last] = i;
     }
     return first;
   }
-  get length() { return this.items.length; }
 }
 
-const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const distance = (a, b) => { const dx = a[0] - b[0], dy = a[1] - b[1]; return Math.sqrt(dx * dx + dy * dy); };
 const TRANSFER_PREFERENCE_MINUTES = 30;
 function numeric(value, fallback, min = 0) {
   const number = Number(value);
@@ -199,7 +201,7 @@ function indexedEstimate(data, model, destination, walk, exitPenalty, best) {
     if (!node) return Infinity;
     const dx = Math.max(node.minX - x, 0, x - node.maxX);
     const dy = Math.max(node.minY - y, 0, y - node.maxY);
-    return minimum[node.id] + Math.hypot(dx, dy) / walk;
+    return minimum[node.id] + Math.sqrt(dx * dx + dy * dy) / walk;
   }
   function visit(node, lower) {
     if (!node || lower > best + 1e-10) return;
@@ -219,37 +221,68 @@ function indexedEstimate(data, model, destination, walk, exitPenalty, best) {
   return best;
 }
 
-function runRoutingVariant(data, allowed, accessMinutes, settings, preferenceMinutes) {
+const preparedGraphs = new WeakMap();
+function prepareRoutingGraph(data, includeProjects, settings) {
+  const key = JSON.stringify([includeProjects, settings]);
+  const cached = preparedGraphs.get(data);
+  if (cached?.key === key) return cached;
+  const allowed = data.routeStates.map(s => {
+    const info = data.routeInfo?.[s.routeId];
+    if (info?.serviceStatus?.status === "suspended") return false;
+    if (info?.mode === "BUS" && settings.disabledBusNetworks.includes(info.network || "filbleu")) return false;
+    return includeProjects || !info?.planned;
+  });
+  const offsets = new Uint32Array(data.routeStates.length + 1);
+  for (let n = 0; n < data.adjacency.length; n++) offsets[n + 1] = offsets[n] + data.adjacency[n].length;
+  const targets = new Uint32Array(offsets.at(-1));
+  const costs = new Float64Array(targets.length);
+  const transfers = new Uint16Array(targets.length);
+  for (let n = 0; n < data.adjacency.length; n++) {
+    let e = offsets[n];
+    for (const edge of data.adjacency[n]) {
+      targets[e] = edge[0]; costs[e] = adjustedEdgeCost(data, n, edge[0], edge[1], settings, edge[2]);
+      transfers[e++] = Number(edge[3]) || 0;
+    }
+  }
+  const waits = Float64Array.from(data.routeStates, s => waitForRoute(data, s.routeId, settings));
+  const activeStations = data.boardingStates.map(nodes => nodes.some(n => allowed[n]));
+  const graph = {key, allowed, offsets, targets, costs, transfers, waits, activeStations};
+  preparedGraphs.set(data, graph);
+  return graph;
+}
+
+function runRoutingVariant(data, graph, accessMinutes, settings, preferenceMinutes) {
+  const { allowed, offsets, targets, costs, transfers, waits } = graph;
   const distances = new Float64Array(data.routeStates.length).fill(Infinity);
   const preferenceScores = new Float64Array(data.routeStates.length).fill(Infinity);
   const transferCounts = new Uint16Array(data.routeStates.length);
   transferCounts.fill(65535);
   const previous = new Int32Array(data.routeStates.length).fill(-1);
-  const queue = new MinHeap();
+  const seedStations = new Int32Array(data.routeStates.length).fill(-1);
+  const queue = new MinHeap(preferenceScores, distances);
 
   data.stations.forEach((station, index) => {
     const access = accessMinutes[index] + (station.mode === "BUS" ? settings.busEntryPenalty : settings.stationEntryPenalty);
     for (const node of data.boardingStates[index] || []) {
       if (!allowed[node]) continue;
-      const value = access + waitForRoute(data, data.routeStates[node].routeId, settings);
+      const value = access + waits[node];
       if (value < preferenceScores[node]) {
         distances[node] = value;
         preferenceScores[node] = value;
         transferCounts[node] = 0;
-        queue.push([value, value, node]);
+        seedStations[node] = index;
+        queue.push(node);
       }
     }
   });
 
   while (queue.length) {
-    const [score, value, node] = queue.pop();
-    if (score !== preferenceScores[node] || value !== distances[node]) continue;
-    for (const edge of data.adjacency[node]) {
-      const [next, storedCost, walkingMetres] = edge;
+    const node = queue.pop(), value = distances[node];
+    for (let e = offsets[node]; e < offsets[node + 1]; e++) {
+      const next = targets[e];
       if (!allowed[next]) continue;
-      const cost = adjustedEdgeCost(data, node, next, storedCost, settings, walkingMetres);
-      const candidate = value + cost;
-      const candidateTransfers = transferCounts[node] + (Number(edge[3]) || 0);
+      const candidate = value + costs[e];
+      const candidateTransfers = transferCounts[node] + transfers[e];
       const candidateScore = candidate + candidateTransfers * preferenceMinutes;
       if (
         candidateScore < preferenceScores[next]
@@ -259,7 +292,8 @@ function runRoutingVariant(data, allowed, accessMinutes, settings, preferenceMin
         preferenceScores[next] = candidateScore;
         transferCounts[next] = candidateTransfers;
         previous[next] = node;
-        queue.push([candidateScore, candidate, next]);
+        seedStations[next] = seedStations[node];
+        queue.push(next);
       }
     }
   }
@@ -275,7 +309,7 @@ function runRoutingVariant(data, allowed, accessMinutes, settings, preferenceMin
         node = n;
       }
     }
-    return { minutes: best, node, transferCount: bestTransfers, preferenceScore: bestScore };
+    return { minutes: best, node, transferCount: bestTransfers, preferenceScore: bestScore, seedStation: node >= 0 ? seedStations[node] : -1 };
   });
   const stationOrder = stationArrivals
     .map((arrival, index) => [arrival.minutes, index])
@@ -315,7 +349,7 @@ function indexedVariantEstimate(data, model, destination, variant, bestActual, b
     if (!node) return Infinity;
     const dx = Math.max(node.minX - x, 0, x - node.maxX);
     const dy = Math.max(node.minY - y, 0, y - node.maxY);
-    return minimum[node.id] + Math.hypot(dx, dy) / walk;
+    return minimum[node.id] + Math.sqrt(dx * dx + dy * dy) / walk;
   }
   function visit(node, lower) {
     if (!node || lower > bestScore + 1e-10) return;
@@ -397,13 +431,8 @@ function variantEstimate(data, model, destination, variant, details = false) {
 
 export function buildTravelModel(data, origin, includeProjects = true, customSettings = {}) {
   const settings = normalizeSettings(data, customSettings);
-  const allowed = data.routeStates.map((s) => {
-    const info = data.routeInfo?.[s.routeId];
-    if (info?.serviceStatus?.status === "suspended") return false;
-    if (info?.mode === "BUS" && settings.disabledBusNetworks.includes(info.network || "filbleu")) return false;
-    return includeProjects || !info?.planned;
-  });
-
+  const graph = prepareRoutingGraph(data, includeProjects, settings);
+  const {allowed, activeStations} = graph;
   const road = data.walkingNetwork;
   const speedCm = settings.walkMetersPerMinute * 100;
   const limit = (customSettings.walkingLimitMinutes ?? Infinity) * speedCm;
@@ -424,15 +453,18 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     accessMinutes[index] = walking;
   });
 
-  const pure = runRoutingVariant(data, allowed, accessMinutes, settings, 0);
-  const comfort = runRoutingVariant(data, allowed, accessMinutes, settings, TRANSFER_PREFERENCE_MINUTES);
+  const comfort = runRoutingVariant(data, graph, accessMinutes, settings, TRANSFER_PREFERENCE_MINUTES);
+  // The direct UI only consumes comfort. Keep both variants by default for
+  // diagnostics and the road surface, whose fallback needs pure-time arrivals.
+  const pure = customSettings.routingVariant === "comfort" && !road
+    ? null : runRoutingVariant(data, graph, accessMinutes, settings, 0);
   let pureWalkingField = null, comfortWalkingField = null;
   if (road) {
     const pureSeeds = sourceSnap ? [[sourceSnap, 0, -1]] : [];
     const comfortSeeds = sourceSnap ? [[sourceSnap, 0, -1]] : [];
     data.stations.forEach((station, i) => {
       if (!road.stops[i]) return;
-      const pureArrival = pure.stationArrivals[i];
+      const pureArrival = pure?.stationArrivals[i];
       if (Number.isFinite(pureArrival.minutes)) {
         pureSeeds.push([road.stops[i], (pureArrival.minutes + exitMargin(data, settings, i)) * speedCm, i]);
       }
@@ -446,16 +478,15 @@ export function buildTravelModel(data, origin, includeProjects = true, customSet
     comfortWalkingField = road.search(comfortSeeds, true, comfortLimit);
   }
 
-  const activeStations = data.boardingStates.map((nodes) => nodes.some((n) => allowed[n]));
   const stationArrivals = comfort.stationArrivals;
   return {
     origin, includeProjects, settings, allowed, accessMinutes, activeStations,
-    pureDistances:pure.distances, purePrevious:pure.previous, pureTransferCounts:pure.transferCounts, purePreferenceScores:pure.preferenceScores,
-    pureStationArrivals:pure.stationArrivals, pureStationOrder:pure.stationOrder,
+    pureDistances:pure?.distances, purePrevious:pure?.previous, pureTransferCounts:pure?.transferCounts, purePreferenceScores:pure?.preferenceScores,
+    pureStationArrivals:pure?.stationArrivals, pureStationOrder:pure?.stationOrder,
     comfortDistances:comfort.distances, comfortPrevious:comfort.previous, comfortTransferCounts:comfort.transferCounts, comfortPreferenceScores:comfort.preferenceScores,
     comfortStationArrivals:comfort.stationArrivals, comfortStationOrder:comfort.stationOrder,
     pureWalkingField, comfortWalkingField,
-    pureArrivalIndex:arrivalIndex(data, pure.stationArrivals.map((a,i)=>({minutes:a.preferenceScore + exitMargin(data,settings,i)}))),
+    pureArrivalIndex:pure ? arrivalIndex(data, pure.stationArrivals.map((a,i)=>({minutes:a.preferenceScore + exitMargin(data,settings,i)}))) : null,
     comfortArrivalIndex:arrivalIndex(data, comfort.stationArrivals.map((a,i)=>({minutes:a.preferenceScore + exitMargin(data,settings,i)}))),
     // Compatibility aliases for code that only needs reachability/diagnostics.
     distances:comfort.distances,
@@ -563,4 +594,80 @@ export function describeJourney(data, model, destination) {
 
 export function routeWaitingMinutes(data, routeId, settings = {}) {
   return waitForRoute(data, routeId, normalizeSettings(data, settings));
+}
+
+// Re-evaluate the entry walks of the last optimal paths at the current pointer.
+// These are valid paths, not a translated old raster. A worker refreshes the
+// topology continuously; the settled calculation always solves it exactly.
+// Each score differs from the new optimum by at most 2 * origin displacement /
+// walking speed (triangle inequality), independently of the transport network.
+export function previewTravelModel(data, anchor, origin) {
+  if (anchor.origin[0] === origin[0] && anchor.origin[1] === origin[1]) return anchor;
+  const walk = anchor.settings.walkMetersPerMinute;
+  const deltas = Float64Array.from(data.stations, (s, i) => distance(origin, s.point) / walk - anchor.accessMinutes[i]);
+  const comfortStationArrivals = anchor.comfortStationArrivals.map(a => {
+    const delta = a.seedStation >= 0 ? deltas[a.seedStation] : 0;
+    return {...a, minutes: a.minutes + delta, preferenceScore: a.preferenceScore + delta};
+  });
+  return {...anchor, origin, comfortStationArrivals,
+    comfortArrivalIndex: arrivalIndex(data, comfortStationArrivals.map((a,i)=>({minutes:a.preferenceScore + exitMargin(data,anchor.settings,i)}))),
+    preview: true,
+  };
+}
+
+export function directModelSnapshot(model) {
+  return {origin:model.origin, settings:model.settings, accessMinutes:model.accessMinutes,
+    activeStations:model.activeStations, comfortStationArrivals:model.comfortStationArrivals,
+    comfortTransferPreferenceMinutes:model.comfortTransferPreferenceMinutes};
+}
+
+export function restoreDirectModel(data, snapshot) {
+  return {...snapshot, comfortArrivalIndex:arrivalIndex(data, snapshot.comfortStationArrivals.map((a,i)=>({minutes:a.preferenceScore + exitMargin(data,snapshot.settings,i)})))};
+}
+
+// Numeric batch path for raster samples. Geometry and exit costs are loaded once
+// per batch; no destination objects, per-pixel closures or result objects.
+export function estimateTravelTimes(data, model, points, out = new Float64Array(points.length)) {
+  if (data.walkingNetwork || !model.comfortArrivalIndex) {
+    for (let i = 0; i < points.length; i++) out[i] = estimateTravel(data, model, points[i]);
+    return out;
+  }
+  const {root, minimum} = model.comfortArrivalIndex;
+  const arrivals = model.comfortStationArrivals, walk = model.settings.walkMetersPerMinute;
+  const scores = new Float64Array(arrivals.length), actuals = new Float64Array(arrivals.length);
+  for (let i = 0; i < arrivals.length; i++) {
+    const exit = exitMargin(data, model.settings, i);
+    scores[i] = arrivals[i].preferenceScore + exit; actuals[i] = arrivals[i].minutes + exit;
+  }
+  let x, y, bestScore, bestActual;
+  function lower(node) {
+    const dx = x < node.minX ? node.minX - x : x > node.maxX ? x - node.maxX : 0;
+    const dy = y < node.minY ? node.minY - y : y > node.maxY ? y - node.maxY : 0;
+    return minimum[node.id] + Math.sqrt(dx * dx + dy * dy) / walk;
+  }
+  function visit(node, bound) {
+    if (bound > bestScore + 1e-10) return;
+    if (node.indices) {
+      for (let j = 0; j < node.indices.length; j++) {
+        const i = node.indices[j];
+        if (scores[i] > bestScore) continue;
+        const point = data.stations[i].point, dx = point[0] - x, dy = point[1] - y;
+        const lastWalk = Math.sqrt(dx * dx + dy * dy) / walk;
+        const score = scores[i] + lastWalk, actual = actuals[i] + lastWalk;
+        if (score < bestScore || (score === bestScore && actual < bestActual)) { bestScore = score; bestActual = actual; }
+      }
+    } else {
+      const a = lower(node.left), b = lower(node.right);
+      if (a <= b) { visit(node.left, a); visit(node.right, b); }
+      else { visit(node.right, b); visit(node.left, a); }
+    }
+  }
+  for (let i = 0; i < points.length; i++) {
+    x = points[i][0]; y = points[i][1];
+    const dx = model.origin[0] - x, dy = model.origin[1] - y;
+    bestScore = bestActual = Math.sqrt(dx * dx + dy * dy) / walk;
+    if (root) visit(root, lower(root));
+    out[i] = bestActual;
+  }
+  return out;
 }

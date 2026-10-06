@@ -27,6 +27,8 @@ jobs:
           python3 build_data.py
           node --check site/app.js
           node --check site/routing.mjs
+          node --check site/direct-client.mjs
+          node --check site/direct-worker.mjs
           node --check site/walking-engine.mjs
           node --check site/walking-worker.mjs
           python3 tests/walking_graph.test.py
@@ -40,6 +42,8 @@ jobs:
           node tests/remi_bus.test.mjs
           node tests/local_bus.test.mjs
           node tests/spatial_estimate.test.mjs
+          node tests/live_routing.test.mjs
+          node tests/placement_release.test.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

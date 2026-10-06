@@ -1,8 +1,9 @@
-import { snapToRailStation } from "./placement.mjs?v=2026-10-05o";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-05o";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-05o";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes } from "./routing.mjs?v=2026-10-05o";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-05o", import.meta.url).toString();
+import { DirectClient } from "./direct-client.mjs?v=2026-10-06-live";
+import { snapToRailStation } from "./placement.mjs?v=2026-10-06-live";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-06-live";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-06-live";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes, previewTravelModel, restoreDirectModel, estimateTravelTimes } from "./routing.mjs?v=2026-10-06-live";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-06-live", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -1138,8 +1139,14 @@ function pointInPolygon(point, polygon) {
   return polygon.slice(1).every((hole) => !pointInRing(point, hole));
 }
 
+let landBounds = null;
 function pointInLand(point) {
-  return state.data.boroughs.some((borough) => borough.polygons.some((polygon) => pointInPolygon(point, polygon)));
+  if (!landBounds) landBounds = state.data.boroughs.flatMap(b => b.polygons).map(polygon => {
+    let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    for (const [x,y] of polygon[0]) {minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);}
+    return {polygon,minX,minY,maxX,maxY};
+  });
+  return landBounds.some(b => point[0]>=b.minX && point[0]<=b.maxX && point[1]>=b.minY && point[1]<=b.maxY && pointInPolygon(point,b.polygon));
 }
 
 function communeAt(point) {
@@ -1318,7 +1325,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-05o", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-06-live", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1337,20 +1344,50 @@ let cachedWarpKey = "";
 function activeThreshold() {
   return state.outlineMinutes.length ? Math.max(...state.outlineMinutes) : state.maxTransitTime;
 }
+let directClient = null;
+let directAnchor = null;
+let directAnchorSettings = "";
+let directRevision = 0;
+function directSettingsKey() { return JSON.stringify([state.includeProjects, travelSettings]); }
+function startDirectCalculations() {
+  if (directClient) return;
+  try {
+    const worker = new Worker(new URL("./direct-worker.mjs?v=2026-10-06-live", import.meta.url), {type:"module"});
+    directClient = new DirectClient(worker, result => {
+      if (state.walkingOnRoads || result.settingsKey !== directSettingsKey() || !(state.dragTarget === "origin" || !state.pinned)) return;
+      directAnchor = restoreDirectModel(state.data, result.snapshot);
+      directAnchorSettings = result.settingsKey;
+      directRevision++; cachedModelKey = ""; requestDraw();
+    }, message => { console.error("Calcul direct :", message); requestDraw(); });
+    worker.postMessage({type:"init", data:state.data});
+  } catch (error) { console.error("Calcul direct :", error); }
+}
 function getTravelModel(origin) {
-  const settingsKey = Object.entries(travelSettings).map(([key, value]) => key + ":" + value).join("|");
-  const key = `${origin[0]},${origin[1]},${state.includeProjects}:${settingsKey}`;
+  const settingsKey = directSettingsKey();
+  const live = !state.walkingOnRoads && (state.dragTarget === "origin" || !state.pinned) && directClient && !directClient.failed;
+  const key = `${origin}:${settingsKey}:${live ? directRevision : "exact"}`;
   if (key !== cachedModelKey) {
-    cachedModel = buildTravelModel(state.data, origin, state.includeProjects, travelSettings);
+    if (live && directAnchor && directAnchorSettings === settingsKey) {
+      cachedModel = previewTravelModel(state.data, directAnchor, origin);
+      directClient.request({key:`${origin}:${settingsKey}`, origin:[...origin], settings:{...travelSettings}, includeProjects:state.includeProjects, settingsKey});
+    } else {
+      cachedModel = buildTravelModel(state.data, origin, state.includeProjects, {...travelSettings, routingVariant:"comfort"});
+      directAnchor = cachedModel; directAnchorSettings = settingsKey;
+    }
     cachedModelKey = key;
   }
   return cachedModel;
 }
+
 function estimateTravel(origin, distances, destination) {
   return routeEstimate(state.data, getTravelModel(origin), destination);
 }
+let cachedReachKey = "", cachedReach = null;
 function summarizeReachability(origin) {
-  return reachability(state.data, getTravelModel(origin), activeThreshold());
+  const model = getTravelModel(origin), key = `${cachedModelKey}:${activeThreshold()}`;
+  if (state.dragTarget === "origin" && cachedReach) return cachedReach;
+  if (key !== cachedReachKey) { cachedReach = reachability(state.data, model, activeThreshold()); cachedReachKey = key; }
+  return cachedReach;
 }
 
 function computeWarp(origin, { fast = false } = {}) {
@@ -1366,11 +1403,10 @@ function computeWarp(origin, { fast = false } = {}) {
   const minuteGrid = Array.from({ length: gridRows }, () => new Array(gridCols).fill(Infinity));
   const validMask = Array.from({ length: gridRows }, () => new Array(gridCols).fill(false));
 
-  for (const cellIndex of state.data.mask) {
-    if (cellIndex === -1) continue;
-    const cell = state.data.cells[cellIndex];
-    minuteGrid[cell.row][cell.col] = routeEstimate(state.data, model, cell.point);
-    validMask[cell.row][cell.col] = true;
+  const cells = state.data.cells;
+  const values = estimateTravelTimes(state.data, model, cells.map(cell => cell.point));
+  for (let i = 0; i < cells.length; i++) {
+    const cell = cells[i]; minuteGrid[cell.row][cell.col] = values[i]; validMask[cell.row][cell.col] = true;
   }
 
   cachedWarpKey = key;
@@ -1394,30 +1430,34 @@ function pointInStaticGrid(point) {
   return col >= 0 && row >= 0 && col < gridCols && row < gridRows && state.data.mask[row * gridCols + col] !== -1;
 }
 
+let viewportSamples = null;
 function computeViewportWarp(origin, transform, width, height) {
   const model = getTravelModel(origin);
-  const panPreview = state.dragTarget === "pan" || state.dragTarget === "origin";
-  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${state.maxTransitTime}:${activeThreshold()}:${panPreview}`;
+  const panPreview = state.dragTarget === "pan" || state.dragTarget === "origin" || !state.pinned;
+  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${panPreview}`;
   if (cachedWarpKey === key) return cachedWarp;
-  const topLeft = transform.toWorld(0, 0);
-  const bottomRight = transform.toWorld(width, height);
+  const topLeft = transform.toWorld(0, 0), bottomRight = transform.toWorld(width, height);
   const bounds = [topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]];
-  const gridCols = panPreview ? 90 : width < 600 ? 100 : 180;
-  const gridRows = Math.max(80, Math.round((gridCols * height) / width));
-  const cellW = (bounds[2] - bounds[0]) / gridCols;
-  const cellH = (bounds[3] - bounds[1]) / gridRows;
-  const minutes = Array.from({ length: gridRows }, () => new Array(gridCols).fill(Infinity));
-  const validMask = Array.from({ length: gridRows }, () => new Array(gridCols).fill(false));
-  for (let row = 0; row < gridRows; row += 1) {
-    for (let col = 0; col < gridCols; col += 1) {
-      const point = [bounds[0] + (col + 0.5) * cellW, bounds[1] + (row + 0.5) * cellH];
+  const gridCols = panPreview ? 64 : width < 600 ? 100 : 180;
+  const gridRows = Math.max(panPreview ? 48 : 80, Math.round(gridCols * height / width));
+  const geometryKey = `${bounds}:${gridCols}:${gridRows}`;
+  if (viewportSamples?.key !== geometryKey) {
+    const cellW = (bounds[2] - bounds[0]) / gridCols, cellH = (bounds[3] - bounds[1]) / gridRows;
+    const points = [], cells = [];
+    const validMask = Array.from({length:gridRows}, () => new Array(gridCols).fill(false));
+    for (let row = 0; row < gridRows; row++) for (let col = 0; col < gridCols; col++) {
+      const point = [bounds[0] + (col + .5) * cellW, bounds[1] + (row + .5) * cellH];
       if (!pointInStaticGrid(point)) continue;
-      minutes[row][col] = routeEstimate(state.data, model, point);
-      validMask[row][col] = true;
+      points.push(point); cells.push([row,col]); validMask[row][col] = true;
     }
+    viewportSamples = {key:geometryKey, points, cells, validMask, bounds, cellW, cellH, gridRows, gridCols};
   }
+  const samples = viewportSamples;
+  const values = estimateTravelTimes(state.data, model, samples.points);
+  const minutes = Array.from({length:samples.gridRows}, () => new Float64Array(samples.gridCols).fill(Infinity));
+  for (let i = 0; i < samples.cells.length; i++) { const [row,col] = samples.cells[i]; minutes[row][col] = values[i]; }
   cachedWarpKey = key;
-  cachedWarp = { minutes, validMask, bounds, cellW, cellH, distances: model.distances };
+  cachedWarp = {minutes, validMask:samples.validMask, bounds:samples.bounds, cellW:samples.cellW, cellH:samples.cellH, distances:model.distances};
   return cachedWarp;
 }
 
@@ -1574,12 +1614,52 @@ function minimumWarpMinutesNearPoint(warp, point) {
   return best;
 }
 
+let stationSymbols = null;
+let stationSymbolsKey = "";
+let visibleStations = [];
+let stationTimesKey = "", stationTimes = null;
 function drawStations(drawCtx, projectPoint, warp) {
-  const source = heatmapSourcePoint();
-  const snapshot = roadSnapshot();
+  const snapshot = roadSnapshot(), source = heatmapSourcePoint();
   const model = !snapshot && source ? getTravelModel(source) : null;
   const active = snapshot?.activeStations || model?.activeStations;
-  const threshold = activeThreshold();
+  const symbolsKey = `${staticLayersKey}:${directSettingsKey()}`;
+  if (stationSymbolsKey !== symbolsKey) {
+    stationSymbols ||= document.createElement("canvas");
+    stationSymbols.width = mapCanvas.width; stationSymbols.height = mapCanvas.height;
+    const symbolCtx = stationSymbols.getContext("2d"), dpr = window.devicePixelRatio || 1;
+    symbolCtx.setTransform(dpr,0,0,dpr,0,0);
+    drawStationSymbols(symbolCtx,projectPoint,active);
+    visibleStations = [];
+    for (let i=0;i<state.data.stations.length;i++) {
+      const station=state.data.stations[i];
+      if (station.mode === "TER" && (!station.routes?.length || (active && !active[i]))) continue;
+      if (station.mode === "BUS" && (state.viewportScale<2.4 || !(station.displayRoutes || station.routes || []).some(busNetworkEnabled))) continue;
+      const [x,y] = projectPoint(station.drawPoint || station.point);
+      if (x < -8 || y < -8 || x > mapCanvas.clientWidth+8 || y > mapCanvas.clientHeight+8) continue;
+      const radius=station.mode === "TER" ? displaySettings.railStationRadius : station.mode === "BUS" ? displaySettings.stationRadius*.62 : displaySettings.stationRadius;
+      visibleStations.push({station,index:i,x,y,radius});
+    }
+    stationSymbolsKey=symbolsKey; stationTimesKey="";
+  }
+  const timesKey = snapshot?.key || cachedModelKey;
+  if (stationTimesKey !== timesKey) {
+    stationTimes = snapshot ? visibleStations.map(s=>snapshot.stationMinutes[s.index]) : model ? estimateTravelTimes(state.data,model,visibleStations.map(s=>s.station.point)) : [];
+    stationTimesKey=timesKey;
+  }
+  const threshold=activeThreshold();
+  for (let i=0;i<visibleStations.length;i++) {
+    const {station,x,y,radius:stationRadius}=visibleStations[i], minutes=stationTimes[i];
+    if (!Number.isFinite(minutes) || minutes>threshold || minimumWarpMinutesNearPoint(warp,station.point)<=threshold) continue;
+    const radius=Math.max(stationRadius+.5,(stationRadius+(state.viewportScale<2 ? 2.2 : 1.4))*displaySettings.isochronePocketScale);
+    const gradient=drawCtx.createRadialGradient(x,y,0,x,y,radius);
+    gradient.addColorStop(0,heatmapColor(minutes,.8)); gradient.addColorStop(.72,heatmapColor(minutes,.32)); gradient.addColorStop(1,heatmapColor(minutes,0));
+    drawCtx.beginPath();drawCtx.arc(x,y,radius,0,Math.PI*2);drawCtx.fillStyle=gradient;drawCtx.fill();drawCtx.strokeStyle="#111111";drawCtx.lineWidth=1;drawCtx.stroke();
+  }
+  drawCtx.drawImage(stationSymbols,0,0,mapCanvas.clientWidth,mapCanvas.clientHeight);
+}
+
+function drawStationSymbols(drawCtx, projectPoint, active) {
+  const source = heatmapSourcePoint();
   const major = /^(Tours|Saint-Pierre-des-Corps|Blois-Chambord|Saumur|Vendôme-Villiers-sur-Loir|Orléans|Paris-Austerlitz|Caen|Nantes|Poitiers|Le Mans|Vierzon|Loches|Amboise)$/i;
   const labels = [];
   for (const [index, station] of state.data.stations.entries()) {
@@ -1588,21 +1668,6 @@ function drawStations(drawCtx, projectPoint, warp) {
     const [x, y] = projectPoint(station.drawPoint || station.point);
     if (x < -8 || y < -8 || x > mapCanvas.clientWidth + 8 || y > mapCanvas.clientHeight + 8) continue;
     const stationRadius = station.mode === "TER" ? displaySettings.railStationRadius : station.mode === "BUS" ? displaySettings.stationRadius * 0.62 : displaySettings.stationRadius;
-    const minutes = snapshot ? snapshot.stationMinutes[index] : model && model.activeStations[index] ? routeEstimate(state.data, model, station.point) : Infinity;
-    const rasterMissesStation = Number.isFinite(minutes) && minutes <= threshold && minimumWarpMinutesNearPoint(warp, station.point) > threshold;
-    if (rasterMissesStation) {
-      // A minimum-size coloured pocket preserves visibility at overview scale.
-      // It is a display enlargement; the travel time and geographic grid stay unchanged.
-      const radius = Math.max(stationRadius + 0.5, (stationRadius + (state.viewportScale < 2 ? 2.2 : 1.4)) * displaySettings.isochronePocketScale);
-      const gradient = drawCtx.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, heatmapColor(minutes, 0.8));
-      gradient.addColorStop(0.72, heatmapColor(minutes, 0.32));
-      gradient.addColorStop(1, heatmapColor(minutes, 0));
-      drawCtx.beginPath(); drawCtx.arc(x, y, radius, 0, Math.PI * 2);
-      drawCtx.fillStyle = gradient; drawCtx.fill();
-      drawCtx.strokeStyle = "#111111"; drawCtx.lineWidth = 1;
-      drawCtx.stroke();
-    }
     drawCtx.beginPath();
     drawCtx.arc(x, y, stationRadius, 0, Math.PI * 2);
     drawCtx.fillStyle = "#fff";
@@ -1660,27 +1725,37 @@ function clipToSerm(drawCtx, projectPoint) {
 
 let heatmapRaster = null;
 let heatmapRasterKey = "";
+let heatmapPalette = null;
 function drawHeatmap(drawCtx, warp, projectPoint) {
-  const { minutes, validMask } = warp;
+  const {minutes, validMask} = warp;
   const key = `${state.maxTransitTime}:${JSON.stringify(displaySettings.isochroneStops)}:${displaySettings.isochroneOpacity}`;
+  if (heatmapRasterKey !== key || !heatmapPalette) {
+    heatmapPalette = new Uint8ClampedArray(1024 * 4);
+    for (let i = 0; i < 1024; i++) {
+      const color = heatmapComponents(i / 1023 * state.maxTransitTime);
+      heatmapPalette.set([color[0],color[1],color[2],Math.round(color[3]*255)], i*4);
+    }
+  }
   if (heatmapRaster?.warp !== warp || heatmapRasterKey !== key) {
     const rows = minutes.length, cols = minutes[0].length;
-    const canvas = document.createElement("canvas"); canvas.width = cols; canvas.height = rows;
-    const rasterCtx = canvas.getContext("2d");
-    const image = rasterCtx.createImageData(cols, rows);
+    if (!heatmapRaster || heatmapRaster.canvas.width !== cols || heatmapRaster.canvas.height !== rows) {
+      const canvas = document.createElement("canvas"); canvas.width = cols; canvas.height = rows;
+      const rasterCtx = canvas.getContext("2d");
+      heatmapRaster = {canvas, rasterCtx, image:rasterCtx.createImageData(cols,rows)};
+    }
+    const pixels = heatmapRaster.image.data; pixels.fill(0);
     for (let row = 0; row < rows; row++) for (let col = 0; col < cols; col++) {
       if (!validMask[row][col]) continue;
-      const color = heatmapComponents(minutes[row][col]);
-      const i = ((rows - row - 1) * cols + col) * 4;
-      image.data[i] = color[0]; image.data[i+1] = color[1]; image.data[i+2] = color[2]; image.data[i+3] = Math.round(color[3] * 255);
+      const color = Math.min(1023, Math.max(0, Math.round(minutes[row][col] / state.maxTransitTime * 1023))) * 4;
+      const i = ((rows-row-1)*cols+col)*4;
+      pixels[i]=heatmapPalette[color]; pixels[i+1]=heatmapPalette[color+1]; pixels[i+2]=heatmapPalette[color+2]; pixels[i+3]=heatmapPalette[color+3];
     }
-    rasterCtx.putImageData(image, 0, 0);
-    heatmapRaster = {warp, canvas}; heatmapRasterKey = key;
+    heatmapRaster.rasterCtx.putImageData(heatmapRaster.image,0,0);
+    heatmapRaster.warp = warp; heatmapRasterKey = key;
   }
-  const [x, y] = projectPoint([warp.bounds[0], warp.bounds[3]]);
-  const [right, bottom] = projectPoint([warp.bounds[2], warp.bounds[1]]);
+  const [x,y] = projectPoint([warp.bounds[0],warp.bounds[3]]), [right,bottom] = projectPoint([warp.bounds[2],warp.bounds[1]]);
   drawCtx.imageSmoothingEnabled = true;
-  drawCtx.drawImage(heatmapRaster.canvas, x, y, right - x, bottom - y);
+  drawCtx.drawImage(heatmapRaster.canvas,x,y,right-x,bottom-y);
 }
 
 
@@ -1919,8 +1994,11 @@ function syncCursor(screen = null) {
   mapCanvas.style.cursor = "crosshair";
 }
 
+const measureFrames = new URLSearchParams(location.search).has("perf");
+let measuredFrames = [];
 function drawMap() {
   if (!state.ready) return;
+  const frameStart = measureFrames ? performance.now() : 0;
   const { width, height } = createCanvasBacking(mapCanvas);
   ctx.clearRect(0, 0, width, height);
   ctx.fillStyle = displaySettings.backgroundColor;
@@ -1934,13 +2012,15 @@ function drawMap() {
   const focus = state.viewportCenter || (scaleMul > 1.02 ? (state.probePoint && state.originPoint ? [(state.originPoint[0] + state.probePoint[0]) / 2, (state.originPoint[1] + state.probePoint[1]) / 2] : source || defaultCenter()) : defaultCenter());
   const transform = buildTransform(focusBounds, width, height, scaleMul, focus);
   const projectPoint = (point) => transform.toScreen(point);
-  // Recompute from the current origin during every rendered drag frame.
-  // Use a lighter visible grid while moving, then refine on release.
+  // Re-evaluate paths, colours and contours at the current pointer each frame.
+  // The direct worker refreshes route topology while live entry walks follow it.
   const useRoadWorker = state.walkingOnRoads && roadClient?.ready && !roadClient.failed;
-  const warp = source && useRoadWorker ? requestRoadWarp(source, transform, width, height) : source ? (movingOrigin || scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
+  const warp = source && useRoadWorker ? requestRoadWarp(source, transform, width, height) : source ? (movingOrigin || !state.pinned || scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
     ? computeViewportWarp(source, transform, width, height)
     : computeWarp(source)) : null;
 
+  const warpDone = measureFrames ? performance.now() : 0;
+  let heatMs=0, stationsMs=0;
   const nextBackdropKey = `${useRoadWorker ? roadSnapshot()?.key : cachedModelKey}:${cachedWarpKey}:${width}:${height}:${scaleMul}:${focus}:${state.maxTransitTime}:${state.outlineMinutes}`;
   if (nextBackdropKey !== backdropKey) {
     mapBackdrop.width = mapCanvas.width; mapBackdrop.height = mapCanvas.height;
@@ -1962,16 +2042,21 @@ function drawMap() {
     }
     baseCtx.drawImage(staticBase,0,0,width,height);
     if (warp) {
+      const heatStart = measureFrames ? performance.now() : 0;
       baseCtx.save();
       clipToSerm(baseCtx, projectPoint);
       drawHeatmap(baseCtx, warp, projectPoint);
       if (state.outlineMinutes.length) drawOutline(baseCtx, warp, projectPoint);
       baseCtx.restore();
+      heatMs = measureFrames ? performance.now()-heatStart : 0;
     }
     baseCtx.drawImage(staticNetwork,0,0,width,height);
+    const stationsStart = measureFrames ? performance.now() : 0;
     drawStations(baseCtx, projectPoint, warp);
+    stationsMs = measureFrames ? performance.now()-stationsStart : 0;
     backdropKey = nextBackdropKey;
   }
+  const backdropDone = measureFrames ? performance.now() : 0;
   ctx.drawImage(mapBackdrop, 0, 0, width, height);
 
   let travelMinutes = null;
@@ -2011,6 +2096,19 @@ function drawMap() {
   syncStatus(warp, travelMinutes);
   if (!state.dragTarget) updateJourney();
   state.dirty = false;
+  if (measureFrames) {
+    const ms = performance.now() - frameStart;
+    if (state.dragTarget === "origin") {
+      measuredFrames.push(ms);
+      mapCanvas.dataset.framePhases = JSON.stringify({warp:warpDone-frameStart,heat:heatMs,stations:stationsMs,backdrop:backdropDone-warpDone,overlays:performance.now()-backdropDone});
+      mapCanvas.dataset.liveFrames = JSON.stringify({count:measuredFrames.length, meanMs:measuredFrames.reduce((a,b)=>a+b,0)/measuredFrames.length, maxMs:Math.max(...measuredFrames)});
+    }
+    mapCanvas.dataset.frameMs = ms.toFixed(2);
+    mapCanvas.dataset.surfaceOrigin = String(source);
+    mapCanvas.dataset.markerOrigin = String(state.originPoint);
+    mapCanvas.dataset.directWorker = directClient?.ready ? "ready" : "loading";
+    mapCanvas.dataset.preview = String(Boolean(cachedModel?.preview && state.dragTarget === "origin"));
+  }
 }
 
 function requestDraw() {
@@ -2093,7 +2191,11 @@ function endDrag(event) {
       else if (!state.probePoint) { setProbe(world, false, { silent: true }); settledTarget = "probe"; }
     }
   }
-  if (settledTarget === "origin" || settledTarget === "probe") settleOutsideStation(settledTarget);
+  if (settledTarget === "origin" || settledTarget === "probe") {
+    const pointKey = settledTarget === "origin" ? "originPoint" : "probePoint";
+    state[pointKey] = placePoint(state[pointKey], true) || state[pointKey];
+    settleOutsideStation(settledTarget);
+  }
   syncUrl();
   requestDraw();
   syncCursor();
@@ -2225,7 +2327,7 @@ mapCanvas.addEventListener("pointermove", (event) => {
       state.dragMoved = true;
     }
     if (state.dragTarget === "origin") {
-      setOrigin(world, { pin: true, label: null, silent: true });
+      setOrigin(world, { pin: true, label: null, silent: true, magnet: false });
     } else {
       setProbe(world, false, { silent: true });
     }
@@ -2247,6 +2349,7 @@ mapCanvas.addEventListener("pointermove", (event) => {
 });
 
 mapCanvas.addEventListener("pointerdown", (event) => {
+  if (measureFrames) measuredFrames = [];
   if (pinch && event.pointerType === "touch") return;
   const { screen, world } = pointerToWorld(event);
   if (!world) return;
@@ -2443,6 +2546,7 @@ async function init() {
   if (!response.ok) throw new Error(`Chargement impossible (${response.status})`);
   state.data = await response.json();
   state.ready = true;
+  startDirectCalculations();
   buildIsochroneGradientControls();
   buildEpciColorSettings();
   buildRouteColorSettings();
