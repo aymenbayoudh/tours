@@ -1,3 +1,4 @@
+import { SITE_DEFAULTS } from "./default-settings.mjs?v=2026-10-06-defaults1";
 import { parseSettingsFile, createSettingsFile } from "./settings-file.mjs?v=2026-10-06-settings1";
 import { DirectClient } from "./direct-client.mjs?v=2026-10-06-live2";
 import { snapToRailStation } from "./placement.mjs?v=2026-10-06-live2";
@@ -8,61 +9,14 @@ const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-06-live2", impo
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
-const DEFAULT_VIEWPORT_SCALE = 1;
+const DEFAULT_VIEWPORT_SCALE = SITE_DEFAULTS.map.viewportScale;
 const PANEL_PADDING = 22;
 const ROUTE_LINE_WIDTH = 3.6;
 const DISPLAY_SETTINGS_STORAGE_KEY = "tours-display-settings-v2";
 const TRAVEL_SETTINGS_STORAGE_KEY = "tours-travel-settings-v1";
-const DEFAULT_ISOCHRONE_STOPS = Object.freeze([
-  { t: 0, color: "#dc4525", alpha: 1 },
-  { t: 0.2, color: "#f47f2e", alpha: 0.96 },
-  { t: 0.4, color: "#ffc44f", alpha: 0.9 },
-  { t: 0.62, color: "#f8e89c", alpha: 0.76 },
-  { t: 0.82, color: "#ffe2a1", alpha: 0.42 },
-  { t: 1, color: "#ffe2a1", alpha: 0 },
-]);
-const DEFAULT_DISPLAY_SETTINGS = Object.freeze({
-  railMagnetMaxScale: 500000,
-  isochronePocketScale: 1.3,
-  railMagnetism: true,
-  showBusLabels: true,
-  busEpciColors: false,
-  busEpciTone: 0,
-  terWidth: ROUTE_LINE_WIDTH,
-  tramWidth: 4.2,
-  bhnsWidth: 3.4,
-  stationRadius: 2.5,
-  railStationRadius: 2,
-  labelScale: 1,
-  communeBorderWidth: 0.7,
-  epciBorderWidth: 1.3,
-  isochroneOpacity: 0.58,
-  communeFillOpacity: 1,
-  epciFillOpacity: 1,
-  communeColor: "#c5d0db",
-  backgroundColor: "#efe6d6",
-});
-const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
-  walkSpeedKmh: 4.8,
-  navetteWaitFactor: 1,
-  terWaitFactor: 1,
-  tramWaitFactor: 1,
-  terWait: 15,
-  tramWait: 4,
-  bhnsWait: 3.25,
-  navetteWait: 5,
-  railMagnetRadiusKm: 1,
-  disabledBusNetworks: [],
-  busWaitFactor: 1,
-  busEntryPenalty: 1.8,
-  busExitPenalty: 1.8,
-  busTransferPenalty: 3.5,
-  busWalkingTransferPenalty: 2,
-  stationEntryPenalty: 1.8,
-  stationExitPenalty: 1.8,
-  transferPenalty: 3.5,
-  walkingTransferPenalty: 2,
-});
+const DEFAULT_ISOCHRONE_STOPS = SITE_DEFAULTS.display.isochroneStops;
+const DEFAULT_DISPLAY_SETTINGS = Object.freeze(SITE_DEFAULTS.display);
+const DEFAULT_TRAVEL_SETTINGS = Object.freeze(SITE_DEFAULTS.travel);
 const PRIORITY_STATIONS = new Set(["Tours", "Blois-Chambord", "Saumur", "Vendôme", "Amboise", "Chinon", "Loches", "Château-Renault", "Bléré-la-Croix", "Montlouis", "Neuillé-Pont-Pierre", "Langeais", "Monts", "Ste-Maure-Noyant"]);
 const PRIORITY_TOWNS = new Set(["Tours", "Blois", "Saumur", "Vendôme", "Amboise", "Chinon", "Loches", "Château-Renault", "Bléré", "Montlouis-sur-Loire", "Neuillé-Pont-Pierre", "Langeais", "Monts", "Sainte-Maure-de-Touraine"]);
 const HOVER_DEADBAND = 12;
@@ -70,15 +24,10 @@ const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
 const MAX_TIME_MINUTES = 180;
 const OUTLINE_OPTIONS = [15, 30, 45, 60, 90, 120];
-const DEFAULT_OUTLINE_MINUTES = [15, 30, 60];
+const DEFAULT_OUTLINE_MINUTES = [...SITE_DEFAULTS.map.outlineMinutes];
 const OUTLINE_WIDTHS = { 15: 1.4, 30: 2.1, 45: 2, 60: 1.5 };
-const DEFAULT_MAX_TIME_MINUTES = 90;
-const DEFAULT_INCLUDE_PROJECTS = true;
-const DEFAULT_ORIGIN = {
-  lat: 47.38915,
-  lon: 0.69416,
-  label: "Gare de Tours",
-};
+const DEFAULT_MAX_TIME_MINUTES = SITE_DEFAULTS.map.maxTransitTime;
+const DEFAULT_INCLUDE_PROJECTS = SITE_DEFAULTS.map.includeProjects;
 const SHARE_DECIMALS = 5;
 const SHARE_CALC_VERSION = "2";
 const TRAVEL_QUERY_PARAMS = Object.freeze({
@@ -105,8 +54,8 @@ const TRAVEL_QUERY_PARAMS = Object.freeze({
 function freshDisplaySettings() {
   return {
     ...DEFAULT_DISPLAY_SETTINGS,
-    routeColors: {},
-    epciColors: {},
+    routeColors: { ...DEFAULT_DISPLAY_SETTINGS.routeColors },
+    epciColors: { ...DEFAULT_DISPLAY_SETTINGS.epciColors },
     isochroneStops: DEFAULT_ISOCHRONE_STOPS.map((stop) => ({ ...stop })),
   };
 }
@@ -116,7 +65,7 @@ function validHexColor(value) {
 }
 
 function normalizeDisplaySettings(value) {
-  const source = value && typeof value === "object" ? value : {};
+  const source = { ...DEFAULT_DISPLAY_SETTINGS, ...(value && typeof value === "object" ? value : {}) };
   const numeric = (key, min, max) => {
     const number = Number(source[key]);
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_DISPLAY_SETTINGS[key];
@@ -183,7 +132,7 @@ function loadDisplaySettings() {
 }
 
 function normalizeTravelSettings(value) {
-  const source = value && typeof value === "object" ? value : {};
+  const source = { ...DEFAULT_TRAVEL_SETTINGS, ...(value && typeof value === "object" ? value : {}) };
   const numeric = (key, min, max) => {
     const number = Number(source[key]);
     return Number.isFinite(number) ? Math.max(min, Math.min(max, number)) : DEFAULT_TRAVEL_SETTINGS[key];
@@ -234,9 +183,9 @@ const state = {
   outlineMinutes: [...DEFAULT_OUTLINE_MINUTES],
   maxTransitTime: DEFAULT_MAX_TIME_MINUTES,
   includeProjects: DEFAULT_INCLUDE_PROJECTS,
-  walkingOnRoads: true,
+  walkingOnRoads: SITE_DEFAULTS.map.walkingOnRoads,
   viewportScale: DEFAULT_VIEWPORT_SCALE,
-  viewportCenter: null,
+  viewportCenter: [...SITE_DEFAULTS.map.viewportCenter],
   handMode: true,
   panStartCenter: null,
   originPoint: null,
@@ -322,6 +271,7 @@ function invalidateTravelSettings() {
 }
 
 function defaultRouteColor(routeId) {
+  if (DEFAULT_DISPLAY_SETTINGS.routeColors[routeId]) return DEFAULT_DISPLAY_SETTINGS.routeColors[routeId];
   const info = state.data?.routeInfo?.[routeId];
   if (validHexColor(info?.color)) return info.color.toLowerCase();
   const route = state.data?.routes?.find((item) => item.id === routeId && validHexColor(item.color));
@@ -355,7 +305,7 @@ function routeDisplayColor(route) {
       return "#" + rgb.map(v => Math.round(tone < 0 ? v * (1 + tone) : v + (255 - v) * tone).toString(16).padStart(2,"0")).join("");
     }
   }
-  return displaySettings.routeColors[route.id] || route.color;
+  return displaySettings.routeColors[route.id] || defaultRouteColor(route.id);
 }
 
 function hexToRgb(hex) {
@@ -373,7 +323,7 @@ function gradientCss() {
 }
 
 function epciDisplayColor(borough) {
-  return displaySettings.epciColors[borough.code] || displaySettings.communeColor;
+  return displaySettings.epciColors[borough.code] || DEFAULT_DISPLAY_SETTINGS.epciColors[borough.code] || displaySettings.communeColor;
 }
 
 function setDisplaySettingsOpen(open) {
@@ -420,7 +370,7 @@ function syncDisplaySettingsControls() {
 
   displayEpciColors?.querySelectorAll(".epci-color-row").forEach((row) => {
     const epciCode = row.dataset.epciCode;
-    const color = (displaySettings.epciColors[epciCode] || displaySettings.communeColor).toLowerCase();
+    const color = (displaySettings.epciColors[epciCode] || DEFAULT_DISPLAY_SETTINGS.epciColors[epciCode] || displaySettings.communeColor).toLowerCase();
     const picker = row.querySelector("[data-epci-color]");
     const code = row.querySelector("[data-epci-color-code]");
     if (picker) picker.value = color;
@@ -2275,7 +2225,7 @@ function syncUrl() {
 
 function restoreUrl() {
   const params = new URLSearchParams(location.search);
-  state.walkingOnRoads = params.get("walking") !== "direct";
+  state.walkingOnRoads = params.has("walking") ? params.get("walking") !== "direct" : SITE_DEFAULTS.map.walkingOnRoads;
   roadWalkingToggle.checked = state.walkingOnRoads;
   if (params.has("magnet")) displaySettings.railMagnetism = params.get("magnet") !== "0";
   if (params.has("magnetscale")) {
@@ -2286,7 +2236,7 @@ function restoreUrl() {
     if (Number.isFinite(legacyZoom) && legacyZoom > 0) displaySettings.railMagnetMaxScale = clamp(500000 / legacyZoom, 50000, 5000000);
   }
   const origin = parsePair(params.get("origin"));
-  const probe = parsePair(params.get("distance"));
+  const probe = params.has("distance") ? parsePair(params.get("distance")) : !params.has("origin") ? SITE_DEFAULTS.map.probePoint : null;
   const outlineParam = params.get("outline");
   if (outlineParam === "0") {
     state.outlineMinutes = [];
@@ -2305,6 +2255,8 @@ function restoreUrl() {
     maxTimeInput.value = String(max);
     maxTimeLabel.textContent = `Temps max. ${max} min`;
   }
+  maxTimeInput.value = String(state.maxTransitTime);
+  maxTimeLabel.textContent = `Temps max. ${state.maxTransitTime} min`;
   state.includeProjects = params.get("projects") === "1" ? true : params.get("projects") === "0" ? false : DEFAULT_INCLUDE_PROJECTS;
   projectsToggle.checked = state.includeProjects;
   const hasTravelParams = params.has("offbus") || Object.values(TRAVEL_QUERY_PARAMS).some((param) => params.has(param));
@@ -2322,9 +2274,9 @@ function restoreUrl() {
   if (origin) {
     setOrigin(origin, { pin: true, silent: true, magnet: false });
   } else {
-    setOrigin(lonLatToWorld(DEFAULT_ORIGIN.lon, DEFAULT_ORIGIN.lat), {
+    setOrigin([...SITE_DEFAULTS.map.originPoint], {
       pin: true,
-      label: DEFAULT_ORIGIN.label,
+      magnet: false,
       silent: true,
     });
   }
@@ -2500,7 +2452,8 @@ displaySettingsScrim.addEventListener("click", () => setDisplaySettingsOpen(fals
 displayResetAll.addEventListener("click", () => {
   Object.assign(displaySettings, freshDisplaySettings());
   Object.assign(travelSettings, DEFAULT_TRAVEL_SETTINGS);
-  state.walkingOnRoads = true; roadWalkingToggle.checked = true; startRoadWalking();
+  state.walkingOnRoads = SITE_DEFAULTS.map.walkingOnRoads; roadWalkingToggle.checked = state.walkingOnRoads;
+  if (state.walkingOnRoads) startRoadWalking();
   buildIsochroneGradientControls();
   saveDisplaySettings();
   saveTravelSettings();

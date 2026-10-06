@@ -234,3 +234,5 @@ En marche directe, le point, les couleurs et les contours sont recalculés ensem
 Dans Paramètres → Export / Import, Exporter télécharge `tours-parametres.json`. Le fichier contient les réglages de calcul et d’affichage, les couleurs personnalisées, les réseaux activés, les points et le cadrage. Importer restaure ce fichier localement, sans envoi à un serveur. Les réglages restent mémorisés dans le navigateur et les points/cadrage figurent dans l’URL. Ce fichier peut également servir à préparer de futurs paramètres par défaut.
 
 Les 14 gares repères des EPCI sont étiquetées à tous les niveaux de zoom lorsqu’elles se trouvent dans le cadrage, avant les autres gares. Les noms des communes correspondantes ne sont pas répétés.
+
+Les valeurs par défaut de calcul, d’affichage et de cadrage sont centralisées dans `site/default-settings.mjs`, à partir du fichier de préférences fourni le 6 octobre 2026. Les préférences déjà enregistrées dans le navigateur et les paramètres explicites de l’URL restent prioritaires. « Tout réinitialiser » restaure les nouveaux réglages ; le cadrage et les points restent à leur position courante.
