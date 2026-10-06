@@ -1322,3 +1322,17 @@ html { scrollbar-gutter: stable; }
   .settings-panel .controls > .toggle { grid-column: 1 / -1; font-size: .65rem; min-height: 22px; gap: 5px; }
   .reach { font-size: .7rem; line-height: 1.35; margin-top: 6px; }
 }
+
+.settings-transfer {position:relative; align-self:center;}
+.settings-transfer summary {cursor:pointer; list-style:none; white-space:nowrap; padding:7px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; font:600 .68rem/1 Outfit,sans-serif;}
+.settings-transfer summary::-webkit-details-marker {display:none;}
+.settings-transfer summary:focus-visible {outline:2px solid var(--ink); outline-offset:2px;}
+.settings-transfer-actions {position:absolute; bottom:calc(100% + 8px); left:0; display:flex; flex-direction:column; gap:4px; padding:6px; border:1px solid var(--line); border-radius:10px; background:var(--card); box-shadow:0 6px 20px #0002; z-index:2;}
+.settings-transfer-actions button {text-align:left;}
+.settings-transfer-status {font-size:13px; margin:0 0 12px;}
+.settings-transfer-status:empty {display:none;}
+@media(max-width:420px) {
+  .display-settings-actions {gap:5px;}
+  .display-settings-actions > button {padding:0 8px; font-size:.72rem;}
+  .settings-transfer summary {padding:7px 6px; font-size:.64rem;}
+}

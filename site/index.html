@@ -16,7 +16,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Outfit:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css?v=2026-10-06-live2" />
+    <link rel="stylesheet" href="./styles.css?v=2026-10-06-settings1" />
   </head>
   <body class="map-expanded">
     <main class="page">
@@ -64,6 +64,9 @@
             <button id="displaySettingsClose" type="button" class="icon-button" aria-label="Fermer les paramètres">×</button>
           </div>
           <div class="display-settings-scroll">
+
+            <input id="settingsImportFile" type="file" accept=".json,application/json" hidden>
+            <p id="settingsTransferStatus" class="settings-transfer-status" role="status" aria-live="polite"></p>
             <details class="settings-collapse settings-section-collapse">
               <summary><strong>Placement des points</strong></summary>
               <div class="settings-collapse-body"><div class="display-settings-grid">
@@ -214,6 +217,13 @@
             </details>
           </div>
           <div class="display-settings-actions">
+            <details id="settingsTransferMenu" class="settings-transfer">
+              <summary>Export / Import</summary>
+              <div class="settings-transfer-actions">
+                <button id="settingsExport" type="button" class="ghost">Exporter</button>
+                <button id="settingsImport" type="button" class="ghost">Importer</button>
+              </div>
+            </details>
             <button id="displayResetAll" type="button">Tout réinitialiser</button>
             <button id="displaySettingsDone" type="button" class="primary">Fermer</button>
           </div>
@@ -293,6 +303,6 @@
         </details>
       </dialog>
     </main>
-    <script type="module" src="./app.js?v=2026-10-06-live2"></script>
+    <script type="module" src="./app.js?v=2026-10-06-settings1"></script>
   </body>
 </html>

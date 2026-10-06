@@ -1,3 +1,4 @@
+import { parseSettingsFile, createSettingsFile } from "./settings-file.mjs?v=2026-10-06-settings1";
 import { DirectClient } from "./direct-client.mjs?v=2026-10-06-live2";
 import { snapToRailStation } from "./placement.mjs?v=2026-10-06-live2";
 import { contourSegments } from "./isochrone.mjs?v=2026-10-06-live2";
@@ -62,6 +63,8 @@ const DEFAULT_TRAVEL_SETTINGS = Object.freeze({
   transferPenalty: 3.5,
   walkingTransferPenalty: 2,
 });
+const PRIORITY_STATIONS = new Set(["Tours", "Blois-Chambord", "Saumur", "Vendôme", "Amboise", "Chinon", "Loches", "Château-Renault", "Bléré-la-Croix", "Montlouis", "Neuillé-Pont-Pierre", "Langeais", "Monts", "Ste-Maure-Noyant"]);
+const PRIORITY_TOWNS = new Set(["Tours", "Blois", "Saumur", "Vendôme", "Amboise", "Chinon", "Loches", "Château-Renault", "Bléré", "Montlouis-sur-Loire", "Neuillé-Pont-Pierre", "Langeais", "Monts", "Sainte-Maure-de-Touraine"]);
 const HOVER_DEADBAND = 12;
 const PIN_HIT_RADIUS = 32;
 const PIN_TAP_SLOP = 8;
@@ -1152,6 +1155,7 @@ function pointInLand(point) {
 function communeAt(point) {
   if (!point) return null;
   for (const commune of state.data.communes || []) {
+    if (PRIORITY_TOWNS.has(commune.name)) continue;
     const [minX, minY, maxX, maxY] = commune.bbox;
     if (point[0] < minX || point[0] > maxX || point[1] < minY || point[1] > maxY) continue;
     if (commune.polygons.some((polygon) => pointInPolygon(point, polygon))) return commune.name;
@@ -1511,6 +1515,7 @@ function drawBasemap(drawCtx, projectPoint) {
   drawCtx.globalAlpha = displaySettings.communeFillOpacity;
   drawCtx.fillStyle = displaySettings.communeColor;
   for (const commune of state.data.communes || []) {
+    if (PRIORITY_TOWNS.has(commune.name)) continue;
     for (const polygon of commune.polygons) {
       drawCtx.beginPath();
       tracePolygon(drawCtx, polygon, projectPoint);
@@ -1563,6 +1568,7 @@ function drawRoutes(drawCtx, projectPoint) {
 function drawDepartmentLimits(drawCtx, projectPoint) {
   const communeWidth = displaySettings.communeBorderWidth * (state.viewportScale >= 2 ? 1.3 : 0.8);
   for (const commune of state.data.communes || []) {
+    if (PRIORITY_TOWNS.has(commune.name)) continue;
     for (const polygon of commune.polygons) {
       for (const ring of polygon) {
         if (ring.length < 2) continue;
@@ -1595,6 +1601,7 @@ function drawCommuneLabels(drawCtx, projectPoint) {
   const width = mapCanvas.clientWidth;
   const height = mapCanvas.clientHeight;
   for (const commune of state.data.communes || []) {
+    if (PRIORITY_TOWNS.has(commune.name)) continue;
     if (state.data.stations.some((station) => station.mode === "TER" && station.name === commune.name && station.terminal && distance(station.point, commune.label) < 3500)) continue;
     const [minX, minY, maxX, maxY] = commune.bbox;
     const [left, bottom] = projectPoint([minX, minY]);
@@ -1699,22 +1706,30 @@ function drawStationSymbols(drawCtx, projectPoint, active) {
     }
     if (station.mode !== "TER") continue;
     const terminal = station.terminal || major.test(station.name);
-    const show = terminal ? state.viewportScale >= 0.55 : !station.inSerm && state.viewportScale >= 0.8;
-    if (show) labels.push({ station, x, y, terminal });
+    const priority = PRIORITY_STATIONS.has(station.name);
+    const show = priority || (terminal ? state.viewportScale >= 0.55 : !station.inSerm && state.viewportScale >= 0.8);
+    if (show) labels.push({ station, x, y, terminal: terminal || priority, priority });
   }
   const occupied = [];
-  labels.sort((a, b) => Number(b.terminal) - Number(a.terminal) || a.station.name.localeCompare(b.station.name, "fr"));
-  for (const { station, x, y, terminal } of labels) {
+  const named = new Set();
+  labels.sort((a, b) => Number(b.priority || false) - Number(a.priority || false) || Number(b.terminal) - Number(a.terminal) || a.station.name.localeCompare(b.station.name, "fr"));
+  for (const { station, x, y, terminal, priority } of labels) {
+    if (named.has(station.name)) continue;
     const fontSize = (terminal ? 12 : 10) * displaySettings.labelScale;
     drawCtx.font = `${terminal ? 700 : 500} ${fontSize}px Outfit, sans-serif`;
     const textWidth = drawCtx.measureText(station.name).width;
     const candidates = [[x + 6, y - 5], [x - textWidth - 6, y - 5], [x + 6, y + 13], [x - textWidth - 6, y + 13]];
+    if (priority) for (let offset = 24; offset <= 120; offset += 16) {
+      candidates.push([x + 6, y - offset], [x - textWidth - 6, y + offset]);
+    }
     const place = candidates.find(([tx, ty]) => {
       const box = [tx - 3, ty - fontSize - 3, tx + textWidth + 3, ty + 3];
       return box[0] >= 3 && box[2] <= mapCanvas.clientWidth - 3 && box[1] >= 3 && box[3] <= mapCanvas.clientHeight - 3 && !occupied.some(([a, b, c, d]) => box[0] < c && box[2] > a && box[1] < d && box[3] > b);
     });
-    if (!place) continue;
-    const [tx, ty] = place;
+    const fallback = priority ? [clamp(x + 6, 6, Math.max(6, mapCanvas.clientWidth - textWidth - 6)), clamp(y - 5, fontSize + 6, mapCanvas.clientHeight - 6)] : null;
+    if (!place && !fallback) continue;
+    named.add(station.name);
+    const [tx, ty] = place || fallback;
     occupied.push([tx - 3, ty - fontSize - 3, tx + textWidth + 3, ty + 3]);
     drawCtx.textAlign = "left";
     drawCtx.lineWidth = terminal ? 3.8 : 3;
@@ -1723,6 +1738,7 @@ function drawStationSymbols(drawCtx, projectPoint, active) {
     drawCtx.fillStyle = terminal ? "#1d3951" : "#36536a";
     drawCtx.fillText(station.name, tx, ty);
   }
+  mapCanvas.dataset.priorityLabels = JSON.stringify([...named].filter(name => PRIORITY_STATIONS.has(name)));
 }
 
 let sermClipPath = null;
@@ -2429,6 +2445,49 @@ mapCanvas.addEventListener("dblclick", (event) => {
     requestDraw();
     syncUrl();
   }
+});
+
+const transferMenu = document.getElementById("settingsTransferMenu");
+const transferStatus = document.getElementById("settingsTransferStatus");
+const importInput = document.getElementById("settingsImportFile");
+document.getElementById("settingsExport").addEventListener("click", () => {
+  if (!state.ready) return;
+  const content = createSettingsFile(displaySettings, travelSettings, state);
+  const url = URL.createObjectURL(new Blob([content], {type:"application/json"}));
+  const link = document.createElement("a");
+  link.href = url; link.download = "tours-parametres.json"; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  transferMenu.open = false;
+  transferStatus.textContent = "Paramètres et affichage exportés.";
+});
+document.getElementById("settingsImport").addEventListener("click", () => importInput.click());
+importInput.addEventListener("change", async () => {
+  const file = importInput.files[0];
+  if (!file || !state.ready) return;
+  try {
+    if (file.size > 1000000) throw new Error("Fichier trop volumineux (maximum 1 Mo).");
+    const imported = parseSettingsFile(await file.text());
+    const display = normalizeDisplaySettings(imported.display);
+    const travel = normalizeTravelSettings(imported.travel);
+    Object.assign(displaySettings, display);
+    Object.assign(travelSettings, travel);
+    Object.assign(state, imported.map);
+    state.originLabel = null; state.pinned = true;
+    state.probePinned = Boolean(state.probePoint);
+    roadResult = null; directAnchor = null; stationSymbolsKey = ""; staticLayersKey = "";
+    saveDisplaySettings(); saveTravelSettings();
+    buildIsochroneGradientControls(); syncDisplaySettingsControls(); syncOutlineToggles();
+    roadWalkingToggle.checked = state.walkingOnRoads;
+    projectsToggle.checked = state.includeProjects;
+    maxTimeInput.value = String(state.maxTransitTime);
+    maxTimeLabel.textContent = `Temps max. ${state.maxTransitTime} min`;
+    if (state.walkingOnRoads) startRoadWalking();
+    invalidateTravelSettings(); syncUrl();
+    transferMenu.open = false;
+    transferStatus.textContent = "Paramètres et affichage importés.";
+  } catch (error) {
+    transferStatus.textContent = `Import impossible : ${error.message}`;
+  } finally { importInput.value = ""; }
 });
 
 displaySettingsButton.addEventListener("click", (event) => {
