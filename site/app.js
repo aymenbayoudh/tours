@@ -1,9 +1,9 @@
-import { DirectClient } from "./direct-client.mjs?v=2026-10-06-live";
-import { snapToRailStation } from "./placement.mjs?v=2026-10-06-live";
-import { contourSegments } from "./isochrone.mjs?v=2026-10-06-live";
-import { WalkingClient } from "./walking-client.mjs?v=2026-10-06-live";
-import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes, previewTravelModel, restoreDirectModel, estimateTravelTimes } from "./routing.mjs?v=2026-10-06-live";
-const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-06-live", import.meta.url).toString();
+import { DirectClient } from "./direct-client.mjs?v=2026-10-06-live2";
+import { snapToRailStation } from "./placement.mjs?v=2026-10-06-live2";
+import { contourSegments } from "./isochrone.mjs?v=2026-10-06-live2";
+import { WalkingClient } from "./walking-client.mjs?v=2026-10-06-live2";
+import { buildTravelModel, estimateTravel as routeEstimate, reachability, describeJourney, routeWaitingMinutes, previewTravelModel, restoreDirectModel, estimateTravelTimes } from "./routing.mjs?v=2026-10-06-live2";
+const DATA_URL = new URL("./data/commute_map_data.json?v=2026-10-06-live2", import.meta.url).toString();
 const MIN_VIEWPORT_SCALE = 0.12;
 const MAX_VIEWPORT_SCALE = 120;
 const VIEWPORT_ZOOM_STEP = 1.32;
@@ -1325,7 +1325,7 @@ function requestRoadWarp(origin, transform, width, height) {
 function startRoadWalking() {
   if (roadClient) return;
   try {
-    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-06-live", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./walking-worker.mjs?v=2026-10-06-live2", import.meta.url), {type:"module"});
     roadClient = new WalkingClient(worker, result => {
       if (result.settingsKey === roadSettingsKey()) {
         roadResult = result; backdropKey = ""; lastJourneyKey = ""; requestDraw();
@@ -1348,15 +1348,20 @@ let directClient = null;
 let directAnchor = null;
 let directAnchorSettings = "";
 let directRevision = 0;
+let directResult = null;
+let directRequestedKey = "";
 function directSettingsKey() { return JSON.stringify([state.includeProjects, travelSettings]); }
 function startDirectCalculations() {
   if (directClient) return;
   try {
-    const worker = new Worker(new URL("./direct-worker.mjs?v=2026-10-06-live", import.meta.url), {type:"module"});
+    const worker = new Worker(new URL("./direct-worker.mjs?v=2026-10-06-live2", import.meta.url), {type:"module"});
     directClient = new DirectClient(worker, result => {
-      if (state.walkingOnRoads || result.settingsKey !== directSettingsKey() || !(state.dragTarget === "origin" || !state.pinned)) return;
+      if (state.walkingOnRoads || result.settingsKey !== directSettingsKey()) return;
+      const moving = state.dragTarget === "origin" || !state.pinned;
+      if (result.preview ? !moving : result.key !== directRequestedKey) return;
       directAnchor = restoreDirectModel(state.data, result.snapshot);
       directAnchorSettings = result.settingsKey;
+      if (!result.preview) { directResult = result; cachedReach=result.reach; cachedReachKey=""; lastJourneyKey=""; }
       directRevision++; cachedModelKey = ""; requestDraw();
     }, message => { console.error("Calcul direct :", message); requestDraw(); });
     worker.postMessage({type:"init", data:state.data});
@@ -1364,12 +1369,11 @@ function startDirectCalculations() {
 }
 function getTravelModel(origin) {
   const settingsKey = directSettingsKey();
-  const live = !state.walkingOnRoads && (state.dragTarget === "origin" || !state.pinned) && directClient && !directClient.failed;
-  const key = `${origin}:${settingsKey}:${live ? directRevision : "exact"}`;
+  const asynchronous = !state.walkingOnRoads && directClient && !directClient.failed;
+  const key = `${origin}:${settingsKey}:${asynchronous ? directRevision : "exact"}`;
   if (key !== cachedModelKey) {
-    if (live && directAnchor && directAnchorSettings === settingsKey) {
+    if (asynchronous && directAnchor && directAnchorSettings === settingsKey) {
       cachedModel = previewTravelModel(state.data, directAnchor, origin);
-      directClient.request({key:`${origin}:${settingsKey}`, origin:[...origin], settings:{...travelSettings}, includeProjects:state.includeProjects, settingsKey});
     } else {
       cachedModel = buildTravelModel(state.data, origin, state.includeProjects, {...travelSettings, routingVariant:"comfort"});
       directAnchor = cachedModel; directAnchorSettings = settingsKey;
@@ -1385,7 +1389,7 @@ function estimateTravel(origin, distances, destination) {
 let cachedReachKey = "", cachedReach = null;
 function summarizeReachability(origin) {
   const model = getTravelModel(origin), key = `${cachedModelKey}:${activeThreshold()}`;
-  if (state.dragTarget === "origin" && cachedReach) return cachedReach;
+  if ((state.dragTarget === "origin" || (!state.walkingOnRoads && directClient && !directClient.failed)) && cachedReach) return cachedReach;
   if (key !== cachedReachKey) { cachedReach = reachability(state.data, model, activeThreshold()); cachedReachKey = key; }
   return cachedReach;
 }
@@ -1434,12 +1438,26 @@ let viewportSamples = null;
 function computeViewportWarp(origin, transform, width, height) {
   const model = getTravelModel(origin);
   const panPreview = state.dragTarget === "pan" || state.dragTarget === "origin" || !state.pinned;
-  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${panPreview}`;
+  const key = `${cachedModelKey}:view:${transform.scale}:${transform.toWorld(0,0)}:${width}:${height}:${panPreview}:${state.probePoint}:${activeThreshold()}`;
   if (cachedWarpKey === key) return cachedWarp;
   const topLeft = transform.toWorld(0, 0), bottomRight = transform.toWorld(width, height);
   const bounds = [topLeft[0], bottomRight[1], bottomRight[0], topLeft[1]];
-  const gridCols = panPreview ? 64 : width < 600 ? 100 : 180;
-  const gridRows = Math.max(panPreview ? 48 : 80, Math.round(gridCols * height / width));
+  const asynchronous = !state.walkingOnRoads && directClient && !directClient.failed;
+  const finalCols = width < 600 ? 100 : 180;
+  const finalRows = Math.max(80,Math.round(finalCols*height/width));
+  if (asynchronous) {
+    const request = {origin:[...origin], probe:state.probePoint, settings:{...travelSettings}, includeProjects:state.includeProjects,
+      settingsKey:directSettingsKey(), threshold:activeThreshold(), preview:panPreview,
+      spec:panPreview ? null : {bounds,cols:finalCols,rows:finalRows}};
+    request.rasterKey=JSON.stringify([request.origin,request.settingsKey,request.spec]);
+    request.key=JSON.stringify(request);
+    directRequestedKey=request.key; directClient.request(request);
+    if (!panPreview && directResult?.rasterKey===request.rasterKey && directResult.warp) {
+      cachedWarpKey=key; cachedWarp=directResult.warp; return cachedWarp;
+    }
+  }
+  const gridCols = panPreview || asynchronous ? 64 : finalCols;
+  const gridRows = Math.max(panPreview || asynchronous ? 48 : 80, Math.round(gridCols*height/width));
   const geometryKey = `${bounds}:${gridCols}:${gridRows}`;
   if (viewportSamples?.key !== geometryKey) {
     const cellW = (bounds[2] - bounds[0]) / gridCols, cellH = (bounds[3] - bounds[1]) / gridRows;
@@ -1457,7 +1475,7 @@ function computeViewportWarp(origin, transform, width, height) {
   const minutes = Array.from({length:samples.gridRows}, () => new Float64Array(samples.gridCols).fill(Infinity));
   for (let i = 0; i < samples.cells.length; i++) { const [row,col] = samples.cells[i]; minutes[row][col] = values[i]; }
   cachedWarpKey = key;
-  cachedWarp = {minutes, validMask:samples.validMask, bounds:samples.bounds, cellW:samples.cellW, cellH:samples.cellH, distances:model.distances};
+  cachedWarp = {minutes, validMask:samples.validMask, bounds:samples.bounds, cellW:samples.cellW, cellH:samples.cellH, distances:model.distances, origin:model.origin};
   return cachedWarp;
 }
 
@@ -2017,7 +2035,7 @@ function drawMap() {
   const useRoadWorker = state.walkingOnRoads && roadClient?.ready && !roadClient.failed;
   const warp = source && useRoadWorker ? requestRoadWarp(source, transform, width, height) : source ? (movingOrigin || !state.pinned || scaleMul > 1.8 || !pointInLand(focus) || !pointInLand(source)
     ? computeViewportWarp(source, transform, width, height)
-    : computeWarp(source)) : null;
+    : directClient && !directClient.failed && !state.walkingOnRoads ? computeViewportWarp(source,transform,width,height) : computeWarp(source)) : null;
 
   const warpDone = measureFrames ? performance.now() : 0;
   let heatMs=0, stationsMs=0;
@@ -2088,7 +2106,7 @@ function drawMap() {
 
   mapCanvas.dataset.dragging = state.dragTarget || "";
   mapCanvas.dataset.walkingMode = useRoadWorker ? "road" : "direct";
-  mapCanvas.dataset.calculationState = roadSnapshot()?.key === roadRequestedKey ? "ready" : useRoadWorker ? "pending" : "ready";
+  mapCanvas.dataset.calculationState = useRoadWorker ? (roadSnapshot()?.key===roadRequestedKey ? "ready" : "pending") : directClient && !directClient.failed && !state.walkingOnRoads ? (directResult?.key===directRequestedKey ? "ready" : "pending") : "ready";
   state.currentRender = { warp, transform, focus };
   updateMapScale(transform);
   legend.hidden = !warp;
@@ -2104,7 +2122,7 @@ function drawMap() {
       mapCanvas.dataset.liveFrames = JSON.stringify({count:measuredFrames.length, meanMs:measuredFrames.reduce((a,b)=>a+b,0)/measuredFrames.length, maxMs:Math.max(...measuredFrames)});
     }
     mapCanvas.dataset.frameMs = ms.toFixed(2);
-    mapCanvas.dataset.surfaceOrigin = String(source);
+    mapCanvas.dataset.surfaceOrigin = String(warp?.origin || source);
     mapCanvas.dataset.markerOrigin = String(state.originPoint);
     mapCanvas.dataset.directWorker = directClient?.ready ? "ready" : "loading";
     mapCanvas.dataset.preview = String(Boolean(cachedModel?.preview && state.dragTarget === "origin"));
@@ -2492,10 +2510,13 @@ function updateJourney() {
   const key = `${useRoad ? "road:" + (snapshot?.key || roadRequestedKey) : "direct:" + cachedModelKey}:${state.probePoint}`;
   if (key === lastJourneyKey) return;
   lastJourneyKey = key;
-  const journey = snapshot ? snapshot.journey : state.walkingOnRoads && roadClient?.ready && !roadClient.failed ? null : describeJourney(state.data, getTravelModel(state.originPoint), state.probePoint);
+  const useDirectWorker = !state.walkingOnRoads && directClient && !directClient.failed;
+  const journey = snapshot ? snapshot.journey : state.walkingOnRoads && roadClient?.ready && !roadClient.failed ? null
+    : useDirectWorker ? directResult?.key===directRequestedKey ? directResult.journey : null
+    : describeJourney(state.data,getTravelModel(state.originPoint),state.probePoint);
   journeyPanel.hidden = false; journeyContent.replaceChildren();
   const add = text => { const p = document.createElement("p"); p.textContent = text; journeyContent.append(p); };
-  if (!journey) { add("Calcul du trajet sur voirie en cours…"); return; }
+  if (!journey) { add(state.walkingOnRoads ? "Calcul du trajet sur voirie en cours…" : "Calcul du trajet en cours…"); return; }
   if (journey.roadUnavailable) { add("Aucun chemin piéton identifié vers ce point. Placez-le près d’une rue ou d’un arrêt."); return; }
 
   if (!journey.legs.length) add(`Marche${!state.walkingOnRoads ? " (en ligne droite)" : ""} : ${formatMinutes(journey.minutes)}.`);

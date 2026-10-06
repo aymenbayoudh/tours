@@ -43,6 +43,7 @@ jobs:
           node tests/local_bus.test.mjs
           node tests/spatial_estimate.test.mjs
           node tests/live_routing.test.mjs
+          node tests/direct_worker.test.mjs
           node tests/placement_release.test.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

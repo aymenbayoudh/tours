@@ -616,7 +616,7 @@ export function previewTravelModel(data, anchor, origin) {
 }
 
 export function directModelSnapshot(model) {
-  return {origin:model.origin, settings:model.settings, accessMinutes:model.accessMinutes,
+  return {origin:model.origin, settings:model.settings, accessMinutes:model.accessMinutes.slice(),
     activeStations:model.activeStations, comfortStationArrivals:model.comfortStationArrivals,
     comfortTransferPreferenceMinutes:model.comfortTransferPreferenceMinutes};
 }
